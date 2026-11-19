@@ -7,6 +7,19 @@
  * Based on jazz theory and common practice: each chord quality maps to
  * primary (best fit), secondary, and colour scale choices.
  *
+ * Every scale offered holds every tone the chord names (QA report 2 of 18
+ * November 2026, P1): a chord-scale is built by writing "all of the notes of
+ * the chord (including upper extensions and altered notes)" and filling in
+ * between them (Robert Hutchinson, Music Theory for the 21st-Century
+ * Classroom, §31.10, https://musictheory.pugetsound.edu/mt21c/HowToDetermineChord-ScaleRelationships.html).
+ * A scale tone a half step above a chord tone (an avoid note) is allowed; a
+ * scale that leaves out a chord tone, or puts a neighbour in its place, is
+ * not — whatever its fit. Twelve such pairings were removed (each marked
+ * below); `__tests__/chordScaleRelationships.test.ts` checks the whole table
+ * on every root, and `getKeyScaleSuggestions` drops, at run time, any scale
+ * that would not hold a chord the parser built with notes of its own or a
+ * slash chord's bass.
+ *
  * (Audit W9-17 / C-90: the never-used substitution table — with musically
  * wrong text such as dim7 → half-dim7 "Add minor 7th" and maj7 → maj6
  * "Avoid b7 in melody" — and the unused reverse / mode lookups were deleted
@@ -40,12 +53,13 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
   ],
   major7: [
     { scale: 'major', fit: 'primary', context: 'All chord tones present (1-3-5-7)' },
+    // Hutchinson's Table 31.10.3: "C∆7 → C major scale or C Lydian scale".
+    // (Major pentatonic went, P1: it has no 7th, and the chord names one.)
     {
       scale: 'lydian',
       fit: 'primary',
-      context: '#4 avoids the "avoid note" clash — preferred in jazz',
+      context: 'Raised 4th avoids the clash with the major 3rd',
     },
-    { scale: 'pentatonic_major', fit: 'secondary', context: 'Safe melodic choice' },
   ],
   major6: [
     { scale: 'major', fit: 'primary', context: 'Contains the natural 6th' },
@@ -61,11 +75,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'Contains every chord tone, including the natural 11 — the chord omits the 3rd, so the 11 does not clash',
     },
-    {
-      scale: 'lydian',
-      fit: 'color',
-      context: 'Raises the 11th to #11 — that is the maj7#11 sound, a different chord',
-    },
+    // (Lydian went, P1: its F♯ replaces the natural 11 the chord names.)
   ],
   major13: [
     { scale: 'major', fit: 'primary', context: 'Full scale coverage of all extensions' },
@@ -90,11 +100,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'Contains every chord tone, including the natural 11 the symbol asks for',
     },
-    {
-      scale: 'lydian',
-      fit: 'color',
-      context: 'Swaps the natural 11 for #11 — brighter, but no longer the add11 chord',
-    },
+    // (Lydian went, P1: its F♯ replaces the natural 11 the chord names.)
   ],
 
   // === MINOR FAMILY ===
@@ -147,11 +153,9 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'b7 in scale matches the chord — THE dominant scale',
     },
-    {
-      scale: 'blues',
-      fit: 'secondary',
-      context: 'Blues/rock idiom: the scale\'s b3 rubs against the chord\'s major 3rd — that clash is the blues sound',
-    },
+    // (The blues scale went, P1: it has no major 3rd. Its b3 over a
+    // dominant chord is the blues idiom — blue notes, which chord-scale
+    // theory does not account for (Open Music Theory 2e, 6.7).)
     { scale: 'bebop_dominant', fit: 'color', context: 'Chromatic passing tone for jazz lines' },
   ],
   dominant9: [
@@ -182,7 +186,8 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       context: 'Half-whole pattern fits all chord tones including b9',
     },
     { scale: 'phrygian_dominant', fit: 'secondary', context: 'Spanish/Flamenco flavour with b2' },
-    { scale: 'altered', fit: 'color', context: 'Maximum tension for resolving to minor' },
+    // (Altered went, P1: it has no perfect 5th. Hutchinson: C7(♭9) → C
+    // Octatonic (Half-Whole).)
   ],
   dominant7sharp9: [
     {
@@ -190,22 +195,14 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'Contains every chord tone — the #9 plus the major 3rd, perfect 5th and b7',
     },
-    {
-      scale: 'blues',
-      fit: 'secondary',
-      context: 'Blues/rock context (the "Hendrix chord"): the scale\'s b3 is the chord\'s #9',
-    },
-    {
-      scale: 'altered',
-      fit: 'color',
-      context: 'For a 7alt context: keeps the #9 but replaces the perfect 5th with b5/#5',
-    },
+    // (Blues, with no major 3rd, and Altered, with no perfect 5th, went,
+    // P1. Hutchinson: C7(♯9) → C Octatonic (Half-Whole).)
   ],
   dominant7flat5: [
     {
       scale: 'lydian_dominant',
       fit: 'primary',
-      context: '#11 (=b5) built into lydian dominant — jazz standard',
+      context: '#11 (=b5) built into lydian dominant',
     },
     { scale: 'whole_tone', fit: 'secondary', context: 'All notes a whole step apart — dreamy' },
     { scale: 'altered', fit: 'color', context: 'Full altered sound for maximum tension' },
@@ -224,11 +221,8 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'THE altered scale — 7th mode of melodic minor',
     },
-    {
-      scale: 'diminished_half_whole',
-      fit: 'color',
-      context: 'Similar b9/#9/#11 tension, but with a natural 13 instead of the chord\'s b13',
-    },
+    // (Half-whole went, P1: its natural 13 replaces the chord's b13.
+    // Hutchinson: C7alt → C Diminished-Whole Tone, this scale.)
   ],
   dominant9sharp11: [
     {
@@ -243,11 +237,8 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: '#11 over a dominant 7th — lydian dominant (4th mode of melodic minor)',
     },
-    {
-      scale: 'whole_tone',
-      fit: 'color',
-      context: 'Has the b7 and #11 but replaces the chord\'s perfect 5th with #5 — for voicings that omit the 5th',
-    },
+    // (Whole tone went, P1: its #5 replaces the chord's perfect 5th.
+    // Hutchinson: C7(♯11) → C Lydian-Dominant.)
   ],
   major9sharp11: [
     { scale: 'lydian', fit: 'primary', context: '#11 IS the lydian 4th, with the major 7th and 9th' },
@@ -258,11 +249,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'b6 (=b13) over a dominant 7th — 5th mode of melodic minor',
     },
-    {
-      scale: 'altered',
-      fit: 'color',
-      context: 'Keeps the b13 but also alters the 5th — a darker, fully altered colour',
-    },
+    // (Altered went, P1: it has no perfect 5th, which the chord keeps.)
   ],
   dominant13flat9: [
     {
@@ -371,11 +358,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
   // === COMBINATION ALTERED DOMINANTS ===
   dominant7sharp5flat9: [
     { scale: 'altered', fit: 'primary', context: '#5 and b9 are both altered tones' },
-    {
-      scale: 'whole_tone',
-      fit: 'color',
-      context: '#5 and b7 fit, but the scale\'s natural 9 rubs against the chord\'s b9 — use sparingly',
-    },
+    // (Whole tone went, P1: its natural 9 replaces the chord's b9.)
   ],
   dominant7flat5flat9: [
     { scale: 'altered', fit: 'primary', context: 'b5 and b9 define the altered sound' },
@@ -383,11 +366,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
   ],
   dominant7sharp5sharp9: [
     { scale: 'altered', fit: 'primary', context: '#5 and #9 — full altered dominant' },
-    {
-      scale: 'whole_tone',
-      fit: 'color',
-      context: '#5 and b7 fit, but the scale has a natural 9 where the chord has #9',
-    },
+    // (Whole tone went, P1: its natural 9 replaces the chord's #9.)
   ],
   dominant7flat5sharp9: [
     { scale: 'altered', fit: 'primary', context: 'b5 and #9 — classic altered combination' },
@@ -403,12 +382,24 @@ export function getScaleSuggestions(quality: ChordQuality): ScaleSuggestion[] {
   return CHORD_SCALE_MAP[quality] || [];
 }
 
+/** Every tone `chord` names — its notes and a slash bass — is a note of `scale` built on the chord's root (pitch classes). */
+export function scaleHoldsChord(chord: Chord, scale: ScaleType): boolean {
+  const root = getPitchClass(chord.root);
+  const held = new Set(SCALE_FORMULAS[scale].map((i) => (root + i) % 12));
+  const named = chord.bassNote ? [...chord.notes, chord.bassNote] : chord.notes;
+  return named.every((n) => held.has(getPitchClass(n)));
+}
+
 /** The key's own pitch set, rotated onto this chord root, precedes quality
- * suggestions when the entire chord is diatonic and the catalogue names it. */
+ * suggestions when the entire chord is diatonic and the catalogue names it.
+ * A suggestion that would not hold the chord as it is — a chord the parser
+ * built with notes of its own (Cm(add11) borrows minor's list), or a slash
+ * chord whose bass the scale lacks (C/F♯: not Major) — is left out (P1). */
 export function getKeyScaleSuggestions(chord: Chord, key: Scale): ScaleSuggestion[] {
-  const suggestions = getScaleSuggestions(chord.quality);
+  const suggestions = getScaleSuggestions(chord.quality).filter((s) => scaleHoldsChord(chord, s.scale));
   const pcs = new Set(key.notes.map(getPitchClass));
-  if (!chord.notes.every((n) => pcs.has(getPitchClass(n)))) return suggestions;
+  const named = chord.bassNote ? [...chord.notes, chord.bassNote] : chord.notes;
+  if (!named.every((n) => pcs.has(getPitchClass(n)))) return suggestions;
   const root = getPitchClass(chord.root);
   const intervals = [...pcs].map((pc) => (pc - root + 12) % 12).sort((a, b) => a - b);
   const match = (Object.keys(SCALE_FORMULAS) as ScaleType[]).find((type) =>
