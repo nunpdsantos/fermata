@@ -78,17 +78,17 @@ async function expectLinesShown(page: Page, where: string) {
   await expect.poll(() => page.locator('#boot-links').evaluate((el) => getComputedStyle(el).opacity), { message: `${where}: the fade ends` }).toBe('1');
 }
 
-interface Frames { states: string[]; firstFrame: number | null; shownAt: number | null; opaqueAt: number | null }
+interface Frames { states: string[]; firstFrame: number | null; shownAt: number | null; opaqueAt: number | null; opacities: string[] }
 /**
  * Records, from the page's first frame, what the fallback shows on each frame:
  * 'hidden'; 'shown' = the six links AND the three lines visible; 'links
  * without the line' / 'line without the links' (never right with scripts on);
  * 'gone' = display: none. Also the first frame's time, when it was first
- * shown and when its fade ended (opacity 1).
+ * shown, when its fade ended (opacity 1) and every opacity drawn while shown.
  */
 async function recordFrames(page: Page) {
   await page.addInitScript(() => {
-    const rec: Frames = { states: [], firstFrame: null, shownAt: null, opaqueAt: null };
+    const rec: Frames = { states: [], firstFrame: null, shownAt: null, opaqueAt: null, opacities: [] };
     (window as unknown as { __frames: Frames }).__frames = rec;
     const seen = (el: Element) => {
       const s = getComputedStyle(el);
@@ -107,6 +107,8 @@ async function recordFrames(page: Page) {
         state = linksShown && linesShown ? 'shown' : linksShown ? 'links without the line' : linesShown ? 'line without the links' : 'hidden';
         if (state === 'shown' && rec.shownAt === null) rec.shownAt = now;
         if (state === 'shown' && rec.opaqueAt === null && getComputedStyle(box).opacity === '1') rec.opaqueAt = now;
+        // Every opacity drawn while shown, in order of first sight: a fade shows values between 0 and 1.
+        if (state === 'shown' && !rec.opacities.includes(getComputedStyle(box).opacity)) rec.opacities.push(getComputedStyle(box).opacity);
       }
       if (rec.states[rec.states.length - 1] !== state) rec.states.push(state);
       if (rec.states.length < 20) requestAnimationFrame(look);
@@ -187,7 +189,10 @@ for (const v of [{ width: 390, height: 844, touch: true, scheme: 'light' }, { wi
     // The delay counts from the page's first frame (when the app's stylesheet has arrived), then the fade.
     expect(f.shownAt! - f.firstFrame!, 'shown after the delay').toBeGreaterThanOrEqual(DELAY_MS - 100);
     expect(f.shownAt! - f.firstFrame!, 'shown at the delay (the page is idle: the next frame sees it)').toBeLessThanOrEqual(DELAY_MS + 700);
-    expect(f.opaqueAt! - f.shownAt!, 'then a short fade').toBeGreaterThanOrEqual(FADE_MS - 150);
+    // Then the fade, its length bounded both ways (a 3 s fade, or none, fails), with values between 0 and 1 drawn.
+    expect(f.opaqueAt! - f.shownAt!, 'then a fade of its length').toBeGreaterThanOrEqual(FADE_MS - 150);
+    expect(f.opaqueAt! - f.shownAt!, 'a fade of its length, no longer').toBeLessThanOrEqual(FADE_MS + 500);
+    expect(f.opacities.filter((o) => o !== '1').length, `drawn part-way through the fade: ${f.opacities.join(' ')}`).toBeGreaterThan(0);
     const where = `script failed ${v.width}px ${v.scheme}`;
     // The app's colours: on the build its stylesheet is in index.html's head; the dev server injects it from the refused script.
     if (await page.locator('link[rel="stylesheet"][href^="/assets/"]').count()) {
@@ -207,6 +212,32 @@ for (const v of [{ width: 390, height: 844, touch: true, scheme: 'light' }, { wi
     await context.close();
   });
 }
+
+test('under reduced motion, when the app\'s script fails: still nothing until the delay, then the block whole at once, no fade (the app\'s own reduced-motion rule, build only)', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  // src/index.css shortens every animation to 0.01 ms under reduced motion; on the build its stylesheet is in index.html's
+  // head, while the dev server injects it from the very script refused here, so there is nothing to test there.
+  await page.goto('/en/');
+  test.skip(!(await page.content()).includes('<h1 class="hero">'), 'the app\'s stylesheet arrives with the refused script on the dev server: run with playwright.preview.config.ts');
+  await recordFrames(page);
+  await page.route(ENTRY, (route) => route.abort('failed'));
+  await page.goto('/');
+  expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), 'reduced motion is on (known positive)').toBe(true);
+  expect(await page.locator('#boot-links').evaluate((el) => getComputedStyle(el).visibility)).toBe('hidden');
+  await expect(page.locator('#boot-links')).toBeVisible({ timeout: 8_000 });
+  await expectLinksShown(page, 'reduced motion');
+  await expectLinesShown(page, 'reduced motion');
+  const f = await framesOf(page);
+  expect(f.states).toEqual(['hidden', 'shown']);
+  // The delay still applies, both ways.
+  expect(f.shownAt! - f.firstFrame!, 'shown after the delay').toBeGreaterThanOrEqual(DELAY_MS - 100);
+  expect(f.shownAt! - f.firstFrame!, 'shown at the delay').toBeLessThanOrEqual(DELAY_MS + 700);
+  // Whole at once: the first frame that shows it draws it at full opacity, and no other opacity is ever drawn.
+  expect(f.opaqueAt, 'whole on the frame it appears').toBe(f.shownAt);
+  expect(f.opacities).toEqual(['1']);
+  await context.close();
+});
 
 test('a slow normal start (the entry script 5 s late): after the delay the lines and links, true while the app loads; they go when it draws, at once and for good', async ({ page }) => {
   test.setTimeout(60_000);
@@ -236,6 +267,8 @@ test('a slow normal start (the entry script 5 s late): after the delay the lines
   expect(f.states).toEqual(['hidden', 'shown', 'gone']);
   expect(f.shownAt! - f.firstFrame!, 'shown after the delay').toBeGreaterThanOrEqual(DELAY_MS - 100);
   expect(f.shownAt! - f.firstFrame!, 'shown at the delay').toBeLessThanOrEqual(DELAY_MS + 700);
+  expect(f.opaqueAt! - f.shownAt!, 'then a fade of its length').toBeGreaterThanOrEqual(FADE_MS - 150);
+  expect(f.opaqueAt! - f.shownAt!, 'a fade of its length, no longer').toBeLessThanOrEqual(FADE_MS + 500);
   if (shots) await page.screenshot({ path: `${shots}/home-slow-start-drawn-390-day.png` });
 });
 

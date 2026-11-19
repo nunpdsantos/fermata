@@ -7,6 +7,7 @@ import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { parseReleaseNotes, versionInfo } from './src/release/releaseNotes.ts'
 import { NOT_FOUND_FILE, servedFile, type PathKind } from './src/site/notFound.ts'
+import { exactPrecache } from './src/site/workerPrecache.ts'
 
 // `vite preview` serves the PRODUCTION security headers from vercel.json (the
 // catch-all rule), so the preview-build browser tests run under the real CSP
@@ -123,23 +124,15 @@ function versionJson(): Plugin {
 
 /**
  * The worker's precache answers a precached file at its own address only
- * (2026-11-19, review of audit A21). Workbox's precacheAndRoute also tries
- * `<address>.html` when an address matches nothing ("clean URLs", on by
- * default: https://developer.chrome.com/docs/workbox/modules/workbox-precaching
- * "Clean URLs", read 2026-11-19; workbox-precaching 7.4.1
- * generateURLVariations, `cleanURLs = true`), after dropping utm_ / fbclid
- * parameters, so an installed app answered /index (and /index?utm_source=x)
- * with the app while the server answers 404. Workbox's generateSW, which
- * vite-plugin-pwa runs, offers no option for it (its options:
- * https://developer.chrome.com/docs/workbox/reference/workbox-build, read
- * 2026-11-19; its template passes precacheAndRoute only directoryIndex and
- * ignoreURLParametersMatching). So once the plugin has written dist/sw.js
- * (its closeBundle; this one runs after it, in sequence), this sets
- * `cleanURLs: false` on that one call, and fails the build if the call is
- * not there in the expected shape. Nothing of the app needs a clean URL: its
- * one page is index.html, answered at `/` by the directory index (unchanged)
- * and at /index.html itself; the manifest's start_url and shortcut are `/`
- * and `/?view=drill`. `npm run check:sw` checks the result.
+ * (2026-11-19, review of audit A21): once vite-plugin-pwa has written
+ * dist/sw.js (its closeBundle; this one runs after it, in sequence),
+ * `exactPrecache` (src/site/workerPrecache.ts, pure, unit-tested; the why
+ * and the documentation's addresses are there) turns Workbox's "clean URLs"
+ * off on its one precacheAndRoute call, or stops the build naming what it
+ * found. Nothing of the app needs a clean URL: its one page is index.html,
+ * answered at `/` by the directory index (unchanged) and at /index.html
+ * itself; the manifest's start_url and shortcut are `/` and `/?view=drill`.
+ * `npm run check:sw` checks the result.
  */
 function workerExactPrecache(): Plugin {
   return {
@@ -150,12 +143,7 @@ function workerExactPrecache(): Plugin {
       sequential: true,
       handler() {
         const file = new URL('sw.js', DIST_DIR)
-        const sw = readFileSync(file, 'utf8')
-        const calls = sw.match(/\.precacheAndRoute\(\[[^\]]*\],\{\}\)/g) ?? []
-        if (calls.length !== 1) {
-          throw new Error(`workerExactPrecache: expected one precacheAndRoute([...],{}) in dist/sw.js, found ${calls.length}: the generated worker changed shape`)
-        }
-        writeFileSync(file, sw.replace(calls[0], calls[0].replace(/,\{\}\)$/, ',{cleanURLs:!1})')))
+        writeFileSync(file, exactPrecache(readFileSync(file, 'utf8')))
       },
     },
   }
@@ -290,8 +278,11 @@ export default defineConfig({
         // follows a link to a lesson page gets the page, not the app. So does
         // the tester's sheet, /test/ (2026-11-14): a tester with the app
         // installed who opens /test/ gets the sheet, not the app. So does
-        // /favicon.ico (2026-11-15): not precached, so a typed address would
-        // otherwise get the app's shell (measured on the build).
+        // /favicon.ico (2026-11-15), which is not precached: added when the
+        // fallback answered every navigation (a typed /favicon.ico then got
+        // the app's shell, measured on the build); since 2026-11-18 the
+        // allowlist alone keeps it from the app, and the entry stays as the
+        // second lock, like the others.
         // `npm run check:sw` tests every generated page against this list —
         // and only it can: while the allowlist stands, no address on this
         // list reaches the fallback, so no browser test sees an entry go.

@@ -49,7 +49,7 @@ describe('the whole output', () => {
   it('passes every check: 136 × 3 lessons, 3 indexes, 3 glossaries, 3 landings; links, anchors, twins, sitemap, JSON-LD, size, markup', () => {
     const tokens = forbidden();
     expect([...tokens.values()].flat().length).toBeGreaterThan(300); // the raw-marker check has something to look for
-    const report = checkSite(files, { lessons: 136, forbidden: tokens });
+    const report = checkSite(files, { lessons: 136, slugs: SLUGS, forbidden: tokens });
     expect(report.problems).toEqual([]);
     expect(report.counts).toEqual({ landing: 3, index: 3, lesson: 408, glossary: 3 });
     expect(report.links).toBeGreaterThan(5000);

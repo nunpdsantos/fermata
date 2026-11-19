@@ -3,7 +3,7 @@ import registry from '../../../scripts/pages/slugs.json';
 import indexHtml from '../../../index.html?raw';
 import baseIndexHtml from './fixtures/index-6de6c0e.html?raw';
 import { buildSite, notFoundPage, STYLESHEET, type Site } from '../render';
-import { checkNotFoundPage, checkSite, HOME_FALLBACK_ANIMATION, HOME_FALLBACK_DELAY, HOME_FALLBACK_FADE, HOME_FALLBACK_KEYFRAMES, HOME_FALLBACK_NOSCRIPT, homeFallbackLinks, homeFallbackProblems, textOf, type NotFoundFiles } from '../check';
+import { checkNotFoundPage, checkSite, HOME_FALLBACK_ANIMATION, HOME_FALLBACK_DELAY, HOME_FALLBACK_FADE, HOME_FALLBACK_KEYFRAMES, HOME_FALLBACK_NOSCRIPT, HOME_FALLBACK_STYLE, homeFallbackLinks, homeFallbackMarkup, homeFallbackProblems, textOf, type NotFoundFiles } from '../check';
 import { appText, SITE_LANGS, siteLessons } from '../content';
 import { NEW_STRINGS } from '../strings';
 import { NOT_FOUND_FILE, servedFile, type PathKind } from '../notFound';
@@ -184,7 +184,7 @@ describe('the home page\'s way on without its script (A18)', () => {
     expect(homeFallbackLinks().map((l) => `${l.href} ${l.text}`)).toEqual([
       '/en/ English', '/en/lessons/ Lessons', '/pt/ Português', '/pt/licoes/ Lições', '/es/ Español', '/es/lecciones/ Lecciones',
     ]);
-    const report = checkSite({ pages: new Map(site.pages.map((p) => [p.path, p.html])), sitemap: site.sitemap, home: indexHtml, files: new Set(['/', STYLESHEET, ...publicFiles]) }, { lessons: 136 });
+    const report = checkSite({ pages: new Map(site.pages.map((p) => [p.path, p.html])), sitemap: site.sitemap, home: indexHtml, files: new Set(['/', STYLESHEET, ...publicFiles]) }, { lessons: 136, slugs: registry as SlugRegistry });
     expect(report.problems).toEqual([]);
   });
 
@@ -223,17 +223,58 @@ describe('the home page\'s way on without its script (A18)', () => {
     expect(one(`<p>${NEW_STRINGS.es.bootSlow}</p>`, '')).toEqual([`#boot-links <li lang="es-ES"> does not open on its line "${NEW_STRINGS.es.bootSlow}"`, '#boot-links holds 2 <p>: one line per language']);
     expect(one(/<li lang="en"><p>([^<]*)<\/p>(<a href="\/en\/">English<\/a><a href="\/en\/lessons\/">Lessons<\/a>)/, '<li lang="en">$2<p>$1</p>')).toEqual([`#boot-links <li lang="en"> does not open on its line "${NEW_STRINGS.en.bootSlow}"`]);
     expect(one('<h1>Fermatina</h1>', '<h1>Fermatina</h1><p>x</p>')).toEqual(['#boot-links holds 4 <p>: one line per language']);
-    // Upright regular text only.
-    const upright = '#boot-links is not upright regular text throughout (an italic or bold face would be fetched early, delaying the app)';
+    // Upright text only: the italic is another file, not preloaded (src/index.css: one upright file for weights 300–700).
+    const upright = '#boot-links is not upright text throughout: the italic face is another file, which index.html does not preload (asked for while the app loads, it delayed the app); every weight from 300 to 700 is the one upright file';
     expect(one('font-style:normal;font-weight:400', 'font-style:italic;font-weight:400')).toEqual([upright]);
-    expect(one('#boot-links p{flex-basis:100%;', '#boot-links p{flex-basis:100%;font-weight:600;')).toEqual([upright]);
     expect(one('Meanwhile, you can', 'Meanwhile, <em>you</em> can')).toEqual([`#boot-links <li lang="en"> does not open on its line "${NEW_STRINGS.en.bootSlow}"`, upright]);
+    // A bold weight is the same upright file, so not that fault: the style is pinned whole instead.
+    expect(one('#boot-links p{flex-basis:100%;', '#boot-links p{flex-basis:100%;font-weight:600;')).toEqual([expect.stringMatching(/^the document's style for #boot-links is not exactly HOME_FALLBACK_STYLE and the no-script style \(2 <style> name it\): at character \d+, found .*font-weight:600;/)]);
+  });
+
+  /**
+   * The review's mutants of index.html (2026-11-19) that the check by parts let through — the first nine —, and
+   * more of the same kind: each must give exactly one problem, of the kind named, showing what it found.
+   */
+  const MARKUP = "#boot-links is not the markup generated from its links and lines (homeFallbackMarkup): at character ";
+  const STYLE = "the document's style for #boot-links is not exactly HOME_FALLBACK_STYLE and the no-script style (";
+  const ATTRIBUTE = 'a style attribute names boot-links: ';
+  const WHOLE_MUTANTS: [string, string, string, string, string][] = [
+    ['a second #boot-links rule after the first', '#root:not(:empty)+#boot-links{display:none}', '#boot-links{animation-delay:0s}#root:not(:empty)+#boot-links{display:none}', STYLE, 'animation-delay:0s'],
+    ['a second <style> undoing the delay', '</head>', '<style>#boot-links{animation:none}</style>\n  </head>', STYLE, '<style>#boot-links{animation:none}</style>'],
+    ['the lines made visible', '@keyframes boot-links', '#boot-links p{visibility:visible}@keyframes boot-links', STYLE, 'p{visibility:visible}'],
+    ['opacity:1!important in the first rule', 'line-height:1.5;', 'line-height:1.5;opacity:1!important;', STYLE, 'opacity:1!important'],
+    ['small capitals on the lines', '@keyframes boot-links', '#boot-links p{font-variant:small-caps}@keyframes boot-links', STYLE, 'font-variant:small-caps'],
+    ['an italic style attribute on a link', '<a href="/en/">', '<a href="/en/" style="font-style:italic">', MARKUP, 'font-style:italic'],
+    ['an italic style attribute on the list', '<ul>', '<ul style="font-style:italic">', MARKUP, '<ul style='],
+    ['a link opening a new tab', '<a href="/pt/">', '<a href="/pt/" target=_blank>', MARKUP, 'target=_blank'],
+    ['a link with a handler', '<a href="/es/">', '<a href="/es/" onclick="history.back()">', MARKUP, 'onclick='],
+    ['an image from another site in the block', '<h1>Fermatina</h1>', '<h1>Fermatina</h1><img src="https://example.org/x.png">', MARKUP, 'https://example.org/x.png'],
+    ['a print style hiding the block', '</head>', '<style media="print">#boot-links{display:none}</style>\n  </head>', STYLE, 'media='],
+    ['a style attribute elsewhere naming the block', '<body class="antialiased">', '<body class="antialiased" style="--hide:boot-links">', ATTRIBUTE, '--hide:boot-links'],
+    ['the no-script style twice', HOME_FALLBACK_NOSCRIPT, `${HOME_FALLBACK_NOSCRIPT}${HOME_FALLBACK_NOSCRIPT}`, STYLE, '<style>#boot-links{animation:none}#boot-links p'],
+    ['a class on the heading', '<h1>Fermatina</h1>', '<h1 class="hero">Fermatina</h1>', MARKUP, '<h1 class='],
+    ['another attribute on the block (hidden)', '<div id="boot-links" data-nosnippet>', '<div id="boot-links" data-nosnippet hidden>', MARKUP, 'data-nosnippet hidden'],
+  ];
+  it.each(WHOLE_MUTANTS)('its check sees the block and its style whole (2026-11-19): %s', (_name, from, to, kind, shows) => {
+    const found = homeFallbackProblems(plant(indexHtml, from, to));
+    expect(found, JSON.stringify(found)).toHaveLength(1);
+    expect(found[0].startsWith(kind), found[0]).toBe(true);
+    expect(found[0], 'the message shows what it found').toContain(shows);
+  });
+  it('the markup and the style it checks against are index.html\'s own (known negative), and a second link in a language is named as such', () => {
+    expect(homeFallbackProblems(indexHtml)).toEqual([]);
+    expect(indexHtml.replace(/>\s+</g, '><')).toContain(homeFallbackMarkup());
+    expect(indexHtml).toContain(HOME_FALLBACK_STYLE);
+    expect(HOME_FALLBACK_STYLE).not.toMatch(/italic|oblique/);
+    expect(homeFallbackProblems(plant(indexHtml, '<a href="/en/lessons/">Lessons</a>', '<a href="/en/lessons/">Lessons</a><a href="/en/words/">Words</a>'))).toEqual([
+      expect.stringMatching(/^#boot-links links \/en\/ "English", \/en\/lessons\/ "Lessons", \/en\/words\/ "Words"/),
+    ]);
   });
 
   it('the links lead to generated pages: a page gone fails the whole output', () => {
     const pages = new Map(site.pages.map((p) => [p.path, p.html]));
     pages.delete('/es/lecciones/');
-    const report = checkSite({ pages, sitemap: site.sitemap, home: indexHtml, files: new Set(['/', STYLESHEET, ...publicFiles]) }, { lessons: 136 });
+    const report = checkSite({ pages, sitemap: site.sitemap, home: indexHtml, files: new Set(['/', STYLESHEET, ...publicFiles]) }, { lessons: 136, slugs: registry as SlugRegistry });
     expect(report.problems).toContain('index.html: its way on links to /es/lecciones/, which is no generated page');
   });
 });
@@ -300,7 +341,7 @@ describe('the build\'s whole-output check holds both (2026-11-19): each rule wit
   const open = (lang: 'en' | 'pt' | 'es', lesson?: string) => `https://fermatina.com/?${lesson ? `lesson=${lesson}&` : ''}lang=${lang}`;
 
   it('the real output passes (known negative)', () => {
-    expect(checkSite(files(realPages()), { lessons: 136 }).problems).toEqual([]);
+    expect(checkSite(files(realPages()), { lessons: 136, slugs: registry as SlugRegistry }).problems).toEqual([]);
   });
 
   it('a foot without its link, with a link to another language, or one that opens a new tab', () => {
@@ -308,10 +349,32 @@ describe('the build\'s whole-output check holds both (2026-11-19): each rule wit
     swap(pages, '/pt/palavras/', `<a href="${open('pt')}">${NEW_STRINGS.pt.footerOpen}</a>`, NEW_STRINGS.pt.footerOpen);
     swap(pages, '/es/', `<a href="${open('es')}">${NEW_STRINGS.es.footerOpen}</a>`, `<a href="${open('en')}">${NEW_STRINGS.es.footerOpen}</a>`);
     swap(pages, '/en/words/', `<a href="${open('en')}">${NEW_STRINGS.en.footerOpen}</a>`, `<a href="${open('en')}" target="_blank">${NEW_STRINGS.en.footerOpen}</a>`);
-    expect(checkSite(files(pages), { lessons: 136 }).problems.sort()).toEqual([
+    expect(checkSite(files(pages), { lessons: 136, slugs: registry as SlugRegistry }).problems.sort()).toEqual([
       `/en/words/: the foot says "Open Fermatina" without one ordinary link to ${open('en')} ([{"href":"${open('en')}","target":"_blank"}])`,
       `/es/: the foot says "Abre Fermatina" without one ordinary link to ${open('es')} ([{"href":"${open('en')}"}])`,
       `/pt/palavras/: the foot says "Abre a Fermatina" without one ordinary link to ${open('pt')} ([])`,
+    ]);
+  });
+
+  it('a lesson page whose open buttons, Try This links and phrases all name another lesson, or another language: checked against the slug registry, not the page\'s own button (2026-11-19)', () => {
+    const pages = realPages();
+    const swapAll = (path: string, from: string, to: string) => {
+      const html = pages.get(path)!;
+      const next = html.split(from).join(to);
+      expect((html.match(new RegExp(from.replace(/[?&.]/g, '\\$&'), 'g')) ?? []).length, `${path}: links to move`).toBeGreaterThan(2);
+      pages.set(path, next);
+    };
+    swapAll(MAJOR.en, 'lesson=l1u3m1&amp;lang=en', 'lesson=l1u3m2&amp;lang=en');
+    swapAll('/pt/licoes/a-escala-maior/', 'lesson=l1u3m1&amp;lang=pt', 'lesson=l1u3m1&amp;lang=es');
+    // And a lesson page with one button only (its foot's taken out).
+    const one = pages.get('/es/lecciones/la-escala-mayor/')!;
+    const last = one.lastIndexOf('<p class="open">');
+    pages.set('/es/lecciones/la-escala-mayor/', one.slice(0, last) + one.slice(one.indexOf('</p>', last) + '</p>'.length));
+    const found = checkSite(files(pages), { lessons: 136, slugs: registry as SlugRegistry }).problems.sort();
+    expect(found).toEqual([
+      expect.stringMatching(/^\/en\/lessons\/the-major-scale\/: \d+ link\(s\) open the app on https:\/\/fermatina\.com\/\?lesson=l1u3m2&lang=en, not on this page's lesson https:\/\/fermatina\.com\/\?lesson=l1u3m1&lang=en$/),
+      '/es/lecciones/la-escala-mayor/: 1 "Open this lesson" button(s): exactly two, at the top and at the foot of the lesson',
+      expect.stringMatching(/^\/pt\/licoes\/a-escala-maior\/: \d+ link\(s\) open the app on https:\/\/fermatina\.com\/\?lesson=l1u3m1&lang=es, not on this page's lesson https:\/\/fermatina\.com\/\?lesson=l1u3m1&lang=pt$/),
     ]);
   });
 
@@ -323,16 +386,16 @@ describe('the build\'s whole-output check holds both (2026-11-19): each rule wit
     // A phrase left as text with no mark at all, and a mark outside the task list.
     swap(pages, '/en/lessons/the-staff-and-clefs/', /<a class="query" href="[^"]*">(‘[^’]*’)<\/a>/, '$1');
     swap(pages, '/es/lecciones/escala-menor-natural/', '<p class="lead">', '<p class="lead"><span class="query">x</span>');
-    expect(checkSite(files(pages), { lessons: 136 }).problems.sort()).toEqual([
+    expect(checkSite(files(pages), { lessons: 136, slugs: registry as SlugRegistry }).problems.sort()).toEqual([
       expect.stringMatching(/^\/en\/lessons\/the-major-scale\/: a task's quoted phrase is not an ordinary link to this lesson in the app: <span class="query">‘C major scale’$/),
       expect.stringMatching(/^\/en\/lessons\/the-staff-and-clefs\/: a task's quoted phrase is not an ordinary link to this lesson in the app: ‘[^’]+’$/),
       `/es/lecciones/escala-menor-natural/: a quoted phrase's mark outside the task list`,
-      `/es/lecciones/la-escala-mayor/: a task's quoted phrase links to ${open('es', 'l1u3m2')}, not to this lesson in the app (${open('es', 'l1u3m1')})`,
+      `/es/lecciones/la-escala-mayor/: 1 link(s) open the app on ${open('es', 'l1u3m2')}, not on this page's lesson ${open('es', 'l1u3m1')}`,
       expect.stringMatching(/^\/pt\/licoes\/a-escala-maior\/: a task's quoted phrase is not an ordinary link to this lesson in the app: <a class="query" href="[^"]*" target="_blank">‘[^’]+’$/),
     ]);
     // The mutant of 2026-11-19 the first form of this rule let through: a span with one more attribute.
     const more = realPages();
     swap(more, MAJOR.en, /<a class="query" href="([^"]*)">(‘C major scale’)<\/a>/, '<span class="query" data-href="$1">$2</span>');
-    expect(checkSite(files(more), { lessons: 136 }).problems).toEqual([expect.stringMatching(/^\/en\/lessons\/the-major-scale\/: a task's quoted phrase is not an ordinary link to this lesson in the app: <span class="query" data-href="[^"]*">‘C major scale’$/)]);
+    expect(checkSite(files(more), { lessons: 136, slugs: registry as SlugRegistry }).problems).toEqual([expect.stringMatching(/^\/en\/lessons\/the-major-scale\/: a task's quoted phrase is not an ordinary link to this lesson in the app: <span class="query" data-href="[^"]*">‘C major scale’$/)]);
   });
 });
