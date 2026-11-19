@@ -15,6 +15,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
+import { markNext, tabSafeStorage, type TabStore } from './tabSafe.ts';
+import { followSoon } from './tabFollow.ts';
+import { mergeBy } from './tabMerge.ts';
 
 export const FINGERING_STORE_KEY = 'fermata-fingering-v1';
 
@@ -109,18 +112,29 @@ export const useFingeringStore = create<FingeringStoreState>()(
           if (!isOverrideFinger(finger)) return s;
           return { overrides: { ...s.overrides, [key]: finger } };
         }),
-      clearOverrides: (keys) =>
+      clearOverrides: (keys) => {
+        // "Reset to suggested" clears these keys on purpose: out of the save too, even one this tab never heard of.
+        markNext(FINGERING_STORE_KEY, ...keys.map((k): [string[], () => undefined] => [['overrides', k], () => undefined]));
         set((s) => {
           const next = { ...s.overrides };
           for (const k of keys) delete next[k];
           return { overrides: next };
-        }),
+        });
+      },
       setLabelMode: (mode) => set((s) => ((LABEL_MODES as readonly string[]).includes(mode) ? { labelMode: mode } : s)),
     }),
     {
       name: FINGERING_STORE_KEY,
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      // Two tabs (A1): each override is its own; the latest tab's label mode; the result
+      // as the store's guard keeps it. Another tab's save is read only when its fingers
+      // are a record, as saved (second fix pass, 2026-11-19: "oops" read as no fingers).
+      storage: createJSONStorage(() => tabSafeStorage(
+        FINGERING_STORE_KEY,
+        (): TabStore => useFingeringStore,
+        (b, m, t) => sanitize(mergeBy({ overrides: { '*': 'atomic' }, labelMode: 'atomic' }, b, m, t)),
+        (s) => typeof s === 'object' && s !== null && !Array.isArray(s) && (!('overrides' in s) || (typeof s.overrides === 'object' && s.overrides !== null && !Array.isArray(s.overrides))),
+      )),
       partialize: (s) => ({ overrides: s.overrides, labelMode: s.labelMode }),
       migrate: (persisted: unknown) => sanitize(persisted),
       // zustand skips migrate() when the version matches — corrupt
@@ -129,3 +143,5 @@ export const useFingeringStore = create<FingeringStoreState>()(
     },
   ),
 );
+
+followSoon(FINGERING_STORE_KEY, useFingeringStore);

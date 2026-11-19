@@ -1,11 +1,11 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore, type ThemeMode, type NeckNutSide, type NeckTopString } from '../../state/store.ts';
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 import { applyBackup, backupSections } from '../../utils/backupHelpers.ts';
-import { downloadBackup, readBackupFile } from '../../utils/backupFile.ts';
+import { exportAndTell, importFailedText, NOTE_INK, readBackupFile, toastImportFailed, type ExportNote } from '../../utils/backupFile.ts';
 import { reloadPage } from '../../utils/pageReload.ts';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
@@ -83,9 +83,17 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
+  // What an export or import has to say, shown here too: an open sheet covers the toasts (A15 / A16; a whole export too, second fix pass).
+  const [dataNotes, setDataNotes] = useState<ExportNote[]>([]);
+  const notesRef = useRef<HTMLDivElement>(null);
+  // The learner asked (Export / Import): the answer comes into view in the sheet.
+  useEffect(() => {
+    if (dataNotes.length > 0) notesRef.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [dataNotes]);
+  // The file is checked by the importer's own check first; the line says what went into it (A16).
   const handleExport = () => {
-    downloadBackup(localStorage);
-    toast(t('backup.exported'), 'success');
+    setDataNotes([]);
+    void exportAndTell(localStorage).then(setDataNotes);
   };
 
   const handleImportFile = async (file: File) => {
@@ -98,7 +106,14 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
     }
     const sections = backupSections(result.backup).map((s) => t(`backup.section.${s}`)).join(', ');
     if (!window.confirm(t('backup.confirmImport', { sections }))) return;
-    applyBackup(result.backup, localStorage);
+    // Every section or none (A15): a refused write puts every key back and says so; no reload.
+    setDataNotes([]);
+    const applied = applyBackup(result.backup, localStorage);
+    if (!applied.ok) {
+      toastImportFailed(applied);
+      setDataNotes([{ text: importFailedText(applied), tone: 'error' }]);
+      return;
+    }
     // Reload so every store rehydrates through its shape guards + migrations.
     reloadPage();
   };
@@ -189,6 +204,15 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
             {t('settings.import')}
           </Button>
         </div>
+        {dataNotes.length > 0 && (
+          <div ref={notesRef} className="flex flex-col gap-1.5">
+            {dataNotes.map((note) => (
+              <p key={note.text} role="alert" className="text-ui" style={{ color: NOTE_INK[note.tone] }} data-tone={note.tone} data-testid="data-note">
+                {note.text}
+              </p>
+            ))}
+          </div>
+        )}
         {/* The old address only (2026-11-14), reminder stopped or not: the way out stays findable. */}
         {onOldAddress() && (
           <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="settings-moved">

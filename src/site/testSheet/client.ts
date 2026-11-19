@@ -12,13 +12,22 @@
  *    browser's language, then English);
  *  - answers saved in this browser only, under SHEET_STORAGE_KEY (never an
  *    app key: model.ts says why), and only once the person answers something;
+ *    each save re-reads what is saved and writes only that one answer on top
+ *    (audit A5, 2026-11-18: two sheets open in two tabs used to write each
+ *    tab's whole memory over the other's), and a tab left open takes the
+ *    other tabs' answers into its controls as they are saved — into its own,
+ *    never over them: for a visit the page's answers are the truth, so a key
+ *    cleared underneath or a write the browser ignored never empties Send or
+ *    Copy, and the page's own answers are saved again (second fix pass);
+ *  - "Send my answers" with nothing answered (no result, note or closing
+ *    answer on this sheet) opens nothing and says so (audit A20);
  *  - "Send my answers" opens the test form in a new tab FROM THE TAP, its
  *    boxes filled in (answers.ts `planSend`); too long → nothing opens, the
  *    page says so and shows the text to copy; offline → one line, nothing
  *    opens. Nothing is requested from another origin before that tap;
  *  - "Copy my answers" and "Clear this sheet" (two taps) as before.
  */
-import { answeredCount, answerOf, answersText, chooseLanguage, closingKey, planSend, readState } from './answers';
+import { answeredCount, answerOf, answersText, chooseLanguage, closingKey, hasAnswers, planSend, readState } from './answers';
 import {
   RESULTS, SHEET_LANGS, SHEET_STORAGE_KEY, SHORT_CLOSING, isSheetLang, isView,
   type SheetContent, type SheetId, type SheetLang, type ViewId,
@@ -45,23 +54,81 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       return null;
     }
   })();
-  const S = (() => {
+  /** What is saved now (another tab may have saved since), or null when storage cannot be read. */
+  const stored = () => {
     try {
-      return readState(storage?.getItem(SHEET_STORAGE_KEY) ?? null);
+      return storage ? readState(storage.getItem(SHEET_STORAGE_KEY)) : null;
     } catch {
-      return readState(null);
-    }
-  })();
-  S.lang = chooseLanguage(win.location.search, S.lang, win.navigator.languages?.length ? win.navigator.languages : [win.navigator.language ?? '']);
-  const save = () => {
-    try {
-      storage?.setItem(SHEET_STORAGE_KEY, JSON.stringify(S));
-    } catch {
-      // storage full or blocked: the sheet still works for this visit
+      return null;
     }
   };
-  const ans = (id: string) => (S.a[id] ??= { r: '', note: '', hint: false });
+  const S = stored() ?? readState(null);
+  S.lang = chooseLanguage(win.location.search, S.lang, win.navigator.languages?.length ? win.navigator.languages : [win.navigator.language ?? '']);
+  const blank = () => ({ r: '' as const, note: '', hint: false });
+  /**
+   * For a visit, the page's answers (S, what is on screen) are the truth
+   * (second fix pass, 2026-11-19: a key emptied underneath, or a write the
+   * browser ignored without a word, read as "nothing answered" while the
+   * radios showed answers). What is stored is merged INTO them, answer by
+   * answer (a task's result, note and hint, a closing answer), and never over
+   * them: an answer given in this page this visit (`own`) stays this page's;
+   * another tab's answers fill the rest as they are saved; nothing on screen
+   * is taken away because the store lacks it.
+   */
+  const own = new Set<string>();
+  const FIELDS = ['r', 'note', 'hint'] as const;
+  type Field = (typeof FIELDS)[number];
+  /** An answer's key: `a <task> <field>` or `q <closing key>`. */
+  const part = (k: string) => k.split(' ') as ['a' | 'q', string, Field];
+  const has = (s: typeof S, k: string) => { const [kind, id] = part(k); return kind === 'q' ? id in s.q : !!s.a[id]; };
+  const copy = (from: typeof S, to: typeof S, k: string) => {
+    const [kind, id, f] = part(k);
+    if (kind === 'q') to.q[id] = from.q[id];
+    else ((to.a[id] ??= blank())[f] as unknown) = from.a[id][f];
+  };
+  /** Another tab's answers into this page's, except this page's own and the tasks in `skip`. */
+  const into = (now: typeof S, skip: Set<string> = new Set()) => {
+    for (const [id, x] of Object.entries(now.a)) {
+      if (skip.has(id)) continue;
+      const mine = (S.a[id] ??= blank());
+      for (const f of FIELDS) if (!own.has(`a ${id} ${f}`)) (mine[f] as unknown) = x[f];
+    }
+    for (const [k, v] of Object.entries(now.q)) if (!own.has(`q ${k}`)) S.q[k] = v;
+  };
+  /** Take the answers saved by any tab into this page's (it keeps its language and its own answers). */
+  const refresh = () => {
+    const now = stored();
+    if (now) into(now);
+  };
+  /**
+   * One change (`keys`: the answers it makes this page's own): made in this
+   * page's memory and, on what is saved NOW, written back with this page's
+   * language — never this page's other answers over another tab's, but each
+   * answer of this page's own that the store has lost (cleared underneath, a
+   * write refused or ignored) is written again.
+   */
+  const commit = (keys: string[], change: (s: typeof S) => void) => {
+    change(S);
+    for (const k of keys) own.add(k);
+    const now = stored();
+    if (now) {
+      const lost = [...own].filter((k) => has(S, k) && !has(now, k));
+      change(now);
+      for (const k of lost) copy(S, now, k);
+      into(now, new Set(lost.map((k) => part(k)[1])));
+    }
+    const next = now ?? S;
+    next.lang = S.lang;
+    try {
+      storage?.setItem(SHEET_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // storage full or blocked: the sheet still works for this visit, from its memory
+    }
+  };
+  const taskKeys = (id: string) => FIELDS.map((f) => `a ${id} ${f}`);
   const content = () => DATA[S.lang!];
+  /** The sheet on screen puts saved answers into its controls in place (set by renderSheet). */
+  let showSaved: (() => void) | null = null;
 
   function h(tag: string, attrs?: Attrs | null, ...children: (Node | string | null | undefined | false)[]): HTMLElement {
     const el = doc.createElement(tag);
@@ -130,7 +197,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       for (const r of RESULTS) {
         const input = h('input', {
           type: 'radio', name: `r-${task.id}`, id: `r-${task.id}-${r}`, value: r,
-          on: { change: () => { ans(task.id).r = r; save(); setProgress(); } },
+          on: { change: () => { commit([`a ${task.id} r`], (s) => { (s.a[task.id] ??= blank()).r = r; }); setProgress(); } },
         }) as HTMLInputElement;
         if (a.r === r) input.checked = true;
         fs.appendChild(h('label', { class: `pill ${r}`, for: `r-${task.id}-${r}` }, input, h('span', { text: labels[r] })));
@@ -138,7 +205,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       box.appendChild(fs);
       const note = h('textarea', {
         id: `note-${task.id}`, rows: '2', placeholder: ui.notes, 'aria-label': `${ui.notes} ${i + 1}`,
-        on: { input: (e) => { ans(task.id).note = (e.target as HTMLTextAreaElement).value; save(); } },
+        on: { input: (e) => { const v = (e.target as HTMLTextAreaElement).value; commit([`a ${task.id} note`], (s) => { (s.a[task.id] ??= blank()).note = v; }); } },
       }) as HTMLTextAreaElement;
       note.value = a.note;
       box.appendChild(note);
@@ -146,7 +213,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
         if (task.hint) {
           box.appendChild(h('details', {
             class: 'hint', id: `hint-${task.id}`,
-            on: { toggle: (e) => { if ((e.target as HTMLDetailsElement).open) { ans(task.id).hint = true; save(); } } },
+            on: { toggle: (e) => { if ((e.target as HTMLDetailsElement).open) commit([`a ${task.id} hint`], (s) => { (s.a[task.id] ??= blank()).hint = true; }); } },
           }, h('summary', { text: ui.hint }), h('p', { text: task.hint })));
         } else {
           box.appendChild(h('p', { class: 'nohint small', text: ui.nohint }));
@@ -160,9 +227,27 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       const qid = closingKey(id, q);
       const field = (SHORT_CLOSING.includes(q) ? h('input', { type: 'text', id: qid }) : h('textarea', { id: qid, rows: '2' })) as HTMLInputElement | HTMLTextAreaElement;
       field.value = S.q[qid] ?? '';
-      field.addEventListener('input', () => { S.q[qid] = field.value; save(); });
+      field.addEventListener('input', () => { const v = field.value; commit([`q ${qid}`], (s) => { s.q[qid] = v; }); });
       closing.appendChild(h('div', { class: 'field' }, h('label', { for: qid, text: ui.q[q] }), field));
     }
+
+    // Another tab's answers, as they are saved: into the controls, never into the one being typed in.
+    showSaved = () => {
+      for (const task of sheet.tasks) {
+        const a = answerOf(S, task.id);
+        for (const r of RESULTS) {
+          const input = doc.getElementById(`r-${task.id}-${r}`) as HTMLInputElement | null;
+          if (input) input.checked = a.r === r;
+        }
+        const note = doc.getElementById(`note-${task.id}`) as HTMLTextAreaElement | null;
+        if (note && doc.activeElement !== note) note.value = a.note;
+      }
+      for (const q of sheet.closing) {
+        const field = doc.getElementById(closingKey(id, q)) as HTMLInputElement | null;
+        if (field && doc.activeElement !== field) field.value = S.q[closingKey(id, q)] ?? '';
+      }
+      setProgress();
+    };
 
     const status = h('p', { id: 'sheet-status', class: 'status', role: 'status', 'aria-live': 'polite' });
     const out = h('textarea', { id: 'out', readonly: true, hidden: true, rows: '10', 'aria-label': ui.send }) as HTMLTextAreaElement;
@@ -176,6 +261,12 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
           // Offline: one line, nothing opens.
           if (win.navigator.onLine === false) {
             say(status, ui.offline, 'warn');
+            return;
+          }
+          refresh();
+          // Nothing answered on this sheet (A20): no form full of "not answered"; say what to do.
+          if (!hasAnswers(sheet, id, S)) {
+            say(status, ui.empty, 'warn');
             return;
           }
           const plan = planSend(content(), id, S, { now: now(), userAgent: win.navigator.userAgent ?? '' });
@@ -194,6 +285,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       type: 'button', class: 'btn', id: 'copy-btn', text: ui.copy,
       on: {
         click: () => {
+          refresh();
           const value = text(true);
           out.value = value;
           out.hidden = false;
@@ -218,9 +310,10 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
             return;
           }
           // This sheet's answers only: the other sheets', the language, and every other key stay.
-          for (const task of sheet.tasks) delete S.a[task.id];
-          for (const q of sheet.closing) delete S.q[closingKey(id, q)];
-          save();
+          commit([...sheet.tasks.flatMap((task) => taskKeys(task.id)), ...sheet.closing.map((q) => `q ${closingKey(id, q)}`)], (s) => {
+            for (const task of sheet.tasks) delete s.a[task.id];
+            for (const q of sheet.closing) delete s.q[closingKey(id, q)];
+          });
           render();
         },
       },
@@ -240,6 +333,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
   }
 
   function renderGuide(): HTMLElement {
+    showSaved = null;
     const g = content().guide;
     const wrap = h('div', { class: 'guide' }, h('div', { class: 'sheet-head' }, h('h2', { text: g.title }), h('p', { text: g.intro })));
     for (const s of g.sections) {
@@ -266,7 +360,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       const l = b.dataset.lang;
       if (!isSheetLang(l) || l === S.lang) return;
       S.lang = l;
-      save();
+      commit([], () => {});
       // The choice now wins over a `?lang=` in the address: take it out, so a reload keeps the choice.
       if (new URLSearchParams(win.location.search).has('lang')) {
         try {
@@ -282,7 +376,20 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
     render();
     win.scrollTo(0, 0);
   };
+  // Another tab saved (A5): take its answers; the sheet on screen shows them in place.
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== SHEET_STORAGE_KEY && e.key !== null) return;
+    refresh();
+    showSaved?.();
+  };
   win.addEventListener('hashchange', onHash);
+  win.addEventListener('storage', onStorage);
   render();
-  return { render, destroy: () => win.removeEventListener('hashchange', onHash) };
+  return {
+    render,
+    destroy: () => {
+      win.removeEventListener('hashchange', onHash);
+      win.removeEventListener('storage', onStorage);
+    },
+  };
 }

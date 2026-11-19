@@ -108,7 +108,8 @@ describe('Portuguese: one article with the name', () => {
 
   it('the sentences that carry it (the list a change of article goes through)', () => {
     const carrying = ptEntries.filter(([, v]) => SAME.test(v)).map(([k]) => k);
-    expect(carrying.length).toBe(20);
+    // 22 since 2026-11-19: the backup's two "saved by a newer version da Fermatina" sentences (i18n/backupFile/pt.json).
+    expect(carrying.length).toBe(22);
   });
 });
 

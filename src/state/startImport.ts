@@ -12,17 +12,24 @@
  * for any learner with that data (left 'pending', a file with settings only
  * would bring the start screen back). Then the page reloads, as Settings'
  * import does, so every store rehydrates through its own guards and migrations.
+ *
+ * Every section or none (audit A15, 2026-11-18): when the browser refuses a
+ * write (its storage full), every key is put back as it was, the gate is not
+ * settled, nothing reloads, and the result says so — the start screen shows
+ * the sentence by the link.
  */
-import { applyBackup, type FermataBackup } from '../utils/backupHelpers.ts';
+import { applyBackup, type ApplyResult, type FermataBackup } from '../utils/backupHelpers.ts';
 import { reloadPage } from '../utils/pageReload.ts';
 import { WELCOME_KEY } from './welcomeGate.ts';
 
-export function bringInFromStartScreen(backup: FermataBackup, storage: Storage = localStorage): void {
-  applyBackup(backup, storage);
+export function bringInFromStartScreen(backup: FermataBackup, storage: Storage = localStorage): ApplyResult {
+  const applied = applyBackup(backup, storage);
+  if (!applied.ok) return applied;
   try {
     storage.setItem(WELCOME_KEY, 'seen');
   } catch {
     // Storage that took the backup but not the flag: the reload decides from what it holds.
   }
   reloadPage();
+  return applied;
 }
