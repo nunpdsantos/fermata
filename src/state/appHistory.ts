@@ -48,7 +48,8 @@
  *  - Leaving a screen that holds work in progress by Back or Forward never
  *    drops it (the Learn session store and the Drill store keep it, as they
  *    do across a reload); the view that holds it says so (`useWorkKeeper`):
- *    a toast with "Continue", which returns.
+ *    a toast with "Continue", which returns — and a lesson's check card
+ *    offers its kept check.
  *  - A reload keeps the entries and their states (MDN, History.pushState():
  *    "it may attempt to load the URL later, for instance, after the user
  *    restarts the browser"; `History.state`): the boot view comes from the
@@ -74,7 +75,7 @@ export interface HistoryEntry {
   v: ViewMode;
   /** The screen inside the view; undefined = the view decides. */
   s?: string;
-  /** Sheets / dialogs this entry covers. */
+  /** Sheets, dialogs and menus this entry covers. */
   l: number;
 }
 
@@ -349,7 +350,7 @@ export function installAppHistory(): void {
   const view = useAppStore.getState().view;
   const kept = isHistoryEntry(window.history.state) ? window.history.state : null;
   // A reload (or a return to an entry of this tab): the boot view came from
-  // it (pickBootView); its screen is the view's to open, once.
+  // it (pickBootView); the view opens the screen it names as it mounts.
   const s = kept && kept.v === view ? kept.s : undefined;
   write({ fm: 1, i: kept?.i ?? 0, v: view, s, l: 0 }, false);
   if (s !== undefined) opensAt = cur.i;

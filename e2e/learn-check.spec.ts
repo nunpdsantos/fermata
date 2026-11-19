@@ -296,6 +296,10 @@ test('Unlock anyway persists across a reload; Level 9 shows "Pairs with Level n"
   await dialog.getByRole('button', { name: 'Unlock Level 3' }).click();
   await expect(page.getByTestId('unlocked-early')).toBeVisible();
   await page.reload();
+  // A reload keeps the place (second audit round, P3: this tab's history entry names the level page), unlocked;
+  // the overview is the screen before it.
+  await expect(page.getByTestId('unlocked-early')).toBeVisible({ timeout: 15_000 });
+  await page.goBack();
   await expect(page.getByRole('heading', { name: 'Learn Music Theory' })).toBeVisible({ timeout: 15_000 });
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-progress')!).state.progress.unlockedLevels);
   expect(stored).toEqual(['l3']);

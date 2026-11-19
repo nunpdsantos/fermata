@@ -332,9 +332,11 @@ for (const mode of MODES) {
       const prompt = panel.locator('p.text-xl').first();
       const first = await prompt.textContent();
       const answers = prompt.locator('xpath=following-sibling::div[1]');
-      for (let i = 0; i < 10 && (await prompt.textContent()) === first; i++) {
+      // Whatever the shuffled first question asks (a choice, or notes to spell then Done): chips not yet chosen, then Done.
+      for (let i = 0; i < 12 && (await prompt.textContent()) === first; i++) {
         const done = answers.locator('button:not([disabled])').filter({ hasText: /^Done$/ });
-        await press(mode, (await done.count()) ? done.first() : answers.locator('button:not([disabled])').first());
+        const fresh = answers.locator('button:not([disabled]):not([aria-pressed="true"])').filter({ hasNotText: /^Done$/ });
+        await press(mode, (await done.count()) ? done.first() : fresh.first());
         await page.waitForTimeout(150);
       }
       await expect(prompt).not.toHaveText(first!);
@@ -661,7 +663,17 @@ test('the tour leaves no history behind it: one entry of its own, and Back ends 
   await page.getByTestId('app-menu').getByRole('button').first().click();
   await page.getByRole('menuitem', { name: 'Show me around' }).click();
   await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
-  await page.waitForTimeout(6000); // a few steps: the tour moves the screen itself
+  // Step by step (under reduced motion the tour waits for Next) until it has shown Learn and Drill:
+  // the tour moves the screen itself, and a tap on Next is a user activation.
+  const seen = new Set<string>();
+  for (let i = 0; i < 14 && !(seen.has('learn') && seen.has('drill')); i++) {
+    const next = page.getByTestId('tour-next');
+    await expect(next).toBeEnabled({ timeout: 15_000 });
+    await next.click();
+    await page.waitForTimeout(700);
+    for (const v of ['learn', 'drill'] as const) if ((await tab(page, v).getAttribute('aria-selected')) === 'true') seen.add(v);
+  }
+  expect([...seen].sort(), 'the tour showed Learn and Drill').toEqual(['drill', 'learn']);
   expect(await historyLength(page)).toBe(length + 1);
   await back(page);
   await expect(page.getByTestId('tour-bar')).toHaveCount(0);
