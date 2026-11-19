@@ -141,30 +141,6 @@ function midiFromFrequency(frequency: number): number {
   return 69 + 12 * Math.log2(frequency / 440);
 }
 
-/** The tuning allpass holds at least this many samples (its phase is flattest from 0.1 to 1.1). */
-const TUNING_MIN_DELAY = 0.1;
-
-/**
- * Phase delay, in samples, at `w` (radians per sample) of the one-pole
- * allpass y[n] = c·x[n] + x[n−1] − c·y[n−1], i.e. (c + z⁻¹) / (1 + c·z⁻¹).
- */
-function allpassDelay(c: number, w: number): number {
-  const phase = Math.atan2(-Math.sin(w), c + Math.cos(w)) - Math.atan2(-c * Math.sin(w), 1 + c * Math.cos(w));
-  return -phase / w;
-}
-
-/** The coefficient whose allpass delays `w` by `delay` samples (it falls as c rises: bisection). */
-function allpassCoefficientFor(delay: number, w: number): number {
-  let lo = -0.9;
-  let hi = 0.95;
-  for (let i = 0; i < 60; i++) {
-    const mid = (lo + hi) / 2;
-    if (allpassDelay(mid, w) > delay) lo = mid;
-    else hi = mid;
-  }
-  return (lo + hi) / 2;
-}
-
 /**
  * Generate a Karplus-Strong plucked string waveform with physical modeling.
  *
@@ -204,13 +180,17 @@ export function generateKSBuffer(
   // which holds what is left (the fraction a whole-sample line cannot: Jaffe
   // and Smith, "Extensions of the Karplus-Strong plucked-string algorithm",
   // 1983). Until then the line was round(sampleRate / frequency) long and the
-  // two filters' delay was ignored: up to −6 cents (E4 at 48 kHz).
+  // two filters' delay was ignored: up to −6 cents (E4 at 48 kHz). A
+  // one-pole allpass with coefficient c delays a low note by (1 − c) / (1 + c)
+  // samples (exact as the frequency goes to 0; against the exact phase delay
+  // the note is off by under 0.002 cent on the open strings, 0.4 cent at C7),
+  // and the tuning one holds 0.1 to 1.1 samples, where its phase is flattest.
   const period = sampleRate / frequency;
-  const w = (2 * Math.PI * frequency) / sampleRate;
-  const stiffnessDelay = allpassDelay(stiffness, w);
-  const delayLength = Math.floor(period + 0.5 - stiffnessDelay - TUNING_MIN_DELAY);
+  const stiffnessDelay = (1 - stiffness) / (1 + stiffness);
+  const delayLength = Math.floor(period + 0.5 - stiffnessDelay - 0.1);
   if (delayLength < 2) return output;
-  const tuning = allpassCoefficientFor(period - (delayLength - 0.5 + stiffnessDelay), w);
+  const fraction = period - (delayLength - 0.5 + stiffnessDelay);
+  const tuning = (1 - fraction) / (1 + fraction);
 
   const delayLine = new Float32Array(delayLength);
 
