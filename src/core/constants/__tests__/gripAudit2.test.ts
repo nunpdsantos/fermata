@@ -202,6 +202,12 @@ describe('M45: reachable grips the library missed', () => {
     em7G(e!);
   });
 
+  it('a re-fretted bass never puts a finger behind fingers it cannot pass: A/C is not x 3 2 2 2 0 (little finger on string 5 behind three on fret 2)', () => {
+    const { shapes, bassMatched } = chordShapesForCapo(request('A', 'major', 'C'), 0, 0);
+    expect(shapes.map(fretText)).not.toContain('x-3-2-2-2-0');
+    expect(bassMatched).toBe(false);
+  });
+
   it('C5 with capo 9: a grip above the capo, strings 4 and 3 at frets 10 and 12 (C4 and G4)', () => {
     const { shapes } = chordShapesForCapo(request('C', 'power', null), 0, 9);
     expect(shapes.length).toBeGreaterThan(0);

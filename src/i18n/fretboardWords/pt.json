@@ -7,6 +7,8 @@
   "gap_other": "Nesta afinação há duas cordas a uma quinta de distância, por isso {{notes}}, entre elas, ficam fora do alcance da mão nesta posição.",
   "reach_one": "Encontra-la na {{where}}.",
   "reach_other": "Encontra-las na {{where}}.",
+  "reachEach": "Encontras {{list}}.",
+  "noteIn": "{{note}} na {{where}}",
   "wherePosition": "posição {{numeral}}",
   "whereOpen": "posição aberta"
 }

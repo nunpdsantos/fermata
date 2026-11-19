@@ -152,6 +152,20 @@ describe('M46: the scale-position notice names every pitch it cannot reach, and 
     expect(plays(named[1] ? ROMAN[named[1]] : 0, [m])).toBe(true);
   });
 
+  it('where no one position plays them all, each pitch says where (C Locrian, Drop D, capo 9, position X)', async () => {
+    const reach = (await import('../../../core/utils/guitarPositions')).skippedReach(N('C'), 'locrian', 10, dropD, 9);
+    expect(reach.playedIn).toBeNull();
+    expect(reach.notes.map((x) => x.midi)).toEqual([53, 54]);
+    const at = reach.notes.map((x) => x.playedIn!);
+    // Each named position really plays its pitch, worked out on its own.
+    for (const [i, m] of [53, 54].entries()) {
+      expect(new Set(getGuitarPosition(N('C'), 'locrian', at[i], dropD, GUITAR_MAX_FRET, 9).notes.map((x) => x.midi)).has(m)).toBe(true);
+    }
+    const name = (p: number) => (p === 0 ? 'the Open position' : `position ${Object.keys(ROMAN).find((k) => ROMAN[k] === p)}`);
+    await board({ selectedKey: N('C'), selectedScale: 'locrian', guitarTuningId: 'drop-d', guitarScalePosition: 10, capoFret: 9 });
+    expect(notice()).toBe(`In this tuning two strings are a 5th apart, so F3 and G♭3, between them, are out of the hand's reach in this position. You will find F3 in ${name(at[0])} and G♭3 in ${name(at[1])}.`);
+  });
+
   it('PT and ES name the same two pitches', async () => {
     await i18n.changeLanguage('pt');
     const { unmount } = await board({ selectedKey: N('D'), guitarTuningId: 'drop-d', guitarScalePosition: 12 });

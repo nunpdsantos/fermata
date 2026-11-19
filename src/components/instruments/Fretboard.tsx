@@ -25,6 +25,7 @@ import {
 import type { PositionNote } from '../../core/utils/guitarPositions.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { noteToString } from '../../core/types/music.ts';
+import type { Note } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
@@ -833,15 +834,16 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const gap = mode === 'position' && position !== null && position.skippedMidi.length > 0
     ? skippedReach(selectedKey, selectedScale, position.position, tuning, capo)
     : null;
+  const whereOf = (n: number) => (n === OPEN_POSITION ? t('fretboardWords.whereOpen') : t('fretboardWords.wherePosition', { numeral: toRomanNumeral(n) }));
+  const pitchName = (x: { note: Note; octave: number }) => `${withGlyphs(noteToString(x.note))}${x.octave}`;
+  // No one position plays them all (a capo high up): where each one is.
+  const eachIn = gap ? gap.notes.flatMap((x) => (x.playedIn === null ? [] : [t('fretboardWords.noteIn', { note: pitchName(x), where: whereOf(x.playedIn) })])) : [];
   const tuningGapNotice = gap
     ? [
-        t('fretboardWords.gap', { count: gap.notes.length, notes: listOf(gap.notes.map((x) => `${withGlyphs(noteToString(x.note))}${x.octave}`)) }),
-        gap.playedIn === null
-          ? ''
-          : t('fretboardWords.reach', {
-              count: gap.notes.length,
-              where: gap.playedIn === OPEN_POSITION ? t('fretboardWords.whereOpen') : t('fretboardWords.wherePosition', { numeral: toRomanNumeral(gap.playedIn) }),
-            }),
+        t('fretboardWords.gap', { count: gap.notes.length, notes: listOf(gap.notes.map(pitchName)) }),
+        gap.playedIn !== null
+          ? t('fretboardWords.reach', { count: gap.notes.length, where: whereOf(gap.playedIn) })
+          : eachIn.length > 0 ? t('fretboardWords.reachEach', { list: listOf(eachIn) }) : '',
       ].filter(Boolean).join(' ')
     : null;
   const notices = [chordNotice, leavesOutNotice, tuningGapNotice].filter((n): n is string => !!n);

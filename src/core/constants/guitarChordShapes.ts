@@ -3481,13 +3481,21 @@ function withLowestRefretted(
       const all = [...fretted.map((n) => n.abs), fret];
       if (Math.max(...all) - Math.min(...all) > 3) continue;
       const used = new Set(fretted.map((n) => n.finger));
+      // As addBassBelow, and one rule more, because this finger is on the
+      // LOWEST string: where it is a higher finger than one on a string
+      // above it, it lies diagonally past that finger, at least as many
+      // frets higher as their numbers differ — as the open C (x 3 2 0 1 0,
+      // ring 3 over middle 2 over index 1) and G (3 2 0 0 0 4) do, and as
+      // Em7/G does (3 2 0 0 0 0). Never the little finger on string 5 at
+      // fret 3 behind three fingers on fret 2 (A/C x 3 2 2 2 0): no hand
+      // reaches over its own index so (the builder's rule; for the teacher).
       const candidate = ([1, 2, 3, 4] as const).find(
         (f) =>
           !used.has(f) &&
           fretted.every((n) =>
-            n.abs < fret ? n.finger < f && fret - n.abs <= f - n.finger + 1
+            (n.abs < fret ? n.finger < f && fret - n.abs <= f - n.finger + 1
               : n.abs > fret ? n.finger > f && n.abs - fret <= n.finger - f + 1
-                : true)
+                : true) && (n.finger > f || fret - n.abs >= f - n.finger))
       );
       if (candidate === undefined) continue;
       finger = candidate;
