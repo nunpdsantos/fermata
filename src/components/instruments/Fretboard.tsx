@@ -6,6 +6,9 @@ import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { chordShapesForCapo } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
+import { leftOutTones } from './leftOutWords.ts';
+// The board's own words (music audit 2): a lazy namespace, loaded with this chunk.
+import '../../i18n/fretboardWords';
 import { chordChipLabel } from './chordChipLabel.ts';
 import {
   getGuitarPosition,
@@ -18,9 +21,11 @@ import {
   capoPositions,
   positionForCapo,
 } from '../../core/utils/guitarPositions.ts';
+import { skippedReach } from '../../core/utils/guitarPositionReach.ts';
 import type { PositionNote } from '../../core/utils/guitarPositions.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { noteToString } from '../../core/types/music.ts';
+import type { Note } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAudio } from '../../hooks/useAudio.ts';
@@ -69,7 +74,7 @@ export function Fretboard(props: FretboardProps | { exercise: FretboardExerciseP
 
 function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const neck = variant === 'neck';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { displayScale, getNoteColor, spellPitchClass, chordPitchClasses } = useKeyContext();
   const { noteOn, noteOff } = useAudio();
   const activeNotes = useAppStore((s) => s.activeNotes);
@@ -115,14 +120,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const stringNames = useMemo(() => getTuningStringLabels(tuning), [tuning]);
 
   // The bass the learner asked for: a slash-chord bass, else the chosen
-  // inversion's lowest chord tone (audit W3-11). Root position asks nothing.
+  // inversion's lowest chord tone (audit W3-11) — in root position the root
+  // (music audit 2, M43: "Root" names a bass too; chordShapesForCapo offers
+  // only grips with it lowest, or says none has it).
   const requestedBass = useMemo(() => {
     if (!selectedChord) return null;
     if (selectedChord.bassNote) return selectedChord.bassNote;
-    if (chordInversion > 0 && selectedChord.notes.length > 0) {
-      return selectedChord.notes[chordInversion % selectedChord.notes.length];
-    }
-    return null;
+    if (selectedChord.notes.length > 0) return selectedChord.notes[chordInversion % selectedChord.notes.length];
+    return selectedChord.root;
   }, [selectedChord, chordInversion]);
 
   // ─── Chord shapes (standard tuning only) ─────────────
@@ -232,8 +237,13 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         note.isStretch ? t('fretboard.stretch') : '',
         override !== undefined ? t('fretboard.yourFingering') : '',
       ].filter(Boolean).join(' · ');
+      // What a screen reader hears beside the cell's note and place: the finger
+      // the dot shows, and its marks (music audit 2, M48).
+      const spoken = finger === 0
+        ? undefined
+        : [t('fretboard.fingerN', { finger }), note.isStretch ? t('fretboard.stretch') : '', override !== undefined ? t('fretboard.yourFingering') : ''].filter(Boolean).join(', ');
       const row = byString.get(note.stringIndex) ?? new Map<number, PositionDot>();
-      row.set(note.fret, { label, isRoot: note.isRoot, isStretch: note.isStretch, isEdited: override !== undefined, description });
+      row.set(note.fret, { label, isRoot: note.isRoot, isStretch: note.isStretch, isEdited: override !== undefined, description, ...(spoken ? { spoken } : {}) });
       byString.set(note.stringIndex, row);
     }
     return byString;
@@ -248,8 +258,11 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   );
 
   // ─── Voicing lookup (chords) ──────────────────────────
+  // Each string's note in the grip, and what a screen reader hears beside the
+  // cell's note and place: that it is the chord's, and the finger the dot
+  // shows (music audit 2, M48: "C, fret 3, string 5" said neither).
   const voicingLookup = useMemo(() => {
-    const map = new Map<number, { fret: number; finger: FingerNumber | undefined } | null>();
+    const map = new Map<number, { fret: number; finger: FingerNumber | undefined; spoken?: string } | null>();
     if (!currentShape) return map;
 
     const { shape, baseFret } = currentShape;
@@ -258,11 +271,15 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         map.set(stringIndex, null);
       } else {
         const absoluteFret = baseFret + (pos.fret as number);
-        map.set(stringIndex, { fret: absoluteFret, finger: pos.finger });
+        const inChord = t('fretboardWords.inChord');
+        const spoken = absoluteFret === capo || !pos.finger
+          ? inChord
+          : `${inChord}, ${pos.finger === 'bar' ? t('fretboardWords.fingerBarre') : t('fretboard.fingerN', { finger: pos.finger })}`;
+        map.set(stringIndex, { fret: absoluteFret, finger: pos.finger, spoken });
       }
     });
     return map;
-  }, [currentShape]);
+  }, [currentShape, capo, t]);
 
   // ─── Dynamic fret range ───────────────────────────────
   const { visibleFrets, isZoomed } = useMemo(() => {
@@ -323,9 +340,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   }, [mode, positionNumber, currentShape, neck, capo]);
   // The same frets in the order they are drawn, left to right.
   const drawnFrets = useMemo(() => fretsAcross(visibleFrets, orientation.nut), [visibleFrets, orientation.nut]);
-  // The frets a hand can play: with a capo, those behind it are drawn out of
-  // play and the arrow keys skip them.
-  const playableFrets = useMemo(() => (capo > 0 ? drawnFrets.filter((f) => f >= capo) : drawnFrets), [drawnFrets, capo]);
+  // The frets a hand can play, in drawn order: with a capo, those behind it are
+  // drawn out of play and the arrow keys skip them; with none, the open
+  // strings' column at the nut end is one more stop (music audit 2, M47: the
+  // arrow toward the nut stopped at fret 1).
+  const playableFrets = useMemo(
+    () => (capo > 0 ? drawnFrets.filter((f) => f >= capo) : orientation.nut === 'left' ? [0, ...drawnFrets] : [...drawnFrets, 0]),
+    [drawnFrets, capo, orientation.nut],
+  );
 
   // Generate all notes on the fretboard as a Map for O(1) lookup
   const fretNoteMap = useMemo(() => {
@@ -581,6 +603,8 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       // updater below: React runs updaters twice in development, which played
       // the note twice (found checking QA audit A10, 2026-11-18).
       if ((key === 'Enter' || key === ' ') && focusedCell) {
+        // A muted string's open cell (✕) plays nothing, as a tap on it.
+        if (focusedCell.fret === 0 && mode === 'chord' && voicingLookup.get(focusedCell.stringIdx) === null) return;
         handleCellActivate(getFretNote(focusedCell.stringIdx, focusedCell.fret));
         return;
       }
@@ -608,20 +632,29 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return { stringIdx, fret };
       });
     },
-    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate, focusedCell]
+    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate, focusedCell, mode, voicingLookup]
   );
 
   // Announce the focused note for screen readers, with the context-aware
   // spelling that matches the visible cell label.
   // With a capo it also says where the fret is from the capo ("2 frets above the capo").
-  const announcedNote = focusedCell
-    ? t(capo > 0 ? (focusedCell.fret === capo ? 'capo.announceAt' : 'capo.announceAbove') : 'fretboard.announce', {
-        string: 6 - focusedCell.stringIdx,
-        fret: focusedCell.fret,
-        note: noteToString(spellPitchClass(getFretNote(focusedCell.stringIdx, focusedCell.fret).pitchClass)),
-        ...(capo > 0 ? { count: focusedCell.fret - capo } : {}),
-      })
-    : '';
+  // An open string says so; a cell of the grip or a position dot adds what
+  // its dot shows (M47, M48), as the cell's own name does.
+  const announcedNote = (() => {
+    if (!focusedCell) return '';
+    const { stringIdx, fret } = focusedCell;
+    const string = 6 - stringIdx;
+    const note = noteToString(spellPitchClass(getFretNote(stringIdx, fret).pitchClass));
+    const voiced = mode === 'chord' ? voicingLookup.get(stringIdx) : undefined;
+    if (fret === 0 && capo === 0 && voiced === null) return t('fretboard.mutedStringLabel', { string });
+    const said = fret === 0 && capo === 0
+      ? t('fretboardWords.announceOpen', { string, note })
+      : t(capo > 0 ? (fret === capo ? 'capo.announceAt' : 'capo.announceAbove') : 'fretboard.announce', {
+          string, fret, note, ...(capo > 0 ? { count: fret - capo } : {}),
+        });
+    const marks = voiced && voiced.fret === fret ? voiced.spoken : mode === 'position' ? positionDots.get(stringIdx)?.get(fret)?.spoken : undefined;
+    return marks ? `${said}, ${marks}` : said;
+  })();
 
   // The keyboard's cell is the focus note while the board has focus.
   useEffect(() => {
@@ -699,9 +732,9 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     if (!focusedCell) return;
     const container = scrollContainerRef.current;
     if (!container) return;
-    const cell = container.querySelector<HTMLElement>(
-      `[data-string-row="${focusedCell.stringIdx}"][data-fret="${focusedCell.fret}"]`
-    );
+    const cell = focusedCell.fret === 0
+      ? container.querySelector<HTMLElement>('[data-open-string][data-keyboard-cell]')
+      : container.querySelector<HTMLElement>(`[data-string-row="${focusedCell.stringIdx}"][data-fret="${focusedCell.fret}"]`);
     if (cell) {
       cell.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
     }
@@ -777,13 +810,43 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       ? t(capo > 0 ? 'capo.noShape' : 'fretboard.noChordShape')
       // With a capo the frets behind it are blank: not "the whole neck" (final review of wave 2).
       : t(capo > 0 ? 'capo.shapesStandardOnly' : 'fretboard.chordShapesStandardOnly'))
-    : mode === 'chord' && !bassMatched && requestedBass
+    // Only where a bass was asked for (an inversion, a slash chord): in root
+    // position no bass was, and "No shape here has C in the bass" is never the
+    // right sentence there (second review of builder K, item 6: C7♭5♯9 with a
+    // capo on 9) — the chips show the chord's grips, the first with the root
+    // lowest wherever one exists.
+    : mode === 'chord' && !bassMatched && requestedBass && (selectedChord?.bassNote || chordInversion > 0)
       ? t('fretboard.bassNotice', { bass: noteToString(requestedBass) })
       : null;
-  // Positions in tunings with strings a 5th apart skip the note the hand cannot reach.
-  const tuningGapNotice = mode === 'position' && position !== null && position.skippedMidi.length > 0
-    ? t('fretboard.tuningGapNotice')
+  // "F♯3 and G3", "E (3) and F (11)": a list in the learner's language.
+  const listOf = (items: string[]) => new Intl.ListFormat(i18n.language, { style: 'long', type: 'conjunction' }).format(items);
+  // A grip that leaves out a tone the chord's name carries says which (music
+  // audit 2, M44), by the degree the chord's formula shows ("F (11)").
+  const leftOut = mode === 'chord' && currentShape && selectedChord ? leftOutTones(currentShape, selectedChord) : [];
+  const leavesOutNotice = leftOut.length > 0
+    ? t('fretboardWords.leavesOut', {
+        tones: listOf(leftOut.map(({ note, degree }) => (degree ? `${withGlyphs(noteToString(note))} (${withGlyphs(degree)})` : withGlyphs(noteToString(note))))),
+      })
     : null;
+  // Positions in tunings with strings a 5th apart skip the notes the hand
+  // cannot reach: named, with their octave, and where the hand finds them
+  // (music audit 2, M46: two were missing and the notice spoke of one).
+  const gap = mode === 'position' && position !== null && position.skippedMidi.length > 0
+    ? skippedReach(selectedKey, selectedScale, position.position, tuning, capo)
+    : null;
+  const whereOf = (n: number) => (n === OPEN_POSITION ? t('fretboardWords.whereOpen') : t('fretboardWords.wherePosition', { numeral: toRomanNumeral(n) }));
+  const pitchName = (x: { note: Note; octave: number }) => `${withGlyphs(noteToString(x.note))}${x.octave}`;
+  // No one position plays them all (a capo high up): where each one is.
+  const eachIn = gap ? gap.notes.flatMap((x) => (x.playedIn === null ? [] : [t('fretboardWords.noteIn', { note: pitchName(x), where: whereOf(x.playedIn) })])) : [];
+  const tuningGapNotice = gap
+    ? [
+        t('fretboardWords.gap', { count: gap.notes.length, notes: listOf(gap.notes.map(pitchName)) }),
+        gap.playedIn !== null
+          ? t('fretboardWords.reach', { count: gap.notes.length, where: whereOf(gap.playedIn) })
+          : eachIn.length > 0 ? t('fretboardWords.reachEach', { list: listOf(eachIn) }) : '',
+      ].filter(Boolean).join(' ')
+    : null;
+  const notices = [chordNotice, leavesOutNotice, tuningGapNotice].filter((n): n is string => !!n);
 
   // Laptop dock: the stepper and the label toggle go into the dock bar;
   // full-neck view: into its header (with the chord-shape chips).
@@ -851,9 +914,12 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         </>,
         toolsSlot,
       )}
-      {/* The full neck has no controls row: the capo's line sits over the board. */}
+      {/* The full neck has no controls row: the capo's line sits over the board, and so do the notices. */}
       {neck && capoLine && (
         <p className="text-ui px-4 pt-1" style={{ color: 'var(--text-muted)' }} data-testid="capo-line">{capoLine}</p>
+      )}
+      {neck && notices.length > 0 && (
+        <p role="status" className="text-ui px-4 pt-1" style={{ color: 'var(--text-muted)' }} data-testid="board-notice">{notices.join(' ')}</p>
       )}
       {/* Controls — outside the scrolling board so they never scroll away.
           On a phone they come AFTER the board, so the strings are what the
@@ -892,9 +958,12 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
           {scaleView && mode === 'position' && <PositionLegend />}
 
-          {(chordNotice || tuningGapNotice) && (
-            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }}>
-              {chordNotice ?? tuningGapNotice}
+          {/* From 1024 px it shares the row's line where it fits (index.css,
+              `.fretboard-controls > p[role="status"]`: the markup stays as the
+              owner's neck recorded it). */}
+          {notices.length > 0 && (
+            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }} data-notices={notices.length > 1 ? 'two' : undefined}>
+              {notices.join(' ')}
             </p>
           )}
         </div>

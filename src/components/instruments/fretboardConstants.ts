@@ -35,6 +35,13 @@ export interface PositionDot {
   isEdited: boolean;
   /** Spoken description for screen readers ("finger 2, degree b3"). */
   description: string;
+  /**
+   * What the cell's accessible name adds to its note and place: the finger
+   * the dot shows and its marks ("finger 2, stretch"; music audit 2, M48).
+   * Absent (the Explore board's open strings, the practice neck), the name
+   * is as before.
+   */
+  spoken?: string;
 }
 
 function relativeLuminance(hex: string): number | null {

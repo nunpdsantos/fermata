@@ -312,7 +312,11 @@ function generateVoicings(
   // accepted. Used to guarantee the essential/defining tones of dense altered
   // chords survive (a "7b9" must keep its b9, a "7b13" its b13, etc.). When the
   // set is empty, the search is unconstrained (the historical behaviour).
-  requiredPitchClasses: Set<number> = new Set()
+  requiredPitchClasses: Set<number> = new Set(),
+  // When set (music audit 2, M43/M44, 2026-11-19): only voicings whose lowest
+  // PITCH has this pitch class — `openStringMidi` gives each open string's
+  // MIDI number — so the ranking below sees nothing else.
+  bass: { pitchClass: number; openStringMidi: number[] } | null = null
 ): Voicing[] {
   const positions = getAllPositions(chordNotes, minFret, maxFret, openStringPitchClasses);
   const voicings: Voicing[] = [];
@@ -341,7 +345,8 @@ function generateVoicings(
       chordNotes,
       requireRoot,
       voicings,
-      requiredPitchClasses
+      requiredPitchClasses,
+      bass
     );
   }
 
@@ -365,7 +370,8 @@ function generateVoicingsFromBass(
   chordNotes: Note[],
   requireRoot: boolean,
   results: Voicing[],
-  requiredPitchClasses: Set<number> = new Set()
+  requiredPitchClasses: Set<number> = new Set(),
+  bass: { pitchClass: number; openStringMidi: number[] } | null = null
 ): void {
   // Recursive function to build voicings
   function recurse(
@@ -400,6 +406,14 @@ function generateVoicingsFromBass(
         for (const pc of requiredPitchClasses) {
           if (!sounding.has(pc)) return;
         }
+      }
+
+      if (bass) {
+        let low = Infinity;
+        currentPositions.forEach((p) => {
+          if (p !== null) low = Math.min(low, bass.openStringMidi[p.string] + p.fret);
+        });
+        if (low % 12 !== bass.pitchClass) return;
       }
 
       // Calculate span only among fretted notes
@@ -721,12 +735,16 @@ function determineCagedShape(voicing: Voicing, _baseFret: number): 'C' | 'A' | '
  *   defining tones so dense altered chords (7b9, 7b13, 9#11, …) keep their
  *   identity tone instead of dropping it for a compacter grip. When empty (the
  *   default) the search is unconstrained.
+ * @param bassPitchClass When set, only voicings whose lowest pitch has this
+ *   pitch class (an inversion's or a slash chord's bass; music audit 2). A
+ *   slash bass that is not a chord tone must then be among `chord.notes`.
  * @returns Array of `{ shape, baseFret }` objects, at most 8 entries.
  */
 export function generateChordShapes(
   chord: Chord,
   tuning: GuitarTuning = TUNING_STANDARD,
-  requiredPitchClasses: Set<number> = new Set()
+  requiredPitchClasses: Set<number> = new Set(),
+  bassPitchClass: number | null = null
 ): { shape: ChordShape; baseFret: number }[] {
   const rootPitchClass = getPitchClass(chord.root);
   const openStringPitchClasses = getTuningPitchClasses(tuning);
@@ -748,6 +766,9 @@ export function generateChordShapes(
   ];
 
   const seenShapes = new Set<string>();
+  const bass = bassPitchClass === null
+    ? null
+    : { pitchClass: bassPitchClass, openStringMidi: tuning.strings.map((n) => 12 * (n.octave + 1) + getPitchClass(n)) };
 
   for (const range of ranges) {
     const voicings = generateVoicings(
@@ -757,7 +778,8 @@ export function generateChordShapes(
       range.max,
       true,
       openStringPitchClasses,
-      requiredPitchClasses
+      requiredPitchClasses,
+      bass
     );
 
     // Take top voicings from each range. Take more when essentials are required

@@ -46,7 +46,8 @@ interface FretboardStringProps {
   onCellActivate: (fn: FretNote) => void;
   // Chord
   currentShape: { shape: ChordShape; baseFret: number } | null;
-  voicingLookup: Map<number, { fret: number; finger: FingerNumber | undefined } | null>;
+  /** `spoken`: what the grip's cell on this string adds to its accessible name (M48). */
+  voicingLookup: Map<number, { fret: number; finger: FingerNumber | undefined; spoken?: string } | null>;
   // Position view: fret → dot (fret 0 = open string)
   positionDots: Map<number, PositionDot> | undefined;
   // Whole-neck view: label for a scale dot by pitch class
@@ -192,6 +193,9 @@ export const FretboardString = memo(function FretboardString({
   }
 
   const openFocus = focusFrets?.has(0) ?? false;
+  // The arrow keys reach the open string (music audit 2, M47).
+  const openKeyboard = focusedFret === 0;
+  const openSpoken = isOpenVoicing ? voicingInfo.spoken : undefined;
 
   const nutLeft = nutSide === 'left';
 
@@ -234,7 +238,7 @@ export const FretboardString = memo(function FretboardString({
 
         // A capo (wave 2): out of play behind it, the bar at it, and the
         // spoken label says where the fret is from the capo.
-        const capoProps = capo > 0
+        const capoProps: { outOfPlay?: boolean; capoBar?: 'top' | 'middle' | 'bottom'; ariaLabel?: string } = capo > 0
           ? fret < capo
             ? { outOfPlay: true }
             : {
@@ -244,6 +248,12 @@ export const FretboardString = memo(function FretboardString({
                 }),
               }
           : {};
+        // A cell of the grip, or a position dot, says what its dot shows
+        // (music audit 2, M48): "C, fret 3, string 5, in the chord, finger 3".
+        const spoken = isVoicingPosition ? voicingInfo.spoken : positionDot && !positionDot.context ? positionDot.spoken : undefined;
+        if (spoken && !capoProps.outOfPlay) {
+          capoProps.ariaLabel = `${capoProps.ariaLabel ?? t('fretboard.cellLabel', { note: noteToString(displayNote), fret, string: 6 - stringIdx })}, ${spoken}`;
+        }
         return (
           <FretCell
             {...capoProps}
@@ -306,11 +316,17 @@ export const FretboardString = memo(function FretboardString({
     <div
       key="open"
       role="button"
-      aria-label={isMuted ? t('fretboard.mutedStringLabel', { string: 6 - stringIdx }) : t('fretboard.openStringLabel', { note: openLabel })}
+      aria-label={isMuted
+        ? t('fretboard.mutedStringLabel', { string: 6 - stringIdx })
+        : openSpoken ? `${t('fretboard.openStringLabel', { note: openLabel })}, ${openSpoken}` : t('fretboard.openStringLabel', { note: openLabel })}
       data-open-string=""
+      data-keyboard-cell={openKeyboard || undefined}
       data-focus-note={openFocus || undefined}
       className="relative flex items-center justify-center cursor-pointer"
-      style={{ width: 'var(--fret-open-width, 40px)', flexShrink: 0, ...(mobile ? { touchAction: 'none' } : undefined) }}
+      style={{
+        width: 'var(--fret-open-width, 40px)', flexShrink: 0, ...(mobile ? { touchAction: 'none' } : undefined),
+        ...(openKeyboard ? { outline: '2px solid var(--focus-ring)', outlineOffset: -2, borderRadius: 4 } : undefined),
+      }}
       onPointerDown={handleOpenPointerDown}
       onPointerEnter={(e) => { if (e.pointerType === 'mouse') onCellHover?.(openFretNote); }}
       onPointerLeave={(e) => { if (e.pointerType === 'mouse') onCellHover?.(null); }}

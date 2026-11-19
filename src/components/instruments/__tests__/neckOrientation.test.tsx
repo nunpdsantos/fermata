@@ -83,7 +83,19 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
         // name at the far end.
         expect(before(r.name, r.cells[0])).toBe(!sideOfNut);
         // What is said describes the instrument: "string 6" is the thick one.
-        expect(r.cells[0].getAttribute('aria-label')).toMatch(new RegExp(`, string ${6 - r.string}$`));
+        // A cell of the grip or a position dot then says what its dot shows
+        // (music audit 2, M48), every cell, exactly: the grip's "in the chord"
+        // and the finger its dot prints (a barre's index prints 1); a position
+        // dot its finger, and "stretch" where its ring is dashed; any other
+        // cell nothing more.
+        for (const cell of r.cells) {
+          const voicing = cell.querySelector<HTMLElement>('[data-dot="voicing"]');
+          const dot = cell.querySelector<HTMLElement>('[data-dot="position"]');
+          const tail = voicing
+            ? voicing.textContent === '1' ? ', in the chord, finger 1(?:, barre)?' : `, in the chord, finger ${voicing.textContent}`
+            : dot ? `, finger ${/^[1-4]$/.test(dot.textContent ?? '') ? dot.textContent : '[1-4]'}${dot.style.outline.includes('dashed') ? ', stretch' : ''}` : '';
+          expect(cell.getAttribute('aria-label'), `string ${r.string} fret ${cell.dataset.fret}`).toMatch(new RegExp(`, string ${6 - r.string}${tail}$`));
+        }
       }
       // Fret numbers rise away from the nut, in the same order as the cells.
       expect(fretNumbers(root)).toEqual(rows[0].frets);
@@ -146,15 +158,19 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
     const topString = 6 - drawnStrings[0];
     expect(live()).toMatch(new RegExp(`^String ${topString}, fret 1,`));
     // → is the cell drawn on the right: fret 2 with the nut on the left; with
-    // the nut on the right the cell right of fret 1 is the nut — it stays.
+    // the nut on the right it is the open string, past the nut (music audit
+    // 2, M47: the arrow toward the nut stopped at fret 1).
     fireEvent.keyDown(grid, { key: 'ArrowRight' });
-    expect(live()).toMatch(new RegExp(`^String ${topString}, fret ${sideOfNut ? 2 : 1},`));
+    expect(live()).toMatch(sideOfNut ? new RegExp(`^String ${topString}, fret 2,`) : new RegExp(`^String ${topString}, open, `));
     fireEvent.keyDown(grid, { key: 'ArrowLeft' });
     fireEvent.keyDown(grid, { key: 'ArrowLeft' });
-    expect(live()).toMatch(new RegExp(`^String ${topString}, fret ${sideOfNut ? 1 : 3},`));
+    // Nut left: 2 → 1 → the open string, drawn left of the nut; and there it stays.
+    expect(live()).toMatch(sideOfNut ? new RegExp(`^String ${topString}, open, `) : new RegExp(`^String ${topString}, fret 2,`));
+    fireEvent.keyDown(grid, { key: 'ArrowLeft' });
+    expect(live()).toMatch(sideOfNut ? new RegExp(`^String ${topString}, open, `) : new RegExp(`^String ${topString}, fret 3,`));
     // ↓ is the string drawn below.
     fireEvent.keyDown(grid, { key: 'ArrowDown' });
-    expect(live()).toMatch(new RegExp(`^String ${6 - drawnStrings[1]}, fret ${sideOfNut ? 1 : 3},`));
+    expect(live()).toMatch(sideOfNut ? new RegExp(`^String ${6 - drawnStrings[1]}, open, `) : new RegExp(`^String ${6 - drawnStrings[1]}, fret 3,`));
     fireEvent.keyDown(grid, { key: 'ArrowUp' });
     fireEvent.keyDown(grid, { key: 'ArrowUp' });
     expect(live()).toMatch(new RegExp(`^String ${topString},`));

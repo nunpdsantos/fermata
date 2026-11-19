@@ -1,0 +1,14 @@
+{
+  "inChord": "en el acorde",
+  "fingerBarre": "dedo 1, cejilla",
+  "announceOpen": "Cuerda {{string}}, al aire, {{note}}",
+  "leavesOut": "Esta forma deja fuera {{tones}}.",
+  "gap_one": "En esta afinación dos cuerdas están a una quinta, así que {{notes}}, entre ellas, queda fuera del alcance de la mano en esta posición.",
+  "gap_other": "En esta afinación dos cuerdas están a una quinta, así que {{notes}}, entre ellas, quedan fuera del alcance de la mano en esta posición.",
+  "reach_one": "La encuentras en la {{where}}.",
+  "reach_other": "Las encuentras en la {{where}}.",
+  "reachEach": "Encuentras {{list}}.",
+  "noteIn": "{{note}} en la {{where}}",
+  "wherePosition": "posición {{numeral}}",
+  "whereOpen": "posición abierta"
+}

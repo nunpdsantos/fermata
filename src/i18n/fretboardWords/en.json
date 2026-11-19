@@ -1,0 +1,14 @@
+{
+  "inChord": "in the chord",
+  "fingerBarre": "finger 1, barre",
+  "announceOpen": "String {{string}}, open, {{note}}",
+  "leavesOut": "This shape leaves out {{tones}}.",
+  "gap_one": "In this tuning two strings are a 5th apart, so {{notes}}, between them, is out of the hand's reach in this position.",
+  "gap_other": "In this tuning two strings are a 5th apart, so {{notes}}, between them, are out of the hand's reach in this position.",
+  "reach_one": "You will find it in {{where}}.",
+  "reach_other": "You will find them in {{where}}.",
+  "reachEach": "You will find {{list}}.",
+  "noteIn": "{{note}} in {{where}}",
+  "wherePosition": "position {{numeral}}",
+  "whereOpen": "the Open position"
+}

@@ -7,15 +7,16 @@
  *
  * Whether a shape has an open grip is read from the app's own shape library
  * (`getChordShapesWithFallback` + `isPlayableChordShape`): a playable shape of
- * type 'open' at base fret 0 — and, for a slash chord, with the bass as its
- * lowest note (`arrangeShapesForBass`). No hand-typed list of "easy chords".
+ * type 'open' at base fret 0 — and, for a slash chord, one of the grips the
+ * board offers for it, with the bass as its lowest note (`chordShapesForCapo`).
+ * No hand-typed list of "easy chords".
  */
 
 import type { Chord } from '../../types/music';
 import { getPitchClass } from '../../constants/notes';
 import {
-  arrangeShapesForBass,
   chordBelowCapo,
+  chordShapesForCapo,
   getChordShapesWithFallback,
   isPlayableChordShape,
   lowestSoundingPitchClass,
@@ -44,11 +45,12 @@ export function hasOpenGrip(chord: Chord): boolean {
   if (cached !== undefined) return cached;
   let shapes = getChordShapesWithFallback(chord);
   if (chord.bassNote) {
+    // A slash chord: the grips the board itself offers for it, so the panel
+    // never counts an open grip the board does not show (music audit 2, the
+    // review of builder K: the board offers eight grips at most).
     const bassPc = getPitchClass(chord.bassNote);
-    const label = `${chord.bassNote.natural}${chord.bassNote.accidental}`;
-    shapes = arrangeShapesForBass(shapes, chord, bassPc, label).shapes.filter(
-      (e) => lowestSoundingPitchClass(e) === bassPc,
-    );
+    const board = chordShapesForCapo(chord, 0, 0);
+    shapes = board.bassMatched ? board.shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc) : [];
   }
   const open = shapes.some(isOpenGrip);
   openCache.set(id, open);
