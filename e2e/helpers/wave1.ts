@@ -138,8 +138,11 @@ export async function neckDrawn(page: Page): Promise<{ strings: number[]; nut: '
       const open = row.querySelector('[data-open-string]')!.getBoundingClientRect();
       const first = cells[0].getBoundingClientRect();
       const last = cells[cells.length - 1].getBoundingClientRect();
-      // The label ends on the string's number in every language ("… string 6", "… corda 6").
-      const string = Number(/(\d+)\D*$/.exec(cells[0].getAttribute('aria-label') ?? '')?.[1]);
+      // The label names the string after its word in every language ("… string 6", "… corda 6", "… cuerda 6").
+      // Not the LAST number: since release 17 a lit cell's label goes on with its dot's words ("…, corda 2,
+      // dedo 1"), and read by its last number the tab view's strings 1, 2 and 6 all said 1 (the whole
+      // browser run on the combined branch, 19 November 2026).
+      const string = Number(/(?:string|corda|cuerda)\s+(\d+)/i.exec(cells[0].getAttribute('aria-label') ?? '')?.[1]);
       const nut: 'left' | 'right' | null = open.right <= Math.min(first.left, last.left) + 0.5 ? 'left' : open.left >= Math.max(first.right, last.right) - 0.5 ? 'right' : null;
       return { string, top: row.getBoundingClientRect().top, nut };
     }).sort((a, b) => a.top - b.top);
