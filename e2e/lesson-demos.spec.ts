@@ -136,7 +136,9 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
     const low = p.filter((n) => n.midi < 62);
     const scale = p.filter((n) => n.midi >= 62);
     expect(scale.map((n) => name(n.midi))).toEqual(['D4', 'E4', 'F4', 'G4', 'A4', 'Bb4', 'C5', 'D5']);
-    for (const n of scale) expect(low.some((d) => name(d.midi) === 'D3' && soundingAt(d, n.at)), name(n.midi)).toBe(true);
+    // One D3, held under every note of the scale to the end: nothing left bare.
+    expect(low.map((d) => name(d.midi))).toEqual(['D3']);
+    for (const n of scale) expect(soundingAt(low[0], n.at) && low[0].at + low[0].dur >= n.at + n.dur - 0.005, name(n.midi)).toBe(true);
     const score = await drawn(pedal);
     expect(score.staves.map((s) => s.clef)).toEqual(['treble', 'bass']);
     expect(score.brace).toBe(true);
@@ -158,9 +160,11 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
     const e = played.filter((n) => name(n.midi) === 'E4');
     const bass = played.filter((n) => name(n.midi) !== 'E4');
     expect(e).toHaveLength(1);
-    expect(bass.map((n) => name(n.midi))).toEqual(['D4', 'C4']);
+    expect(bass.map((n) => name(n.midi))).toEqual(['D3', 'C3']);
     expect(soundingAt(e[0], bass[1].at)).toBe(true);
-    expectDrawnAsPlayed(await drawn(panel), played);
+    const score = await drawn(panel);
+    expect(score.staves.map((st) => st.clef)).toEqual(['treble', 'bass']);
+    expectDrawnAsPlayed(score, played);
   });
 
   test('M55 — the full stack of thirds, then Cmaj13 without F', async ({ page }) => {
@@ -173,13 +177,13 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
     expectDrawnAsPlayed(await drawn(panel), played);
   });
 
-  test('M56 — C–D, C–E, C–F, C–G, each pair from the root', async ({ page }) => {
+  test('M56 — every interval from the root, minor 2nd to perfect 5th, each pair from C', async ({ page }) => {
     await openLesson(page, 'l9u30m3');
     const panel = conceptPanel(page, 0);
     const played = await hear(page, panel);
-    expect(played.map((n) => name(n.midi))).toEqual(['C4', 'D4', 'C4', 'E4', 'C4', 'F4', 'C4', 'G4']);
+    expect(played.map((n) => name(n.midi))).toEqual(['C4', 'C#4', 'C4', 'D4', 'C4', 'Eb4', 'C4', 'E4', 'C4', 'F4', 'C4', 'F#4', 'C4', 'G4']);
     const score = await drawn(panel);
-    expect(score.notes.filter((n) => n.rest)).toHaveLength(3);
+    expect(score.notes.filter((n) => n.rest)).toHaveLength(6);
     expectDrawnAsPlayed(score, played);
   });
 
@@ -201,7 +205,7 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
   test('a screen reader is given each staff as one image, its notes in words (English and Portuguese)', async ({ page, context }) => {
     await openLesson(page, 'l7u22m5');
     await expect(conceptPanel(page, 2).getByRole('img')).toHaveAttribute('aria-label',
-      'Grand staff, treble and bass, in 4/4. Upper voice on the treble staff: D4, E4, F4 and G4 (quarter notes) | A4, B♭4, C5 and D5 (quarter notes). Lower voice on the bass staff: D3 (whole note) | D3 (whole note).');
+      'Grand staff, treble and bass, in 4/4. Upper voice on the treble staff: D4, E4, F4 and G4 (quarter notes) | A4, B♭4, C5 and D5 (quarter notes). Lower voice on the bass staff: D3 (whole note tied to the next) | D3 (whole note).');
     const origin = new URL(test.info().project.use.baseURL!).origin;
     await context.addInitScript((o) => {
       if (location.origin === o) localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: 'pt' }, version: 6 }));
@@ -215,8 +219,9 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
 });
 
 const PANELS: [string, number][] = [
-  ['l1u3m2', 0], ['l1u3m2', 1], ['l1u3m2', 2], ['l7u22m5', 0], ['l7u22m5', 2], ['l7u21m2', 0],
-  ['l4u12m1', 2], ['l7u23m5', 0], ['l9u30m3', 0],
+  ['l1u3m2', 0], ['l1u3m2', 1], ['l1u3m2', 2], ['l2u4m1', 0], ['l2u4m1', 2], ['l3u11m5', 1],
+  ['l4u12m1', 1], ['l4u12m1', 2], ['l4u14m4', 0], ['l7u21m2', 0], ['l7u22m5', 0], ['l7u22m5', 2],
+  ['l7u23m5', 0], ['l9u30m3', 0], ['l9u30m4', 1], ['l9u32m4', 2],
 ];
 
 test.describe('the demonstrations\' staves fit, from the narrowest phone to a laptop, day and night', () => {
@@ -253,5 +258,36 @@ test.describe('the demonstrations\' staves fit, from the narrowest phone to a la
         }
       });
     }
+  }
+});
+
+test.describe('nothing below a demonstration moves when its staff arrives (fix pass, item 4)', () => {
+  // The staff's code is held back 1.5 s, so its placeholder is what stands
+  // there first: the distance from the panel to the next section must be the
+  // same with the placeholder and with the drawing.
+  for (const [width, height] of [[320, 740], [390, 844], [1440, 900]] as const) {
+    test(`${width}×${height}`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.route(/DemoStaffWithWords/, async (route) => {
+        await new Promise((r) => setTimeout(r, 1500));
+        await route.continue();
+      });
+      for (const [id, n] of [['l7u22m5', 0], ['l9u30m3', 0], ['l4u12m1', 1], ['l7u22m5', 2]] as const) {
+        await openLesson(page, id);
+        const panel = conceptPanel(page, n);
+        await panel.scrollIntoViewIfNeeded();
+        const gap = () => panel.evaluate((el) => {
+          const section = el.closest('section')!;
+          const next = section.nextElementSibling as HTMLElement;
+          return next.getBoundingClientRect().top - el.getBoundingClientRect().top;
+        });
+        await expect(panel.getByTestId('demo-staff-placeholder')).toBeVisible();
+        const before = await gap();
+        await expect(panel.locator('svg:has(g.vf-stavenote)')).toHaveCount(1);
+        await page.waitForTimeout(150);
+        const after = await gap();
+        expect(Math.abs(after - before), `${id} c${n}: ${before} → ${after}`).toBeLessThanOrEqual(0.5);
+      }
+    });
   }
 });

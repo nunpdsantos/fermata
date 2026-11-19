@@ -83,6 +83,16 @@ describe('parseChordListQuery', () => {
     // A leap goes back to octave 3; a step after a step keeps climbing.
     expect(lowest('chords: G Am Bm C D Em')).toEqual(['G3', 'A3', 'B3', 'C4', 'D4', 'E4']);
     expect(lowest('chords: Bm C F')).toEqual(['B3', 'C4', 'F3']);
+    // A step is a step down as well as up: up, then back the same way (fix
+    // pass, item 2: after a climb a step down fell an octave, D4 → C3).
+    expect(lowest('chords: Bm C D C Bm')).toEqual(['B3', 'C4', 'D4', 'C4', 'B3']);
+    expect(lowest('chords: C G/B Am G F Em Dm C')).toEqual(['C3', 'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2']);
+    // The register is bounded: a line may follow its steps from C2 to B4; a
+    // step past B4 (or below C2) and every leap come back to octave 3.
+    expect(lowest('chords: C Dm Em F G Am Bm C Dm Em F G Am Bm C Dm')).toEqual(
+      ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C3', 'D3']);
+    expect(lowest('chords: C Bdim Am G F Em Dm C Bdim')).toEqual(['C3', 'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2', 'B3']);
+    expect(lowest('chords: C F G C')).toEqual(['C3', 'F3', 'G3', 'C3']);
     // Every chord list the lessons ship: a bass that moves by a half or whole
     // step (pitch classes 1 or 2 apart) is heard as that step — l1u35m3, the
     // track's chords of G in scale order, crossed B–C until the second audit;

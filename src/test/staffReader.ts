@@ -13,7 +13,11 @@
  *    same bar on the same line or space, else the key signature's for that
  *    letter (the signs after the clef, read the same way);
  *  - a note's value is its notehead (whole, half, black) with a flag or a dot;
- *    a rest by its glyph; a tie joins the notes at its two ends.
+ *    a rest by its glyph; a tie joins the notes at its two ends, and a note
+ *    tied into keeps the sign of the note it is tied from (notation does not
+ *    print it again, even across a bar line, and it does not count as a sign
+ *    for the rest of the bar);
+ *  - its stem goes up or down from the notehead (the stem's path).
  *
  * Self-contained (no imports, nothing outside the function bodies), so a
  * browser test can hand `readStaffSvg` to `page.evaluate` as it is, and the
@@ -35,7 +39,11 @@ export interface DrawnStaff {
 }
 
 export interface DrawnNote {
+  /** The staff it is drawn on (staves top to bottom, line after line). */
   staff: number;
+  /** The line of music (system) it is on, and its staff's place in that line (0 = top, 1 = the bass staff of a grand staff). */
+  system: number;
+  role: number;
   voice: string;
   x: number;
   /** Written pitches, low to high, as "F#5" / "Bb3" / "C4" (empty for a rest). */
@@ -47,6 +55,8 @@ export interface DrawnNote {
   rest: boolean;
   /** A tie leaves this note for the next one (same voice). */
   tiedToNext: boolean;
+  /** Its stem, read from the stem's path: from the notehead up, or down; null for a whole note or a rest. */
+  stem: 'up' | 'down' | null;
 }
 
 export interface DrawnScore {
@@ -59,6 +69,8 @@ export interface DrawnScore {
   ties: number;
   /** A brace joins two staves (a grand staff). */
   brace: boolean;
+  /** Lines of music: a brace joins the staves of one; without a brace each staff is a line. */
+  systems: number;
 }
 
 export function readStaffSvg(svg: Element): DrawnScore {
@@ -85,6 +97,22 @@ export function readStaffSvg(svg: Element): DrawnScore {
     const top = Math.min(...ys.map((v) => v.y));
     geos.push({ top, bottom: top + 40, staff: { clef: '?', signature: [] }, x0: ys[0].x0, x1: ys[0].x1 });
   }
+  // Staves top to bottom (VexFlow draws them in that order; this makes it so).
+  geos.sort((x, y) => x.top - y.top);
+  // Lines of music (systems): the staves a brace spans; otherwise one staff each.
+  const braces = Array.from(svg.querySelectorAll('path')).filter((p) => /C/.test(p.getAttribute('d') ?? '') && !p.closest('g.vf-stavetie') && !p.closest('g.vf-stavenote')).map((p) => {
+    const ys = (p.getAttribute('d') ?? '').match(/-?[\d.]+/g)!.map(Number).filter((_, i) => i % 2 === 1);
+    return { top: Math.min(...ys), bottom: Math.max(...ys) };
+  });
+  const systemOf: number[] = [];
+  const roleOf: number[] = [];
+  geos.forEach((geo, i) => {
+    const brace = braces.findIndex((b) => geo.top >= b.top - 1 && geo.top <= b.bottom);
+    const prev = i > 0 ? systemOf[i - 1] : -1;
+    const sameAsPrev = brace >= 0 && i > 0 && braces.findIndex((b) => geos[i - 1].top >= b.top - 1 && geos[i - 1].top <= b.bottom) === brace;
+    systemOf.push(sameAsPrev ? prev : prev + 1);
+    roleOf.push(sameAsPrev ? roleOf[i - 1] + 1 : 0);
+  });
   const staffOf = (y: number) => {
     let best = 0;
     geos.forEach((geo, i) => {
@@ -96,6 +124,7 @@ export function readStaffSvg(svg: Element): DrawnScore {
     const clef = geo.staff.clef === 'bass' ? 'bass' : 'treble';
     return BOTTOM[clef] + Math.round((geo.bottom - y) / 5);
   };
+  const stepOfPitch = (p: string) => LETTERS.indexOf(p[0]) + 7 * Number(p[p.length - 1]);
   const pitchOf = (step: number, acc: string) => `${LETTERS[((step % 7) + 7) % 7]}${acc === 'n' ? '' : acc}${Math.floor(step / 7)}`;
 
   for (const g of Array.from(svg.querySelectorAll('g.vf-clef'))) {
@@ -131,7 +160,7 @@ export function readStaffSvg(svg: Element): DrawnScore {
   barlines.forEach((b) => b.sort((a, c) => a - c));
 
   // ── Notes, chords and rests ──
-  type Raw = DrawnNote & { heads: { x: number; y: number; step: number; printed?: string }[] };
+  type Raw = DrawnNote & { heads: { x: number; y: number; step: number; printed?: string }[]; tiedFrom?: Raw };
   const raws: Raw[] = [];
   for (const g of Array.from(svg.querySelectorAll('g.vf-stavenote'))) {
     const texts = Array.from(g.querySelectorAll('text'));
@@ -147,10 +176,15 @@ export function readStaffSvg(svg: Element): DrawnScore {
       const beside = accs.find((a) => Math.abs(num(a, 'y') - y) < 0.5 && num(a, 'x') < num(h, 'x'));
       return { x: num(h, 'x'), y, step: stepAt(geo, y), printed: beside ? ACC[code(beside)] : undefined };
     }).sort((a, b) => a.step - b.step);
+    const stemPath = g.querySelector('g.vf-stem path')?.getAttribute('d') ?? '';
+    const sm = /M\s*[\d.-]+\s+([\d.-]+)\s*L\s*[\d.-]+\s+([\d.-]+)/.exec(stemPath);
+    const stem: DrawnNote['stem'] = sm ? (Number(sm[2]) < Number(sm[1]) ? 'up' : 'down') : null;
     let value: DrawnValue = rest ? REST[code(rest)] : NOTEHEAD[code(heads[0])];
     if (!rest && value === 'q' && texts.some((t) => FLAGS.has(code(t)))) value = '8';
     raws.push({
       staff,
+      system: systemOf[staff] ?? 0,
+      role: roleOf[staff] ?? 0,
       voice: g.getAttribute('data-voice') ?? g.closest('[data-voice]')?.getAttribute('data-voice') ?? '0',
       x: num(anchor, 'x'),
       pitches: [],
@@ -159,10 +193,30 @@ export function readStaffSvg(svg: Element): DrawnScore {
       dotted: texts.some((t) => code(t) === DOT),
       rest: !heads.length,
       tiedToNext: false,
+      stem,
       heads: headInfo,
     });
   }
   raws.sort((a, b) => a.staff - b.staff || a.x - b.x);
+
+  // Ties: a path from one notehead to a later one on the same staff.
+  const tieGroups = Array.from(svg.querySelectorAll('g.vf-stavetie'));
+  for (const g of tieGroups) {
+    const m = /M\s*([\d.-]+)\s+([\d.-]+)\s*Q\s*[\d.-]+\s+[\d.-]+\s*,\s*([\d.-]+)/.exec(g.querySelector('path')?.getAttribute('d') ?? '');
+    if (!m) continue;
+    const [x1, y, x2] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const staff = staffOf(y);
+    // A tie leaves its first note from the right of the notehead (or its
+    // origin, where no font is measured, as in jsdom) and reaches its second
+    // at or just before that note's head: the nearest note on each side.
+    const onStaff = raws.filter((r) => r.staff === staff && !r.rest);
+    const from = onStaff.filter((r) => r.x <= x1 + 1).sort((p, q) => q.x - p.x)[0];
+    const to = onStaff.filter((r) => r.x >= x2 - 1 && r !== from).sort((p, q) => p.x - q.x)[0];
+    if (from && to && from !== to) {
+      from.tiedToNext = true;
+      to.tiedFrom = from;
+    }
+  }
 
   // Accidentals: beside the note, else earlier in the bar on the same step, else the signature.
   for (let s = 0; s < geos.length; s++) {
@@ -175,6 +229,9 @@ export function readStaffSvg(svg: Element): DrawnScore {
         barIndex++;
       }
       n.pitches = n.heads.map((h) => {
+        // Tied into: the pitch it is tied from, unprinted, and no sign for the bar.
+        const from = !h.printed && n.tiedFrom?.pitches.find((p) => stepOfPitch(p) === h.step);
+        if (from) return from;
         if (h.printed) bar.set(h.step, h.printed);
         const acc = h.printed ?? bar.get(h.step) ?? sig.get(LETTERS[((h.step % 7) + 7) % 7]) ?? '';
         return pitchOf(h.step, acc);
@@ -182,25 +239,14 @@ export function readStaffSvg(svg: Element): DrawnScore {
     }
   }
 
-  // Ties: a path from one notehead to a later one on the same staff.
-  const tieGroups = Array.from(svg.querySelectorAll('g.vf-stavetie'));
-  for (const g of tieGroups) {
-    const m = /M\s*([\d.-]+)\s+([\d.-]+)\s*Q\s*[\d.-]+\s+[\d.-]+\s*,\s*([\d.-]+)/.exec(g.querySelector('path')?.getAttribute('d') ?? '');
-    if (!m) continue;
-    const [x1, y, x2] = [Number(m[1]), Number(m[2]), Number(m[3])];
-    const staff = staffOf(y);
-    const from = raws.find((r) => r.staff === staff && r.heads.some((h) => Math.abs(h.x - x1) < 1));
-    const to = raws.find((r) => r.staff === staff && r.heads.some((h) => Math.abs(h.x - x2) < 1));
-    if (from && to && from !== to) from.tiedToNext = true;
-  }
-
-  const brace = Array.from(svg.querySelectorAll('path')).some((p) => /C/.test(p.getAttribute('d') ?? '') && !p.closest('g.vf-stavetie') && !p.closest('g.vf-stavenote'));
+  const brace = braces.length > 0;
   return {
     staves: geos.map((g) => g.staff),
-    notes: raws.map(({ heads: _heads, ...n }) => n),
+    notes: raws.map(({ heads: _heads, tiedFrom: _from, ...n }) => n),
     barlines,
     ties: tieGroups.length,
     brace: brace && geos.length > 1,
+    systems: Math.max(0, ...systemOf) + 1,
   };
 }
 
@@ -210,8 +256,12 @@ export function drawnBeats(n: Pick<DrawnNote, 'value' | 'dotted'>): number {
   return n.dotted ? base * 1.5 : base;
 }
 
-/** One sounding note as the drawing says it: its written pitch, when it starts and how long it lasts, in quarter-note beats (tied notes are one sound). */
-export interface DrawnSound { pitch: string; at: number; beats: number }
+/**
+ * One sounding note as the drawing says it: its written pitch, when it starts
+ * and how long it lasts, in quarter-note beats (tied notes are one sound),
+ * and whether its voice strikes the same pitch straight after it.
+ */
+export interface DrawnSound { pitch: string; at: number; beats: number; struckAgain: boolean }
 
 /**
  * What the drawing says sounds: each voice read left to right, its onsets
@@ -220,27 +270,30 @@ export interface DrawnSound { pitch: string; at: number; beats: number }
  */
 export function drawnSounds(score: DrawnScore): DrawnSound[] {
   const out: DrawnSound[] = [];
+  // A voice is its place in the line (top or bass staff) and its voice mark, line after line.
   const voices = new Map<string, DrawnNote[]>();
-  for (const n of score.notes) {
-    const key = `${n.staff}:${n.voice}`;
+  for (const n of [...score.notes].sort((a, b) => a.system - b.system || a.x - b.x)) {
+    const key = `${n.role}:${n.voice}`;
     voices.set(key, [...(voices.get(key) ?? []), n]);
   }
   for (const notes of voices.values()) {
     let at = 0;
     let carried: DrawnSound[] = [];
-    for (const n of notes) {
+    notes.forEach((n, i) => {
       const beats = drawnBeats(n);
       const continuing = carried;
       carried = [];
+      const next = notes[i + 1];
       for (const pitch of n.pitches) {
         const held = continuing.find((c) => c.pitch === pitch);
-        const sound = held ?? { pitch, at, beats: 0 };
+        const sound = held ?? { pitch, at, beats: 0, struckAgain: false };
         sound.beats += beats;
+        sound.struckAgain = !n.tiedToNext && !!next && next.pitches.includes(pitch);
         if (!held) out.push(sound);
         if (n.tiedToNext) carried.push(sound);
       }
       at += beats;
-    }
+    });
   }
   return out.sort((a, b) => a.at - b.at || midiOf(a.pitch) - midiOf(b.pitch));
 }

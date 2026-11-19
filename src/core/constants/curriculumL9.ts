@@ -1,5 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
-import { demonstration, run, rest } from '../utils/demonstration';
+import { demonstration, run, rest, keyScale, lineBreak } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 9: Ear Training & Aural Skills (Parallel Track)
@@ -148,16 +148,21 @@ const l9u30m3: CurriculumModule = {
       explanation:
         'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday (compare its 2nd and 3rd notes; the first two are the same pitch). Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle (compare its 2nd and 3rd notes; the first two are the same pitch). These are training wheels — the goal is to internalise each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: "Hear C major's small intervals from its root: C–D, C–E, C–F and C–G",
-      // Second audit, M56: each pair starts on C, a silence between pairs.
+      tryThisLabel: 'Hear each interval from the root, minor 2nd to perfect 5th: C–Db, C–D, C–Eb, C–E, C–F, C–Gb and C–G',
+      // Second audit, M56 (fix pass: every interval the sentence teaches, in
+      // its order): each pair starts on C, a silence between pairs.
       demo: demonstration('l9u30m3 c0', {
         tempo: 120,
         voices: [{
           staff: 'treble',
           events: [
+            // Three lines, so a phone shows the notes at a size it can read.
+            ...run('q', ['C4', 'Db4']), rest('q'),
             ...run('q', ['C4', 'D4']), rest('q'),
+            ...run('q', ['C4', 'Eb4']), lineBreak(rest('q')),
             ...run('q', ['C4', 'E4']), rest('q'),
-            ...run('q', ['C4', 'F4']), rest('q'),
+            ...run('q', ['C4', 'F4']), lineBreak(rest('q')),
+            ...run('q', ['C4', 'Gb4']), rest('q'),
             ...run('q', ['C4', 'G4']),
           ],
         }],
@@ -224,9 +229,23 @@ const l9u30m4: CurriculumModule = {
       explanation:
         'Descending intervals sound different from ascending even though the distance is the same. A descending perfect 5th (G down to C) sounds like a resolution or grounding motion. A descending major 6th sounds warm and nostalgic. Descending 7ths sound dramatic and wide. Train descending intervals separately — many students who master ascending intervals struggle with descending ones. Use descending song associations: descending P5 = the first two notes of the Flintstones theme (Flint-stones), descending m3 = Hey Jude (hey-Jude). Build the descending set as its own skill.',
       tryThisQuery: 'C major scale',
-      tryThisLabel: 'Play C major descending — hear intervals in reverse',
-      // Heard and written from the upper C down to the lower C (audit A22).
-      descending: true,
+      tryThisLabel: 'Hear the large intervals falling from the upper C: C–E (minor 6th), C–Eb (major 6th), C–D (minor 7th), C–Db (major 7th) and C–C (octave)',
+      // Second audit, fix pass: the large intervals the lesson names, each
+      // falling from C5 (round one, A22, played C major from the top down:
+      // descending, but in steps).
+      demo: demonstration('l9u30m4 c1', {
+        tempo: 120,
+        voices: [{
+          staff: 'treble',
+          events: [
+            ...run('q', ['C5', 'E4']), rest('q'),
+            ...run('q', ['C5', 'Eb4']), rest('q'),
+            ...run('q', ['C5', 'D4']), lineBreak(rest('q')),
+            ...run('q', ['C5', 'Db4']), rest('q'),
+            ...run('q', ['C5', 'C4']),
+          ],
+        }],
+      }),
     },
     {
       title: 'Interval Inversion Relationships',
@@ -804,6 +823,8 @@ const l9u32m4: CurriculumModule = {
         'Before singing a single note, follow a checklist. (1) Identify the key signature and time signature. (2) Scan for the highest and lowest notes to know your vocal range requirements. (3) Look for patterns — scales, arpeggios, repeated motifs, sequences. (4) Set a tempo slow enough to maintain accuracy (speed develops naturally with practice). (5) Sing through maintaining a steady pulse above all else. A wrong note at a steady tempo is better than a right note with broken rhythm. The pulse is the skeleton; pitches are the flesh.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Sight sing G major: do starts on G',
+      // Second audit, fix pass (M50's class): step (1) of the sentence is the key signature.
+      demo: keyScale('l9u32m4 c0', 'G', ['G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F#5', 'G5']),
     },
   ],
   tasks: [

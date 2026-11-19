@@ -795,7 +795,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Acordes com extensões: nonas até décimas terceiras',
           explanation:
-            'Os acordes com extensões continuam o processo de empilhamento de terças além da sétima. As qualidades maior, menor e dominante produzem famílias de extensões distintas. Cmaj9 acrescenta uma nona maior a Cmaj7. Cm11 acrescenta uma décima primeira perfeita a Cm9. G13 acrescenta uma décima terceira maior a G9 (com a décima primeira geralmente omitida em acordes dominantes para evitar o choque terça/décima primeira). Extensões alteradas (b9, #9, #11, b13) criam a tensão cromática essencial à condução de vozes jazz. O motor suporta todas as extensões padrão em todas as qualidades.',
+            'Os acordes com extensões continuam o processo de empilhamento de terças além da sétima. As qualidades maior, menor e dominante produzem famílias de extensões distintas. Cmaj9 acrescenta uma nona maior a Cmaj7. Cm11 acrescenta uma décima primeira perfeita a Cm9. G13 acrescenta uma décima terceira maior a G9 (com a décima primeira geralmente omitida, tanto nos acordes dominantes como nos de 13.ª maior, porque choca com a terça maior). Extensões alteradas (b9, #9, #11, b13) criam a tensão cromática essencial à condução de vozes jazz. O motor suporta todas as extensões padrão em todas as qualidades.',
           tryThisLabel: 'Ouve o empilhamento completo de terças, C, E, G, B, D, F e A, e depois Cmaj13 como costuma ser tocado: sem a 11.ª (F), que choca com a 3.ª (E)',
         },
         {

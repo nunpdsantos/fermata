@@ -577,6 +577,17 @@ const l7u22m4: CurriculumModule = {
   prerequisites: ['l7u22m3'],
 };
 
+// Second audit: a scale over a D pedal, the pedal held (tied) under every note.
+const overDPedal = (where: string, scale: Parameters<typeof run>[1]) => demonstration(where, {
+  tempo: 100,
+  time: '4/4',
+  voices: [
+    { staff: 'treble', events: run('q', scale) },
+    { staff: 'bass', events: [note('w', 'D3', { tie: true }), note('w', 'D3')] },
+  ],
+});
+const D_PEDAL_MINOR = overDPedal('l7u22m5 c2', ['D4', 'E4', 'F4', 'G4', 'A4', 'Bb4', 'C5', 'D5']);
+
 const l7u22m5: CurriculumModule = {
   id: 'l7u22m5',
   unitId: 'u22',
@@ -616,16 +627,10 @@ const l7u22m5: CurriculumModule = {
         'A pedal point is a sustained or repeated bass note over which the upper harmonies change freely. A drone is a continuously sounding pitch (or fifth) that anchors the tonal centre. In modal music, pedal points and drones replace dominant function — the tonic is established by sheer persistence rather than by harmonic gravity. Indian classical music is entirely built on a drone (the tanpura). Miles Davis used pedal points in modal jazz to free the harmony from functional chord changes, allowing the soloist to explore the mode freely.',
       tryThisQuery: 'D natural minor scale',
       tryThisLabel: 'Hear D natural minor over a D pedal — a low D sounds under every note of the scale',
-      // Second audit, M52: the scale climbs over a low D struck again each bar
-      // (a repeated pedal: on a piano a held note fades).
-      demo: demonstration('l7u22m5 c2', {
-        tempo: 100,
-        time: '4/4',
-        voices: [
-          { staff: 'treble', events: run('q', ['D4', 'E4', 'F4', 'G4', 'A4', 'Bb4', 'C5', 'D5']) },
-          { staff: 'bass', events: [note('w', 'D3'), note('w', 'D3')] },
-        ],
-      }),
+      // Second audit, M52: the scale climbs over a low D held, tied across
+      // the bar, under every note of it to the end (fix pass: struck again,
+      // it left the scale bare for a moment).
+      demo: D_PEDAL_MINOR,
     },
   ],
   tasks: [
@@ -633,6 +638,14 @@ const l7u22m5: CurriculumModule = {
       id: 'l7u22m5t1',
       instruction:
         "Build a quartal sound: tap 'Dm11' — this contains the notes D-G-C-F when voiced in fourths. Compare with 'Dm7' — the 11th extension adds the quartal stacking that creates the open, ambiguous quality.",
+      // Second audit, fix pass: 'Dm11' stacked in thirds, then the same
+      // chord's notes D-G-C-F voiced in fourths, as the sentence says.
+      demos: {
+        Dm11: demonstration('l7u22m5t1', {
+          tempo: 100,
+          voices: [{ staff: 'treble', events: [chord('w', ['D4', 'F4', 'A4', 'C5', 'E5', 'G5']), chord('w', ['D4', 'G4', 'C5', 'F5'])] }],
+        }),
+      },
     },
     {
       id: 'l7u22m5t2',
@@ -643,6 +656,11 @@ const l7u22m5: CurriculumModule = {
       id: 'l7u22m5t3',
       instruction:
         "Compare 'D dorian' with 'D natural minor scale'. Over a D pedal drone, Dorian's raised 6th (B natural) creates a brighter modal colour. The pedal anchors D as tonic while the scale defines the mode.",
+      // Second audit, fix pass: both scales over the D pedal the sentence names.
+      demos: {
+        'D dorian': overDPedal('l7u22m5t3 D dorian', ['D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5']),
+        'D natural minor scale': D_PEDAL_MINOR,
+      },
     },
   ],
   prerequisites: ['l7u22m4'],
@@ -890,7 +908,7 @@ const l7u23m5: CurriculumModule = {
     {
       title: 'Extended Chords: 9ths Through 13ths',
       explanation:
-        'Extended chords continue the third-stacking process beyond the seventh. Major, minor, and dominant qualities each produce distinct extension families. Cmaj9 adds a major 9th to Cmaj7. Cm11 adds a perfect 11th to Cm9. G13 adds a major 13th to G9 (with the 11th usually omitted in dominant chords to avoid the 3rd/11 clash). Altered extensions (b9, #9, #11, b13) create the chromatic tension essential to jazz voice leading. The engine supports all standard extensions across every quality.',
+        'Extended chords continue the third-stacking process beyond the seventh. Major, minor, and dominant qualities each produce distinct extension families. Cmaj9 adds a major 9th to Cmaj7. Cm11 adds a perfect 11th to Cm9. G13 adds a major 13th to G9 (with the 11th usually omitted, in dominant and major 13th chords alike, because it clashes with the major 3rd). Altered extensions (b9, #9, #11, b13) create the chromatic tension essential to jazz voice leading. The engine supports all standard extensions across every quality.',
       tryThisQuery: 'Cmaj13',
       tryThisLabel: 'Hear the full stack of thirds, C, E, G, B, D, F and A, then Cmaj13 as it is usually played: without the 11th (F), which clashes with the 3rd (E)',
       // Second audit, M55: every third up to the 13th, then the chord as the

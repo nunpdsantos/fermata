@@ -30,12 +30,13 @@
  *   }),
  *
  * with `run` (notes one after another), `chord` (notes together), `note`,
- * `rest` and `{ tie: true }` from `core/utils/demonstration.ts`. Rules the
+ * `rest`, `{ tie: true }` and `lineBreak()` from `core/utils/demonstration.ts`. Rules the
  * check enforces: one or two voices, the upper first, ending together; chords
  * written low to high; a tie only to the same pitches; with a `time`, whole
  * bars and no note across a bar line (split it and tie it). A key signature
  * (`key`) is drawn and the notes under it carry only the signs the bar needs.
- * The label must say what is heard: the tests compare the sentence with what
+ * A line holds about ten notes on a phone (`demoStaffWidth`); a longer
+ * demonstration marks where its lines break. The label must say what is heard: the tests compare the sentence with what
  * sounds and what is drawn (`components/learn/__tests__/lessonDemonstrations.test.tsx`
  * per lesson; `data/__tests__/lessonDemonstrations.corpus.test.tsx` lists
  * every demonstration, so a new one is added to its list). "Show on the
@@ -66,6 +67,14 @@ export interface DemoEvent {
   value: DemoValue;
   /** Held into this voice's next event, which holds the same pitches: one sound, drawn as two tied notes. */
   tie?: true;
+  /**
+   * The drawing starts a new line after this event (the first voice's events
+   * only; every voice must have an event boundary there, at a bar line where
+   * there is a metre, and no tie crosses it). For a demonstration too long for
+   * a phone's width: the lines are the author's, so the drawing's height is
+   * known from the data before it is drawn.
+   */
+  lineBreak?: true;
 }
 
 export interface DemoVoice {

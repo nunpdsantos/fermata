@@ -795,7 +795,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'Acordes con extensiones: novenas hasta trecenas',
           explanation:
-            'Los acordes con extensiones continúan el proceso de apilamiento de terceras más allá de la séptima. Las cualidades mayor, menor y dominante producen familias de extensiones distintas. Cmaj9 añade una novena mayor a Cmaj7. Cm11 añade una oncena justa a Cm9. G13 añade una trecena mayor a G9 (con la oncena generalmente omitida en acordes dominantes para evitar el choque tercera/oncena). Las extensiones alteradas (b9, #9, #11, b13) crean la tensión cromática esencial para la conducción de voces jazz. El motor soporta todas las extensiones estándar en todas las cualidades.',
+            'Los acordes con extensiones continúan el proceso de apilamiento de terceras más allá de la séptima. Las cualidades mayor, menor y dominante producen familias de extensiones distintas. Cmaj9 añade una novena mayor a Cmaj7. Cm11 añade una oncena justa a Cm9. G13 añade una trecena mayor a G9 (con la oncena generalmente omitida, tanto en los acordes dominantes como en los de 13.ª mayor, porque choca con la tercera mayor). Las extensiones alteradas (b9, #9, #11, b13) crean la tensión cromática esencial para la conducción de voces jazz. El motor soporta todas las extensiones estándar en todas las cualidades.',
           tryThisLabel: 'Escucha el apilamiento completo de terceras, C, E, G, B, D, F y A, y después Cmaj13 como suele tocarse: sin la 11.ª (F), que choca con la 3.ª (E)',
         },
         {

@@ -108,29 +108,43 @@ export function slashChordInversion(chord: Chord): number | null {
 
 const LETTER_INDEX: Record<string, number> = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
 const lowestMidi = (pitches: PitchedNote[]) => Math.min(...pitches.map((p) => 12 * (p.octave + 1) + getPitchClass(p)));
+/** Where a chord list's bass may go when it follows a line by step: C2 (MIDI 36) to B4 (71). */
+export const CHORD_LIST_BASS_RANGE = { low: 36, high: 71 };
 
 /**
  * What "Hear it" plays for a chord list, and what each of its chord buttons
- * plays: each chord once, in order, one per second, over its bass. Every bass
- * stands in octave 3 — unless it moves by step (the next letter up or down)
- * from the bass before, which is then heard as that step: across B–C too,
- * where octave 3 alone would turn a step into a 7th (the second audit's
- * follow-up of round one's l1u35m3, G Am Bm C D Em: the bass now climbs G3 A3
- * B3 C4 D4 E4). A leap goes back to octave 3.
+ * plays: each chord once, in order, one per second, over its bass.
+ *
+ * Every bass stands in octave 3 (C3–B3) — unless it moves by step (the next
+ * letter up or down) from the bass before: then it is placed a step above or
+ * below that bass, in whatever octave that takes, so a line is heard as the
+ * line it is, up or down, across B–C too (round one's l1u35m3, G Am Bm C D
+ * Em: the bass now climbs G3 A3 B3 C4 D4 E4; Bm C D C Bm goes up and comes
+ * back the same way). The register is bounded: a step that would take the
+ * bass below C2 or above B4 is placed in octave 3 instead, and any leap
+ * returns to octave 3, so a list that climbs or falls for long comes back
+ * home at its first leap, or at the edge of that range.
  */
 export function chordListSounds(entries: readonly ChordListEntry[]): ChordListSound[] {
   let previous: { letter: number; midi: number } | null = null;
   return entries.map((e, i) => {
     const bass = e.chord.bassNote ?? e.chord.root;
-    let octave = 3;
-    let pitches = chordListPitchesAt(e.chord, octave);
+    let pitches = chordListPitchesAt(e.chord, 3);
     const letter = LETTER_INDEX[bass.natural];
     if (previous) {
       const byLetter = (letter - previous.letter + 7) % 7;
-      const midi = lowestMidi(pitches);
-      if (byLetter === 1 && midi < previous.midi) octave += 1;
-      if (byLetter === 6 && midi > previous.midi) octave -= 1;
-      if (octave !== 3) pitches = chordListPitchesAt(e.chord, octave);
+      const home = lowestMidi(pitches);
+      if (byLetter === 1 || byLetter === 6) {
+        // The bass a step above (or below) the previous one: the nearest octave of it on that side.
+        const prev = previous.midi;
+        let target = home;
+        while (byLetter === 1 && target <= prev) target += 12;
+        while (byLetter === 1 && target - 12 > prev) target -= 12;
+        while (byLetter === 6 && target >= prev) target -= 12;
+        while (byLetter === 6 && target + 12 < prev) target += 12;
+        const inRange = target >= CHORD_LIST_BASS_RANGE.low && target <= CHORD_LIST_BASS_RANGE.high;
+        if (inRange && target !== home) pitches = chordListPitchesAt(e.chord, 3 + (target - home) / 12);
+      }
     }
     previous = { letter, midi: lowestMidi(pitches) };
     return { at: i * CHORD_LIST_STEP_S, duration: CHORD_LIST_CHORD_S, pitches };

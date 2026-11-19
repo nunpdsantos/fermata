@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { keyScale } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 2, Unit 4: All Major Keys and Scale Degrees
@@ -24,6 +25,8 @@ const l2u4m1: CurriculumModule = {
         'There are 15 major key signatures but only 12 distinct keys. Three pairs are enharmonic — they sound identical but are spelled differently: B/Cb, F#/Gb, and C#/Db. Sharp keys run from C (0 sharps) through C# (7 sharps). Flat keys run from C through Cb (7 flats).',
       tryThisQuery: 'B major scale',
       tryThisLabel: 'See B major — 5 sharps',
+      // Second audit, fix pass (M50's class): the sharps drawn as a key signature.
+      demo: keyScale('l2u4m1 c0', 'B', ['B4', 'C#5', 'D#5', 'E5', 'F#5', 'G#5', 'A#5', 'B5']),
     },
     {
       title: 'Order of Sharps and Flats',
@@ -31,6 +34,7 @@ const l2u4m1: CurriculumModule = {
         'Sharps always appear in the same order: F-C-G-D-A-E-B. Each new sharp key adds the next sharp in line. G major has F#. D major has F# and C#. Flats are the reverse: B-E-A-D-G-C-F. F major has Bb. Bb major has Bb and Eb. This order never changes.',
       tryThisQuery: 'key of A',
       tryThisLabel: 'See A major — 3 sharps',
+      demo: keyScale('l2u4m1 c1', 'A', ['A4', 'B4', 'C#5', 'D5', 'E5', 'F#5', 'G#5', 'A5']),
     },
     {
       title: 'Quick Identification Tricks',
@@ -38,6 +42,7 @@ const l2u4m1: CurriculumModule = {
         'For sharp keys: the last sharp is always the 7th scale degree — go up a half step to find the key name. If the last sharp is F#, the key is G. For flat keys: the second-to-last flat IS the key. If you have Bb and Eb, the key is Bb. The exception: one flat always means F major.',
       tryThisQuery: 'Db major scale',
       tryThisLabel: 'See Db major — 5 flats',
+      demo: keyScale('l2u4m1 c2', 'Db', ['Db4', 'Eb4', 'F4', 'Gb4', 'Ab4', 'Bb4', 'C5', 'Db5']),
     },
   ],
   tasks: [
@@ -49,10 +54,12 @@ const l2u4m1: CurriculumModule = {
     {
       id: 'l2u4m1t2',
       instruction: "Tap 'Ab major scale' — how many flats does it need? Can you name them in order?",
+      demos: { 'Ab major scale': keyScale('l2u4m1t2', 'Ab', ['Ab4', 'Bb4', 'C5', 'Db5', 'Eb5', 'F5', 'G5', 'Ab5']) },
     },
     {
       id: 'l2u4m1t3',
       instruction: "Tap 'E major scale' — the last sharp is D#. Go up a half step: E. The trick works!",
+      demos: { 'E major scale': keyScale('l2u4m1t3', 'E', ['E4', 'F#4', 'G#4', 'A4', 'B4', 'C#5', 'D#5', 'E5']) },
     },
   ],
   prerequisites: ['l1u3m4'],

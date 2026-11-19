@@ -31,11 +31,17 @@ import { inversionOfBass } from '../../../../utils/chordSelection';
 import { tryThisPicture } from '../tryThisPicture';
 
 const C = { natural: 'C', accidental: '' } as const;
-const modules = [L1_UNITS, L2_UNITS, L3_UNITS, L4_UNITS, L5_UNITS, L6_UNITS, L7_UNITS, L8_UNITS, L9_UNITS].flat().flatMap((u) => u.modules);
-const queries = [...new Set(modules.flatMap((m) => [
-  ...m.concepts.map((c) => c.tryThisQuery),
-  ...m.tasks.flatMap((t) => findQuotedQueries(t.instruction).map((q) => q.query)),
-]))];
+const units = [L1_UNITS, L2_UNITS, L3_UNITS, L4_UNITS, L5_UNITS, L6_UNITS, L7_UNITS, L8_UNITS, L9_UNITS].flat();
+const modules = units.flatMap((u) => u.modules);
+/** Every place a lesson opens a query: a concept's Try This, a task's quoted query and its own `query`, a unit milestone. */
+const places = [
+  ...units.flatMap((u) => (u.milestone?.tryThisQuery ? [u.milestone.tryThisQuery] : [])),
+  ...modules.flatMap((m) => [
+    ...m.concepts.map((c) => c.tryThisQuery),
+    ...m.tasks.flatMap((t) => [...findQuotedQueries(t.instruction).map((q) => q.query), ...(t.query ? [t.query] : [])]),
+  ]),
+];
+const queries = [...new Set(places)];
 const slash = queries.flatMap((q) => {
   const r = resolveTheoryQuery(q);
   if (r?.kind !== 'chord') return [];
@@ -45,8 +51,33 @@ const slash = queries.flatMap((q) => {
 const midi = (p: { natural: string; accidental: string; octave: number }) => getMidiNumber(p as never, p.octave);
 
 describe('every slash chord a lesson opens', () => {
-  it('the lessons open fourteen slash chords, every one an inversion (a true slash chord, C/D, is pinned in queryExecutorChords.test.ts)', () => {
-    expect(slash.filter(([, c]) => slashChordInversion(c) !== null).length).toBeGreaterThanOrEqual(14);
+  it('the lessons open exactly these fourteen slash chords, at 36 places in 10 lessons and one milestone, every one an inversion', () => {
+    expect(slash.map(([q]) => q).sort()).toEqual(['Am/C', 'C/E', 'C/G', 'C7/G', 'Cmaj7/B', 'Cmaj7/E', 'Cmaj7/G', 'Db/F', 'Dm/F', 'Dm7/C', 'F/A', 'G7/B', 'G7/D', 'G7/F']);
+    expect(places.filter((q) => slash.some(([s]) => s === q))).toHaveLength(36);
+    expect(slash.every(([, c]) => slashChordInversion(c) !== null)).toBe(true);
+  });
+
+  it('a bass that is not a chord tone (C/D) stays under the whole chord in a Try This picture, as before', () => {
+    const picture = tryThisPicture('C/D', C);
+    expect(picture.kind).toBe('chord');
+    if (picture.kind !== 'chord') return;
+    expect(picture.pitches.map((p) => `${p.natural}${p.accidental}${p.octave}`).join(' ')).toBe('D3 D4 C5 E5 G5');
+    expect(picture.bass).toEqual({ natural: 'D', accidental: '' });
+  });
+
+  it('a chord the parser built by its own name (Cm(add11)/G) is kept as written, though G is one of its tones — as the instrument keeps it', () => {
+    const r = resolveTheoryQuery('Cm(add11)/G');
+    expect(r?.kind).toBe('chord');
+    if (r?.kind !== 'chord') return;
+    const chord = chordFromParsed(r.parsed);
+    expect(chord.algorithmicDisplayName).toBeTruthy();
+    expect(chord.notes.map(getPitchClass)).toContain(getPitchClass(chord.bassNote!));
+    expect(slashChordInversion(chord)).toBeNull();
+    expect(inversionOfBass(chord)).toBeNull();
+    const picture = tryThisPicture('Cm(add11)/G', C);
+    if (picture.kind !== 'chord') throw new Error(picture.kind);
+    expect(picture.bass).toEqual({ natural: 'G', accidental: '' });
+    expect(getPitchClass(picture.pitches[0])).toBe(getPitchClass(chord.bassNote!));
   });
 
   it.each(slash.map(([q, c]) => [q, c] as const))('%s', (q, chord) => {

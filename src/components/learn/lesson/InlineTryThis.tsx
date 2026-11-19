@@ -13,6 +13,7 @@ import { RhythmStaff } from '../../notation/RhythmStaff';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { accentText } from '../../../design/tokens/learnColors';
 import { tryThisPicture, type TryThisPicture } from './tryThisPicture';
+import { DemoStaffPlaceholder } from './DemoStaffPlaceholder';
 import { useNoteLabel } from '../../../hooks/useSolfege';
 import { chordListSounds } from '../../../utils/queryExecutorChords';
 import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
@@ -70,9 +71,11 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
   const instrument = useAppStore((s) => s.instrument);
   const currentKey = useAppStore((s) => s.selectedKey);
   const picture = useMemo(() => (rhythm ? { kind: 'none' as const } : tryThisPicture(query, currentKey, { descending, demo })), [query, rhythm, currentKey, descending, demo]);
-  // A demonstration offers "Show on …" only where the instrument would show
-  // exactly the notes it plays (a key's scale; a chord with its notes), never
-  // a different set (Dm11's six notes for a four-note quartal voicing).
+  // A demonstration offers "Show on …" and "Open in Explore" only where the
+  // query shows exactly the notes it plays (a key's scale; a chord with its
+  // notes), never a different set: Dm11's six notes stacked in thirds under a
+  // four-note quartal voicing, the very sound the second audit's M51 was
+  // about (fix pass, item 8).
   const showsDemoNotes = useMemo(() => {
     if (!demo) return true;
     const shown = shownPitchClasses(tryThisPicture(query, currentKey));
@@ -164,7 +167,7 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
               {t(instrument === 'guitar' ? 'lesson.showOnGuitar' : 'lesson.showOnPiano')}
             </Button>
           )}
-          {!rhythm && (
+          {!rhythm && showsDemoNotes && (
             <Button variant="quiet" onClick={openInExplore}>
               {t('lesson.openInExplore')}
             </Button>
@@ -187,7 +190,7 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
           ))}
         </div>
       ) : picture.kind === 'demo' && !names ? (
-        <Suspense fallback={<StaffNotationSkeleton height={100} />}>
+        <Suspense fallback={<DemoStaffPlaceholder demo={picture.demo} />}>
           <DemoStaff demo={picture.demo} />
         </Suspense>
       ) : names && (picture.kind === 'scale' || picture.kind === 'chord' || picture.kind === 'demo') ? (
