@@ -365,11 +365,32 @@ async function settle(page: Page) {
   throw new Error('the page never stopped moving (5 s)');
 }
 
-/** The choice is on screen, its first button focused with a visible ring, its Cancel a full tap; then the audit. */
-async function auditChoice(page: Page, v: Viewport, combo: string, screen: string, lang: Lang) {
+/** The choice's words (src/i18n/backNav/<lang>.json), read from the app's own files. */
+const BACK_NAV: Record<Lang, Record<string, string>> = {
+  en: JSON.parse(fs.readFileSync(new URL('../../src/i18n/backNav/en.json', import.meta.url), 'utf8')),
+  pt: JSON.parse(fs.readFileSync(new URL('../../src/i18n/backNav/pt.json', import.meta.url), 'utf8')),
+  es: JSON.parse(fs.readFileSync(new URL('../../src/i18n/backNav/es.json', import.meta.url), 'utf8')),
+};
+const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** A sentence of the choice as a pattern: the title exact, the question numbers any. */
+const sentence = (template: string, title: string) =>
+  esc(template).replace(esc('{{title}}'), esc(title)).replace(esc('{{current}}'), '\\d+').replace(esc('{{total}}'), '\\d+');
+
+/**
+ * The choice is on screen in the form named — the kind of run kept and the kind about to start, each in
+ * its own sentence (review 3, F3: a form audited under another's name) — its first button focused with a
+ * visible ring, its three buttons full taps; then the audit.
+ */
+async function auditChoice(page: Page, v: Viewport, combo: string, screen: string, lang: Lang, kept: 'check' | 'practice' | 'review', next: 'check' | 'review') {
+  const words = BACK_NAV[lang];
   const choice = page.getByTestId('kept-choice');
   await expect(choice).toBeVisible();
   await expect(choice).toContainText(LONG[lang]);
+  const keptKey = kept === 'review' ? 'otherReviewKept' : kept === 'practice' ? 'otherPracticeKept' : 'otherCheckKept';
+  const lostKey = next === 'review' ? 'startReviewLetsGo' : 'startCheckLetsGo';
+  await expect(choice.locator('p')).toHaveText(new RegExp(`^${sentence(words[keptKey], LONG[lang])} ${esc(words[lostKey])}$`));
+  await expect(page.getByTestId('kept-back')).toHaveText(words.backToKept.replace('{{title}}', LONG[lang]));
+  await expect(page.getByTestId('kept-start')).toHaveText(words[next === 'review' ? 'startReviewHere' : 'startCheckHere']);
   await expect(page.getByTestId('kept-back')).toBeFocused();
   // Reached from the keyboard, the focus is shown (:focus-visible draws the ring).
   expect.soft(await page.getByTestId('kept-back').evaluate((b) => b.matches(':focus-visible') && getComputedStyle(b).outlineStyle !== 'none'), `${combo} ${screen}: the first button's focus is not visible`).toBe(true);
@@ -441,7 +462,7 @@ export async function keptScreens(browser: Browser, v: Viewport, theme: string, 
     await start.scrollIntoViewIfNeeded();
     await start.focus();
     await page.keyboard.press('Enter');
-    await auditChoice(page, v, combo, 'kept-choice-check', lang);
+    await auditChoice(page, v, combo, 'kept-choice-check', lang, 'check', 'check');
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('check-start')).toBeFocused();
     await context.close();
@@ -456,14 +477,19 @@ export async function keptScreens(browser: Browser, v: Viewport, theme: string, 
     await row.scrollIntoViewIfNeeded();
     await row.focus();
     await page.keyboard.press('Enter');
-    await auditChoice(page, v, combo, 'kept-choice-review-over-practice', lang);
+    await auditChoice(page, v, combo, 'kept-choice-review-over-practice', lang, 'practice', 'review');
+    // A kept REVIEW now: written, then the page reloaded, so the Learn session store reads it (a store
+    // already loaded does not adopt a save written under it: review 3, F3; the init script seeds once).
     await page.evaluate((raw) => localStorage.setItem('fermata-learn-session-v1', raw), keptSession('review', lang));
+    await page.reload();
+    await expect(page.locator('#learn-panel')).toBeVisible({ timeout: 15_000 });
+    await page.waitForTimeout(800);
     await openLesson(page, w.values);
     const start = page.getByTestId('check-start');
     await start.scrollIntoViewIfNeeded();
     await start.focus();
     await page.keyboard.press('Enter');
-    await auditChoice(page, v, combo, 'kept-choice-check-over-review', lang);
+    await auditChoice(page, v, combo, 'kept-choice-check-over-review', lang, 'review', 'check');
     await context.close();
   }
 }

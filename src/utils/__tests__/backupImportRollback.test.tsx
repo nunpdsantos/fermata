@@ -26,6 +26,7 @@ import { WELCOME_KEY } from '../../state/welcomeGate';
 import { useToastStore } from '../../state/toastStore';
 import { SettingsSheet } from '../../components/layout/SettingsSheet';
 import StartScreen from '../../components/start/StartScreen';
+import { HISTORY_RECORD_KEY, recordForgotten } from '../../state/savedPlace';
 
 type Key = (typeof BACKUP_KEYS)[number];
 const FAR = 4102444800000;
@@ -76,6 +77,27 @@ function storageFullAt(n: number, refuseRestore: Key[] = []) {
   });
 }
 
+/**
+ * A refused import leaves the tab's place alone (review 3 of the Back stream, F1): the entry exactly as it
+ * was (view, screen, layer), this tab's record of entries as it was, and a later pagehide still writes the
+ * record (the history module listens here: SettingsSheet's Sheet imports it). Only a WRITTEN import may name
+ * the imported save's place (state/savedPlace.ts `placeFromSave`).
+ */
+const PLACED = { fm: 1, i: 3, v: 'drill', s: 'mastery', l: 1 };
+const RECORD = '[[3,"drill","mastery"]]';
+function placeTab() {
+  window.history.replaceState(PLACED, '');
+  sessionStorage.setItem(HISTORY_RECORD_KEY, RECORD);
+}
+function expectPlaceUntouched() {
+  expect(window.history.state).toEqual(PLACED);
+  expect(sessionStorage.getItem(HISTORY_RECORD_KEY)).toBe(RECORD);
+  expect(recordForgotten()).toBe(false);
+  sessionStorage.removeItem(HISTORY_RECORD_KEY);
+  window.dispatchEvent(new Event('pagehide'));
+  expect(sessionStorage.getItem(HISTORY_RECORD_KEY), 'a later pagehide writes the record').not.toBeNull();
+}
+
 beforeEach(async () => {
   localStorage.clear();
   for (const [k, v] of Object.entries(OLD)) localStorage.setItem(k, v);
@@ -87,6 +109,8 @@ beforeEach(async () => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  window.history.replaceState(null, '');
+  sessionStorage.clear();
   localStorage.clear();
   localStorage.setItem('music-theory-app', JSON.stringify({ state: {}, version: 6 }));
 });
@@ -192,6 +216,7 @@ describe('Settings → Your data → Import, storage full half-way', () => {
     it.each([1, 2, 3, 4])(`${lang}: write %i refused — nothing changed, no reload, and one plain sentence`, async (n) => {
       await i18n.changeLanguage(lang);
       const before = allStorage();
+      placeTab();
       vi.spyOn(window, 'confirm').mockReturnValue(true);
       render(<SettingsSheet open onClose={() => {}} />);
       storageFullAt(n);
@@ -203,6 +228,7 @@ describe('Settings → Your data → Import, storage full half-way', () => {
       expect(screen.getAllByTestId('data-note').map((n) => [n.textContent, n.getAttribute('role')])).toEqual([[i18n.t('backupFile.importFailed'), 'alert']]);
       expect(reloadPage).not.toHaveBeenCalled();
       expect(allStorage()).toEqual(before);
+      expectPlaceUntouched();
     });
   }
 
@@ -225,6 +251,7 @@ describe('the start screen\'s "I have a progress file", storage full half-way', 
       localStorage.setItem(WELCOME_KEY, 'pending');
       for (const k of ['music-theory-progress', 'fermata-drill-v1']) localStorage.removeItem(k);
       const before = allStorage();
+      placeTab();
       render(<StartScreen />);
       storageFullAt(n);
       fireEvent.change(screen.getByTestId('start-import-input'), { target: { files: [file(FILE)] } });
@@ -233,6 +260,7 @@ describe('the start screen\'s "I have a progress file", storage full half-way', 
       expect(reloadPage).not.toHaveBeenCalled();
       expect(allStorage()).toEqual(before);
       expect(localStorage.getItem(WELCOME_KEY)).toBe('pending');
+      expectPlaceUntouched();
     });
   }
 });

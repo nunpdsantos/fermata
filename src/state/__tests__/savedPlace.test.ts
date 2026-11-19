@@ -17,14 +17,18 @@ afterEach(() => {
 });
 
 describe('placeFromSave (an import)', () => {
-  it('the entry keeps its position and names the imported view, no screen, no layer; the boot view is then that view', () => {
-    window.history.replaceState({ fm: 1, i: 4, v: 'explore', s: '', l: 1 }, '');
-    sessionStorage.setItem(HISTORY_RECORD_KEY, '[[4,"explore",""]]');
-    placeFromSave(save('learn'));
-    expect(window.history.state).toEqual({ fm: 1, i: 4, v: 'learn', l: 0 });
-    expect(sessionStorage.getItem(HISTORY_RECORD_KEY)).toBeNull();
-    expect(pickBootView('', 'learn', window.history.state)).toBe('learn');
-  });
+  // Each of the app's three views, from an entry of ours on another view with a screen and a layer
+  // (review 3, F2: a list of two views turned a Drill save into Explore, and no test read a Drill save).
+  for (const [from, to] of [['drill', 'explore'], ['explore', 'learn'], ['learn', 'drill']] as const) {
+    it(`a save last on ${to}, imported on ${from}: the entry keeps its position and names ${to}, no screen, no layer; the boot view is then ${to}`, () => {
+      window.history.replaceState({ fm: 1, i: 4, v: from, s: 'mastery', l: 1 }, '');
+      sessionStorage.setItem(HISTORY_RECORD_KEY, `[[4,"${from}","mastery"]]`);
+      placeFromSave(save(to));
+      expect(window.history.state).toEqual({ fm: 1, i: 4, v: to, l: 0 });
+      expect(sessionStorage.getItem(HISTORY_RECORD_KEY)).toBeNull();
+      expect(pickBootView('', from, window.history.state)).toBe(to);
+    });
+  }
 
   it('a save naming no view (or a bad one) opens Explore; an entry not ours is emptied', () => {
     window.history.replaceState({ fm: 1, i: 2, v: 'drill', s: 'mastery', l: 0 }, '');
@@ -32,9 +36,9 @@ describe('placeFromSave (an import)', () => {
     expect(window.history.state).toEqual({ fm: 1, i: 2, v: 'explore', l: 0 });
     placeFromSave({ getItem: () => 'not json' });
     expect(window.history.state).toEqual({ fm: 1, i: 2, v: 'explore', l: 0 });
+    // Not ours: emptied, so the boot view is the saved one (pickBootView's own rule).
     window.history.replaceState({ other: true }, '');
     placeFromSave(save('drill'));
     expect(window.history.state).toBeNull();
-    expect(pickBootView('', 'drill', window.history.state)).toBe('drill');
   });
 });
