@@ -1,5 +1,5 @@
 {
- "source": "the first grip of every root-position chord (12 roots x every quality) at aef144d, frets 6th to 1st | fingers; capo 0 in full, capo 1-9 as sha256 of the lines \"root|quality|frets|fingers\" in this order",
+ "about": "A RECORDING of this code, not a proof the grips are right: the first grip of every root-position chord (12 roots x every quality), frets 6th to 1st | fingers; capo 0 in full, capo 1-9 as sha256 of the lines \"root|quality|frets|fingers\". Recorded at the second review of builder K from the code itself (_review/scripts/rootfix2.mjs); `moved` lists every first grip that differs from aef144d's, and why.",
  "capo0": {
   "C|major": "x-3-2-0-1-0|x 3 2 0 1 0",
   "C|minor": "x-3-5-5-4-3|x bar 3 4 2 bar",
@@ -24,13 +24,13 @@
   "C|minor9": "8-10-8-8-8-10|bar 2 bar bar bar 3",
   "C|dominant9": "8-10-8-9-8-10|bar 3 bar 2 bar 4",
   "C|dominant7flat9": "x-3-2-3-2-0|x 2 1 3 1 0",
-  "C|dominant7sharp9": "x-3-2-3-4-x|x 2 1 3 4 x",
+  "C|dominant7sharp9": "x-3-1-3-x-0|x 2 1 3 x 0",
   "C|dominant7flat5": "8-9-8-9-x-x|1 2 1 3 x x",
   "C|dominant7sharp5": "8-11-8-9-x-x|bar 4 bar 2 x x",
   "C|dominant7alt": "8-9-8-9-9-x|1 2 1 3 4 x",
   "C|dominant11": "x-3-3-3-3-3|x bar bar bar bar bar",
   "C|major11": "8-10-9-10-8-8|bar 3 2 4 bar bar",
-  "C|minor11": "x-3-3-3-4-x|x 1 1 1 2 x",
+  "C|minor11": "x-3-0-3-4-1|x 2 0 3 4 1",
   "C|dominant9sharp11": "x-3-2-3-3-2|x 2 1 3 4 1",
   "C|dominant7sharp11": "x-3-2-3-x-2|x 3 1 4 x 2",
   "C|major9sharp11": "x-3-4-4-3-0|x 1 2 2 1 0",
@@ -39,7 +39,7 @@
   "C|minor13": "8-10-8-8-10-8|bar 2 bar bar 3 bar",
   "C|dominant13flat9": "8-10-8-9-10-9|bar 3 bar 2 4 2",
   "C|dominant7flat13": "x-3-2-3-x-4|x 2 1 3 x 4",
-  "C|add11": "x-3-3-0-x-0|x 1 1 0 x 0",
+  "C|add11": "x-3-2-0-x-1|x 3 2 0 x 1",
   "C|six_nine": "x-3-2-2-3-0|x 2 1 1 3 0",
   "C|minor_six_nine": "x-3-1-2-3-x|x 3 1 2 4 x",
   "C|dominant9sus4": "8-10-8-10-8-10|bar 2 bar 3 bar 4",
@@ -74,7 +74,7 @@
   "Db|major9": "9-11-10-10-9-11|bar 3 2 2 bar 4",
   "Db|minor9": "9-11-9-9-9-11|bar 2 bar bar bar 3",
   "Db|dominant9": "9-11-9-10-9-11|bar 3 bar 2 bar 4",
-  "Db|dominant7flat9": "x-4-3-4-3-x|x 2 1 3 1 x",
+  "Db|dominant7flat9": "x-4-0-1-0-1|x 4 0 1 0 2",
   "Db|dominant7sharp9": "x-4-3-4-0-0|x 2 1 3 0 0",
   "Db|dominant7flat5": "9-10-9-10-x-x|1 2 1 3 x x",
   "Db|dominant7sharp5": "9-12-9-10-x-x|bar 4 bar 2 x x",
@@ -82,9 +82,9 @@
   "Db|dominant11": "x-4-4-4-4-4|x bar bar bar bar bar",
   "Db|major11": "9-11-10-11-9-9|bar 3 2 4 bar bar",
   "Db|minor11": "x-4-4-4-4-0|x 1 1 1 1 0",
-  "Db|dominant9sharp11": "x-4-3-4-4-3|x 2 1 3 4 1",
+  "Db|dominant9sharp11": "x-4-1-0-0-1|x 4 1 0 0 2",
   "Db|dominant7sharp11": "x-4-3-0-0-4|x 2 1 0 0 3",
-  "Db|major9sharp11": "9-8-10-8-8-x|2 bar 3 bar bar x",
+  "Db|major9sharp11": "x-4-1-0-1-1|x 4 1 0 2 2",
   "Db|dominant13": "x-4-6-4-6-6|x bar 2 bar 3 4",
   "Db|major13": "x-4-6-5-6-6|x 1 3 2 4 4",
   "Db|minor13": "9-11-9-9-11-9|bar 2 bar bar 3 bar",
@@ -98,9 +98,9 @@
   "Db|augmented_major7": "9-12-10-10-x-x|1 4 2 2 x x",
   "Db|major7flat5": "9-10-10-10-x-x|1 2 2 2 x x",
   "Db|diminished_major7": "9-10-10-9-x-x|1 2 2 1 x x",
-  "Db|major7sharp11": "x-4-3-5-x-3|x 3 1 4 x 2",
+  "Db|major7sharp11": "x-4-x-0-1-1|x 3 x 0 bar bar",
   "Db|dominant7sharp5flat9": "x-4-0-2-0-1|x 3 0 2 0 1",
-  "Db|dominant7flat5flat9": "x-4-3-4-3-3|x 2 1 3 1 1",
+  "Db|dominant7flat5flat9": "x-4-0-0-0-1|x 3 0 0 0 1",
   "Db|dominant7sharp5sharp9": "x-4-3-2-0-0|x 3 2 1 0 0",
   "Db|dominant7flat5sharp9": "x-4-3-0-0-0|x 2 1 0 0 0",
   "D|major": "x-x-0-2-3-2|x x 0 1 3 2",
@@ -192,7 +192,7 @@
   "Eb|minor13": "11-13-11-11-13-11|bar 2 bar bar 3 bar",
   "Eb|dominant13flat9": "11-13-11-12-13-12|bar 3 bar 2 4 2",
   "Eb|dominant7flat13": "x-6-5-6-x-7|x 2 1 3 x 4",
-  "Eb|add11": "x-6-5-x-4-4|x 3 2 x bar bar",
+  "Eb|add11": "x-x-1-0-4-4|x x 1 0 3 3",
   "Eb|six_nine": "x-x-1-0-1-1|x x 1 0 2 3",
   "Eb|minor_six_nine": "x-6-4-5-6-x|x 3 1 2 4 x",
   "Eb|dominant9sus4": "11-13-11-13-11-13|bar 2 bar 3 bar 4",
@@ -216,7 +216,7 @@
   "E|dominant7": "0-2-0-1-0-0|0 2 0 1 0 0",
   "E|diminished7": "x-x-2-3-2-3|x x 1 3 2 4",
   "E|half_diminished7": "x-7-8-7-8-x|x 1 2 1 3 x",
-  "E|augmented7": "0-x-0-1-1-0|0 x 0 1 1 0",
+  "E|augmented7": "0-3-0-1-1-0|0 2 0 bar bar 0",
   "E|sus2": "0-2-4-4-0-0|0 1 3 4 0 0",
   "E|sus4": "0-2-2-2-0-0|0 2 3 4 0 0",
   "E|add9": "12-14-14-13-12-14|bar 3 3 2 bar 4",
@@ -227,7 +227,7 @@
   "E|major9": "12-14-13-13-12-14|bar 3 2 2 bar 4",
   "E|minor9": "0-2-0-0-0-2|0 2 0 0 0 3",
   "E|dominant9": "0-2-0-1-0-2|0 2 0 1 0 3",
-  "E|dominant7flat9": "0-x-0-1-0-1|0 x 0 1 0 2",
+  "E|dominant7flat9": "0-2-0-1-0-1|0 3 0 1 0 2",
   "E|dominant7sharp9": "0-2-0-1-0-3|0 2 0 1 0 3",
   "E|dominant7flat5": "12-13-12-13-x-x|1 2 1 3 x x",
   "E|dominant7sharp5": "12-15-12-13-x-x|bar 4 bar 2 x x",
@@ -252,7 +252,7 @@
   "E|major7flat5": "12-13-13-13-x-x|1 2 2 2 x x",
   "E|diminished_major7": "12-13-13-12-x-x|1 2 2 1 x x",
   "E|major7sharp11": "0-1-1-1-0-0|0 1 1 1 0 0",
-  "E|dominant7sharp5flat9": "0-x-0-1-1-1|0 x 0 1 1 1",
+  "E|dominant7sharp5flat9": "0-3-0-1-1-1|0 2 0 bar bar bar",
   "E|dominant7flat5flat9": "0-1-0-1-x-1|0 1 0 2 x 3",
   "E|dominant7sharp5sharp9": "0-3-0-1-1-3|0 2 0 bar bar 3",
   "E|dominant7flat5sharp9": "0-1-0-1-3-3|0 1 0 2 3 3",
@@ -288,7 +288,7 @@
   "F|minor11": "1-1-1-1-x-x|1 1 1 1 x x",
   "F|dominant9sharp11": "1-0-1-0-0-1|1 0 2 0 0 3",
   "F|dominant7sharp11": "1-0-1-x-0-1|1 0 2 x 0 3",
-  "F|major9sharp11": "1-0-x-0-0-0|1 0 x 0 0 0",
+  "F|major9sharp11": "1-0-2-0-0-0|1 0 2 0 0 0",
   "F|dominant13": "1-3-1-2-3-1|bar 3 bar 2 4 bar",
   "F|major13": "1-3-2-2-3-1|bar 3 2 2 4 bar",
   "F|minor13": "1-3-1-1-3-1|bar 2 bar bar 3 bar",
@@ -302,7 +302,7 @@
   "F|augmented_major7": "1-4-2-2-x-x|1 4 2 2 x x",
   "F|major7flat5": "1-2-2-2-x-x|1 2 2 2 x x",
   "F|diminished_major7": "1-2-2-1-x-x|1 2 2 1 x x",
-  "F|major7sharp11": "1-0-x-x-0-0|1 0 x x 0 0",
+  "F|major7sharp11": "1-0-2-2-0-0|1 0 2 2 0 0",
   "F|dominant7sharp5flat9": "1-0-1-x-2-2|1 0 2 x 3 3",
   "F|dominant7flat5flat9": "1-0-1-2-0-2|1 0 2 3 0 4",
   "F|dominant7sharp5sharp9": "1-0-1-1-2-x|1 0 2 3 4 x",
@@ -318,7 +318,7 @@
   "F#|dominant7": "2-4-2-3-2-2|bar 3 bar 2 bar bar",
   "F#|diminished7": "x-x-4-5-4-5|x x 1 3 2 4",
   "F#|half_diminished7": "2-3-2-2-x-x|1 2 1 1 x x",
-  "F#|augmented7": "2-1-0-x-x-0|2 1 0 x x 0",
+  "F#|augmented7": "2-1-0-3-3-0|2 1 0 3 3 0",
   "F#|sus2": "2-4-6-6-2-2|bar 3 4 4 bar bar",
   "F#|sus4": "2-4-4-4-2-2|bar 3 4 4 bar bar",
   "F#|add9": "2-4-4-3-2-4|bar 3 3 2 bar 4",
@@ -354,7 +354,7 @@
   "F#|major7flat5": "2-3-3-3-x-x|1 2 2 2 x x",
   "F#|diminished_major7": "2-3-3-2-x-x|1 2 2 1 x x",
   "F#|major7sharp11": "2-1-x-x-1-1|4 1 x x 2 3",
-  "F#|dominant7sharp5flat9": "2-1-0-0-x-0|2 1 0 0 x 0",
+  "F#|dominant7sharp5flat9": "2-1-2-0-3-0|2 1 3 0 4 0",
   "F#|dominant7flat5flat9": "2-1-2-0-1-0|3 1 4 0 2 0",
   "F#|dominant7sharp5sharp9": "2-1-0-2-x-0|2 1 0 3 x 0",
   "F#|dominant7flat5sharp9": "2-0-2-3-1-0|2 0 3 4 1 0",
@@ -420,7 +420,7 @@
   "Ab|dominant7": "4-6-4-5-4-4|bar 3 bar 2 bar bar",
   "Ab|diminished7": "x-x-6-7-6-7|x x 1 3 2 4",
   "Ab|half_diminished7": "4-5-4-4-x-x|1 2 1 1 x x",
-  "Ab|augmented7": "4-3-2-x-x-2|4 3 1 x x 2",
+  "Ab|augmented7": "4-x-4-x-1-0|3 x 4 x 1 0",
   "Ab|sus2": "4-6-8-8-4-4|bar 3 4 4 bar bar",
   "Ab|sus4": "4-6-6-6-4-4|bar 3 4 4 bar bar",
   "Ab|add9": "4-6-6-5-4-6|bar 3 3 2 bar 4",
@@ -431,7 +431,7 @@
   "Ab|major9": "4-6-5-5-4-6|bar 3 2 2 bar 4",
   "Ab|minor9": "4-6-4-4-4-6|bar 2 bar bar bar 3",
   "Ab|dominant9": "4-6-4-5-4-6|bar 3 bar 2 bar 4",
-  "Ab|dominant7flat9": "4-3-4-2-x-x|3 2 4 1 x x",
+  "Ab|dominant7flat9": "4-0-x-1-1-2|3 0 x bar bar 2",
   "Ab|dominant7sharp9": "4-3-x-4-x-2|3 2 x 4 x 1",
   "Ab|dominant7flat5": "4-5-4-5-x-x|1 2 1 3 x x",
   "Ab|dominant7sharp5": "4-7-4-5-x-x|bar 4 bar 2 x x",
@@ -475,7 +475,7 @@
   "A|sus2": "x-0-2-2-0-0|x 0 1 2 0 0",
   "A|sus4": "x-0-2-2-3-0|x 0 1 2 3 0",
   "A|add9": "5-7-7-6-5-7|bar 3 3 2 bar 4",
-  "A|minor_add9": "5-3-x-4-5-x|3 1 x 2 4 x",
+  "A|minor_add9": "x-0-x-4-1-0|x 0 x 3 1 0",
   "A|minor_major7": "x-0-2-1-1-0|x 0 2 1 1 0",
   "A|power": "x-0-2-2-x-x|x 0 1 2 x x",
   "A|dominant7sus4": "x-0-2-0-3-0|x 0 1 0 3 0",
@@ -500,7 +500,7 @@
   "A|dominant7flat13": "x-0-2-0-2-1|x 0 2 0 3 1",
   "A|add11": "x-0-0-2-2-0|x 0 0 1 1 0",
   "A|six_nine": "x-0-4-4-2-0|x 0 2 2 1 0",
-  "A|minor_six_nine": "5-2-4-5-x-x|3 1 2 4 x x",
+  "A|minor_six_nine": "x-0-x-4-1-2|x 0 x 3 1 2",
   "A|dominant9sus4": "5-7-5-7-5-7|bar 2 bar 3 bar 4",
   "A|sus2sus4": "5-7-7-7-5-7|bar 3 3 3 bar 4",
   "A|augmented_major7": "5-8-6-6-x-x|1 4 2 2 x x",
@@ -557,7 +557,7 @@
   "Bb|augmented_major7": "6-9-7-7-x-x|1 4 2 2 x x",
   "Bb|major7flat5": "6-7-7-7-x-x|1 2 2 2 x x",
   "Bb|diminished_major7": "6-7-7-6-x-x|1 2 2 1 x x",
-  "Bb|major7sharp11": "6-5-x-x-5-5|4 1 x x 2 3",
+  "Bb|major7sharp11": "x-1-x-2-3-0|x 1 x 2 3 0",
   "Bb|dominant7sharp5flat9": "x-1-0-1-0-2|x 1 0 2 0 3",
   "Bb|dominant7flat5flat9": "x-1-0-1-0-0|x 1 0 2 0 0",
   "Bb|dominant7sharp5sharp9": "x-1-0-1-2-2|x 1 0 2 3 3",
@@ -599,7 +599,7 @@
   "B|major13": "x-2-4-3-4-4|x 1 3 2 4 4",
   "B|minor13": "7-9-7-7-9-7|bar 2 bar bar 3 bar",
   "B|dominant13flat9": "7-9-7-8-9-8|bar 3 bar 2 4 2",
-  "B|dominant7flat13": "x-2-x-2-4-3|x 1 x 2 4 3",
+  "B|dominant7flat13": "x-2-1-2-0-3|x 2 1 3 0 4",
   "B|add11": "x-2-1-x-0-0|x 2 1 x 0 0",
   "B|six_nine": "x-2-1-1-2-x|x 2 1 1 3 x",
   "B|minor_six_nine": "x-2-0-1-2-2|x 2 0 1 3 4",
@@ -615,14 +615,148 @@
   "B|dominant7flat5sharp9": "x-2-0-2-4-1|x 2 0 3 4 1"
  },
  "hashes": {
-  "1": "444a53d478a5e1281438cbf227fc5aacbbfe8a89e9415d340e2af93581f62234",
-  "2": "fb4e0afc6dee6bfe7ccbf2afdd7b95c0f3b228c8e17e97987d4b7bf89c8882ae",
-  "3": "9c4206e0fddbc3a11a351d6c9ce1980dbba1ab6d66a9ff03de23f4b33d3c2a2c",
-  "4": "5d71bb004e0bc0c3af74e0b1288e9bdcf1b89ada9c9aa9218bf5b95efeb00159",
-  "5": "c9940aadee41db24d143f87203ab0d2206d097391dd76b3cf8e3d5cf6670836d",
-  "6": "a1fbdb14da69682ac1fd98dd07766f53d83450dc6479a4bb2f315f1a5a339789",
-  "7": "8e8ab9ac5bb61267e7c7411dd19e44c252a9a9574da816bb075f47684a5494c0",
-  "8": "3526d6ee114072b827abfa1510edde7a5cded0fe08bfac4f96c8e516c3afcfc6",
-  "9": "2fe7b400f04cfe45ccb499d8ea3160d39031d4f25f26cfb2c15d234332825e54"
- }
+  "1": "2e59506f99f954dc2eaad8f19afd41a8357c5103ef1db8f60d6d5e4f053e12ed",
+  "2": "19b2be77e2a9d2062886b9e01005651f97e049eb8b082a5cb1136fa67fe1679b",
+  "3": "ec6700169efdce082810ade8205f350f62859acc5d28abb0c8d913811451dfcf",
+  "4": "fde576c67b5231b268ca35e5d80167815374b2f5a0943799699977820a5c8858",
+  "5": "2521be6f6541d34627bbfc5be9a0431e2c6c20e608fd3ad5c03f316952cc8bfd",
+  "6": "3efbfecbdef99b3ab2b43914a826d11b6c575f3e7d521189742bc2706cd91d93",
+  "7": "6ce6f588ef0c417adc805b001c2003966ecfb250b4a3087a8fb454de3a568b06",
+  "8": "f1b73b09c3dd3e49478b8abdad9a9a74752cdafd47a0273eaede017f94c9ae81",
+  "9": "36fe052565e57d71b7ede6128c12c85064d9718d4ff71b077e4866d22e6cfd2f"
+ },
+ "moved": [
+  {
+   "chord": "C|dominant7sharp9",
+   "aef144d": "x-3-2-3-4-x|x 2 1 3 4 x",
+   "now": "x-3-1-3-x-0|x 2 1 3 x 0",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "C|minor11",
+   "aef144d": "x-3-3-3-4-x|x 1 1 1 2 x",
+   "now": "x-3-0-3-4-1|x 2 0 3 4 1",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "C|add11",
+   "aef144d": "x-3-3-0-x-0|x 1 1 0 x 0",
+   "now": "x-3-2-0-x-1|x 3 2 0 x 1",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "Db|dominant7flat9",
+   "aef144d": "x-4-3-4-3-x|x 2 1 3 1 x",
+   "now": "x-4-0-1-0-1|x 4 0 1 0 2",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Db|dominant9sharp11",
+   "aef144d": "x-4-3-4-4-3|x 2 1 3 4 1",
+   "now": "x-4-1-0-0-1|x 4 1 0 0 2",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Db|major9sharp11",
+   "aef144d": "9-8-10-8-8-x|2 bar 3 bar bar x",
+   "now": "x-4-1-0-1-1|x 4 1 0 2 2",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Db|major7sharp11",
+   "aef144d": "x-4-3-5-x-3|x 3 1 4 x 2",
+   "now": "x-4-x-0-1-1|x 3 x 0 bar bar",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Db|dominant7flat5flat9",
+   "aef144d": "x-4-3-4-3-3|x 2 1 3 1 1",
+   "now": "x-4-0-0-0-1|x 3 0 0 0 1",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Eb|add11",
+   "aef144d": "x-6-5-x-4-4|x 3 2 x bar bar",
+   "now": "x-x-1-0-4-4|x x 1 0 3 3",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "E|augmented7",
+   "aef144d": "0-x-0-1-1-0|0 x 0 1 1 0",
+   "now": "0-3-0-1-1-0|0 2 0 bar bar 0",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "E|dominant7flat9",
+   "aef144d": "0-x-0-1-0-1|0 x 0 1 0 2",
+   "now": "0-2-0-1-0-1|0 3 0 1 0 2",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "E|dominant7sharp5flat9",
+   "aef144d": "0-x-0-1-1-1|0 x 0 1 1 1",
+   "now": "0-3-0-1-1-1|0 2 0 bar bar bar",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "F|major9sharp11",
+   "aef144d": "1-0-x-0-0-0|1 0 x 0 0 0",
+   "now": "1-0-2-0-0-0|1 0 2 0 0 0",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "F|major7sharp11",
+   "aef144d": "1-0-x-x-0-0|1 0 x x 0 0",
+   "now": "1-0-2-2-0-0|1 0 2 2 0 0",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "F#|augmented7",
+   "aef144d": "2-1-0-x-x-0|2 1 0 x x 0",
+   "now": "2-1-0-3-3-0|2 1 0 3 3 0",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "F#|dominant7sharp5flat9",
+   "aef144d": "2-1-0-0-x-0|2 1 0 0 x 0",
+   "now": "2-1-2-0-3-0|2 1 3 0 4 0",
+   "why": "the aef144d grip has a muted string no finger reaches (item 3)"
+  },
+  {
+   "chord": "Ab|augmented7",
+   "aef144d": "4-3-2-x-x-2|4 3 1 x x 2",
+   "now": "4-x-4-x-1-0|3 x 4 x 1 0",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Ab|dominant7flat9",
+   "aef144d": "4-3-4-2-x-x|3 2 4 1 x x",
+   "now": "4-0-x-1-1-2|3 0 x bar bar 2",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "A|minor_add9",
+   "aef144d": "5-3-x-4-5-x|3 1 x 2 4 x",
+   "now": "x-0-x-4-1-0|x 0 x 3 1 0",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "A|minor_six_nine",
+   "aef144d": "5-2-4-5-x-x|3 1 2 4 x x",
+   "now": "x-0-x-4-1-2|x 0 x 3 1 2",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "Bb|major7sharp11",
+   "aef144d": "6-5-x-x-5-5|4 1 x x 2 3",
+   "now": "x-1-x-2-3-0|x 1 x 2 3 0",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  },
+  {
+   "chord": "B|dominant7flat13",
+   "aef144d": "x-2-x-2-4-3|x 1 x 2 4 3",
+   "now": "x-2-1-2-0-3|x 2 1 3 0 4",
+   "why": "no first-position grip and no hand-made one in the list: the search adds whole first-position grips (item 4)"
+  }
+ ]
 }

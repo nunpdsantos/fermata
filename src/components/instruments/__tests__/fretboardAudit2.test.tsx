@@ -86,6 +86,14 @@ describe('M43: every grip offered for an asked bass has that bass lowest', () =>
     }
   });
 
+  it('root position never says "No shape here has C in the bass" (second review, item 6): C7♭5♯9 with a capo on 9, where no grip has C lowest', async () => {
+    const { chordShapesForCapo } = await import('../../../core/constants/guitarChordShapes');
+    expect(chordShapesForCapo(chord('C', 'dominant7flat5sharp9'), 0, 9).bassMatched).toBe(false);
+    await board({ selectedChord: chord('C', 'dominant7flat5sharp9'), chordInversion: 0, capoFret: 9 });
+    expect(chips().length).toBeGreaterThan(0);
+    expect(notice()).not.toMatch(/in the bass/);
+  });
+
   it('where no grip has the asked bass, the board says so, and offers every grip of the chord (C7♯5♭9 over B)', async () => {
     const { chordShapesForCapo, getChordShapesWithFallback } = await import('../../../core/constants/guitarChordShapes');
     const asked = chord('C', 'dominant7sharp5flat9', 'B');
@@ -195,6 +203,19 @@ describe('M46: the scale-position notice names every pitch it cannot reach, and 
       const { unmount } = await board({ selectedKey: N('C'), guitarTuningId: 'drop-d', guitarScalePosition: 1 });
       expect(notice(), lang).toMatch(/ A2[, ]/);
       expect(notice().endsWith(` ${end}`), `${lang}: ${notice()}`).toBe(true);
+      unmount();
+    }
+  });
+
+  it('the one-pitch sentence, whole, from its first word, in EN, PT and ES (C major, Drop D, position I: A2)', async () => {
+    for (const [lang, sentence] of [
+      ['en', "In this tuning two strings are a 5th apart, so A2, between them, is out of the hand's reach in this position. You will find it in the Open position."],
+      ['pt', 'Nesta afinação há duas cordas a uma quinta de distância, por isso A2, entre elas, fica fora do alcance da mão nesta posição. Encontra-la na posição aberta.'],
+      ['es', 'En esta afinación dos cuerdas están a una quinta, así que A2, entre ellas, queda fuera del alcance de la mano en esta posición. La encuentras en la posición abierta.'],
+    ] as const) {
+      await i18n.changeLanguage(lang);
+      const { unmount } = await board({ selectedKey: N('C'), guitarTuningId: 'drop-d', guitarScalePosition: 1 });
+      expect(notice(), lang).toBe(sentence);
       unmount();
     }
   });

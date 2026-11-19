@@ -1220,9 +1220,10 @@ body {
    line where it fits — the chord chips give up width and scroll sideways,
    the selected chip kept in view — so it adds no height to the dock (music
    audit 2, the review of builder K, item 8: +26 px at 1440×900 in Open G,
-   pushing Explore's circle past the fold). Where it cannot fit (a scale
-   position's notice in Open G) it takes a line, as it always has below
-   1024 px. Outside the layers, so it wins over the element's `w-full`
+   pushing Explore's circle past the fold). Where it cannot fit it takes a
+   line, as it always has below 1024 px: a scale position's notice in Open G
+   at every width, and at 1024 px in Spanish the longest chord notice ("Las
+   formas de acordes solo existen…", e2e/guitar-notice-height.spec.ts). Outside the layers, so it wins over the element's `w-full`
    utility without changing its markup (the owner's neck is recorded as is:
    legacyNeck.test.tsx). */
 @media (min-width: 1024px) {
@@ -1230,6 +1231,14 @@ body {
     width: auto;
     max-width: 100%;
     flex: 0 1 auto;
+  }
+  /* Two notices together (a bass the neck cannot give AND a tone left out:
+     Cm(add11)/F♯) take their own line, as below 1024 px: on the controls'
+     line they squeezed the chips to 62 px and cut the selected one (second
+     review of builder K, item 5). */
+  .fretboard-controls > p[role="status"][data-notices="two"] {
+    width: 100%;
+    flex: 0 0 100%;
   }
 }
 

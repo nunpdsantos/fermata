@@ -1,4 +1,5 @@
 {
+"about": "FIGURES FROM AN INDEPENDENT SOURCE: rows copied from the audit's own evidence (its scripts and CSVs, not this code), so the tests check the code against them; not re-recorded from the app.",
 "source": "fermata-programme/notes/2026-11-18-audit/evidence/explore-guitar (music audit 2, release 15 6de6c0e)",
 "rootFingerConflicts": [
 {

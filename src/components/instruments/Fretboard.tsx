@@ -810,7 +810,12 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
       ? t(capo > 0 ? 'capo.noShape' : 'fretboard.noChordShape')
       // With a capo the frets behind it are blank: not "the whole neck" (final review of wave 2).
       : t(capo > 0 ? 'capo.shapesStandardOnly' : 'fretboard.chordShapesStandardOnly'))
-    : mode === 'chord' && !bassMatched && requestedBass
+    // Only where a bass was asked for (an inversion, a slash chord): in root
+    // position no bass was, and "No shape here has C in the bass" is never the
+    // right sentence there (second review of builder K, item 6: C7♭5♯9 with a
+    // capo on 9) — the chips show the chord's grips, the first with the root
+    // lowest wherever one exists.
+    : mode === 'chord' && !bassMatched && requestedBass && (selectedChord?.bassNote || chordInversion > 0)
       ? t('fretboard.bassNotice', { bass: noteToString(requestedBass) })
       : null;
   // "F♯3 and G3", "E (3) and F (11)": a list in the learner's language.
@@ -957,7 +962,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               `.fretboard-controls > p[role="status"]`: the markup stays as the
               owner's neck recorded it). */}
           {notices.length > 0 && (
-            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }}>
+            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }} data-notices={notices.length > 1 ? 'two' : undefined}>
               {notices.join(' ')}
             </p>
           )}

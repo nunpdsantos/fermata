@@ -5,16 +5,17 @@
  * the ear), and — after the string count — a first-position grip comes first
  * (an open string, every stopped fret at 4 or below: G/D x x 0 0 0 3, not
  * x 5 5 4 3 3; A/C♯ x 4 2 2 2 0, not x 4 2 2 2 5; A7/C♯ x 4 2 2 2 3, not
- * x 4 5 0 5 5). Root position is exactly
- * as it was at aef144d (fixtures/grip-root-aef144d.json, recorded from that
- * commit's own code by _review/scripts/rootfix.mjs).
+ * x 4 5 0 5 5). Root position is pinned against fixtures/grip-root-first.json,
+ * a RECORDING of the code (it pins change, it does not prove the grips right):
+ * as at aef144d but for the 22 its `moved` list names, each with why (the
+ * second review of builder K, items 3 and 4).
  */
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { buildChord, CHORD_FORMULAS } from '../chords';
 import { chordShapesForCapo } from '../guitarChordShapes';
 import type { ChordQuality, Note } from '../../types/music';
-import recorded from './fixtures/grip-root-aef144d.json';
+import recorded from './fixtures/grip-root-first.json';
 
 const N = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
 const R12 = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
@@ -41,11 +42,35 @@ describe('the first grip of 24 common slash chords', () => {
     expect(frets(shapes[0])).toBe(want);
   });
 
-  it('D/C: the grip that sounds C again (x 3 0 2 1 2) is still offered, after every grip that sounds it once', () => {
-    const list = chordShapesForCapo({ ...buildChord(N('D'), 'major'), bassNote: N('C') }, 0, 0).shapes.map(frets);
+  // The learner's own path (second review, item 7): typed in Quick Search or
+  // opened from a link, the symbol goes through the parser; a bass that is a
+  // chord tone opens as that inversion (`inversionOfBass`, as
+  // `selectChordAsWritten` does), one outside the chord stays a slash chord
+  // with the bass among the notes.
+  const SUFFIX: Record<string, string> = { major: '', minor: 'm', dominant7: '7', major7: 'maj7' };
+  it.each(FIRST)('typed: %s %s over %s: %s', async (root, quality, bass, want) => {
+    const { chordFromParsed, parseChordSymbol } = await import('../../utils/chordParser');
+    const { inversionOfBass } = await import('../../../utils/chordSelection');
+    const chord = chordFromParsed(parseChordSymbol(`${root}${SUFFIX[quality]}/${bass}`)!);
+    const inversion = inversionOfBass(chord);
+    const request = inversion === null ? chord : { ...chord, bassNote: undefined };
+    const { shapes, bassMatched } = chordShapesForCapo(request, inversion ?? 0, 0);
+    expect(bassMatched).toBe(true);
+    expect(frets(shapes[0])).toBe(want);
+  });
+
+  it('D/C: the grip that sounds C again (x 3 0 2 1 2) is still offered, after every fuller grip that sounds it once', () => {
+    const shapes = chordShapesForCapo({ ...buildChord(N('D'), 'major'), bassNote: N('C') }, 0, 0).shapes;
+    const list = shapes.map(frets);
     const at = list.indexOf('x-3-0-2-1-2');
     expect(at).toBeGreaterThan(0);
-    expect(list.slice(at)).toEqual(['x-3-0-2-1-2']);
+    // Before it only grips that sound C once; after it only grips that sound
+    // C again too, reductions of an earlier grip (strings muted) and the C- /
+    // G-shape barres (rules 2, 8 and 1).
+    const cs = (f: string) => f.split('-').filter((x, s) => x !== 'x' && ([40, 45, 50, 55, 59, 64][s] + Number(x)) % 12 === 0).length;
+    expect(list.slice(0, at).every((f) => cs(f) === 1)).toBe(true);
+    const sub = (b: string, a: string) => { const fb = b.split('-'), fa = a.split('-'); return fb.some((x, i) => x === 'x' && fa[i] !== 'x') && fb.every((x, i) => x === 'x' || x === fa[i]); };
+    for (const [i, f] of list.entries()) if (i > at) expect(cs(f) > 1 || list.slice(0, i).some((a) => sub(f, a)) || /C-shape Barre|G-shape Barre/.test(shapes[i].shape.madeFrom ?? shapes[i].shape.name), f).toBe(true);
   });
 
   it('through the parser too (Quick Search, a share link): D/C, whose C the parser puts among its notes, still opens on x 3 0 2 3 2', async () => {
@@ -93,15 +118,28 @@ describe('three strings first while a fuller grip is offered: only where every f
   }, 300_000);
 });
 
-describe('root position is exactly as at aef144d', () => {
+describe('root position as recorded: aef144d\'s first grips but for the 22 listed with why', () => {
   it('every root-position first grip, 12 roots × every quality, no capo: frets and fingers', () => {
     const got: Record<string, string> = {};
     for (const r of R12) for (const q of Object.keys(CHORD_FORMULAS)) got[`${r}|${q}`] = grip(chordShapesForCapo(buildChord(N(r), q as ChordQuality), 0, 0).shapes[0]);
     expect(got).toEqual(recorded.capo0);
     expect(Object.keys(got)).toHaveLength(12 * Object.keys(CHORD_FORMULAS).length);
+    // Every move is listed with its reason, and none is one of the commonest
+    // chords (the stop condition): the twelve the second review named moved
+    // into first position, the rest left a grip no hand can strum.
+    expect(recorded.moved).toHaveLength(22);
+    for (const m of recorded.moved) {
+      expect(got[m.chord]).toBe(m.now);
+      expect(m.why).toMatch(/item [34]/);
+      expect(['major', 'minor', 'dominant7', 'major7', 'minor7', 'sus4', 'sus2']).not.toContain(m.chord.split('|')[1]);
+    }
+    const NAMED_TWELVE = ['A|minor_add9', 'A|minor_six_nine', 'C|minor11', 'C|dominant7sharp9', 'Db|dominant7flat9', 'Db|dominant9sharp11', 'Db|major9sharp11', 'Db|major7sharp11', 'Db|dominant7flat5flat9', 'Ab|dominant7flat9', 'Bb|major7sharp11', 'B|dominant7flat13'];
+    const firstPosition = (g: string) => { const f = g.split('|')[0].split('-').filter((x) => x !== 'x').map(Number); return f.includes(0) && f.every((x) => x <= 4); };
+    for (const k of NAMED_TWELVE) expect(firstPosition(got[k]), k).toBe(true);
   });
 
   it('with a capo on 1 to 9 too (the recording holds a hash per capo)', () => {
+    // (Each capo's list is the nut's moved up; these hashes are of the code at the second review.)
     for (let capo = 1; capo <= 9; capo++) {
       const lines: string[] = [];
       for (const r of R12) for (const q of Object.keys(CHORD_FORMULAS)) lines.push(`${r}|${q}|${grip(chordShapesForCapo(buildChord(N(r), q as ChordQuality), 0, capo).shapes[0])}`);

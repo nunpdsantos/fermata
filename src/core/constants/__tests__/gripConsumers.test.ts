@@ -42,18 +42,20 @@ describe('the Progression panel\'s capo ideas (hasOpenGrip)', () => {
     if (hasOpenGrip(request(key))) now.push(key);
   }
 
-  it('says yes exactly where the recording says, of 7,956 chords and slash chords (359; 224 at 153caab)', () => {
+  it('says yes exactly where the recording says, of 7,956 chords and slash chords (338; 224 at 153caab)', () => {
     expect(now).toEqual(recorded.open.now);
-    expect(recorded.open.now).toHaveLength(359);
+    expect(recorded.open.now).toHaveLength(338);
   });
 
-  it('never says no where it said yes at 153caab, but for Em6/G', () => {
-    // Em6/G's one library open grip is the three-string x x x 0 2 0; three-string
-    // grips come after fuller ones (the coordinator's ruling), so it falls past
-    // the board's eight, and the panel reads the board's own list. The board
-    // still opens on first-position grips (3 2 2 0 2 0), but the panel's "open
-    // grip" is a library open shape, a definition left as it is.
-    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual(['E|minor6|G']);
+  it('says no where it said yes at 153caab only for these six, each for the board\'s own reason', () => {
+    // The panel reads the board's own list for a slash chord, and counts a
+    // library open shape there. Since the second review of builder K:
+    //  - D maj7/E, Dm7/E, D7/E: their open grip 0 x 0 2 … leaves the A muted
+    //    between two open strings, which no finger can damp (item 3);
+    //  - Dm7/G 3 x 0 2 1 1 is 3 0 0 2 1 1 with a string muted, Esus4/A
+    //    x x x 2 0 0 and Em6/G x x x 0 2 0 are three strings: each now after
+    //    the fuller grips, past the board's eight (item 4 and the ruling).
+    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual(['D|major7|E', 'D|minor7|E', 'D|minor7|G', 'D|dominant7|E', 'E|minor6|G', 'E|sus4|A']);
     expect(recorded.open.atBase).toHaveLength(224);
   });
 

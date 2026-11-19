@@ -190,7 +190,10 @@ describe('grips that used to overreach are still offered, fingered within reach 
   // 11th required since M44, and finds a grip with C♭ already lowest), so the
   // board no longer builds 7 4 4 4 4 0; F7♯9 / G♯ still has its bass added.
   it('the board\'s grips: D♭m11 / C♭ x 2 2 x 2 2; F7♯9 / G♯ 4 0 1 1 1 1, the ring finger on the added bass', () => {
-    expect(offered('Db', 'minor11', 3)[0]).toEqual({ frets: [null, 2, 2, null, 2, 2], fingers: [null, 1, 2, null, 3, 4] });
+    // Still offered, fingered within reach; since the second review (item 4) it
+    // is no longer first: x 2 4 1 2 0, in first position, comes before it.
+    expect(offered('Db', 'minor11', 3)).toContainEqual({ frets: [null, 2, 2, null, 2, 2], fingers: [null, 1, 2, null, 3, 4] });
+    expect(offered('Db', 'minor11', 3)[0].frets).toEqual([null, 2, 4, 1, 2, 0]);
     expect(offered('F', 'dominant7sharp9', 4)[0]).toEqual({ frets: [4, 0, 1, 1, 1, 1], fingers: [3, 0, 1, 1, 1, 1] });
   });
 });

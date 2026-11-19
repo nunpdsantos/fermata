@@ -14,7 +14,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { buildChord } from '../chords';
-import { arrangeShapesForBass, chordShapesForCapo, gripLeavesOut } from '../guitarChordShapes';
+import { arrangeShapesForBass, chordShapesForCapo, getChordShapesWithFallback, gripLeavesOut, sortShapesForDefault } from '../guitarChordShapes';
 import type { ChordShape } from '../guitarChordShapes';
 import type { Chord, ChordQuality, Note } from '../../types/music';
 import evidence from './fixtures/audit2-explore-guitar.json';
@@ -112,7 +112,9 @@ describe('M43: a grip offered for an asked bass has that bass lowest', () => {
     expect(bassMatched).toBe(true);
     // The board's order (review item 5): at one position, more strings first for an asked bass.
     expect(fretText(shapes[0])).toBe('0-3-2-0-1-0');
-    expect(shapes.map(fretText)).toContain('x-x-2-0-1-0');
+    // x x 2 0 1 0 is that grip with two strings muted: after every grip that
+    // is not one (second review, item 4), so past the eight here.
+    expect(shapes.map(fretText)).not.toContain('x-x-2-0-1-0');
     expect(shapes.map(lowestPc)).toEqual(shapes.map(() => 4));
     expect(shapes.map(fretText)).not.toContain('x-3-2-0-1-0');
   });
@@ -285,25 +287,32 @@ describe('the review of builder K: what must not move, and a chord the parser bu
     expect(`${frets}|${fingers}`).toBe(was);
   });
 
-  it('C/B: the C shape with its low string re-fretted to B and the next string muted, x 2 x 0 1 0, offered as the C shape', () => {
+  it('C/B: the C shape with its low string re-fretted to B and the next string muted, x 2 x 0 1 0, made as the C shape', () => {
+    // Made by the re-fret with its neighbour muted; on the board it follows
+    // every grip that is not a reduction of an earlier one (x 2 2 0 1 0 first),
+    // so the ways of giving a bass are read here, before the order.
     const chord = { ...buildChord(N('C'), 'major'), bassNote: N('B') };
-    const offered = chordShapesForCapo(chord, 0, 0).shapes.map((e) => `${e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-')}|${e.shape.strings.map((p) => (p.fret === null ? 'x' : String(p.finger))).join('')}|${e.shape.shortName}`);
-    expect(offered).toContain('x-2-x-0-1-0|x2x010|C shape/B');
+    const made = arrangeShapesForBass(sortShapesForDefault(getChordShapesWithFallback(chord)), chord, 11, 'B').shapes.map((e) => `${e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-')}|${e.shape.strings.map((p) => (p.fret === null ? 'x' : String(p.finger))).join('')}|${e.shape.shortName}`);
+    expect(made).toContain('x-2-x-0-1-0|x2x010|C shape/B');
   });
 
-  it('C9♭13/F with a capo on 3: the parser borrows "dominant13", whose named A the chord does not hold; every grip still sounds its 3rd and ♭7, F lowest', async () => {
+  it('C9♭13/F with a capo on 3 and without: the parser borrows "dominant13"; every grip sounds the chord\'s OWN tones — 3rd, ♭7, 9 and ♭13 — with F lowest', async () => {
     const { chordFromParsed, parseChordSymbol } = await import('../../utils/chordParser');
     const chord = chordFromParsed(parseChordSymbol('C9b13/F')!);
     expect(chord.quality).toBe('dominant13');
     expect(chord.notes.some((n) => n.natural === 'A' && n.accidental === '')).toBe(false);
-    const { shapes, bassMatched } = chordShapesForCapo(chord, 0, 3);
-    expect(bassMatched).toBe(true);
-    expect(shapes.length).toBeGreaterThan(0);
-    for (const e of shapes) {
-      const midis = e.shape.strings.flatMap((p, s) => (p.fret === null ? [] : [[40, 45, 50, 55, 59, 64][s] + e.baseFret + p.fret]));
-      const pcs = new Set(midis.map((m) => m % 12));
-      expect([pcs.has(4), pcs.has(10), Math.min(...midis) % 12]).toEqual([true, true, 5]);
-      expect(gripLeavesOut(e, chord)).toEqual([]);
+    for (const capo of [0, 3]) {
+      const { shapes, bassMatched } = chordShapesForCapo(chord, 0, capo);
+      expect(bassMatched).toBe(true);
+      expect(shapes.length).toBeGreaterThan(0);
+      for (const e of shapes) {
+        const midis = e.shape.strings.flatMap((p, s) => (p.fret === null ? [] : [[40, 45, 50, 55, 59, 64][s] + e.baseFret + p.fret]));
+        const pcs = new Set(midis.map((m) => m % 12));
+        // E (3), B♭ (♭7), D (9), A♭ (♭13) — the second review: 1 1 0 0 1 0 had no A♭, and said nothing.
+        expect([pcs.has(4), pcs.has(10), pcs.has(2), pcs.has(8), Math.min(...midis) % 12], `capo ${capo}`).toEqual([true, true, true, true, 5]);
+        expect(gripLeavesOut(e, chord)).toEqual([]);
+      }
     }
+    expect(chordShapesForCapo(chord, 0, 0).shapes.map((e) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-'))).not.toContain('1-1-0-0-1-0');
   });
 });

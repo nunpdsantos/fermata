@@ -93,17 +93,24 @@ describe('the degree of a tone a grip leaves out', () => {
       }
     }
     expect(wrong).toEqual([]);
-    expect(checked).toBeGreaterThan(50);
-    expect(bassFirst).toBeGreaterThan(50);
+    // The walk met left-out tones of chords whose slash bass the parser put
+    // first (15 of each since the second review of builder K, whose grips
+    // leave fewer out; 50+ before).
+    expect(checked).toBeGreaterThanOrEqual(15);
+    expect(bassFirst).toBeGreaterThanOrEqual(15);
   }, 300_000);
 
-  it('Cm(add11)/F♯, no capo: a grip that leaves out F names it the 11', () => {
+  it('Cm(add11)/F♯: whole grips now (2 x 1 0 1 1 at the nut), at every capo: no grip leaves out its 11 (the first review\'s two-notice case)', () => {
     const chord = chordFromParsed(parseChordSymbol('Cm(add11)/F#')!);
     expect(chord.algorithmicIntervalLabels).toEqual(['R', 'b3', '5', '11']);
     expect(chord.notes.map((n) => `${n.natural}${n.accidental}`)).toEqual(['F#', 'C', 'Eb', 'G', 'F']);
-    const said = chordShapesForCapo(chord, 0, 0).shapes.flatMap((e) => words(e, chord));
-    expect(said.length).toBeGreaterThan(0);
-    expect(new Set(said)).toEqual(new Set(['F (11)']));
+    const atNut = chordShapesForCapo(chord, 0, 0).shapes;
+    expect(atNut[0].shape.strings.map((p) => (p.fret === null ? 'x' : atNut[0].baseFret + p.fret)).join('-')).toBe('2-x-1-0-1-1');
+    for (let capo = 0; capo <= 9; capo++) {
+      const { shapes, bassMatched } = chordShapesForCapo(chord, 0, capo);
+      expect(bassMatched, `capo ${capo}`).toBe(true);
+      expect(shapes.flatMap((e) => words(e, chord)), `capo ${capo}`).toEqual([]);
+    }
   });
 
   it('the review\'s cases: C9♯11/A♭ and C9/A name D the 9; F♯sus2sus4/F names G♯ the 2', () => {
