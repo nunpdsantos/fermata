@@ -3714,6 +3714,8 @@ function searchedAcrossTheNeck(
  * fret 5, as the scale positions have it (`guitarPositions`): Cmaj7/A
  * 5 3 2 0 0 0 stays open, Em7/C 8 x 0 0 0 0 — the open Em7 with its low
  * string re-fretted to fret 8 — is not an open grip (review of builder K).
+ * The board's order asks a different question and stops at fret 4
+ * (`inFirstPosition`); the two differ on purpose.
  */
 function inOpenPositionOrNot(entry: { shape: ChordShape; baseFret: number }): { shape: ChordShape; baseFret: number } {
   if (entry.shape.type !== 'open') return entry;
@@ -3879,14 +3881,19 @@ function bassOutsideChord(chord: Chord, bassPc: number): boolean {
 }
 
 /**
- * The open position, as the Progression panel's "open grip" has it
- * (`inOpenPositionOrNot`, `hasOpenGrip`): strings sounding at the nut, and
- * every stopped fret at 5 or below. Read from the grip's own frets, so a
- * library shape and a searched grip are judged alike.
+ * First position, for the board's ORDER: a string sounding open and every
+ * stopped fret at 4 or below — the open position a learner and a teacher
+ * mean. Read from the grip's own frets, so a library shape and a searched
+ * grip are judged alike. It differs on purpose from the Progression panel's
+ * "open grip" (`inOpenPositionOrNot`, `hasOpenGrip`), which allows fret 5:
+ * that asks whether a key can be played with open chords at all (the little
+ * finger's stretch counts there), this asks which grip to show first — and
+ * A7/C♯ x 4 5 0 5 5, one open string up the neck, must not jump ahead of
+ * x 4 2 2 2 3 (the coordinator's ruling, 19 November).
  */
-function inOpenPosition(e: Placed): boolean {
+function inFirstPosition(e: Placed): boolean {
   const frets = e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
-  return frets.some((f) => f === 0) && frets.every((f) => f === null || f <= 5);
+  return frets.some((f) => f === 0) && frets.every((f) => f === null || f <= 4);
 }
 
 /** How many strings sound this pitch class. */
@@ -3906,18 +3913,20 @@ function soundsHowOften(e: Placed, pc: number): number {
  *      piano voices an outside bass once since this round). A bass that is a
  *      chord tone may be doubled. First among the new rules because it is
  *      about what the chord IS; the rest are about the hand;
- *   3. for an asked bass, a grip in the open position (`inOpenPosition`)
- *      before one that is not: G/D x x 0 0 0 3, not x 5 5 4 3 3; A/C♯
- *      x 4 2 2 2 0, not x 4 2 2 2 5 (the little finger stretched to fret 5).
- *      Before the string count, as the grip a teacher shows first is the open
- *      one, even on four strings;
- *   4. a grip on four strings or more before one on three or fewer;
+ *   3. a grip on four strings or more before one on three or fewer;
+ *   4. for an asked bass, a grip in first position (`inFirstPosition`: an
+ *      open string, every stopped fret at 4 or below) before one that is
+ *      not: G/D x x 0 0 0 3, not x 5 5 4 3 3; A/C♯ x 4 2 2 2 0, not
+ *      x 4 2 2 2 5 (the little finger stretched to fret 5); A7/C♯ x 4 2 2 2 3,
+ *      not x 4 5 0 5 5. After the string count (the coordinator's ruling):
+ *      before it, 39 requests opened on three strings while a fuller grip
+ *      existed (E♭/B♭ x 1 1 0 x x);
  *   5. the lowest position first (`lowestFrettedFret`: an all-open grip is 0);
  *   6. for an asked bass (an inversion, a slash chord), at one position more
  *      strings first: C/E 0 3 2 0 1 0 before x x 2 0 1 0, Em/G 3 2 2 0 0 0
  *      before x x x 0 0 0;
  *   7. otherwise as found (hand-made before generated, as before).
- * Rules 2, 3 and 6 are for an asked bass only: in root position the order is
+ * Rules 2, 4 and 6 are for an asked bass only: in root position the order is
  * the hand-made library's (rule 6 there moved Fmaj7 from x x 3 2 1 0 to the
  * barre 1 3 2 2 1 1, one of the commonest chords). (Weighing how far up the
  * hand reaches was tried: it put the generator's grips with muted inner
@@ -3928,8 +3937,8 @@ function boardOrder<T extends Placed>(list: T[], asked: AskedBass | null): T[] {
   const rank = (e: T) => [
     OFFERED_NOT_DEFAULT.has(e.shape.name) ? 1 : 0,
     asked && asked.outside && soundsHowOften(e, asked.pc) > 1 ? 1 : 0,
-    asked && !inOpenPosition(e) ? 1 : 0,
     strings(e) <= 3 ? 1 : 0,
+    asked && !inFirstPosition(e) ? 1 : 0,
     lowestFrettedFret(e),
     asked ? -strings(e) : 0,
   ];

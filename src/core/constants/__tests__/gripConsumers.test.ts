@@ -42,16 +42,18 @@ describe('the Progression panel\'s capo ideas (hasOpenGrip)', () => {
     if (hasOpenGrip(request(key))) now.push(key);
   }
 
-  it('says yes exactly where the recording says, of 7,956 chords and slash chords (360; 224 at 153caab)', () => {
+  it('says yes exactly where the recording says, of 7,956 chords and slash chords (359; 224 at 153caab)', () => {
     expect(now).toEqual(recorded.open.now);
-    expect(recorded.open.now).toHaveLength(360);
+    expect(recorded.open.now).toHaveLength(359);
   });
 
-  it('never says no where it said yes at 153caab', () => {
-    // Em6/G was the one, at aef144d: its open grips came after eight others,
-    // past the board's eight; open-position grips first (the coordinator's
-    // refinement) brought them back into the list.
-    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual([]);
+  it('never says no where it said yes at 153caab, but for Em6/G', () => {
+    // Em6/G's one library open grip is the three-string x x x 0 2 0; three-string
+    // grips come after fuller ones (the coordinator's ruling), so it falls past
+    // the board's eight, and the panel reads the board's own list. The board
+    // still opens on first-position grips (3 2 2 0 2 0), but the panel's "open
+    // grip" is a library open shape, a definition left as it is.
+    expect(recorded.open.atBase.filter((k) => !now.includes(k))).toEqual(['E|minor6|G']);
     expect(recorded.open.atBase).toHaveLength(224);
   });
 

@@ -193,23 +193,23 @@ describe('no capo: exactly the pipeline the board uses', () => {
   // Since music audit 2: root position asks for the root (M43), only grips
   // with the asked bass are offered when one has it, one chip per grip, and
   // the board's order (the review of builder K, item 5, and the
-  // coordinator's refinement), written here from its rule: for an asked bass
-  // outside the chord, a grip that sounds it once first; for any asked bass,
-  // an open-position grip first (an open string, every stopped fret at 5 or
-  // below); four strings or more first; the lowest fretted fret; for an
-  // asked bass, more strings; then as found.
+  // coordinator's refinement and ruling), written here from its rule: for an
+  // asked bass outside the chord, a grip that sounds it once first; four
+  // strings or more first; for any asked bass, a first-position grip first (an
+  // open string, every stopped fret at 4 or below); the lowest fretted fret;
+  // for an asked bass, more strings; then as found.
   const fretsOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
   const sounding = (e: { shape: ChordShape }) => e.shape.strings.filter((p) => p.fret !== null).length;
   const lowestFretted = (e: { shape: ChordShape; baseFret: number }) => Math.min(Infinity, ...e.shape.strings.flatMap((p) => (p.fret === null || e.baseFret + p.fret === 0 ? [] : [e.baseFret + p.fret])));
   const absOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
-  const openPosition = (e: { shape: ChordShape; baseFret: number }) => absOf(e).includes(0) && absOf(e).every((f) => f === null || f <= 5);
+  const openPosition = (e: { shape: ChordShape; baseFret: number }) => absOf(e).includes(0) && absOf(e).every((f) => f === null || f <= 4);
   const timesSounded = (e: { shape: ChordShape; baseFret: number }, pc: number) => absOf(e).filter((f, s) => f !== null && (OPEN_PCS[s] + f) % 12 === pc).length;
   const order = <T extends { shape: ChordShape; baseFret: number }>(offered: T[], bassPc: number | null, outside: boolean) => {
     const rank = (e: T) => [
       /^(C|G)-shape Barre$/.test(e.shape.name) ? 1 : 0,
       bassPc !== null && outside && timesSounded(e, bassPc) > 1 ? 1 : 0,
-      bassPc !== null && !openPosition(e) ? 1 : 0,
       sounding(e) <= 3 ? 1 : 0,
+      bassPc !== null && !openPosition(e) ? 1 : 0,
       lowestFretted(e) === Infinity ? 0 : lowestFretted(e),
       bassPc !== null ? -sounding(e) : 0,
     ];

@@ -2,8 +2,10 @@
  * The coordinator's refinement of the board's order (19 November 2026, after
  * the review fix pass at aef144d): for a request with an asked bass, a bass
  * outside the chord sounds once (D/C x 3 0 2 3 2, not x 3 0 2 1 2, D7/C to
- * the ear), and an open-position grip comes first (G/D x x 0 0 0 3, not
- * x 5 5 4 3 3; A/C♯ x 4 2 2 2 0, not x 4 2 2 2 5). Root position is exactly
+ * the ear), and — after the string count — a first-position grip comes first
+ * (an open string, every stopped fret at 4 or below: G/D x x 0 0 0 3, not
+ * x 5 5 4 3 3; A/C♯ x 4 2 2 2 0, not x 4 2 2 2 5; A7/C♯ x 4 2 2 2 3, not
+ * x 4 5 0 5 5). Root position is exactly
  * as it was at aef144d (fixtures/grip-root-aef144d.json, recorded from that
  * commit's own code by _review/scripts/rootfix.mjs).
  */
@@ -54,10 +56,41 @@ describe('the first grip of 24 common slash chords', () => {
     }
   });
 
+  it('A7/C♯: x 4 2 2 2 3, not x 4 5 0 5 5 (one open string up the neck is not first position)', () => {
+    const list = chordShapesForCapo({ ...buildChord(N('A'), 'dominant7'), bassNote: N('C#') }, 0, 0).shapes.map(frets);
+    expect(list[0]).toBe('x-4-2-2-2-3');
+    expect(list).toContain('x-4-5-0-5-5');
+  });
+
   it('a bass that IS a chord tone may be doubled: Dm/F 1 0 0 2 3 1 sounds F twice and stays first', () => {
     const e = chordShapesForCapo({ ...buildChord(N('D'), 'minor'), bassNote: N('F') }, 0, 0).shapes[0];
     expect(frets(e)).toBe('1-0-0-2-3-1');
   });
+});
+
+describe('three strings first while a fuller grip is offered: only where every fuller grip doubles an outside bass', () => {
+  it('every request with an asked bass, no capo (12 roots × every quality × each inversion and 12 slash basses): 0', () => {
+    const thin: string[] = [];
+    let requests = 0;
+    const sounding = (e: Placed) => e.shape.strings.filter((p) => p.fret !== null).length;
+    for (const r of R12) for (const q of Object.keys(CHORD_FORMULAS)) {
+      const chord = buildChord(N(r), q as ChordQuality);
+      const asks = [...chord.notes.slice(1).map((_, i) => ({ inv: i + 1, bass: null as string | null })), ...R12.map((b) => ({ inv: 0, bass: b }))];
+      for (const a of asks) {
+        requests++;
+        const { shapes } = chordShapesForCapo(a.bass ? { ...chord, bassNote: N(a.bass) } : chord, a.inv, 0);
+        if (shapes.length && sounding(shapes[0]) <= 3 && shapes.some((e) => sounding(e) >= 4)) thin.push(`${r} ${q} ${a.bass ? `/${a.bass}` : `inv ${a.inv}`}: ${frets(shapes[0])}`);
+      }
+    }
+    // 39 with first position before the string count (5acd91c), E♭/B♭ x 1 1 0 x x
+    // among them; these four remain, and not by the first-position rule: every
+    // fuller grip of theirs sounds the outside bass twice (D♭5/F 1 x x 1 2 1,
+    // F2 and F4), and "an outside bass sounds once" comes before the string
+    // count in the coordinator's order. With it after the string count they
+    // would open on those doubled grips instead (measured, not kept).
+    expect(thin).toEqual(['Db power /F: 1-x-x-1-2-x', 'Db power /F#: 2-x-x-1-2-x', 'D power /G: 3-x-x-2-3-x', 'Bb power /Db: x-4-3-3-x-x']);
+    expect(requests).toBe(12 * Object.keys(CHORD_FORMULAS).length * 12 + 12 * Object.values(CHORD_FORMULAS).reduce((n, f) => n + f.length - 1, 0));
+  }, 300_000);
 });
 
 describe('root position is exactly as at aef144d', () => {
