@@ -123,6 +123,7 @@ describe('"Hear" with the samples not yet decoded (the Karplus-Strong pluck)', (
         }
       }
       expect(misses).toEqual([]);
-    });
+      // 16 plucks of 3 s, each measured twice: 1–8 s alone, up to 17 s under the full suite with coverage.
+    }, 60_000);
   }
 });
