@@ -3,6 +3,8 @@ import registry from '../../../scripts/pages/slugs.json';
 import indexHtml from '../../../index.html?raw';
 import { getNextModuleInLevel, getPreviousModuleInLevel, loadLevel } from '../../data/curriculumLoader';
 import { findQuotedQueries } from '../../utils/theoryQuery';
+import { queryLabel } from '../../utils/queryLabel';
+import i18n from '../../i18n';
 import type { CurriculumLevel, CurriculumModule } from '../../core/types/curriculum';
 import { siteLessons, SITE_LANGS, type SiteLang } from '../content';
 import { buildSite, ORIGIN, sitePath, STYLESHEET, appUrl, lessonTitle, TITLE_WITH_NAME_MAX, type Site, type SitePage } from '../render';
@@ -80,12 +82,15 @@ describe('a lesson page carries the lesson, as the app\'s loader returns it', ()
       const concepts = [...d.querySelectorAll('section.concept')];
       expect(concepts.map((s) => text(s.querySelector('h2')))).toEqual(module.concepts.map((c) => c.title));
       expect(concepts.map((s) => text(s.querySelector('.prose')))).toEqual(module.concepts.map((c) => c.explanation.replace(/\s+/g, ' ').trim()));
-      // A task reads as the app shows it: every quoted query as ‘query’.
+      // A task reads as the app shows it: every quoted query as ‘its words’ —
+      // the token in English, the name of what it opens in PT / ES, as the
+      // app's own i18n names it (19 November 2026; Dó-Ré-Mi off, its default).
+      const words = (query: string) => queryLabel(query, { lang, t: (k) => i18n.getFixedT(lang)(k) as string });
       const shown = (instruction: string) => {
         let out = '';
         let last = 0;
         for (const q of findQuotedQueries(instruction)) {
-          out += `${instruction.slice(last, q.index)}‘${q.query}’`;
+          out += `${instruction.slice(last, q.index)}‘${words(q.query)}’`;
           last = q.index + q.length;
         }
         return (out + instruction.slice(last)).replace(/\s+/g, ' ').trim();

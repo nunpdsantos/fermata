@@ -5,6 +5,8 @@ import type { CurriculumModule, CurriculumUnit, CurriculumLevel } from '../../co
 import type { ExerciseDefinition } from '../../core/types/exercise';
 import { getNextModuleInLevel, getPreviousModuleInLevel } from '../../data/curriculumLoader';
 import { findQuotedQueries } from '../../utils/theoryQuery';
+import { queryLabel } from '../../utils/queryLabel';
+import { useNoteLabel } from '../../hooks/useSolfege';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { Button, IconButton } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -41,12 +43,14 @@ import {
 /** Wide enough for the rail beside the text (below it, the phone picker). */
 const RAIL_QUERY = '(min-width: 1024px)';
 
-function renderTaskInstruction(instruction: string, onTryQuery: (query: string) => void, accent: string, openQuery: string | null): ReactNode[] {
+function renderTaskInstruction(instruction: string, onTryQuery: (query: string) => void, accent: string, openQuery: string | null, label: (query: string) => string): ReactNode[] {
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   // Every quoted token that names something the app can show becomes a
   // button, in any language and anywhere in the sentence (W9-01). It now
-  // opens the Try-This IN PLACE, under the task (W4b).
+  // opens the Try-This IN PLACE, under the task (W4b). The token is what it
+  // runs; its words are the name of what it opens, in the learner's
+  // language (utils/queryLabel.ts, the owner's ruling of 19 November 2026).
   for (const { index, length, query } of findQuotedQueries(instruction)) {
     if (index > lastIndex) parts.push(instruction.slice(lastIndex, index));
     parts.push(
@@ -61,7 +65,7 @@ function renderTaskInstruction(instruction: string, onTryQuery: (query: string) 
         className="inline-flex items-baseline font-medium rounded px-1 py-0.5 -my-0.5 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
         style={{ color: accentText(accent), backgroundColor: `${accent}0d` }}
       >
-        &lsquo;{query}&rsquo;
+        &lsquo;{label(query)}&rsquo;
       </button>,
     );
     lastIndex = index + length;
@@ -167,6 +171,12 @@ export function ModuleView({
   const instrument = useAppStore((s) => s.instrument);
   const wide = useMediaQuery(RAIL_QUERY);
   const lang = (i18n.language || 'en').slice(0, 2);
+  // A task phrase's words: the name of what its token opens, in this language (Dó-Ré-Mi beside a root where the app shows it).
+  const noteLabel = useNoteLabel();
+  const phraseLabel = useCallback(
+    (query: string) => queryLabel(query, { lang: lang === 'pt' || lang === 'es' ? lang : 'en', t: (key) => t(key), note: noteLabel }),
+    [lang, t, noteLabel],
+  );
   // The language the check's words are in: English when a PT/ES overlay
   // failed to load (a run answered then is never resumed under the translation).
   const contentLang = exercises.find((ex) => ex.contentLang)?.contentLang ?? lang;
@@ -634,12 +644,12 @@ export function ModuleView({
                           </span>
                         </button>
                         <span className={`text-ui ${done ? 'line-through' : ''}`} style={{ color: 'var(--text-muted)' }}>
-                          {renderTaskInstruction(task.instruction, (query) => setTaskTry((cur) => (cur?.taskId === task.id && cur.query === query ? null : { taskId: task.id, query })), accent, openQuery)}
+                          {renderTaskInstruction(task.instruction, (query) => setTaskTry((cur) => (cur?.taskId === task.id && cur.query === query ? null : { taskId: task.id, query })), accent, openQuery, phraseLabel)}
                         </span>
                       </div>
                       {openQuery && (
                         <div className="px-4 pb-3">
-                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={noStaff} accent={accent} />
+                          <InlineTryThis compact query={openQuery} label={`‘${phraseLabel(openQuery)}’`} names={noStaff} accent={accent} />
                         </div>
                       )}
                     </div>

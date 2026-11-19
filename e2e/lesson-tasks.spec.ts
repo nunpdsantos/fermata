@@ -19,10 +19,12 @@ const SHOTS = process.env.TASK_SHOTS;
 type Lang = 'en' | 'pt' | 'es';
 type Instrument = 'piano' | 'guitar';
 
-const WORDS: Record<Lang, { heading: Record<Instrument, string>; show: Record<Instrument, string>; tap: RegExp; typing: RegExp }> = {
-  en: { heading: { piano: 'On your piano', guitar: 'On your guitar' }, show: { piano: 'Show on the piano', guitar: 'Show on the guitar' }, tap: /^Tap ‘G major scale’ — which note needs a sharp/, typing: /\b(?:type|typing)\b/i },
-  pt: { heading: { piano: 'No teu piano', guitar: 'Na tua guitarra' }, show: { piano: 'Mostrar no piano', guitar: 'Mostrar na guitarra' }, tap: /^Carrega em ‘G major scale’ — que nota precisa de sustenido/, typing: /(?<!\p{L})escrev\p{L}*/iu },
-  es: { heading: { piano: 'En tu piano', guitar: 'En tu guitarra' }, show: { piano: 'Mostrar en el piano', guitar: 'Mostrar en la guitarra' }, tap: /^Pulsa ‘G major scale’ — ¿qué nota necesita sostenido/, typing: /(?<!\p{L})escrib\p{L}*/iu },
+// The quoted phrase's words (19 November 2026, the owner's ruling): the token in English, the name of
+// what it opens in Portuguese and Spanish ("G maior", Explore's own); the tap runs the same token.
+const WORDS: Record<Lang, { heading: Record<Instrument, string>; show: Record<Instrument, string>; tap: RegExp; typing: RegExp; phrase: string }> = {
+  en: { heading: { piano: 'On your piano', guitar: 'On your guitar' }, show: { piano: 'Show on the piano', guitar: 'Show on the guitar' }, tap: /^Tap ‘G major scale’ — which note needs a sharp/, typing: /\b(?:type|typing)\b/i, phrase: '‘G major scale’' },
+  pt: { heading: { piano: 'No teu piano', guitar: 'Na tua guitarra' }, show: { piano: 'Mostrar no piano', guitar: 'Mostrar na guitarra' }, tap: /^Carrega em ‘G maior’ — que nota precisa de sustenido/, typing: /(?<!\p{L})escrev\p{L}*/iu, phrase: '‘G maior’' },
+  es: { heading: { piano: 'En tu piano', guitar: 'En tu guitarra' }, show: { piano: 'Mostrar en el piano', guitar: 'Mostrar en la guitarra' }, tap: /^Pulsa ‘G mayor’ — ¿qué nota necesita sostenido/, typing: /(?<!\p{L})escrib\p{L}*/iu, phrase: '‘G mayor’' },
 };
 
 /** A learner with a settings save: the language, the instrument, Learn. */
@@ -82,7 +84,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       await expect(rows.nth(1)).toHaveText(w.tap);
 
       // The link is a button that opens the Try This in place, under its task.
-      const link = tasks(page).getByRole('button', { name: '‘G major scale’' });
+      const link = tasks(page).getByRole('button', { name: w.phrase, exact: true });
       await expect(link).toHaveAttribute('aria-expanded', 'false');
       // On the build (19 November 2026: all seven of these failed there, importing a /src module the build
       // does not serve) the store cannot be read: what the instrument shows is asserted in both, the store on dev.
@@ -94,7 +96,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       await expect(link).toHaveAttribute('aria-expanded', 'true');
       const panel = tasks(page).getByTestId('inline-try-this');
       await expect(panel).toBeVisible();
-      await expect(panel).toContainText('‘G major scale’');
+      await expect(panel).toContainText(w.phrase);
       await panel.getByRole('button', { name: w.show[instrument] }).click();
       if (dev) await expect.poll(() => selection(page)).toBe('G major');
 
