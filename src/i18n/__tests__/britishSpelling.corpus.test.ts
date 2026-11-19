@@ -10,7 +10,8 @@
  * microphone, MIDI, metronome, moved, backup file, learn words, explore tools,
  * Drill terms), the tester's sheet and every Drill item as the learner meets it.
  *
- * - An AMERICAN form (left column) fails wherever it appears.
+ * - An AMERICAN form of the word table (data/exercises/__tests__/respelling.ts,
+ *   the one table, shared with the respelling proof) fails wherever it appears.
  * - A word that is American only in one of its uses ("practice" the verb,
  *   "upward" the adverb) fails unless the phrase around it is one of the
  *   uses listed as kept, each with its reason.
@@ -28,31 +29,10 @@ import { CURRICULUM_LEVELS } from '../../core/constants/levels';
 import { CHORD_SCALE_MAP } from '../../core/constants/chordScaleRelationships';
 import { GUIDE_TEMPLATE, SHEET_TEMPLATES, UI_TEMPLATES } from '../../site/testSheet/data';
 import { renderBank } from '../../components/drill/__tests__/drillCorpus';
+import { AMBIGUOUS_AMERICAN, SPELLINGS } from '../../data/exercises/__tests__/respelling';
 
-/** American form → British form (the word table of the spelling pass, 19 November 2026). */
-const AMERICAN: Readonly<Record<string, string>> = {
-  color: 'colour', colors: 'colours', colored: 'coloured', colorful: 'colourful', coloring: 'colouring', coloristic: 'colouristic',
-  neighbor: 'neighbour', neighbors: 'neighbours', neighboring: 'neighbouring',
-  favor: 'favour', favored: 'favoured', favorite: 'favourite', flavor: 'flavour', flavors: 'flavours', flavored: 'flavoured',
-  center: 'centre', centers: 'centres', centered: 'centred', somber: 'sombre',
-  meter: 'metre', meters: 'metres', polymeter: 'polymetre',
-  recognize: 'recognise', recognizes: 'recognises', recognized: 'recognised', recognizing: 'recognising', recognizable: 'recognisable',
-  tonicization: 'tonicisation', tonicizations: 'tonicisations', tonicize: 'tonicise', tonicizes: 'tonicises', tonicized: 'tonicised', tonicizing: 'tonicising',
-  reharmonization: 'reharmonisation', harmonization: 'harmonisation', harmonizations: 'harmonisations',
-  harmonize: 'harmonise', harmonized: 'harmonised', harmonizing: 'harmonising',
-  emphasize: 'emphasise', emphasizes: 'emphasises', emphasized: 'emphasised', emphasizing: 'emphasising',
-  organize: 'organise', organizes: 'organises', organized: 'organised', organization: 'organisation',
-  realize: 'realise', realized: 'realised', realizing: 'realising', realization: 'realisation',
-  characterize: 'characterise', characterizes: 'characterises', characterized: 'characterised',
-  epitomize: 'epitomise', internalize: 'internalise', internalizes: 'internalises', internalized: 'internalised',
-  memorize: 'memorise', memorizing: 'memorising', minimizes: 'minimises', maximizes: 'maximises',
-  synchronization: 'synchronisation', synchronized: 'synchronised', hybridizes: 'hybridises', normalized: 'normalised',
-  specialized: 'specialised', energizes: 'energises', categorize: 'categorise', stylized: 'stylised', popularized: 'popularised',
-  analyze: 'analyse', analyzed: 'analysed', analyzing: 'analysing',
-  totaling: 'totalling', signaling: 'signalling', labeling: 'labelling', labeled: 'labelled',
-  toward: 'towards', catalog: 'catalogue', dialog: 'dialogue', gray: 'grey', math: 'maths', percent: 'per cent', judgment: 'judgement',
-  practicing: 'practising', practiced: 'practised', program: 'programme', programs: 'programmes',
-};
+/** The American forms of the word table (one table: data/exercises/__tests__/respelling.ts). */
+const AMERICAN = new Set(SPELLINGS.map(([us]) => us).filter((us) => !AMBIGUOUS_AMERICAN.has(us)));
 
 /** "-ward" before its noun is the adjective, the same in British English. */
 const WARD_ADJECTIVES = [
@@ -108,7 +88,7 @@ function americanForms(where: string, text: string): Offender[] {
     const at = m.index ?? 0;
     if (inside(keep, at, word.length)) continue;
     const amb = AMBIGUOUS[word];
-    if (AMERICAN[word] || (amb && !inside(spans(amb.kept), at, word.length))) {
+    if (AMERICAN.has(word) || (amb && !inside(spans(amb.kept), at, word.length))) {
       out.push({ where, word: m[0], text: plain.slice(Math.max(0, at - 40), at + word.length + 40).replace(/\s+/g, ' ') });
     }
   }
@@ -156,6 +136,10 @@ function englishCorpus(): [string, string][] {
 
 describe('English is spelt the British way (the owner\'s ruling, 18 November 2026)', () => {
   const corpus = englishCorpus();
+
+  it('the ambiguous words are exactly the table\'s', () => {
+    expect(Object.keys(AMBIGUOUS).sort()).toEqual([...AMBIGUOUS_AMERICAN].sort());
+  });
 
   it('reads the whole corpus', () => {
     const where = (p: string) => corpus.filter(([w]) => w.startsWith(p)).length;
