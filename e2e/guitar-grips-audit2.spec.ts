@@ -8,7 +8,8 @@ import { recordVoice, voiceLog } from './helpers/fakeMidi';
  *  - M43: a grip offered for an asked bass has that bass lowest (C/E: every
  *    chip; no C shape x 3 2 0 1 0 under "1st Inv").
  *  - M44: a shape that leaves out a tone the chord's name carries says which
- *    ("This shape leaves out D (9)." under C9 / E).
+ *    ("This shape leaves out C (9)." under B♭m9 over B; C9 / E, the
+ *    first round's case, has whole grips since the review fix pass).
  *  - M46: the Drop D notice names both pitches it cannot reach, and where.
  *  - M47: the arrow keys reach the open strings (and stop at a capo).
  *  - M48: a cell of the grip says it is the chord's and its finger.
@@ -195,7 +196,8 @@ test.describe('M48 and M43: what the grip says, and which grips an asked bass of
 
 // ─── The two notices: their words, and the design rules on them ─────────────
 const NOTICE_CASES = [
-  { name: 'C9 first inversion', state: {}, url: '/?chord=C9&inv=1&inst=guitar', words: { en: 'This shape leaves out D (9).', pt: 'Esta forma deixa de fora D (9).', es: 'Esta forma deja fuera D (9).' } },
+  // C9 / E has whole grips since the review fix pass (0 3 2 3 3 x first); B♭m9 over B has none.
+  { name: 'B♭m9 over B', state: {}, url: '/?chord=Bbm9/B&inst=guitar', words: { en: 'This shape leaves out C (9).', pt: 'Esta forma deixa de fora C (9).', es: 'Esta forma deja fuera C (9).' } },
   {
     name: 'D major, Drop D, position XII', state: { selectedKey: { natural: 'D', accidental: '' }, guitarTuningId: 'drop-d', guitarScalePosition: 12 }, url: '/',
     words: {
