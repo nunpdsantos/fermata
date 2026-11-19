@@ -19,6 +19,7 @@ import {
 } from './shared';
 import { buildScale, getRelativeMinor } from '../../constants/scales';
 import { getDiatonicChordsForScale } from '../../constants/chords';
+import type { FunctionDirectionToken } from './clauses';
 
 // ---------------------------------------------------------------------------
 // 1. Chord function items
@@ -45,11 +46,12 @@ const FUNCTION_LABELS = ['Tonic', 'Subdominant (pre-dominant)', 'Dominant'];
 // The scale degree each of those numerals stands on (the item's `degree`).
 const NUMERAL_DEGREE: Record<string, number> = { I: 1, ii: 2, IV: 4, V: 5, vi: 6, 'vii°': 7 };
 
-// Direction description for each function (for why explanation)
-const FUNCTION_DIRECTION: Record<string, string> = {
-  Tonic: 'home — creates rest',
-  'Subdominant (pre-dominant)': 'away from tonic — builds tension toward V',
-  Dominant: 'toward tonic — creates strong pull to resolve',
+// The why line's clause for each function, by key (clauses.ts, audit A12):
+// the view prints "home — creates rest" / "para casa — cria repouso" / ….
+const FUNCTION_DIRECTION: Record<string, FunctionDirectionToken> = {
+  Tonic: 'tonic',
+  'Subdominant (pre-dominant)': 'subdominant',
+  Dominant: 'dominant',
 };
 
 // ---------------------------------------------------------------------------
@@ -120,7 +122,7 @@ export function genFunction(): DrillItem[] {
         input: { format: 'choice', choices },
         answer: { kind: 'choice', correct: fn },
         whyKey: 'drill.why.functionPull',
-        whyParams: { chord: chordStr, direction: FUNCTION_DIRECTION[fn] ?? '' },
+        whyParams: { chord: chordStr, direction: FUNCTION_DIRECTION[fn] },
         rank: rank++,
         key: keyStr,
         degree: NUMERAL_DEGREE[numeral],

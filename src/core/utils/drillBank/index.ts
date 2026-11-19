@@ -53,6 +53,7 @@ export function getItemsByFamily(bank: DrillItem[], family: DrillFamily): DrillI
 export { withGlyphs, keySignatureOf, MAJOR_KEYS, SHARP_ORDER, FLAT_ORDER } from './shared';
 export { drillSiblingGroup } from './siblings';
 export { genRead, READ_LADDER, READ_PROMPT_KEYS, READ_WHY_KEYS } from './genRead';
+export { DRILL_CLAUSES, clauseKey, clauseTokens } from './clauses';
 
 // ---------------------------------------------------------------------------
 // i18n key registries — source of truth for translation parity

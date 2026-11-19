@@ -291,16 +291,18 @@ describe('drill i18n — {{token}} set parity (PT/ES vs EN) for every dynamic ke
   });
 });
 
-// ─── Task 13: PT sanity render with realistic promptParams ────────────────────
+// ─── Task 13: raw PT templates interpolate their parameters cleanly ───────────
 //
 // promptParams carry music nomenclature in ENGLISH/symbol form (e.g. key:
-// 'A major', note: 'F♯', sig: '3♯'). The view translates key names, degree,
-// function and cadence names at render time (components/drill/drillText.ts —
-// see its tests, audit W6-07); these checks feed the RAW template English
-// params to prove the PT prose interpolates cleanly around whatever it gets,
-// with no leftover {{token}}.
+// 'A major', note: 'F♯', sig: '3♯'). The view translates them at render time
+// (components/drill/drillText.ts: key, degree, function and cadence names,
+// and since audit A12 interval and seventh-chord names; see drillText.test.ts
+// and drillLanguage.corpus.test.ts for what a learner reads). These checks
+// call the RAW templates directly with the bank's raw English values, on
+// purpose, to prove a template interpolates whatever it is given in full,
+// with no leftover {{token}}. They are not what the Drill shows.
 
-describe('drill i18n — PT prompts render naturally around English nomenclature', () => {
+describe('drill i18n — raw PT templates interpolate any parameter value in full (no stray {{token}})', () => {
   const pt = i18n.getFixedT('pt');
 
   it('keyToCount: PT prose wraps an English key name', () => {

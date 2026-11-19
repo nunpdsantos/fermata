@@ -26,12 +26,8 @@ import { getPitchClass, PITCH_CLASS_SPELLINGS } from '../../constants/notes';
 
 const TRIAD_QUALITIES: readonly ChordQuality[] = ['major', 'minor', 'diminished', 'augmented'];
 
-const STACK_LABEL: Record<string, string> = {
-  major: 'M3 + m3',
-  minor: 'm3 + M3',
-  diminished: 'm3 + m3',
-  augmented: 'M3 + M3',
-};
+// The why line's stack of thirds ("M3 + m3"; PT / ES "3M + 3m") is a clause
+// by key: the quality itself (clauses.ts, audit A12).
 
 /** Rank base for a root: follows KEY_PRIORITY order. Roots not in KEY_PRIORITY get a sequential fallback. */
 function rootRankBase(root: Note): number {
@@ -81,7 +77,7 @@ export function genTriad(): DrillItem[] {
           whyKey: 'drill.why.triadStack',
           whyParams: {
             chord: chordDisplay,
-            stack: STACK_LABEL[quality] ?? '',
+            stack: quality,
             notes: correctDisplays.join(' '),
           },
           rank: baseRank + offset,
@@ -108,7 +104,7 @@ export function genTriad(): DrillItem[] {
           whyKey: 'drill.why.triadStack',
           whyParams: {
             chord: chordDisplay,
-            stack: STACK_LABEL[quality] ?? '',
+            stack: quality,
             notes: correctDisplays.join(' '),
           },
           rank: baseRank + offset,

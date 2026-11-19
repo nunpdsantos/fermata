@@ -1,0 +1,28 @@
+{
+  "clauses": {
+    "functionPull": {
+      "direction": {
+        "tonic": "home — creates rest",
+        "subdominant": "away from tonic — builds tension toward V",
+        "dominant": "toward tonic — creates strong pull to resolve"
+      }
+    },
+    "seventhLadder": {
+      "step": {
+        "major7": "the reference stack (M3+m3+M3)",
+        "dominant7": "maj7 with the 7th lowered a half step",
+        "minor7": "dominant 7 with the 3rd also lowered",
+        "half_diminished7": "m7 with the 5th also lowered",
+        "diminished7": "ø7 with the 7th lowered again (double-flat 7)"
+      }
+    },
+    "triadStack": {
+      "stack": {
+        "major": "M3 + m3",
+        "minor": "m3 + M3",
+        "diminished": "m3 + m3",
+        "augmented": "M3 + M3"
+      }
+    }
+  }
+}

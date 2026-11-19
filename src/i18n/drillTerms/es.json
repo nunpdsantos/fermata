@@ -1,0 +1,68 @@
+{
+  "clauses": {
+    "functionPull": {
+      "direction": {
+        "tonic": "hacia casa — crea reposo",
+        "subdominant": "lejos de la tónica — crea tensión hacia V",
+        "dominant": "hacia la tónica — crea una fuerte atracción para resolver"
+      }
+    },
+    "seventhLadder": {
+      "step": {
+        "major7": "el apilamiento de referencia (3M+3m+3M)",
+        "dominant7": "el maj7 con la 7.ª rebajada un semitono",
+        "minor7": "la séptima de dominante con la 3.ª también rebajada",
+        "half_diminished7": "el m7 con la 5.ª también rebajada",
+        "diminished7": "el ø7 con la 7.ª rebajada otra vez (7.ª disminuida)"
+      }
+    },
+    "triadStack": {
+      "stack": {
+        "major": "3M + 3m",
+        "minor": "3m + 3M",
+        "diminished": "3m + 3m",
+        "augmented": "3M + 3M"
+      }
+    }
+  },
+  "interval": {
+    "P1": "Unísono",
+    "m2": "2.ª menor",
+    "M2": "2.ª mayor",
+    "m3": "3.ª menor",
+    "M3": "3.ª mayor",
+    "A3": "3.ª aumentada",
+    "d4": "4.ª disminuida",
+    "P4": "4.ª justa",
+    "A4": "4.ª aumentada",
+    "d5": "5.ª disminuida",
+    "P5": "5.ª justa",
+    "A5": "5.ª aumentada",
+    "m6": "6.ª menor",
+    "M6": "6.ª mayor",
+    "m7": "7.ª menor",
+    "M7": "7.ª mayor",
+    "TT": "Tritono",
+    "P8": "Octava"
+  },
+  "intervalWithArticle": {
+    "P1": "un unísono",
+    "m2": "una 2.ª menor",
+    "M2": "una 2.ª mayor",
+    "m3": "una 3.ª menor",
+    "M3": "una 3.ª mayor",
+    "A3": "una 3.ª aumentada",
+    "d4": "una 4.ª disminuida",
+    "P4": "una 4.ª justa",
+    "A4": "una 4.ª aumentada",
+    "d5": "una 5.ª disminuida",
+    "P5": "una 5.ª justa",
+    "A5": "una 5.ª aumentada",
+    "m6": "una 6.ª menor",
+    "M6": "una 6.ª mayor",
+    "m7": "una 7.ª menor",
+    "M7": "una 7.ª mayor",
+    "TT": "un tritono",
+    "P8": "una octava"
+  }
+}
