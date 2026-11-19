@@ -9,26 +9,16 @@ const bootLanguage = useAppStore.getState().language;
 
 /**
  * The one-tap language offer (audit 2, P9) in the shell (AppShell, beside
- * the one toast region): when a returning visit's link asked for another
- * language (i18n/language.ts `bootLanguageOffer`), it loads the offer and its
- * words (languageOfferToast.ts, a lazy chunk) and lets it decide when to show.
- * Otherwise it does nothing and loads nothing.
+ * the one toast region): when a returning visit's link asked for a language
+ * (i18n/language.ts `bootLanguageOffer`), it loads the offer and its words
+ * (languageOfferToast.ts, a lazy chunk), which decide whether and when to
+ * show it — again on each mount of the shell, idempotently. Otherwise it
+ * does nothing and loads nothing.
  */
 export function LanguageOffer() {
   useEffect(() => {
     const lang = bootLanguageOffer();
-    if (!lang || lang === bootLanguage) return;
-    let stop: (() => void) | undefined;
-    let gone = false;
-    import('./languageOfferToast.ts')
-      .then((m) => {
-        if (!gone) stop = m.offerLanguage(lang, bootLanguage);
-      })
-      .catch(() => {});
-    return () => {
-      gone = true;
-      stop?.();
-    };
+    if (lang) import('./languageOfferToast.ts').then((m) => m.offerLanguage(lang, bootLanguage), () => {});
   }, []);
   return null;
 }

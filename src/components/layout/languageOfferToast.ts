@@ -33,7 +33,6 @@ export const LANGUAGE_OFFER_POLL_MS = 1500;
 
 type State = 'idle' | 'waiting' | 'shown' | 'done';
 let state: State = 'idle';
-let offered: AppLanguage | null = null;
 let toastId: string | null = null;
 let poll: ReturnType<typeof setInterval> | null = null;
 let unsubscribe: (() => void) | null = null;
@@ -97,33 +96,29 @@ function take(lang: AppLanguage): void {
 /**
  * Offer `lang` (the boot link's, not the one the visit started in) once in
  * this visit. `bootLanguage` is the app's language at boot: if the learner
- * has chosen another one since (the start screen), there is nothing to offer.
- * Returns the shell's cleanup: stop looking while it is gone (the next mount
- * looks again); a toast already up stays in the store.
+ * has chosen another one since (the start screen), or the two agree, there is
+ * nothing to offer. Called on every mount of the shell (LanguageOffer.tsx):
+ * a wait under way goes on (a toast raised while the shell is away shows
+ * with it), a toast still up stays, one put away (✕) ends the offer.
  */
-export function offerLanguage(lang: AppLanguage, bootLanguage: string): () => void {
-  const pause = () => stopWaiting();
-  if (state === 'done') return pause;
+export function offerLanguage(lang: AppLanguage, bootLanguage: string): void {
+  if (state === 'done') return;
   if (state === 'idle') {
     if (lang === bootLanguage || useAppStore.getState().language !== bootLanguage) {
       state = 'done';
-      return pause;
+      return;
     }
-    offered = lang;
     // Any language change in this visit is the learner's own choice: it settles the offer.
     unsubscribe = useAppStore.subscribe((s, prev) => {
       if (s.language !== prev.language) settle();
     });
   }
-  // The toast still up when the shell left: it shows again with the shell.
-  if (state === 'shown' && toastId !== null && useToastStore.getState().toasts.some((t) => t.id === toastId)) return pause;
-  // Put away (✕) while the shell was here: done for this visit.
   if (state === 'shown') {
-    settle();
-    return pause;
+    // Put away (✕) since: done for this visit.
+    if (toastId === null || !useToastStore.getState().toasts.some((t) => t.id === toastId)) settle();
+    return;
   }
-  wait(offered ?? lang);
-  return pause;
+  wait(lang);
 }
 
 /** Test seam: the toast was put away with ✕ (the store removed it). */
@@ -138,6 +133,5 @@ export function resetLanguageOffer(): void {
   unsubscribe?.();
   unsubscribe = null;
   state = 'idle';
-  offered = null;
   toastId = null;
 }
