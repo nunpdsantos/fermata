@@ -316,7 +316,10 @@ test.describe('P5: an area that scrolls shows a fade at its foot while it has mo
   });
 
   for (const language of ['en', 'pt']) {
-    test(`1440×900, Open G, a chord selected (the audit's figure 5c), ${language.toUpperCase()}: the circle column's cut fact gets the fade`, async ({ browser, baseURL }) => {
+    // The audit's figure 5c. When this spec was written the dock's notice line made the dock 26 px taller here and the circle
+    // column's last fact was cut by 17 px (this test then asserted the fade over that cut). The same round's guitar branch put
+    // a chord's notice on the controls' line, so the dock is no taller with it and nothing is cut: the finding is closed whole.
+    test(`1440×900, Open G, a chord selected (the audit's figure 5c), ${language.toUpperCase()}: the circle column fits, nothing is cut, no fade`, async ({ browser, baseURL }) => {
       const { context, page } = await open(browser, baseURL!, { w: 1440, h: 900, state: { instrument: 'guitar', guitarTuningId: 'open-g', language } });
       await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
       await page.locator('.chord-row button').first().click();
@@ -324,10 +327,9 @@ test.describe('P5: an area that scrolls shows a fade at its foot while it has mo
       await settled(page);
       const c = await cues(page);
       console.log(`[cue] 1440×900 Open G ${language}, chord I: ${c.aside.below} px below the circle column's foot`);
-      expect(c.aside.below, 'the notice line makes the dock taller: the last fact is cut').toBeGreaterThan(1);
-      expect(c.aside.fade.opacity).toBe(1);
-      overItsColumn(c.aside, 'circle column');
-      // The work column fits: its fade stays off.
+      expect(c.aside.below, 'the circle column\'s last fact is whole').toBeLessThanOrEqual(1);
+      expect(shown(c.aside)).toEqual({ more: false, fade: 0 });
+      // The work column fits too: its fade stays off.
       expect(shown(c.main)).toEqual({ more: false, fade: 0 });
       await context.close();
     });
