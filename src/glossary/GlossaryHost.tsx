@@ -18,6 +18,7 @@ import { getMidiNumber } from '../core/utils/pianoLayout.ts';
 import { getSynthConfig } from '../services/synthConfig.ts';
 import { keyName } from '../components/explore/focusReadout.ts';
 import { useGlossaryUi } from './glossaryUi.ts';
+import { useBackLayer } from '../state/appHistory.ts';
 import { GLOSSARY, type GlossaryContext } from './entries.ts';
 import { termTitle } from './termTitle.ts';
 import { visibleTermIds } from './visibleTerms.ts';
@@ -345,6 +346,8 @@ export default function GlossaryHost() {
   // runs before a Sheet's document listener): a word explained from inside
   // the practice sheet closes only its explanation.
   const popover = request?.kind === 'term' && !sheet;
+  // The browser's Back closes the popover, as Escape does (audit P3; the sheet does it itself).
+  useBackLayer(popover, () => close(true));
   useEffect(() => {
     if (!request) return;
     const onKey = (e: KeyboardEvent) => {

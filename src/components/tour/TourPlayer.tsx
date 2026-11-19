@@ -15,6 +15,7 @@ import { returnView } from '../../services/tour/snapshot.ts';
 import { BAR_GUTTER, findTarget, placeBar, type Box, type BarSlot } from '../../services/tour/dom.ts';
 import type { TourStep } from '../../services/tour/types.ts';
 import { useGlossaryUi } from '../../glossary/glossaryUi.ts';
+import { useBackLayer } from '../../state/appHistory.ts';
 import './tour.css';
 
 /**
@@ -244,6 +245,10 @@ function TourOverlay({ session, t }: { session: TourSession; t: T }) {
   useLayoutEffect(() => {
     if (barShown) measureToastRoom();
   }, [barShown, layout.barTop, layout.barLeft]);
+
+  // The browser's Back ends it as ✕ and Escape do (audit P3): the tour is one
+  // layer of its own, and nothing else it does is written to the history.
+  useBackLayer(true, () => void session.finish('restore'), true);
 
   // Escape closes (not while a sheet / dialog of the app is open: it is that one's).
   useEffect(() => {

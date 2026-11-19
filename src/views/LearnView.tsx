@@ -19,22 +19,30 @@ import { ScreenFrame } from '../components/learn/ScreenFrame';
 import { MilestoneSheet } from '../components/learn/lesson/MilestoneSheet';
 import { TrackDetail } from '../components/learn/tracks/TrackDetail';
 import { useLearnSessionStore, restorableScreen } from '../state/learnSessionStore';
+import type { LearnDeepLink } from '../state/storeTypes';
+import { goTo, notePlace, placeToOpen, useBackLayer, useShowPlace } from '../state/appHistory';
+import { learnPlace, learnScreenOf, type LearnScreen } from './learnPlaces';
 
 // ─── Screen state machine ───────────────────────────────────────────────────
 
-type LearnScreen =
-  | { type: 'levels' }
-  | { type: 'level'; levelId: string }
-  | { type: 'unit'; levelId: string; unitId: string }
-  | { type: 'module'; levelId: string; unitId: string; moduleId: string; section?: string | null }
-  | { type: 'review'; levelId: string; unitId: string; moduleId: string };
+/** A lesson reopened by Back / Forward opens at the section last read in it (the saved one). */
+function withSavedSection(s: LearnScreen): LearnScreen {
+  const saved = useLearnSessionStore.getState().screen;
+  return s.type === 'module' && saved?.type === 'module' && saved.moduleId === s.moduleId ? { ...s, section: saved.section } : s;
+}
 
 /**
- * Where Learn opens: a lesson or review the learner was in (saved by
- * learnSessionStore, fresh) — so a reload or a trip to another tab loses
- * nothing — else the levels overview.
+ * Where Learn opens: the screen this tab's history entry names (a reload, or
+ * Back / Forward into Learn — state/appHistory.ts); a deep link's lesson; a
+ * lesson or review the learner was in (saved by learnSessionStore, fresh) —
+ * so a reload or a trip to another tab loses nothing — else the levels overview.
  */
-function initialScreen(): LearnScreen {
+function initialScreen(target: LearnDeepLink | null): LearnScreen {
+  const place = placeToOpen('learn');
+  const kept = place === undefined ? null : learnScreenOf(place);
+  if (kept) return withSavedSection(kept);
+  // A deep link (opened by its effect below as well): no other screen first, which would be written in its entry.
+  if (target) return { type: 'module', ...target };
   const saved = restorableScreen();
   if (!saved) return { type: 'levels' };
   const { type, levelId, unitId, moduleId, section } = saved;
@@ -49,7 +57,7 @@ interface LevelCelebration {
 
 export function LearnView() {
   const { t } = useTranslation();
-  const [screen, setScreen] = useState<LearnScreen>(initialScreen);
+  const [screen, setScreen] = useState<LearnScreen>(() => initialScreen(useAppStore.getState().pendingLearnTarget));
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [levelCelebration, setLevelCelebration] = useState<LevelCelebration | null>(null);
   // A unit's milestone (D-23), then — if the level is done too — the level celebration.
@@ -72,11 +80,27 @@ export function LearnView() {
     recordReviewResult,
   } = useLearnProgress();
 
-  // Navigation helpers
+  // Navigation helpers. Going forward is a screen of its own in the browser's
+  // history; the app's own ways back (← arrows, breadcrumbs) rewrite the
+  // entry instead, so the browser's Back then goes where that screen came
+  // from (state/appHistory.ts, audit P3).
   const navigate = useCallback((next: LearnScreen, dir: 'forward' | 'back') => {
+    if (dir === 'forward') goTo('learn', learnPlace(next));
     setDirection(dir);
-    setScreen(next);
+    // The lesson already shown (a deep link to it): its check stays as it is.
+    setScreen((now) => (next.type === 'module' && next.run === undefined && now.type === 'module' && now.moduleId === next.moduleId ? { ...next, run: now.run } : next));
   }, []);
+  // Back / Forward, and the Learn tab tapped while Learn shows (P10's class): the screen the entry names.
+  useShowPlace('learn', (place, dir) => {
+    const next = learnScreenOf(place);
+    if (!next) return;
+    setDirection(dir < 0 ? 'back' : 'forward');
+    setScreen(withSavedSection(next));
+  });
+  // The entry names the screen shown (a lesson's check opening or closing included).
+  useEffect(() => {
+    notePlace('learn', learnPlace(screen));
+  }, [screen]);
 
   const goToLevels = useCallback(() => navigate({ type: 'levels' }, 'back'), [navigate]);
   const goToLevel = useCallback((levelId: string) => navigate({ type: 'level', levelId }, 'forward'), [navigate]);
@@ -85,6 +109,12 @@ export function LearnView() {
   const goToUnitBack = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'back'), [navigate]);
   const goToModule = useCallback((levelId: string, unitId: string, moduleId: string, section?: string) => navigate({ type: 'module', levelId, unitId, moduleId, section }, 'forward'), [navigate]);
   const goToReview = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'review', levelId, unitId, moduleId }, 'forward'), [navigate]);
+  // The level's celebration covers the screen: Back dismisses it, as a tap does (audit P3).
+  const dismissCelebration = useCallback(() => {
+    setLevelCelebration(null);
+    goToLevels();
+  }, [goToLevels]);
+  useBackLayer(levelCelebration !== null, dismissCelebration);
 
   // Consume deep-link targets set by Explore or QuickSearch so the user lands
   // directly on a module view instead of the levels overview.
@@ -97,16 +127,22 @@ export function LearnView() {
     queueMicrotask(() => navigate({ type: 'module', levelId, unitId, moduleId }, 'forward'));
   }, [pendingLearnTarget, setPendingLearnTarget, navigate]);
 
-  // Scroll to top on screen change (a lesson opened at a section scrolls itself).
+  // Scroll to top on screen change (a lesson opened at a section scrolls
+  // itself, and so does a lesson's check opening or closing in it).
+  const shownRef = useRef(screen);
   useEffect(() => {
+    const before = shownRef.current;
+    shownRef.current = screen;
     if (screen.type === 'module' && screen.section) return;
+    if (before !== screen && before.type === 'module' && screen.type === 'module' && before.moduleId === screen.moduleId) return;
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [screen]);
 
-  // Remember the open lesson / review, so a reload comes back to it; any other
-  // screen means the learner left it (and any check in it).
+  // Remember the open lesson / review, so a reload comes back to it. A check
+  // under way is NOT dropped when its lesson is left (audit P3, the owner's
+  // ruling: Back never loses a check): it stays saved, and its lesson offers
+  // it again, until ✕ Exit ends it or another check takes its place (one slot).
   const saveScreen = useLearnSessionStore((s) => s.setScreen);
-  const saveCheck = useLearnSessionStore((s) => s.setCheck);
   useEffect(() => {
     if (screen.type === 'module' || screen.type === 'review') {
       const prev = useLearnSessionStore.getState().screen;
@@ -119,13 +155,10 @@ export function LearnView() {
         section: screen.type === 'module' ? (screen.section ?? (same ? prev.section : null)) : null,
         at: Date.now(),
       });
-      const check = useLearnSessionStore.getState().check;
-      if (check && check.moduleId !== screen.moduleId) saveCheck(null);
     } else {
       saveScreen(null);
-      saveCheck(null);
     }
-  }, [screen, saveScreen, saveCheck]);
+  }, [screen, saveScreen]);
 
   // ─── Async level + exercise loading ─────────────────────────────────────────
   const [loadedLevel, setLoadedLevel] = useState<CurriculumLevel | null>(null);
@@ -349,6 +382,13 @@ export function LearnView() {
                   onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
                   initialSection={screen.section ?? null}
                   onOpenLevel={goToLevel}
+                  run={screen.run}
+                  onRunChange={(run, user) => {
+                    // Opening the check is a screen of its own (Back: the lesson, the check kept).
+                    const next = { ...screen, run };
+                    if (user && run) goTo('learn', learnPlace(next));
+                    setScreen(next);
+                  }}
                 />
               );
             })()}
@@ -422,10 +462,7 @@ export function LearnView() {
           levelNumber={levelCelebration.levelNumber}
           accentColor={levelCelebration.accentColor}
           moduleCount={levelCelebration.moduleCount}
-          onDismiss={() => {
-            setLevelCelebration(null);
-            goToLevels();
-          }}
+          onDismiss={dismissCelebration}
         />
       )}
     </div>

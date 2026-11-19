@@ -74,7 +74,7 @@ function App() {
     const paramView = params.get('view');
     const link = readShareParams(search, hash);
     const { setView, lastView } = useAppStore.getState();
-    setView(pickBootView(search, lastView));
+    setView(pickBootView(search, lastView, window.history.state));
 
     // Strip ?view=, ?lang= (i18n/language.ts: it has chosen the language of a
     // first visit by now, or was ignored) and the link's parameters (keep
@@ -82,6 +82,9 @@ function App() {
     if (paramView !== null || link !== null || params.has(LANG_PARAM)) {
       window.history.replaceState(window.history.state, '', cleanedAddress(pathname, search, hash));
     }
+
+    // Back and Forward inside the app (P3): its own chunk, once the boot view is set.
+    import('./state/appHistory.ts').catch(() => undefined);
 
     if (link !== null) {
       markOpenedFromShareLink();

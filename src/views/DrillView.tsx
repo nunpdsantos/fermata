@@ -34,6 +34,8 @@ import {
 } from '../data/drillUnlocks';
 import { followExcluded, followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
 import type { FollowInfo } from '../components/drill/FollowLessons';
+import { goTo, notePlace, placeToOpen, useShowPlace, useWorkKeeper } from '../state/appHistory';
+import { drillStateHasWork } from '../state/drillWork';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
@@ -45,6 +47,19 @@ function viewBank(): DrillItem[] {
 
 /** Navigable sub-screens layered over the base (running question / summary). */
 type SubScreen = null | 'settings' | 'mastery' | 'sprint';
+
+/**
+ * Drill's screens in a history entry (state/appHistory.ts, audit P3): `''`
+ * the base (the question, the intro or the summary), else the sub-screen;
+ * undefined = not one of Drill's.
+ */
+function subScreenOf(place: string | undefined): SubScreen | undefined {
+  if (place === '') return null;
+  return place === 'settings' || place === 'mastery' || place === 'sprint' ? place : undefined;
+}
+
+/** A Sprint is reopened only while one is saved (Back / Forward never starts a new one, nor its clock). */
+const reopenable = (s: SubScreen): SubScreen => (s === 'sprint' && useDrillStore.getState().sprint === null ? null : s);
 
 /**
  * The completed lessons, read from Learn's save (never the progress store):
@@ -66,6 +81,7 @@ function useCompletedLessons(): string[] {
 }
 
 export function DrillView() {
+  const { t } = useTranslation();
   // A first visit (no drill history) opens on the intro, not a question; any
   // session starting sets introDone, so it never shows again.
   const introDone = useDrillStore((s) => s.introDone);
@@ -113,12 +129,17 @@ export function DrillView() {
     autoStart: introDone && !nothingToAsk,
     sessionOptions: { followLessons: follow, unlocked },
   });
-  // A Sprint left open (a reload, or back from another view) comes back on
-  // screen where it was (W9b).
-  const [subScreen, setSubScreen] = useState<SubScreen>(() => (useDrillStore.getState().sprint ? 'sprint' : null));
+  // The screen this tab's history entry names (a reload, or Back / Forward
+  // into Drill). Otherwise a Sprint left open (a reload, or back from another
+  // view) comes back on screen where it was (W9b).
+  const [subScreen, setSubScreen] = useState<SubScreen>(() => {
+    const kept = subScreenOf(placeToOpen('drill'));
+    if (kept !== undefined) return reopenable(kept);
+    return useDrillStore.getState().sprint ? 'sprint' : null;
+  });
   // Wall-clock snapshot taken when the mastery screen opens (due-today is a
-  // point-in-time count). Captured in the handler — never read in render.
-  const [masteryNow, setMasteryNow] = useState(0);
+  // point-in-time count). Captured in the handler (or as it mounts there) — never read in render.
+  const [masteryNow, setMasteryNow] = useState(() => Date.now());
 
   const settings = useDrillStore((s) => s.settings);
   const items = useDrillStore((s) => s.items);
@@ -137,11 +158,34 @@ export function DrillView() {
     [follow, bank, unlock, items, settings.families],
   );
 
-  // Open mastery + freeze "now" for its due-today count in one event-time step.
-  const goToMastery = () => {
-    setMasteryNow(Date.now());
-    setSubScreen('mastery');
+  // A sub-screen the learner opens is a screen of its own in the browser's
+  // history (Back returns); the screens' own ways back rewrite the entry
+  // (audit P3). Mastery freezes "now" for its due-today count in the same step.
+  const openSub = (next: SubScreen) => {
+    if (next === 'mastery') setMasteryNow(Date.now());
+    goTo('drill', next ?? '');
+    setSubScreen(next);
   };
+  const goToMastery = () => openSub('mastery');
+  useEffect(() => {
+    notePlace('drill', subScreen ?? '');
+  }, [subScreen]);
+  // Back / Forward, and the Drill tab tapped while Drill shows (P10): the screen the entry names.
+  useShowPlace('drill', (place) => {
+    const asked = subScreenOf(place);
+    if (asked === undefined) return;
+    const next = reopenable(asked);
+    if (next === 'mastery') setMasteryNow(Date.now());
+    setSubScreen(next);
+    if (next !== asked) notePlace('drill', '');
+  });
+  // Leaving work in progress by Back or Forward (the session with answers for
+  // another view, a Sprint with time left for any screen): kept, and said so.
+  const sessionWork = useDrillStore((s) => drillStateHasWork({ activeSession: s.activeSession, settings: s.settings }));
+  const sprintWork = useDrillStore((s) => s.sprint !== null && s.sprint.secondsLeft > 0);
+  useWorkKeeper('drill', subScreen === 'sprint'
+    ? (sprintWork ? () => t('backNav.sprintKept') : null)
+    : subScreen === null && sessionWork ? (to) => (to.v === 'drill' ? null : t('backNav.drillKept')) : null);
 
   return (
     <div className="flex-1 overflow-y-auto" style={{ overscrollBehavior: 'contain' }}>
@@ -190,7 +234,7 @@ export function DrillView() {
           <DrillIntro
             settings={settings}
             onStart={runner.startNewSession}
-            onOpenSettings={() => setSubScreen('settings')}
+            onOpenSettings={() => openSub('settings')}
             follow={follow}
             followInfo={followInfo}
             nothingToAsk={nothingToAsk}
@@ -204,7 +248,7 @@ export function DrillView() {
               setSubScreen(null);
             }}
             onMasteryMap={goToMastery}
-            onSprint={() => setSubScreen('sprint')}
+            onSprint={() => openSub('sprint')}
           />
         ) : item ? (
           <RunningQuestion
@@ -221,7 +265,7 @@ export function DrillView() {
             onAnswer={runner.answer}
             onAdvance={runner.advance}
             onEndSession={runner.endSession}
-            onOpenSettings={() => setSubScreen('settings')}
+            onOpenSettings={() => openSub('settings')}
           />
         ) : (
           // Pre-auto-start tick: session not yet created. Brief, no flash of summary.

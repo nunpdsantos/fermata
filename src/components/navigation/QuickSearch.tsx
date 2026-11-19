@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo, useId } from 'react'
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, m } from 'framer-motion';
 import { useAppStore } from '../../state/store.ts';
+import { useBackLayer } from '../../state/appHistory';
 import { getResults, searchNames, type SearchResultType } from './quickSearchResults.ts';
 import { searchBadgeColors } from './searchBadge.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
@@ -131,6 +132,8 @@ export function QuickSearch() {
     setQuery('');
     restoreFocus();
   }, [setQuickSearchOpen, restoreFocus]);
+  // The browser's Back closes it, as Escape does (audit P3).
+  useBackLayer(quickSearchOpen, closeDialog);
 
   // Cmd+K to toggle
   useEffect(() => {

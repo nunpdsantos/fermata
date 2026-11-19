@@ -1,0 +1,10 @@
+{
+  "continue": "Continuar",
+  "checkKept": "Tu comprobación se ha guardado: pregunta {{current}} de {{total}}.",
+  "practiceKept": "Tu ronda de práctica se ha guardado: pregunta {{current}} de {{total}}.",
+  "reviewKept": "Tu repaso se ha guardado: pregunta {{current}} de {{total}}.",
+  "continueCheck": "Continuar la comprobación",
+  "continuePractice": "Continuar la práctica",
+  "drillKept": "Tu sesión de Práctica se ha guardado, en la pregunta en la que estabas.",
+  "sprintKept": "Tu sprint está en pausa, con el tiempo que le quedaba."
+}

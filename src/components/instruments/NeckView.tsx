@@ -7,6 +7,7 @@ import { useKeyContext } from '../../hooks/useKeyContext.ts';
 import { useAppStore } from '../../state/store.ts';
 import { keyName, chordSymbol } from '../explore/focusReadout.ts';
 import { DockToolsContext } from '../layout/dockTools.ts';
+import { useBackLayer } from '../../state/appHistory.ts';
 
 // The same chunk as the dock's fretboard (it is precached).
 const Fretboard = lazy(() => import('./Fretboard.tsx').then((m) => ({ default: m.Fretboard })));
@@ -33,6 +34,8 @@ export function NeckView({ onClose }: { onClose: () => void }) {
   useLayoutEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
+  // The browser's Back closes it, as Escape does (audit P3).
+  useBackLayer(true, () => onCloseRef.current());
 
   useEffect(() => {
     const returnTo = document.activeElement as HTMLElement | null;
