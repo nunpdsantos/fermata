@@ -95,7 +95,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction: 'Seleciona Guitarra em Explorar. Encontra o pequeno 8 debaixo da clave de sol e explica a diferença entre o E4 escrito e o E3 que soa.'
         },
         {
-          instruction: 'Na tua guitarra, aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
+          instruction: 'Na tua guitarra ou no braço da guitarra da aplicação (seleciona Guitarra em Explorar), aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
         }
       ]
     },
@@ -148,7 +148,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         {
-          instruction: 'Escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
+          instruction: 'Seleciona Guitarra em Explorar e escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
         },
         {
           instruction: 'Lê V, CV e ½CV em voz alta. Explica qual das indicações apenas localiza a mão, qual pede uma pestana completa e qual pede uma pestana parcial.'
@@ -182,11 +182,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Olha para o teclado do piano — as notas vão do grave (esquerda) ao agudo (direita), tal como a pauta vai do grave (em baixo) ao agudo (em cima)',
+            'Olha para o teu instrumento — as notas vão do grave ao agudo, tal como a pauta vai do grave (em baixo) ao agudo (em cima): no piano da esquerda para a direita, na guitarra trasto a trasto em direção ao corpo',
         },
         {
           instruction:
-            'Escreve "C major scale" e repara como cada nota ocupa uma posição mais elevada à medida que a altura sobe',
+            'Carrega em "C major scale" e repara como cada nota ocupa uma posição mais elevada à medida que a altura sobe',
         },
       ],
     },
@@ -259,15 +259,15 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca notas adjacentes na escala cromática — cada passo é um meio-tom. Escreve "C chromatic scale" para as veres todas',
+            'Toca notas adjacentes na escala cromática — cada passo é um meio-tom. Carrega em "C chromatic scale" para as veres todas',
         },
         {
           instruction:
-            'Encontra E e F no piano — repara que não há tecla preta entre elas. Este par é um meio-tom natural',
+            'Encontra E e F — no piano não há tecla preta entre elas; na guitarra estão a um trasto de distância. Este par é um meio-tom natural',
         },
         {
           instruction:
-            'Escreve "key of G" — que nota precisa de sustenido? O F torna-se F# para manter o padrão da escala maior',
+            'Carrega em "key of G" — que nota precisa de sustenido? O F torna-se F# para manter o padrão da escala maior',
         },
       ],
     },
@@ -299,11 +299,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C chromatic scale" e conta as 12 notas antes de o padrão se repetir',
+            'Carrega em "C chromatic scale" e conta as 12 notas antes de o padrão se repetir',
         },
         {
           instruction:
-            'No piano, encontra o grupo de 2 teclas pretas — a tecla branca logo abaixo do grupo é sempre C',
+            'Encontra C no teu instrumento — no piano, é sempre a tecla branca imediatamente à esquerda de um grupo de 2 teclas pretas; na guitarra, o C está no trasto 3 da corda A, a segunda mais grossa',
         },
       ],
     },
@@ -418,15 +418,15 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major scale" e traça o padrão T-T-mT-T-T-T-mT no piano',
+            'Carrega em "C major scale" e traça o padrão T-T-mT-T-T-T-mT no teu instrumento',
         },
         {
           instruction:
-            'Escreve "G major scale" — que nota precisa de sustenido para manter o padrão?',
+            'Carrega em "G major scale" — que nota precisa de sustenido para manter o padrão?',
         },
         {
           instruction:
-            'Escreve "F major scale" — esta precisa de um bemol. Que nota?',
+            'Carrega em "F major scale" — esta precisa de um bemol. Que nota?',
         },
       ],
     },
@@ -509,11 +509,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" — o intervalo de C a E é uma 3.ª, e de C a G é uma 5.ª. Conta as letras para confirmar',
+            'Carrega em "C major chord" — o intervalo de C a E é uma 3.ª, e de C a G é uma 5.ª. Conta as letras para confirmar',
         },
         {
           instruction:
-            'Escreve "C major scale" — cada par adjacente é uma 2.ª (um passo). Toca notas não adjacentes para ouvires intervalos maiores',
+            'Carrega em "C major scale" — cada par adjacente é uma 2.ª (um passo). Toca notas não adjacentes para ouvires intervalos maiores',
         },
         {
           instruction:
@@ -555,11 +555,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" e conta os meios-tons: C a E = 4 (3.ª maior), E a G = 3 (3.ª menor), C a G = 7 (5.ª perfeita)',
+            'Carrega em "C major chord" e conta os meios-tons: C a E = 4 (3.ª maior), E a G = 3 (3.ª menor), C a G = 7 (5.ª perfeita)',
         },
         {
           instruction:
-            'Escreve "G major chord" — identifica a fundamental, a 3.ª e a 5.ª. Mesmo padrão intervalar, nota inicial diferente',
+            'Carrega em "G major chord" — identifica a fundamental, a 3.ª e a 5.ª. Mesmo padrão intervalar, nota inicial diferente',
         },
         {
           instruction:
@@ -946,7 +946,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
       ],
       tasks: [
-        { instruction: 'Toca um acorde de G aberto, uma corda de cada vez, a partir da mais grossa, e diz o nome de cada nota: G, B, D, G, B, G.' },
+        { instruction: 'Toca um acorde de G uma nota de cada vez, a partir da mais grave, e diz o nome de cada nota. Na guitarra, um acorde de G aberto dá G, B, D, G, B, G a partir da corda mais grossa.' },
         { instruction: 'Escolhe um acorde maior que conheças e diz a sua fundamental. Conta uma nota sim, outra não, da escala maior dessa fundamental para encontrares a 3.ª e a 5.ª, e toca as três notas uma a seguir à outra.' },
       ],
     },
@@ -982,7 +982,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G7 e depois C, e a seguir G e depois C. Qual dos dois se inclina mais para C?' },
-        { instruction: 'Toca o blues de doze compassos em G, quatro batidas por compasso: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7.' },
+        { instruction: 'Toca o blues de doze compassos em G, quatro pulsações por compasso: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7.' },
       ],
     },
     l1u35m8: {
@@ -1017,7 +1017,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G, D, Em e C e depois a mesma sequência em A: A, E, F♯m e D. Na guitarra, F♯m pode ser uma pestana no trasto 2.' },
-        { instruction: 'Põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C. Soam A, E, F♯m e D: compara-as com a sequência em A que tocaste sem capo.' },
+        { instruction: 'Na guitarra, põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C: soam A, E, F♯m e D. No piano, toca G, D, Em e C e depois cada acorde dois meios-tons acima, A, E, F♯m e D: é isso que o capo faz. Compara-os com a sequência em A que tocaste antes.' },
       ],
     },
     l1u35m9: {

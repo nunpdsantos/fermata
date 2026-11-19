@@ -56,13 +56,13 @@ const l9u30m1: CurriculumModule = {
     {
       id: 'l9u30m1t1',
       instruction:
-        "Type 'C major scale' and play through it on the piano. Try to sing each note as you hear it — match your voice to the pitch. Start in a comfortable range",
+        "Tap 'C major scale' and play through it on your instrument. Try to sing each note as you hear it — match your voice to the pitch. Start in a comfortable range",
       query: 'C major scale',
     },
     {
       id: 'l9u30m1t2',
       instruction:
-        'Play individual notes on the piano with your eyes closed — can you tell if the second note is higher or lower than the first? Start with wide leaps, then narrow the gap to adjacent keys',
+        'Play individual notes on your instrument with your eyes closed — can you tell if the second note is higher or lower than the first? Start with wide leaps, then narrow the gap down to a half step',
     },
     {
       id: 'l9u30m1t3',
@@ -279,18 +279,18 @@ const l9u30m5: CurriculumModule = {
     {
       id: 'l9u30m5t1',
       instruction:
-        'Play two notes simultaneously on the piano: C and E (M3), C and G (P5), C and B (M7). Listen to how they fuse differently. Consonances blend; dissonances create beats and roughness',
+        'Play two notes simultaneously: C and E (M3), C and G (P5), C and B (M7). Listen to how they fuse differently. Consonances blend; dissonances create beats and roughness',
     },
     {
       id: 'l9u30m5t2',
       instruction:
-        "Type 'Cmaj7' and listen to all the harmonic intervals within it: C-E (M3), C-G (P5), C-B (M7), E-G (m3), E-B (P5), G-B (M3). A single chord contains many simultaneous intervals",
+        "Tap 'Cmaj7' and listen to all the harmonic intervals within it: C-E (M3), C-G (P5), C-B (M7), E-G (m3), E-B (P5), G-B (M3). A single chord contains many simultaneous intervals",
       query: 'Cmaj7',
     },
     {
       id: 'l9u30m5t3',
       instruction:
-        'Play C3 and D4 on the piano (a 9th). Compare with C4 and D4 (a 2nd). The 9th sounds like a wider, more spacious version of the 2nd. This is the compound interval principle in action',
+        'Play C3 and D4 (a 9th). Compare with C4 and D4 (a 2nd). The 9th sounds like a wider, more spacious version of the 2nd. This is the compound interval principle in action',
     },
   ],
   prerequisites: ['l9u30m4'],
@@ -629,7 +629,7 @@ const l9u32m1: CurriculumModule = {
     {
       id: 'l9u32m1t1',
       instruction:
-        'Have a friend play 4-5 random notes from the C major scale on the piano. Try to sing them back, then find them on the keyboard. Start with stepwise motion only',
+        'Have a friend play 4-5 random notes from the C major scale. Try to sing them back, then find them on your instrument. Start with stepwise motion only',
     },
     {
       id: 'l9u32m1t2',
@@ -749,7 +749,7 @@ const l9u32m3: CurriculumModule = {
     {
       id: 'l9u32m3t3',
       instruction:
-        'Start with two-chord cadences: play random V-I and IV-I pairs in different keys on the piano. Can you tell which cadence type it is before checking? Then add deceptive cadences (V-vi)',
+        'Start with two-chord cadences: play random V-I and IV-I pairs in different keys. Can you tell which cadence type it is before checking? Then add deceptive cadences (V-vi)',
     },
   ],
   prerequisites: ['l9u32m2'],

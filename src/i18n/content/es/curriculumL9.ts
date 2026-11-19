@@ -90,11 +90,11 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C major scale" y tócala en el piano. Intenta cantar cada nota a medida que la oyes — haz corresponder tu voz con la altura. Comienza en un registro cómodo',
+            'Pulsa "C major scale" y tócala en tu instrumento. Intenta cantar cada nota a medida que la oyes — haz corresponder tu voz con la altura. Comienza en un registro cómodo',
         },
         {
           instruction:
-            'Toca notas individuales en el piano con los ojos cerrados — ¿puedes decir si la segunda nota es más aguda o más grave que la primera? Comienza con saltos amplios y después estrecha hasta teclas adyacentes',
+            'Toca notas individuales en tu instrumento con los ojos cerrados — ¿puedes decir si la segunda nota es más aguda o más grave que la primera? Comienza con saltos amplios y después estrecha la distancia hasta un semitono',
         },
         {
           instruction:
@@ -281,15 +281,15 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca dos notas simultáneamente en el piano: C y E (3M), C y G (5J), C y B (7M). Escucha cómo se funden de forma diferente. Las consonancias se mezclan; las disonancias crean batimientos y aspereza',
+            'Toca dos notas simultáneamente: C y E (3M), C y G (5J), C y B (7M). Escucha cómo se funden de forma diferente. Las consonancias se mezclan; las disonancias crean batimientos y aspereza',
         },
         {
           instruction:
-            'Escribe "Cmaj7" y escucha todos los intervalos armónicos dentro de él: C-E (3M), C-G (5J), C-B (7M), E-G (3m), E-B (5J), G-B (3M). Un único acorde contiene muchos intervalos simultáneos',
+            'Pulsa "Cmaj7" y escucha todos los intervalos armónicos dentro de él: C-E (3M), C-G (5J), C-B (7M), E-G (3m), E-B (5J), G-B (3M). Un único acorde contiene muchos intervalos simultáneos',
         },
         {
           instruction:
-            'Toca C3 y D4 en el piano (una 9.ª). Compara con C4 y D4 (una 2.ª). La 9.ª suena como una versión más amplia y espaciosa de la 2.ª. Este es el principio de los intervalos compuestos en acción',
+            'Toca C3 y D4 (una 9.ª). Compara con C4 y D4 (una 2.ª). La 9.ª suena como una versión más amplia y espaciosa de la 2.ª. Este es el principio de los intervalos compuestos en acción',
         },
       ],
     },
@@ -571,7 +571,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Pide a un amigo que toque 4-5 notas aleatorias de la escala de C mayor en el piano. Intenta cantarlas de vuelta y después encuéntralas en el teclado. Comienza solo con movimiento por grados',
+            'Pide a un amigo que toque 4-5 notas aleatorias de la escala de C mayor. Intenta cantarlas de vuelta y después encuéntralas en tu instrumento. Comienza solo con movimiento por grados',
         },
         {
           instruction:
@@ -676,7 +676,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Comienza con cadencias de dos acordes: toca pares aleatorios de V-I y IV-I en diferentes tonalidades en el piano. ¿Puedes decir qué tipo de cadencia es antes de verificar? Después añade cadencias rotas (V-vi)',
+            'Comienza con cadencias de dos acordes: toca pares aleatorios de V-I y IV-I en diferentes tonalidades. ¿Puedes decir qué tipo de cadencia es antes de verificar? Después añade cadencias rotas (V-vi)',
         },
       ],
     },

@@ -48,11 +48,11 @@ const l2u4m1: CurriculumModule = {
     },
     {
       id: 'l2u4m1t2',
-      instruction: "Type 'Ab major scale' — how many flats does it need? Can you name them in order?",
+      instruction: "Tap 'Ab major scale' — how many flats does it need? Can you name them in order?",
     },
     {
       id: 'l2u4m1t3',
-      instruction: "Type 'E major scale' — the last sharp is D#. Go up a half step: E. The trick works!",
+      instruction: "Tap 'E major scale' — the last sharp is D#. Go up a half step: E. The trick works!",
     },
   ],
   prerequisites: ['l1u3m4'],
@@ -103,7 +103,7 @@ const l2u4m2: CurriculumModule = {
     },
     {
       id: 'l2u4m2t3',
-      instruction: "Type 'A natural minor scale' then 'A harmonic minor scale' — which raises the 7th to create a leading tone?",
+      instruction: "Tap 'A natural minor scale' then 'A harmonic minor scale' — which raises the 7th to create a leading tone?",
     },
   ],
   prerequisites: ['l2u4m1'],
@@ -148,11 +148,11 @@ const l2u5m1: CurriculumModule = {
     },
     {
       id: 'l2u5m1t2',
-      instruction: "Type 'D minor scale' — which note gets a flat to maintain the W-H-W-W-H-W-W pattern?",
+      instruction: "Tap 'D minor scale' — which note gets a flat to maintain the W-H-W-W-H-W-W pattern?",
     },
     {
       id: 'l2u5m1t3',
-      instruction: "Type 'E minor scale' — how many sharps does it need? Compare with G major (its relative major)",
+      instruction: "Tap 'E minor scale' — how many sharps does it need? Compare with G major (its relative major)",
     },
   ],
   prerequisites: ['l2u4m2'],
@@ -199,11 +199,11 @@ const l2u5m2: CurriculumModule = {
     },
     {
       id: 'l2u5m2t2',
-      instruction: "Type 'D harmonic minor scale' — which note is raised compared to D natural minor?",
+      instruction: "Tap 'D harmonic minor scale' — which note is raised compared to D natural minor?",
     },
     {
       id: 'l2u5m2t3',
-      instruction: "Type 'E melodic minor scale' — identify the two notes that are raised compared to natural minor",
+      instruction: "Tap 'E melodic minor scale' — identify the two notes that are raised compared to natural minor",
     },
   ],
   prerequisites: ['l2u5m1'],
@@ -239,11 +239,11 @@ const l2u5m3: CurriculumModule = {
   tasks: [
     {
       id: 'l2u5m3t1',
-      instruction: "Type 'Eb major scale' — what is the 6th degree? That's the relative minor. Verify with the Circle of Fifths",
+      instruction: "Tap 'Eb major scale' — what is the 6th degree? That's the relative minor. Verify with the Circle of Fifths",
     },
     {
       id: 'l2u5m3t2',
-      instruction: "Type 'C major scale' then 'C minor scale' — which three notes change? (3rd, 6th, 7th). These are parallel keys",
+      instruction: "Tap 'C major scale' then 'C minor scale' — which three notes change? (3rd, 6th, 7th). These are parallel keys",
     },
     {
       id: 'l2u5m3t3',
@@ -388,11 +388,11 @@ const l2u7m1: CurriculumModule = {
   tasks: [
     {
       id: 'l2u7m1t1',
-      instruction: "Type 'C major chord' then 'Cm' — the only difference is E vs. Eb. Major 3rd (4 half steps) vs. minor 3rd (3 half steps). One semitone changes everything",
+      instruction: "Tap 'C major chord' then 'Cm' — the only difference is E vs. Eb. Major 3rd (4 half steps) vs. minor 3rd (3 half steps). One semitone changes everything",
     },
     {
       id: 'l2u7m1t2',
-      instruction: "Type 'C major scale' — every interval from C to each upper note is either perfect (4th, 5th, octave) or major (2nd, 3rd, 6th, 7th). This is the reference set",
+      instruction: "Tap 'C major scale' — every interval from C to each upper note is either perfect (4th, 5th, octave) or major (2nd, 3rd, 6th, 7th). This is the reference set",
     },
     {
       id: 'l2u7m1t3',
@@ -443,11 +443,11 @@ const l2u7m2: CurriculumModule = {
     },
     {
       id: 'l2u7m2t2',
-      instruction: "Type 'C7' and listen — the tritone between E and Bb is what gives the dominant seventh its tension and need to resolve",
+      instruction: "Tap 'C7' and listen — the tritone between E and Bb is what gives the dominant seventh its tension and need to resolve",
     },
     {
       id: 'l2u7m2t3',
-      instruction: "Type 'Cmaj9' — the 9th (D) is the 2nd degree an octave higher. What quality is C to D? Major 2nd, so major 9th",
+      instruction: "Tap 'Cmaj9' — the 9th (D) is the 2nd degree an octave higher. What quality is C to D? Major 2nd, so major 9th",
     },
   ],
   prerequisites: ['l2u7m1'],
@@ -494,11 +494,11 @@ const l2u7m3: CurriculumModule = {
     },
     {
       id: 'l2u7m3t2',
-      instruction: "Type 'Fdim' and count: root to 3rd is 3 half steps (m3), 3rd to 5th is 3 half steps (m3). Both thirds are minor — that's what makes it diminished",
+      instruction: "Tap 'Fdim' and count: root to 3rd is 3 half steps (m3), 3rd to 5th is 3 half steps (m3). Both thirds are minor — that's what makes it diminished",
     },
     {
       id: 'l2u7m3t3',
-      instruction: "Type 'Caug' and count: root to 3rd is 4 half steps (M3), 3rd to 5th is 4 half steps (M3). Both thirds are major — augmented",
+      instruction: "Tap 'Caug' and count: root to 3rd is 4 half steps (M3), 3rd to 5th is 4 half steps (M3). Both thirds are major — augmented",
     },
   ],
   prerequisites: ['l2u7m2'],
@@ -541,15 +541,15 @@ const l2u7m4: CurriculumModule = {
   tasks: [
     {
       id: 'l2u7m4t1',
-      instruction: "Type 'C major chord', 'C/E', and 'C/G' in sequence — same three notes, but hear how the character changes with each bass note",
+      instruction: "Tap 'C major chord', 'C/E', and 'C/G' in sequence — same three notes, but hear how the character changes with each bass note",
     },
     {
       id: 'l2u7m4t2',
-      instruction: "Type 'C/E' — E is in the bass. The intervals above are a 3rd (E to G) and a 6th (E to C). That's why it's called the 6 position",
+      instruction: "Tap 'C/E' — E is in the bass. The intervals above are a 3rd (E to G) and a 6th (E to C). That's why it's called the 6 position",
     },
     {
       id: 'l2u7m4t3',
-      instruction: "Type 'Am/C' — A minor with C in the bass. C is the 3rd of Am, so this is first inversion. Hear how it sounds lighter than root-position Am",
+      instruction: "Tap 'Am/C' — A minor with C in the bass. C is the 3rd of Am, so this is first inversion. Hear how it sounds lighter than root-position Am",
     },
   ],
   prerequisites: ['l2u7m3'],

@@ -257,7 +257,7 @@ describe('L7 — jazz harmony', () => {
     expect(c.tryThisQuery).toBe('C13#11');
     expect(ovText(ptL7 as Ov, 'l7u22m2')).not.toMatch(/C7#9b13|C7b9b13/);
     expect(ovText(esL7 as Ov, 'l7u22m2')).not.toMatch(/C7#9b13|C7b9b13/);
-    expect(ovText(ptL7 as Ov, 'l7u22m2')).toMatch(/escreve "C13#11"/);
+    expect(ovText(ptL7 as Ov, 'l7u22m2')).toMatch(/carrega em "C13#11"/); // the task's link is tapped, not typed (audit Q5)
   });
 
   it('shell voicings: Cm7 and Cm7b5 share root, 3rd and 7th, so the b5 must stay (W5-15)', () => {

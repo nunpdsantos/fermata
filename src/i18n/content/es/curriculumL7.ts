@@ -96,7 +96,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe «Cmaj9», «Dm11» y «G13» uno tras otro. Para cada acorde, identifica la fundamental, la cualidad y qué extensiones están presentes. Observa cómo maj9 implica maj7, m11 implica m7+9+11 y 13 implica 7+9+13.',
+            'Pulsa «Cmaj9», «Dm11» y «G13» uno tras otro. Para cada acorde, identifica la fundamental, la cualidad y qué extensiones están presentes. Observa cómo maj9 implica maj7, m11 implica m7+9+11 y 13 implica 7+9+13.',
         },
         {
           instruction:
@@ -104,7 +104,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Construye una escalera de alteraciones dominantes: escribe «C7», luego «C7b9», luego «C7#9», luego «C7#11». Cada alteración modifica cromáticamente una extensión manteniendo el shell dominante (C-E-Bb) intacto.',
+            'Construye una escalera de alteraciones dominantes: pulsa «C7», luego «C7b9», luego «C7#9», luego «C7#11». Cada alteración modifica cromáticamente una extensión manteniendo el shell dominante (C-E-Bb) intacto.',
         },
       ],
     },
@@ -190,15 +190,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye una ii-V-I mayor en C: escribe «Dm7», luego «G7», luego «Cmaj7». Escucha la tensión acumularse del ii al V y resolver en el I. El trítono en G7 (B y F) resuelve hacia dentro, hacia C y E.',
+            'Construye una ii-V-I mayor en C: pulsa «Dm7», luego «G7», luego «Cmaj7». Escucha la tensión acumularse del ii al V y resolver en el I. El trítono en G7 (B y F) resuelve hacia dentro, hacia C y E.',
         },
         {
           instruction:
-            'Ahora construye una ii-V-i menor en C menor: escribe «Dm7b5», luego «G7b9», luego «Cm7». Compara la atmósfera — el ii semidisminuido y la alteración b9 oscurecen todo en comparación con la versión mayor.',
+            'Ahora construye una ii-V-i menor en C menor: pulsa «Dm7b5», luego «G7b9», luego «Cm7». Compara la atmósfera — el ii semidisminuido y la alteración b9 oscurecen todo en comparación con la versión mayor.',
         },
         {
           instruction:
-            'Encadena pares ii-V: escribe «Em7», «A7», «Dm7», «G7», «Cmaj7». Esta es una ii-V-I en cascada donde cada par apunta al siguiente — Em7-A7 apunta a Dm7, luego Dm7-G7 apunta a Cmaj7. El ciclo de quintas en acción.',
+            'Encadena pares ii-V: pulsa «Em7», «A7», «Dm7», «G7», «Cmaj7». Esta es una ii-V-I en cascada donde cada par apunta al siguiente — Em7-A7 apunta a Dm7, luego Dm7-G7 apunta a Cmaj7. El ciclo de quintas en acción.',
         },
       ],
     },
@@ -387,15 +387,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Empareja acorde con escala: escribe «Dm7» (dórico), luego «D dorian» para ver la escala. Ahora prueba «G7» (mixolidio) y «G mixolydian». Las notas del acorde están dentro de la escala — esto es la alineación acorde-escala.',
+            'Empareja acorde con escala: pulsa «Dm7» (dórico), luego «D dorian» para ver la escala. Ahora prueba «G7» (mixolidio) y «G mixolydian». Las notas del acorde están dentro de la escala — esto es la alineación acorde-escala.',
         },
         {
           instruction:
-            'Explora la dominante alterada: escribe «C altered scale», luego «C7alt». Cada nota del acorde está contenida en la escala. Para encontrar rápidamente cualquier escala alterada: toca menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica).',
+            'Explora la dominante alterada: pulsa «C altered scale», luego «C7alt». Cada nota del acorde está contenida en la escala. Para encontrar rápidamente cualquier escala alterada: toca menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica).',
         },
         {
           instruction:
-            'Compara dos escalas dominantes: escribe «G mixolydian» (dominante no alterada) y luego «G altered scale» (alteración máxima). Mixolidio es brillante y estable; alterada es oscura y cromática. El contexto determina cuál usar.',
+            'Compara dos escalas dominantes: pulsa «G mixolydian» (dominante no alterada) y luego «G altered scale» (alteración máxima). Mixolidio es brillante y estable; alterada es oscura y cromática. El contexto determina cuál usar.',
         },
       ],
     },
@@ -434,7 +434,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Explora estructuras superiores: escribe «C13#11» — este es el sonido de una tríada de D mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
+            'Explora estructuras superiores: pulsa «C13#11» — este es el sonido de una tríada de D mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
         },
         {
           instruction:
@@ -528,11 +528,11 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe «D dorian» e identifica la nota característica (B natural — la sexta elevada). Ahora escribe «D natural minor scale» y compara — solo una nota difiere. Esa única nota define el sonido dórico.',
+            'Pulsa «D dorian» e identifica la nota característica (B natural — la sexta elevada). Ahora pulsa «D natural minor scale» y compara — solo una nota difiere. Esa única nota define el sonido dórico.',
         },
         {
           instruction:
-            'Escribe «E phrygian» — la nota característica es F (la segunda rebajada). Construye un vamp frigio: toca «Em» y luego «F major chord» y vuelve a «Em». El movimiento de la fundamental por semitono es la firma del frigio.',
+            'Pulsa «E phrygian» — la nota característica es F (la segunda rebajada). Construye un vamp frigio: toca «Em» y luego «F major chord» y vuelve a «Em». El movimiento de la fundamental por semitono es la firma del frigio.',
         },
         {
           instruction:
@@ -575,11 +575,11 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye un sonido cuartal: escribe «Dm11» — contiene las notas D-G-C-F cuando se voicea en cuartas. Compara con «Dm7» — la extensión de oncena añade el apilamiento cuartal que crea la cualidad abierta y ambigua.',
+            'Construye un sonido cuartal: pulsa «Dm11» — contiene las notas D-G-C-F cuando se voicea en cuartas. Compara con «Dm7» — la extensión de oncena añade el apilamiento cuartal que crea la cualidad abierta y ambigua.',
         },
         {
           instruction:
-            'Explora el power chord como apilamiento mínimo de quintas: escribe «C5», luego «D5», luego «E5». Los power chords no son mayores ni menores — quintas puras sin tercera. Este es el pensamiento quintal en su forma más básica.',
+            'Explora el power chord como apilamiento mínimo de quintas: pulsa «C5», luego «D5», luego «E5». Los power chords no son mayores ni menores — quintas puras sin tercera. Este es el pensamiento quintal en su forma más básica.',
         },
         {
           instruction:
@@ -767,15 +767,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Explora el frigio dominante: escribe «C phrygian dominant». Tiene una b2 (Db) y una tercera mayor (E) — la segunda aumentada entre ellas es el intervalo firma. Este es el sonido de flamenco/klezmer. Compara con «C phrygian» para escuchar la diferencia que hace la tercera mayor.',
+            'Explora el frigio dominante: pulsa «C phrygian dominant». Tiene una b2 (Db) y una tercera mayor (E) — la segunda aumentada entre ellas es el intervalo firma. Este es el sonido de flamenco/klezmer. Compara con «C phrygian» para escuchar la diferencia que hace la tercera mayor.',
         },
         {
           instruction:
-            'Escribe «C whole tone scale» — observa que tiene solo 6 notas y ningún semitono. Ahora escribe «Db whole tone scale». Estas son las únicas dos escalas de tonos enteros únicas; cualquier otra fundamental duplica una de ellas. Simetría total significa ambigüedad total.',
+            'Pulsa «C whole tone scale» — observa que tiene solo 6 notas y ningún semitono. Ahora pulsa «Db whole tone scale». Estas son las únicas dos escalas de tonos enteros únicas; cualquier otra fundamental duplica una de ellas. Simetría total significa ambigüedad total.',
         },
         {
           instruction:
-            'Compara escalas del mundo: escribe «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene muchas más escalas — explora libremente.',
+            'Compara escalas del mundo: pulsa «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene muchas más escalas — explora libremente.',
         },
       ],
     },
@@ -814,15 +814,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye la escalera de extensiones en C: escribe «Cmaj7», «Cmaj9», «Cmaj13» en secuencia. Escucha cómo cada extensión añade riqueza mientras el shell (C, E, B) se mantiene igual.',
+            'Construye la escalera de extensiones en C: pulsa «Cmaj7», «Cmaj9», «Cmaj13» en secuencia. Escucha cómo cada extensión añade riqueza mientras el shell (C, E, B) se mantiene igual.',
         },
         {
           instruction:
-            'Compara acordes suspendidos y de nota añadida: escribe «Csus4», luego «Cadd9», luego «C6/9». Observa que sus4 no tiene tercera, add9 no tiene séptima, y 6/9 no tiene ni séptima ni la tensión de resolución de un acorde suspendido.',
+            'Compara acordes suspendidos y de nota añadida: pulsa «Csus4», luego «Cadd9», luego «C6/9». Observa que sus4 no tiene tercera, add9 no tiene séptima, y 6/9 no tiene ni séptima ni la tensión de resolución de un acorde suspendido.',
         },
         {
           instruction:
-            'Explora variaciones dominantes: escribe «C7», «C9», «C7sus4», «C7b9», «C7#9», «C13». Todos son acordes de la familia dominante, pero cada uno tiene un color distinto — de cálido (C9) a oscuro (C7b9) a áspero (C7#9) a amplio (C13).',
+            'Explora variaciones dominantes: pulsa «C7», «C9», «C7sus4», «C7b9», «C7#9», «C13». Todos son acordes de la familia dominante, pero cada uno tiene un color distinto — de cálido (C9) a oscuro (C7b9) a áspero (C7#9) a amplio (C13).',
         },
       ],
     },

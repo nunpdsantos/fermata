@@ -45,7 +45,7 @@ const l7u21m1: CurriculumModule = {
     {
       id: 'l7u21m1t1',
       instruction:
-        "Type 'Cmaj9', 'Dm11', and 'G13' one after another. For each chord, identify the root, quality, and which extensions are present. Notice how maj9 implies maj7, m11 implies m7+9+11, and 13 implies 7+9+13.",
+        "Tap 'Cmaj9', 'Dm11', and 'G13' one after another. For each chord, identify the root, quality, and which extensions are present. Notice how maj9 implies maj7, m11 implies m7+9+11, and 13 implies 7+9+13.",
     },
     {
       id: 'l7u21m1t2',
@@ -55,7 +55,7 @@ const l7u21m1: CurriculumModule = {
     {
       id: 'l7u21m1t3',
       instruction:
-        "Build a dominant alteration ladder: type 'C7', then 'C7b9', then 'C7#9', then 'C7#11'. Each alteration chromatically modifies one extension while keeping the dominant shell (C-E-Bb) intact.",
+        "Build a dominant alteration ladder: tap 'C7', then 'C7b9', then 'C7#9', then 'C7#11'. Each alteration chromatically modifies one extension while keeping the dominant shell (C-E-Bb) intact.",
     },
   ],
   prerequisites: ['l6u20m4'],
@@ -155,17 +155,17 @@ const l7u21m3: CurriculumModule = {
     {
       id: 'l7u21m3t1',
       instruction:
-        "Build a major ii-V-I in C: type 'Dm7', then 'G7', then 'Cmaj7'. Listen to the tension build from ii through V and resolve to I. The tritone in G7 (B and F) resolves inward to C and E.",
+        "Build a major ii-V-I in C: tap 'Dm7', then 'G7', then 'Cmaj7'. Listen to the tension build from ii through V and resolve to I. The tritone in G7 (B and F) resolves inward to C and E.",
     },
     {
       id: 'l7u21m3t2',
       instruction:
-        "Now build a minor ii-V-i in C minor: type 'Dm7b5', then 'G7b9', then 'Cm7'. Compare the mood — the half-diminished ii and the b9 alteration darken everything compared to the major version.",
+        "Now build a minor ii-V-i in C minor: tap 'Dm7b5', then 'G7b9', then 'Cm7'. Compare the mood — the half-diminished ii and the b9 alteration darken everything compared to the major version.",
     },
     {
       id: 'l7u21m3t3',
       instruction:
-        "Chain ii-V pairs: type 'Em7', 'A7', 'Dm7', 'G7', 'Cmaj7'. This is a cascading ii-V-I where each pair targets the next — Em7-A7 targets Dm7, then Dm7-G7 targets Cmaj7. The cycle of fifths in action.",
+        "Chain ii-V pairs: tap 'Em7', 'A7', 'Dm7', 'G7', 'Cmaj7'. This is a cascading ii-V-I where each pair targets the next — Em7-A7 targets Dm7, then Dm7-G7 targets Cmaj7. The cycle of fifths in action.",
     },
   ],
   prerequisites: ['l7u21m2'],
@@ -388,17 +388,17 @@ const l7u22m1: CurriculumModule = {
     {
       id: 'l7u22m1t1',
       instruction:
-        "Match chord to scale: type 'Dm7' (Dorian), then 'D dorian' to see the scale. Now try 'G7' (Mixolydian) and 'G mixolydian'. The chord tones sit inside the scale — this is chord-scale alignment.",
+        "Match chord to scale: tap 'Dm7' (Dorian), then 'D dorian' to see the scale. Now try 'G7' (Mixolydian) and 'G mixolydian'. The chord tones sit inside the scale — this is chord-scale alignment.",
     },
     {
       id: 'l7u22m1t2',
       instruction:
-        "Explore the altered dominant: type 'C altered scale', then 'C7alt'. Every note of the chord is contained in the scale. To find any altered scale quickly: play melodic minor a half step above the root (C altered = Db melodic minor).",
+        "Explore the altered dominant: tap 'C altered scale', then 'C7alt'. Every note of the chord is contained in the scale. To find any altered scale quickly: play melodic minor a half step above the root (C altered = Db melodic minor).",
     },
     {
       id: 'l7u22m1t3',
       instruction:
-        "Compare two dominant scales: type 'G mixolydian' (unaltered dominant) and then 'G altered scale' (maximum alteration). Mixolydian is bright and stable; altered is dark and chromatic. Context determines which to use.",
+        "Compare two dominant scales: tap 'G mixolydian' (unaltered dominant) and then 'G altered scale' (maximum alteration). Mixolydian is bright and stable; altered is dark and chromatic. Context determines which to use.",
     },
   ],
   prerequisites: ['l7u21m6'],
@@ -443,7 +443,7 @@ const l7u22m2: CurriculumModule = {
     {
       id: 'l7u22m2t1',
       instruction:
-        "Explore upper structures: type 'C13#11' — this is the sound of a D major triad (D-F#-A = 9-#11-13) over a C7 shell (C-E-Bb). The complex symbol is voiced with a simple triad on top.",
+        "Explore upper structures: tap 'C13#11' — this is the sound of a D major triad (D-F#-A = 9-#11-13) over a C7 shell (C-E-Bb). The complex symbol is voiced with a simple triad on top.",
     },
     {
       id: 'l7u22m2t2',
@@ -554,12 +554,12 @@ const l7u22m4: CurriculumModule = {
     {
       id: 'l7u22m4t1',
       instruction:
-        "Type 'D dorian' and identify the characteristic tone (B natural — the raised 6th). Now type 'D natural minor scale' and compare — only one note differs. That single note defines the Dorian sound.",
+        "Tap 'D dorian' and identify the characteristic tone (B natural — the raised 6th). Now tap 'D natural minor scale' and compare — only one note differs. That single note defines the Dorian sound.",
     },
     {
       id: 'l7u22m4t2',
       instruction:
-        "Type 'E phrygian' — the characteristic tone is F (the lowered 2nd). Build a Phrygian vamp: play 'Em' then 'F major chord' and back to 'Em'. The half-step root motion is the Phrygian signature.",
+        "Tap 'E phrygian' — the characteristic tone is F (the lowered 2nd). Build a Phrygian vamp: play 'Em' then 'F major chord' and back to 'Em'. The half-step root motion is the Phrygian signature.",
     },
     {
       id: 'l7u22m4t3',
@@ -610,12 +610,12 @@ const l7u22m5: CurriculumModule = {
     {
       id: 'l7u22m5t1',
       instruction:
-        "Build a quartal sound: type 'Dm11' — this contains the notes D-G-C-F when voiced in fourths. Compare with 'Dm7' — the 11th extension adds the quartal stacking that creates the open, ambiguous quality.",
+        "Build a quartal sound: tap 'Dm11' — this contains the notes D-G-C-F when voiced in fourths. Compare with 'Dm7' — the 11th extension adds the quartal stacking that creates the open, ambiguous quality.",
     },
     {
       id: 'l7u22m5t2',
       instruction:
-        "Explore the power chord as a minimal fifth stack: type 'C5', then 'D5', then 'E5'. Power chords are neither major nor minor — pure fifths with no third. This is quintal thinking at its most basic.",
+        "Explore the power chord as a minimal fifth stack: tap 'C5', then 'D5', then 'E5'. Power chords are neither major nor minor — pure fifths with no third. This is quintal thinking at its most basic.",
     },
     {
       id: 'l7u22m5t3',
@@ -836,17 +836,17 @@ const l7u23m4: CurriculumModule = {
     {
       id: 'l7u23m4t1',
       instruction:
-        "Explore Phrygian dominant: type 'C phrygian dominant'. It has a b2 (Db) and a major 3rd (E) — the augmented second between them is the signature interval. This is the flamenco/klezmer sound. Compare with 'C phrygian' to hear the difference the major 3rd makes.",
+        "Explore Phrygian dominant: tap 'C phrygian dominant'. It has a b2 (Db) and a major 3rd (E) — the augmented second between them is the signature interval. This is the flamenco/klezmer sound. Compare with 'C phrygian' to hear the difference the major 3rd makes.",
     },
     {
       id: 'l7u23m4t2',
       instruction:
-        "Type 'C whole tone scale' — notice only 6 notes and no half steps anywhere. Now type 'Db whole tone scale'. These are the only two unique whole-tone scales; every other root duplicates one of them. Total symmetry means total ambiguity.",
+        "Tap 'C whole tone scale' — notice only 6 notes and no half steps anywhere. Now tap 'Db whole tone scale'. These are the only two unique whole-tone scales; every other root duplicates one of them. Total symmetry means total ambiguity.",
     },
     {
       id: 'l7u23m4t3',
       instruction:
-        "Compare world scales: type 'C double harmonic major', then 'C hungarian minor'. Both feature augmented seconds but in different positions, creating very different melodic characters. The engine has many more scales — explore freely.",
+        "Compare world scales: tap 'C double harmonic major', then 'C hungarian minor'. Both feature augmented seconds but in different positions, creating very different melodic characters. The engine has many more scales — explore freely.",
     },
   ],
   prerequisites: ['l7u23m3'],
@@ -891,17 +891,17 @@ const l7u23m5: CurriculumModule = {
     {
       id: 'l7u23m5t1',
       instruction:
-        "Build the extension ladder on C: type 'Cmaj7', 'Cmaj9', 'Cmaj13' in sequence. Hear how each extension adds richness while the shell (C, E, B) remains the same.",
+        "Build the extension ladder on C: tap 'Cmaj7', 'Cmaj9', 'Cmaj13' in sequence. Hear how each extension adds richness while the shell (C, E, B) remains the same.",
     },
     {
       id: 'l7u23m5t2',
       instruction:
-        "Compare suspended and added-tone chords: type 'Csus4', then 'Cadd9', then 'C6/9'. Notice that sus4 has no 3rd, add9 has no 7th, and 6/9 has neither a 7th nor the resolution tension of a suspended chord.",
+        "Compare suspended and added-tone chords: tap 'Csus4', then 'Cadd9', then 'C6/9'. Notice that sus4 has no 3rd, add9 has no 7th, and 6/9 has neither a 7th nor the resolution tension of a suspended chord.",
     },
     {
       id: 'l7u23m5t3',
       instruction:
-        "Explore dominant variations: type 'C7', 'C9', 'C7sus4', 'C7b9', 'C7#9', 'C13'. All are dominant-family chords, but each has a distinct color — from warm (C9) to dark (C7b9) to gritty (C7#9) to wide (C13).",
+        "Explore dominant variations: tap 'C7', 'C9', 'C7sus4', 'C7b9', 'C7#9', 'C13'. All are dominant-family chords, but each has a distinct color — from warm (C9) to dark (C7b9) to gritty (C7#9) to wide (C13).",
     },
   ],
   prerequisites: ['l7u23m4'],

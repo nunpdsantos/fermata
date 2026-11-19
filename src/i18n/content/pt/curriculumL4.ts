@@ -87,7 +87,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" e imagina manter a nota F enquanto o acorde soa — o F é uma 4.ª dissonante acima do baixo que quer resolver por grau conjunto descendente para E (um padrão de retardo 4-3)',
+            'Toca "C major chord" e imagina manter a nota F enquanto o acorde soa — o F é uma 4.ª dissonante acima do baixo que quer resolver por grau conjunto descendente para E (um padrão de retardo 4-3)',
         },
         {
           instruction:
@@ -137,7 +137,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "G major chord" — imagina a nota B retida enquanto o acorde muda para C maior. B resolve para cima até C: isto é um retardo ascendente 7-8, o tipo de retardo ascendente mais comum',
+            'Toca "G major chord" — imagina a nota B retida enquanto o acorde muda para C maior. B resolve para cima até C: isto é um retardo ascendente 7-8, o tipo de retardo ascendente mais comum',
         },
         {
           instruction:
@@ -224,11 +224,11 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "G7" — identifica as duas notas de tendência: B (sensível, resolve para cima até C) e F (7.ª do acorde, resolve para baixo até E). Juntas formam o trítono que impulsiona a resolução V7-I',
+            'Carrega em "G7" — identifica as duas notas de tendência: B (sensível, resolve para cima até C) e F (7.ª do acorde, resolve para baixo até E). Juntas formam o trítono que impulsiona a resolução V7-I',
         },
         {
           instruction:
-            'Agora escreve "C major chord" — é para aqui que G7 resolve. B foi para C, F foi para E. O trítono contraiu para o intervalo consonante C-E',
+            'Agora carrega em "C major chord" — é para aqui que G7 resolve. B foi para C, F foi para E. O trítono contraiu para o intervalo consonante C-E',
         },
         {
           instruction:
@@ -315,7 +315,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "Dm7" depois "G7" depois "Cmaj7" — esta é a progressão ii7-V7-Imaj7, a sequência de acordes mais fundamental no jazz e a progressão funcional mais forte na harmonia tonal',
+            'Carrega em "Dm7" depois "G7" depois "Cmaj7" — esta é a progressão ii7-V7-Imaj7, a sequência de acordes mais fundamental no jazz e a progressão funcional mais forte na harmonia tonal',
         },
         {
           instruction:
@@ -323,7 +323,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escreve "Dm7" e repara na nota comum com G7: a nota D. A 7.ª de Dm7 (C) resolve por grau conjunto para B (a 3.ª de G7). Esta ligação suave na condução de vozes é a razão pela qual ii7-V7 é tão forte',
+            'Carrega em "Dm7" e repara nas notas comuns com G7: as notas D e F. A 7.ª de Dm7 (C) resolve por grau conjunto para B (a 3.ª de G7). Esta ligação suave na condução de vozes é a razão pela qual ii7-V7 é tão forte',
         },
       ],
     },
@@ -361,7 +361,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "Cmaj7" — repara no intervalo de 7.ª maior (de C a subir até B). Agora escreve "C7" — a 7.ª menor (Bb) dá-lhe um carácter completamente diferente. Cmaj7 é função tónica; C7 é qualidade dominante (ou tónica blues)',
+            'Carrega em "Cmaj7" — repara no intervalo de 7.ª maior (de C a subir até B). Agora carrega em "C7" — a 7.ª menor (Bb) dá-lhe um carácter completamente diferente. Cmaj7 é função tónica; C7 é qualidade dominante (ou tónica blues)',
         },
         {
           instruction:
@@ -407,11 +407,11 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "Bm7b5" (B sétima meio-diminuto) — isto é viiø7 em C maior. As suas notas B-D-F-A são as mesmas de G9 sem a fundamental G. Resolve para C maior com B a subir para C e F a descer para E',
+            'Carrega em "Bm7b5" (B sétima meio-diminuto) — isto é viiø7 em C maior. As suas notas B-D-F-A são as mesmas de G9 sem a fundamental G. Resolve para C maior com B a subir para C e F a descer para E',
         },
         {
           instruction:
-            'Escreve "Bdim7" (B sétima diminuto) — isto é vii°7 em C menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
+            'Carrega em "Bdim7" (B sétima diminuto) — isto é vii°7 em C menor. Compara o som com "Bm7b5": a versão totalmente diminuta é mais tensa porque cada nota é uma nota de tendência',
         },
         {
           instruction:
@@ -637,7 +637,7 @@ const curriculumL4: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "chromatic scale" e toca-a — cada nota está a meio-tom de distância. Agora toca "C major scale" — repara nos tons (C-D, D-E, F-G, G-A, A-B) que o cromatismo poderia preencher',
+            'Carrega em "chromatic scale" e toca-a — cada nota está a meio-tom de distância. Agora toca "C major scale" — repara nos tons (C-D, D-E, F-G, G-A, A-B) que o cromatismo poderia preencher',
         },
         {
           instruction:

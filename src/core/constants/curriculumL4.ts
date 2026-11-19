@@ -197,12 +197,12 @@ const l4u12m4: CurriculumModule = {
   tasks: [
     {
       id: 'l4u12m4t1',
-      instruction: "Type 'G7' \u2014 identify the two tendency tones: B (leading tone, resolves up to C) and F (chordal 7th, resolves down to E). Together they form the tritone that drives V7-I resolution",
+      instruction: "Tap 'G7' \u2014 identify the two tendency tones: B (leading tone, resolves up to C) and F (chordal 7th, resolves down to E). Together they form the tritone that drives V7-I resolution",
       query: 'G7',
     },
     {
       id: 'l4u12m4t2',
-      instruction: "Now type 'C major chord' \u2014 this is where G7 resolves. B went to C, F went to E. The tritone contracted to the consonant interval C-E",
+      instruction: "Now tap 'C major chord' \u2014 this is where G7 resolves. B went to C, F went to E. The tritone contracted to the consonant interval C-E",
       query: 'C major chord',
     },
     {
@@ -307,7 +307,7 @@ const l4u13m1: CurriculumModule = {
   tasks: [
     {
       id: 'l4u13m1t1',
-      instruction: "Type 'Dm7' then 'G7' then 'Cmaj7' \u2014 this is the ii7-V7-Imaj7 progression, the most fundamental chord sequence in jazz and the strongest functional progression in tonal harmony",
+      instruction: "Tap 'Dm7' then 'G7' then 'Cmaj7' \u2014 this is the ii7-V7-Imaj7 progression, the most fundamental chord sequence in jazz and the strongest functional progression in tonal harmony",
     },
     {
       id: 'l4u13m1t2',
@@ -315,7 +315,7 @@ const l4u13m1: CurriculumModule = {
     },
     {
       id: 'l4u13m1t3',
-      instruction: "Type 'Dm7' and notice the common tone with G7: the note D. The 7th of Dm7 (C) resolves by step to B (the 3rd of G7). This seamless voice-leading connection is why ii7-V7 is so strong",
+      instruction: "Tap 'Dm7' and notice the common tones with G7: the notes D and F. The 7th of Dm7 (C) resolves by step to B (the 3rd of G7). This seamless voice-leading connection is why ii7-V7 is so strong",
       query: 'Dm7',
     },
   ],
@@ -359,7 +359,7 @@ const l4u13m2: CurriculumModule = {
   tasks: [
     {
       id: 'l4u13m2t1',
-      instruction: "Type 'Cmaj7' \u2014 notice the major 7th interval (C up to B). Now type 'C7' \u2014 the minor 7th (Bb) gives it a completely different character. Cmaj7 is tonic function; C7 is dominant quality (or blues tonic)",
+      instruction: "Tap 'Cmaj7' \u2014 notice the major 7th interval (C up to B). Now tap 'C7' \u2014 the minor 7th (Bb) gives it a completely different character. Cmaj7 is tonic function; C7 is dominant quality (or blues tonic)",
     },
     {
       id: 'l4u13m2t2',
@@ -411,12 +411,12 @@ const l4u13m3: CurriculumModule = {
   tasks: [
     {
       id: 'l4u13m3t1',
-      instruction: "Type 'Bm7b5' (B half-diminished 7) \u2014 this is vii\u00F87 in C major. Its notes B-D-F-A are the same as G9 without the root G. It resolves to C major with B rising to C and F falling to E",
+      instruction: "Tap 'Bm7b5' (B half-diminished 7) \u2014 this is vii\u00f87 in C major. Its notes B-D-F-A are the same as G9 without the root G. It resolves to C major with B rising to C and F falling to E",
       query: 'Bm7b5',
     },
     {
       id: 'l4u13m3t2',
-      instruction: "Type 'Bdim7' (B fully diminished 7) \u2014 this is viio7 in C minor. Compare its sound with 'Bm7b5': the fully diminished version is more tense because every note is a tendency tone",
+      instruction: "Tap 'Bdim7' (B fully diminished 7) \u2014 this is viio7 in C minor. Compare its sound with 'Bm7b5': the fully diminished version is more tense because every note is a tendency tone",
       query: 'Bdim7',
     },
     {
@@ -682,7 +682,7 @@ const l4u14m3: CurriculumModule = {
   tasks: [
     {
       id: 'l4u14m3t1',
-      instruction: "Type 'chromatic scale' and play through it \u2014 every note is a half step apart. Now play 'C major scale' \u2014 notice the whole steps (C-D, D-E, F-G, G-A, A-B) that chromaticism could fill in",
+      instruction: "Tap 'chromatic scale' and play through it \u2014 every note is a half step apart. Now play 'C major scale' \u2014 notice the whole steps (C-D, D-E, F-G, G-A, A-B) that chromaticism could fill in",
       query: 'chromatic scale',
     },
     {

@@ -42,13 +42,13 @@ const l5u15m1: CurriculumModule = {
     {
       id: 'l5u15m1t1',
       instruction:
-        "Type 'D major chord' — this is V/V in C major. The F# is the only chromatic note. It acts as a leading tone to G.",
+        "Tap 'D major chord' — this is V/V in C major. The F# is the only chromatic note. It acts as a leading tone to G.",
       query: 'D major chord',
     },
     {
       id: 'l5u15m1t2',
       instruction:
-        "Type 'D7' then 'G major chord' — hear how D7 creates a strong pull to G. The tritone F#–C inside D7 (a diminished 5th) contracts inward to the major 3rd G–B.",
+        "Tap 'D7' then 'G major chord' — hear how D7 creates a strong pull to G. The tritone F#–C inside D7 (a diminished 5th) contracts inward to the major 3rd G–B.",
       query: 'D7',
     },
     {
@@ -98,19 +98,19 @@ const l5u15m2: CurriculumModule = {
     {
       id: 'l5u15m2t1',
       instruction:
-        "Type 'A7' — this is V7/ii in C major. The C# acts as a leading tone to D. Now type 'Dm' to hear the resolution.",
+        "Tap 'A7' — this is V7/ii in C major. The C# acts as a leading tone to D. Now tap 'Dm' to hear the resolution.",
       query: 'A7',
     },
     {
       id: 'l5u15m2t2',
       instruction:
-        "Type 'E7' — this is V7/vi in C major. The G# pulls toward A. Compare with 'Em' (diatonic iii) — E7 has much more tension because of the chromatic G#.",
+        "Tap 'E7' — this is V7/vi in C major. The G# pulls toward A. Compare with 'Em' (diatonic iii) — E7 has much more tension because of the chromatic G#.",
       query: 'E7',
     },
     {
       id: 'l5u15m2t3',
       instruction:
-        "Type 'C7' — this is V7/IV in C major. The Bb is the giveaway that this is not functioning as a tonic chord. Now type 'F major chord' to hear the resolution.",
+        "Tap 'C7' — this is V7/IV in C major. The Bb is the giveaway that this is not functioning as a tonic chord. Now tap 'F major chord' to hear the resolution.",
       query: 'C7',
     },
   ],
@@ -155,13 +155,13 @@ const l5u15m3: CurriculumModule = {
     {
       id: 'l5u15m3t1',
       instruction:
-        "Type 'F#dim' then 'G major chord' — the F# pulls up to G by half step. Compare this with 'D7' to 'G' — both target G but with different bass motion.",
+        "Tap 'F#dim' then 'G major chord' — the F# pulls up to G by half step. Compare this with 'D7' to 'G' — both target G but with different bass motion.",
       query: 'F#dim',
     },
     {
       id: 'l5u15m3t2',
       instruction:
-        "Type 'G#dim7' — this is viio7/vi in C major. The G# is a leading tone to A. Now type 'Am' to hear the resolution.",
+        "Tap 'G#dim7' — this is viio7/vi in C major. The G# is a leading tone to A. Now tap 'Am' to hear the resolution.",
     },
     {
       id: 'l5u15m3t3',
@@ -272,7 +272,7 @@ const l5u15m5: CurriculumModule = {
     {
       id: 'l5u15m5t2',
       instruction:
-        "Type 'D7' then 'G7' then 'Cmaj7' — this is a chain of dominants. D7 tonicizes G, G7 tonicizes C. The final resolution to Cmaj7 confirms C as the real tonic.",
+        "Tap 'D7' then 'G7' then 'Cmaj7' — this is a chain of dominants. D7 tonicizes G, G7 tonicizes C. The final resolution to Cmaj7 confirms C as the real tonic.",
     },
     {
       id: 'l5u15m5t3',
@@ -440,7 +440,7 @@ const l5u16m3: CurriculumModule = {
     {
       id: 'l5u16m3t1',
       instruction:
-        "Type 'C major scale' then 'Db major scale' — imagine a song ending a phrase in C and starting the next in Db. That is a direct modulation — up a half step, no pivot needed.",
+        "Tap 'C major scale' then 'Db major scale' — imagine a song ending a phrase in C and starting the next in Db. That is a direct modulation — up a half step, no pivot needed.",
     },
     {
       id: 'l5u16m3t2',
@@ -496,7 +496,7 @@ const l5u16m4: CurriculumModule = {
     {
       id: 'l5u16m4t1',
       instruction:
-        "Type 'Ab major chord' in the context of C major — Ab contains Ab, C, Eb. The Ab and Eb are borrowed from C minor. This is bVI, the most cinematic borrowed chord.",
+        "Tap 'Ab major chord' in the context of C major — Ab contains Ab, C, Eb. The Ab and Eb are borrowed from C minor. This is bVI, the most cinematic borrowed chord.",
       query: 'Ab major chord',
     },
     {
@@ -507,7 +507,7 @@ const l5u16m4: CurriculumModule = {
     {
       id: 'l5u16m4t3',
       instruction:
-        "Type 'Bb major chord' — this is bVII in C major, borrowed from C minor. It is everywhere in rock and pop. Now type 'C major chord' to hear the bVII to I resolution.",
+        "Tap 'Bb major chord' — this is bVII in C major, borrowed from C minor. It is everywhere in rock and pop. Now tap 'C major chord' to hear the bVII to I resolution.",
     },
   ],
   prerequisites: ['l5u16m3'],
@@ -551,7 +551,7 @@ const l5u16m5: CurriculumModule = {
     {
       id: 'l5u16m5t1',
       instruction:
-        "Type 'C minor scale' to establish the minor context. Now type 'C major chord' — that raised third (E natural instead of Eb) is the Picardy third. Bright ending to a dark key.",
+        "Tap 'C minor scale' to establish the minor context. Now tap 'C major chord' — that raised third (E natural instead of Eb) is the Picardy third. Bright ending to a dark key.",
       query: 'C minor scale',
     },
     {
@@ -675,7 +675,7 @@ const l5u17m2: CurriculumModule = {
     {
       id: 'l5u17m2t3',
       instruction:
-        "Type 'C major scale' then 'C minor scale' — switching from major to minor is one of the most common variation techniques (modal variation). Same tonic, completely different character.",
+        "Tap 'C major scale' then 'C minor scale' — switching from major to minor is one of the most common variation techniques (modal variation). Same tonic, completely different character.",
     },
   ],
   prerequisites: ['l5u17m1'],
@@ -720,7 +720,7 @@ const l5u17m3: CurriculumModule = {
     {
       id: 'l5u17m3t1',
       instruction:
-        'Play a single scale on the piano — that is monophonic texture. Now play a chord underneath a melody note — that is homophonic texture. The distinction is whether the accompaniment has independent melodic interest.',
+        'Play a single scale — that is monophonic texture. Now play a chord underneath a melody note — that is homophonic texture. The distinction is whether the accompaniment has independent melodic interest.',
     },
     {
       id: 'l5u17m3t2',
@@ -775,13 +775,13 @@ const l5u17m4: CurriculumModule = {
     {
       id: 'l5u17m4t1',
       instruction:
-        "Type 'Dm7' and find the 3rd (F) and 7th (C). Now type 'G7' — the 3rd is B and the 7th is F. Notice: the 7th of Dm7 (C) moved down to B (3rd of G7), and the 3rd of Dm7 (F) stayed as the 7th of G7.",
+        "Tap 'Dm7' and find the 3rd (F) and 7th (C). Now tap 'G7' — the 3rd is B and the 7th is F. Notice: the 7th of Dm7 (C) moved down to B (3rd of G7), and the 3rd of Dm7 (F) stayed as the 7th of G7.",
       query: 'Dm7',
     },
     {
       id: 'l5u17m4t2',
       instruction:
-        "Type 'G7' then 'Cmaj7' — trace the guide tones: G7's 3rd (B) becomes Cmaj7's 7th (B, common tone). G7's 7th (F) drops to Cmaj7's 3rd (E). Every connection is stepwise or static.",
+        "Tap 'G7' then 'Cmaj7' — trace the guide tones: G7's 3rd (B) becomes Cmaj7's 7th (B, common tone). G7's 7th (F) drops to Cmaj7's 3rd (E). Every connection is stepwise or static.",
       query: 'G7',
     },
     {
