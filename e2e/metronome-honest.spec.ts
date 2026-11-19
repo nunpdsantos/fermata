@@ -69,13 +69,26 @@ async function stuckUnderBar(page: Page) {
     const barEl = document.querySelector('[data-testid="metronome"]') as HTMLElement;
     const b = barEl.getBoundingClientRect();
     const under = (r: DOMRect) => r.width > 0 && r.height > 0 && r.bottom > b.top + 1 && r.top < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
+    // A glyph in a drawing has its font's whole em box, far taller than its ink (a clef's is 160 px in a 109 px
+    // staff), and the drawing clips what it paints: only the part of the box inside its <svg> can be covered.
+    // Without this a check's staff "sat under" a bar 16 px below it, for some notes and not others (measured
+    // 19 November 2026: clef box 130–290, drawing 130–239, bar from 255; the test failed 5 runs in 10).
+    const painted = (e: Element): DOMRect => {
+      const r = e.getBoundingClientRect();
+      const svg = (e as SVGElement).ownerSVGElement;
+      if (!svg || getComputedStyle(svg).overflow === 'visible') return r;
+      const s = svg.getBoundingClientRect();
+      const left = Math.max(r.left, s.left);
+      const top = Math.max(r.top, s.top);
+      return new DOMRect(left, top, Math.max(0, Math.min(r.right, s.right) - left), Math.max(0, Math.min(r.bottom, s.bottom) - top));
+    };
     const leaves = Array.from(document.querySelectorAll('#root *')).filter((el) => {
       const e = el as HTMLElement;
       if (barEl.contains(e) || e.closest('[data-testid="instrument-dock"], .app-topbar')) return false;
       const own = Array.from(e.childNodes).some((c) => c.nodeType === 3 && (c.textContent ?? '').trim());
       if (!own && !e.matches('button, a, input, select, [role="button"]')) return false;
       const cs = getComputedStyle(e);
-      return cs.visibility !== 'hidden' && cs.opacity !== '0' && under(e.getBoundingClientRect());
+      return cs.visibility !== 'hidden' && cs.opacity !== '0' && under(painted(e));
     }) as HTMLElement[];
     const stuck: string[] = [];
     for (const el of leaves) {
@@ -86,7 +99,7 @@ async function stuckUnderBar(page: Page) {
         const start = p.scrollTop;
         for (let y = 0; y <= p.scrollHeight - p.clientHeight + 16 && !freed; y += 16) {
           p.scrollTop = y;
-          if (!under(el.getBoundingClientRect())) freed = true;
+          if (!under(painted(el))) freed = true;
         }
         p.scrollTop = start;
       }
@@ -133,6 +146,33 @@ test.describe('the bar never covers what cannot be moved out from under it', () 
     await page.addStyleTag({ content: '.learn-scroll { overflow: hidden !important; }' });
     const r = await stuckUnderBar(page);
     expect(r.stuck.length).toBeGreaterThan(0);
+    await context.close();
+  });
+
+  test('a drawing clips its glyphs: a glyph box that reaches under the bar from a drawing ending above it is not covered; one in a drawing the bar crosses is', async ({ browser }) => {
+    const { context, page } = await openApp(browser, LAPTOP, { lastView: 'learn' });
+    await openMetronome(page);
+    // A fixed 60 × 50 drawing over the bar's left end, its one glyph 160 px tall; `dy` moves it down.
+    const place = (dy: number) =>
+      page.evaluate((down) => {
+        document.getElementById('probe-drawing')?.remove();
+        const b = document.querySelector('[data-testid="metronome"]')!.getBoundingClientRect();
+        const wrap = document.createElement('div');
+        wrap.id = 'probe-drawing';
+        wrap.style.cssText = `position:fixed;left:${b.left + 20}px;top:${b.top - 60 + down}px;width:60px;height:50px`;
+        wrap.innerHTML = '<svg width="60" height="50" viewBox="0 0 60 50"><text x="5" y="40" font-size="160">X</text></svg>';
+        document.getElementById('root')!.appendChild(wrap);
+        const glyph = wrap.querySelector('text')!.getBoundingClientRect();
+        return { glyphBelowBarTop: glyph.bottom - b.top, drawingBelowBarTop: wrap.getBoundingClientRect().bottom - b.top };
+      }, dy);
+    const glyphs = async () => (await stuckUnderBar(page)).stuck.filter((s) => s.startsWith('text'));
+    const above = await place(0);
+    expect(above.drawingBelowBarTop).toBeLessThan(0); // the drawing ends above the bar …
+    expect(above.glyphBelowBarTop).toBeGreaterThan(5); // … and its glyph's box reaches under it
+    expect(await glyphs()).toEqual([]);
+    const across = await place(40);
+    expect(across.drawingBelowBarTop).toBeGreaterThan(5);
+    expect(await glyphs()).toEqual(['text "X"']);
     await context.close();
   });
 });
