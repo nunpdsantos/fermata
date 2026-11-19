@@ -32,12 +32,15 @@ const SPEC: Row[] = [
     name: 'control change', status: 0xb0, data: 2, channel: true,
     expect: (channel, cc, value) =>
       cc === 64 ? [{ type: 'sustain', channel, down: value >= 64 }]
-        // 120 all sound off, 123 all notes off; 124–127 (omni off / on, mono on, poly on) "also cause All Notes Off".
-        : cc === 120 || cc === 123 || (cc >= 124 && cc <= 127) ? [{ type: 'allNotesOff', channel }]
-          // 121 reset all controllers: the pedal back to its default, up.
-          : cc === 121 ? [{ type: 'sustain', channel, down: false }]
-            // 122 local control (and every other controller): nothing for Fermata.
-            : [],
+        // 120 All Sound Off: "all notes currently on are turned off and their volume envelopes are set to zero as
+        // soon as possible" (MIDI 1.0 Detailed Specification 4.2.1, p. 25) — a message of its own, never deferred.
+        : cc === 120 ? [{ type: 'allSoundOff', channel }]
+          // 123 All Notes Off; "Messages 123 through 127 also function as All Notes Off messages" (p. 20).
+          : cc === 123 || (cc >= 124 && cc <= 127) ? [{ type: 'allNotesOff', channel }]
+            // 121 reset all controllers: the pedal back to its default, up.
+            : cc === 121 ? [{ type: 'sustain', channel, down: false }]
+              // 122 local control (and every other controller): nothing for Fermata.
+              : [],
   },
   { name: 'program change', status: 0xc0, data: 1, channel: true, expect: none },
   { name: 'channel pressure', status: 0xd0, data: 1, channel: true, expect: none },

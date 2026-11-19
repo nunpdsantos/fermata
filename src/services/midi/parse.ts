@@ -7,10 +7,13 @@
  *   9n        note on                   2            the key starts (velocity 0 = note off)
  *   An        polyphonic key pressure   2            ignored
  *   Bn        control change            2            64 = sustain pedal (≥ 64 down);
- *                                                    120 all sound off, 123 all notes off and
- *                                                    the mode messages 124 omni off, 125 omni on,
- *                                                    126 mono on, 127 poly on end every key of
- *                                                    that channel (held or pedal-held);
+ *                                                    120 all sound off ends every note of that
+ *                                                    channel now, the pedal notwithstanding;
+ *                                                    123 all notes off and the mode messages
+ *                                                    124 omni off, 125 omni on, 126 mono on,
+ *                                                    127 poly on let go every key of that channel
+ *                                                    (held or pedal-held: with the pedal down they
+ *                                                    end when it is lifted);
  *                                                    121 reset all controllers lifts that
  *                                                    channel's pedal (as a pedal lift: keys
  *                                                    still held go on); others ignored (122
@@ -24,7 +27,21 @@
  *   F4 F5 F6  undefined / tune request  0            ignored
  *   F8 … FF   real time                 0            ignored, anywhere, and they keep running status
  *
- * Sources: 124–127 ending notes and 121 resetting controllers are the MIDI Association's "Summary of MIDI 1.0 Messages" (2026-11-11); the pedal's default being up is from secondary sources only (RP-015 not read).
+ * Sources: the MIDI Manufacturers Association's "MIDI 1.0 Detailed Specification", document version 4.2.1
+ * (February 1996; the file M1_v4-2-1_MIDI_1-0_Detailed_Specification_96-1-4.pdf that
+ * https://midi.org/midi-1-0-detailed-specification links, read 19 November 2026, audit M62):
+ *   p. 20, "Mode messages as All Notes Off messages": "Messages 123 through 127 also function as All Notes
+ *     Off messages."
+ *   p. 25, "All Sound Off": "Upon reception, all notes currently on are turned off and their volume
+ *     envelopes are set to zero as soon as possible. This message is not a replacement for the All Notes Off
+ *     message, Note-Off messages, Hold Off, or Master Volume Off."
+ *   p. A-5, "The relationship between the hold pedal and 'All Notes Off'": "If Note Off messages are
+ *     received while the hold pedal (controller 64 (40H)) is 'on' they must be recognized but not acted upon
+ *     until the release of the hold pedal. The same is true for the All Notes Off message. A Hold or Sustain
+ *     pedal 'On' message takes priority over Note Off and All Notes Off until it is released."
+ * Until then 120 and 123 were read alike, from the "Summary of MIDI 1.0 Messages" (2026-11-11), which says
+ * only that all oscillators turn off. 121 resetting controllers: that summary and p. 25; the pedal's
+ * default being up is from secondary sources only (RP-015 not read).
  *
  * n = the channel (0–15). A data byte has its top bit clear (0–127).
  * RUNNING STATUS: after a channel message, data bytes without a new status
@@ -37,7 +54,10 @@ export type MidiEvent =
   | { type: 'noteOn'; channel: number; note: number; velocity: number }
   | { type: 'noteOff'; channel: number; note: number }
   | { type: 'sustain'; channel: number; down: boolean }
-  | { type: 'allNotesOff'; channel: number };
+  /** 123–127: every key of the channel let go (the pedal, if down, keeps them until it is lifted). */
+  | { type: 'allNotesOff'; channel: number }
+  /** 120: every note of the channel ends now, whatever the pedal. */
+  | { type: 'allSoundOff'; channel: number };
 
 /** Data bytes each channel-message kind takes (by its high nibble). */
 const CHANNEL_DATA: Record<number, number> = { 0x8: 2, 0x9: 2, 0xa: 2, 0xb: 2, 0xc: 1, 0xd: 1, 0xe: 2 };
@@ -48,7 +68,7 @@ export const SUSTAIN_CC = 64;
 const ALL_SOUND_OFF_CC = 120;
 const RESET_ALL_CONTROLLERS_CC = 121;
 const ALL_NOTES_OFF_CC = 123;
-/** Omni off, omni on, mono on, poly on: each also ends every note of the channel. */
+/** Omni off, omni on, mono on, poly on: each also acts as All Notes Off (p. 20). */
 const MODE_CCS: readonly number[] = [124, 125, 126, 127];
 
 function channelEvent(status: number, d1: number, d2: number): MidiEvent | null {
@@ -62,7 +82,8 @@ function channelEvent(status: number, d1: number, d2: number): MidiEvent | null 
   if (kind === 0x8) return { type: 'noteOff', channel, note: d1 };
   if (kind === 0xb) {
     if (d1 === SUSTAIN_CC) return { type: 'sustain', channel, down: d2 >= 64 };
-    if (d1 === ALL_NOTES_OFF_CC || d1 === ALL_SOUND_OFF_CC || MODE_CCS.includes(d1)) return { type: 'allNotesOff', channel };
+    if (d1 === ALL_SOUND_OFF_CC) return { type: 'allSoundOff', channel };
+    if (d1 === ALL_NOTES_OFF_CC || MODE_CCS.includes(d1)) return { type: 'allNotesOff', channel };
     // Every controller back to its default: for Fermata, the one it reads, the pedal, up.
     if (d1 === RESET_ALL_CONTROLLERS_CC) return { type: 'sustain', channel, down: false };
   }

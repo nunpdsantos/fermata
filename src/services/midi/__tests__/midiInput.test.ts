@@ -209,20 +209,82 @@ describe('notes', () => {
     expect(sounding()).toEqual([]);
   });
 
-  it('All Notes Off and All Sound Off also end the notes the pedal is holding', () => {
+  // MIDI 1.0 Detailed Specification 4.2.1 (the MIDI Manufacturers Association, February 1996), p. A-5,
+  // "The relationship between the hold pedal and 'All Notes Off'": "If Note Off messages are received while
+  // the hold pedal (controller 64 (40H)) is 'on' they must be recognized but not acted upon until the release
+  // of the hold pedal. The same is true for the All Notes Off message. A Hold or Sustain pedal 'On' message
+  // takes priority over Note Off and All Notes Off until it is released." Its figure, byte for byte:
+  // 90 43 40 (G on) · B0 40 7F (hold on) · 90 43 00 (G off) · B0 7B 00 (All Notes Off) · B0 40 00 (hold off).
+  it('the pedal down, then All Notes Off (CC 123): the note the pedal holds goes on until the pedal is lifted (the specification\'s own figure)', () => {
+    key([0x90, 0x43, 0x40]);
+    key([0xb0, 0x40, 0x7f]);
+    key([0x90, 0x43, 0x00]);
+    expect(sounding()).toEqual([67]);
+    key([0xb0, 0x7b, 0x00]);
+    expect(sounding()).toEqual([67]);
+    expect(offs()).toEqual([]);
+    key([0xb0, 0x40, 0x00]);
+    expect(sounding()).toEqual([]);
+    expect(offs()).toEqual([67]);
+  });
+
+  it('the pedal down, then All Notes Off: a key still held is let go as by a Note Off — the pedal keeps it, and it ends with the pedal even if the key is still down', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(60, 80)); // held by the finger, not yet let go
+    key(NOTE_ON(64, 80));
+    key(NOTE_OFF(64)); // held by the pedal
+    key([0xb0, 123, 0]);
+    expect(sounding()).toEqual([60, 64]);
+    // The key's own Note Off afterwards changes nothing: the All Notes Off already let it go.
+    key(NOTE_OFF(60));
+    expect(sounding()).toEqual([60, 64]);
+    // A key struck after the All Notes Off is a new note: the pedal lift does not end it while it is held.
+    key(NOTE_ON(67, 80));
+    key(PEDAL(false));
+    expect(sounding()).toEqual([67]);
+    expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
+  });
+
+  it('the pedal down, then All Notes Off with the key still down at the lift: the deferred All Notes Off ends it then', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(62, 80));
+    key([0xb0, 123, 0]);
+    expect(sounding()).toEqual([62]);
+    key(PEDAL(false));
+    expect(sounding()).toEqual([]);
+  });
+
+  // p. 25, "All Sound Off": "Upon reception, all notes currently on are turned off and their volume envelopes
+  // are set to zero as soon as possible. This message is not a replacement for the All Notes Off message,
+  // Note-Off messages, Hold Off, or Master Volume Off." So it ends everything now, the pedal notwithstanding,
+  // and does not lift the pedal.
+  it('the pedal down, then All Sound Off (CC 120): everything on that channel ends at once — held and pedal-held — and the pedal stays down', () => {
     key(PEDAL(true));
     key(NOTE_ON(60, 80));
-    key(NOTE_OFF(60));
-    expect(sounding()).toEqual([60]);
+    key(NOTE_OFF(60)); // held by the pedal
+    key(NOTE_ON(64, 80)); // held by the finger
+    key(NOTE_ON(67, 80, 3)); // another channel
+    expect(sounding()).toEqual([60, 64, 67]);
+    key([0xb0, 120, 0]);
+    expect(sounding()).toEqual([67]);
+    expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
+    // Not a "Hold Off": the pedal is still down, so a key played and let go now is held.
+    key(NOTE_ON(65, 80));
+    key(NOTE_OFF(65));
+    expect(sounding()).toEqual([65, 67]);
+    key(PEDAL(false));
+    expect(sounding()).toEqual([67]);
+  });
+
+  it('All Notes Off with no pedal ends that channel\'s keys at once; another channel\'s pedal-held note goes on until its own pedal lifts', () => {
+    key(NOTE_ON(60, 80));
+    key(NOTE_ON(64, 80));
+    key(PEDAL(true, 2));
+    key(NOTE_ON(67, 80, 2));
+    key(NOTE_OFF(67, 2));
     key([0xb0, 123, 0]);
-    expect(sounding()).toEqual([]);
-    // A finger-held key and a pedal-held key together, on another channel.
-    key(PEDAL(true, 3));
-    key(NOTE_ON(64, 80, 3));
-    key(NOTE_OFF(64, 3));
-    key(NOTE_ON(67, 80, 3));
-    expect(sounding()).toEqual([64, 67]);
-    key([0xb3, 120, 0]);
+    expect(sounding()).toEqual([67]);
+    key(PEDAL(false, 2));
     expect(sounding()).toEqual([]);
   });
 
@@ -258,15 +320,29 @@ describe('notes', () => {
     expect(offs()).toEqual([]);
   });
 
+  // p. 20: "Messages 123 through 127 also function as All Notes Off messages"; p. A-4: "Mode messages with a
+  // second byte greater than 124 should be treated in the same way as the All Notes Off message". So the pedal
+  // keeps their notes too, until it is lifted.
   for (const [cc, name] of [[124, 'Omni Off'], [125, 'Omni On'], [126, 'Mono On'], [127, 'Poly On']] as const) {
-    it(`${name} (CC ${cc}) also ends that channel's notes, held and pedal-held; another channel's go on`, () => {
+    it(`${name} (CC ${cc}) is an All Notes Off: with no pedal that channel's keys end at once; another channel's go on`, () => {
+      key([0x91, 60, 80]);
+      key([0x91, 64, 80]);
+      key(NOTE_ON(67, 80, 2));
+      key([0xb1, cc, 0]);
+      expect(sounding()).toEqual([67]);
+      expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
+    });
+
+    it(`${name} (CC ${cc}) with the pedal down: held and pedal-held notes go on until the pedal is lifted`, () => {
       key(PEDAL(true, 1));
       key([0x91, 60, 80]);
       key([0x81, 60, 0]); // held by the pedal only
       key([0x91, 64, 80]); // held by the finger
       key(NOTE_ON(67, 80, 2));
-      expect(sounding()).toEqual([60, 64, 67]);
       key([0xb1, cc, 0]);
+      expect(sounding()).toEqual([60, 64, 67]);
+      expect(offs()).toEqual([]);
+      key(PEDAL(false, 1));
       expect(sounding()).toEqual([67]);
       expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
     });
