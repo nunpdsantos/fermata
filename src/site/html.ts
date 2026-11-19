@@ -24,16 +24,21 @@ export function proseHtml(text: string): string {
  * QUOTED QUERY ("Type 'C major scale'", «Dó maior», “G7”): ModuleView's
  * `renderTaskInstruction` turns every quoted token that names something the
  * app can show (`findQuotedQueries`) into a button reading ‘query’. Here it
- * is the same words in the same quotes, as text: the raw token (its own
- * quote marks) never reaches the page. Quoted prose that is not a query
- * ("the 'and' between beats") stays as written, as in the app.
+ * is the same words in the same quotes — the raw token (its own quote marks)
+ * never reaches the page — and, since 2026-11-19, an ordinary link to `href`,
+ * the lesson page's own "Open this lesson in Fermatina" address: a task that
+ * says to tap ‘C major scale’ can be tapped on the page too, scripts on or
+ * off, and opens the app on that lesson, where the same words are the
+ * button. Whatever the verb before it ("Type", "Tap", «Carrega em»,
+ * «Pulsa»). Quoted prose that is not a query ("the 'and' between beats")
+ * stays as written, as in the app.
  */
-export function instructionHtml(text: string): string {
+export function instructionHtml(text: string, href: string): string {
   let out = '';
   let last = 0;
   for (const { index, length, query } of findQuotedQueries(text)) {
     out += esc(text.slice(last, index));
-    out += `<span class="query">‘${esc(query)}’</span>`;
+    out += `<a class="query" href="${esc(href)}">‘${esc(query)}’</a>`;
     last = index + length;
   }
   return out + esc(text.slice(last));

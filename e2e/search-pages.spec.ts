@@ -281,6 +281,29 @@ test('"Open this lesson in Fermatina" leaves a saved language alone: an English 
   await context.close();
 });
 
+test('a task\'s quoted phrase (2026-11-19): on the page it is an ordinary link, and tapped it opens the app on that lesson, in the page\'s language', async ({ browser, baseURL }) => {
+  // With scripts off the page's phrase is already the link (the page has no script either way).
+  const off = await browser.newContext({ javaScriptEnabled: false });
+  const plain = await off.newPage();
+  await plain.goto(lessonPath('pt'));
+  const phrases = plain.locator('ul.tasks a.query');
+  expect(await phrases.count(), 'the lesson\'s tasks have quoted phrases (known positive)').toBeGreaterThan(1);
+  for (const href of await phrases.evaluateAll((as) => as.map((a) => a.getAttribute('href')))) expect(href).toBe(`https://fermatina.com/?lesson=${LESSON}&lang=pt`);
+  await expect(plain.locator('ul.tasks span.query')).toHaveCount(0);
+  await off.close();
+  // Tapped, as a first-time visitor: the app on that lesson, where the same words are its buttons.
+  const { context, page, asked } = await browserWithAddress(browser, baseURL!, 'en-GB', {});
+  await page.goto(`https://fermatina.com${lessonPath('pt')}`);
+  const phrase = page.locator('ul.tasks a.query').first();
+  const words = (await phrase.innerText()).replace(/^‘|’$/g, '');
+  await phrase.click();
+  await expect(page.getByRole('heading', { level: 1, name: titleOf(LESSON, 'pt') })).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('html')).toHaveAttribute('lang', 'pt-PT');
+  expect(asked).toContain(`https://fermatina.com/?lesson=${LESSON}&lang=pt`);
+  await expect(page.getByRole('button', { name: `‘${words}’` }).first()).toBeAttached();
+  await context.close();
+});
+
 test('?lang=pt alone (the landing page\'s "Abrir a Fermatina") shows the start screen, in Portuguese, to a first-time visitor', async ({ browser, baseURL }) => {
   const { context, page } = await browserWithAddress(browser, baseURL!, 'en-GB', {});
   await page.goto('https://fermatina.com/pt/');
@@ -299,6 +322,8 @@ test('with the app\'s service worker installed, a lesson page is still the page,
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller), { timeout: 20_000 }).toBe(true);
   // Known positive: an address of the app the precache does not hold literally gets the app's shell FROM the worker
   // (its navigation fallback; since 2026-11-18 it answers the app's own address only: e2e/not-found.spec.ts).
+  // That allowlist alone now keeps this address from the app, so this test no longer sees the denylist behind it
+  // (emptied, it still passes, 2026-11-19): `npm run check:sw` pins every denylist entry.
   const shell = await page.goto('/?view=explore');
   expect(shell!.fromServiceWorker()).toBe(true);
   await expect(page.locator('script[type="module"]')).toHaveCount(1);

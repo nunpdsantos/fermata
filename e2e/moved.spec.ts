@@ -478,6 +478,8 @@ test('on the build, a page the service worker controls still gets robots.txt and
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller), { timeout: 20_000 }).toBe(true);
   // Known positive: an address of the app the precache does not hold literally gets the app's page from the worker
   // (its navigation fallback; since 2026-11-18 it answers the app's own address only: e2e/not-found.spec.ts).
+  // That allowlist alone now keeps this address from the app, so this test no longer sees the denylist behind it
+  // (emptied, it still passes, 2026-11-19): `npm run check:sw` pins every denylist entry.
   await page.goto('/?view=explore');
   await expect(page.locator('#root')).toHaveCount(1);
   await page.goto('/robots.txt');

@@ -52,6 +52,22 @@ export interface NewStrings {
    * app's own (render.test.ts keeps them equal).
    */
   footer: string;
+  /**
+   * The words of `footer` that open the app (2026-11-19, review): every
+   * page's foot makes them an ordinary link to the app's home in the page's
+   * language, so a page that tells the reader to open Fermatina also offers
+   * the way — the glossaries had no other. They must occur in `footer`
+   * exactly once (render.ts fails the build otherwise).
+   */
+  footerOpen: string;
+  /**
+   * The home page's line while the app is late (index.html `#boot-links`,
+   * 2026-11-19, review of audit A18): with scripts on, after the delay, above
+   * this language's two links; true whether the start is slow or the app's
+   * script failed. Not shown with scripts off (nothing is loading). index.html
+   * is static: check.ts `homeFallbackProblems` holds its words to these.
+   */
+  bootSlow: string;
   /** The not-found page (/404.html, 2026-11-18, audits A21 / Q12): its heading in this language. */
   notFoundTitle: string;
   /** The not-found page: its one sentence in this language. */
@@ -74,6 +90,8 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     glossaryWord: 'Glossary',
     landingTitle: 'Fermatina: learn music theory on a piano or guitar in your browser',
     footer: 'Free. No account. Open Fermatina once while you are online, and from then on the app works offline; these reading pages need a connection. Your progress stays in this browser.',
+    footerOpen: 'Open Fermatina',
+    bootSlow: 'Fermatina is taking a while to start. Meanwhile, you can read the lessons:',
     notFoundTitle: 'Page not found',
     notFoundLine: 'There is no page at this address.',
   },
@@ -92,6 +110,8 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     glossaryWord: 'Glossário',
     landingTitle: 'Fermatina: aprende teoria musical num piano ou numa guitarra',
     footer: 'Grátis. Sem conta. Abre a Fermatina uma vez com ligação à internet e, a partir daí, a app funciona offline; estas páginas de leitura precisam de ligação. O teu progresso fica neste navegador.',
+    footerOpen: 'Abre a Fermatina',
+    bootSlow: 'A Fermatina está a demorar a arrancar. Entretanto, podes ler as lições:',
     notFoundTitle: 'Página não encontrada',
     notFoundLine: 'Não há nenhuma página neste endereço.',
   },
@@ -110,6 +130,8 @@ export const NEW_STRINGS: Record<SiteLang, NewStrings> = {
     glossaryWord: 'Glosario',
     landingTitle: 'Fermatina: aprende teoría musical en un piano o una guitarra',
     footer: 'Gratis. Sin cuenta. Abre Fermatina una vez con conexión a internet y, a partir de entonces, la app funciona sin conexión; estas páginas de lectura necesitan conexión. Tu progreso se queda en este navegador.',
+    footerOpen: 'Abre Fermatina',
+    bootSlow: 'Fermatina está tardando en arrancar. Mientras tanto, puedes leer las lecciones:',
     notFoundTitle: 'Página no encontrada',
     notFoundLine: 'No hay ninguna página en esta dirección.',
   },

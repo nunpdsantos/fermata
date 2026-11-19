@@ -29,6 +29,16 @@ const SLUGS = JSON.parse(fs.readFileSync('scripts/pages/slugs.json', 'utf8')) as
 const LESSON = (lang: 'en' | 'pt' | 'es') => `/${lang}/${{ en: 'lessons', pt: 'licoes', es: 'lecciones' }[lang]}/${SLUGS.l1u3m1[lang]}/`;
 /** The sentence the foot used to carry (src/i18n/locales/*.json start.footer, the app's start screen). */
 const OLD = { en: 'Works offline after your first visit.', pt: 'Depois da primeira visita, funciona offline.', es: 'Tras la primera visita, funciona sin conexión.' };
+/**
+ * What the foot says now, spelled out here word for word (2026-11-19, review: a
+ * PT rewording saying the pages work offline passed a test that compared the
+ * page with the generator's own string).
+ */
+const FOOT = {
+  en: 'Free. No account. Open Fermatina once while you are online, and from then on the app works offline; these reading pages need a connection. Your progress stays in this browser.',
+  pt: 'Grátis. Sem conta. Abre a Fermatina uma vez com ligação à internet e, a partir daí, a app funciona offline; estas páginas de leitura precisam de ligação. O teu progresso fica neste navegador.',
+  es: 'Gratis. Sin cuenta. Abre Fermatina una vez con conexión a internet y, a partir de entonces, la app funciona sin conexión; estas páginas de lectura necesitan conexión. Tu progreso se queda en este navegador.',
+};
 
 test.beforeEach(async ({ request }) => {
   const res = await request.get('/en/');
@@ -47,7 +57,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
     for (const address of [`/${lang}/`, LESSON(lang)]) {
       await page.goto(address);
       const foot = await page.locator('footer').innerText();
-      expect(foot, address).toContain(NEW_STRINGS[lang].footer);
+      expect(foot, address).toContain(FOOT[lang]);
       expect(await page.locator('body').innerText(), address).not.toContain(OLD[lang]);
       const description = await page.locator('meta[name="description"]').getAttribute('content');
       for (const meta of [description, await page.locator('meta[property="og:description"]').getAttribute('content'), await page.locator('meta[name="twitter:description"]').getAttribute('content')]) {
@@ -73,11 +83,13 @@ test('from a fresh visit to a lesson page: nothing works offline; after opening 
   await context.unrouteAll({ behavior: 'ignoreErrors' });
   // So the page must not promise "works offline after your first visit"; it says what to open instead.
   expect(foot, 'the page promises what a visit to it does not give').not.toContain(OLD.en);
-  expect(foot).toContain(NEW_STRINGS.en.footer);
+  expect(foot).toContain(FOOT.en);
 
   // 3. Online, open Fermatina once, as the page says: its landing page's "Open Fermatina".
   await page.goto('/en/');
-  const href = await page.getByRole('link', { name: NEW_STRINGS.en.openApp, exact: true }).getAttribute('href');
+  const button = page.locator('p.open a.button');
+  await expect(button).toHaveText(NEW_STRINGS.en.openApp);
+  const href = await button.getAttribute('href');
   expect(href).toBe('https://fermatina.com/?lang=en');
   await page.goto(new URL(href!).search ? `/${new URL(href!).search}` : '/');
   await expect(page.getByRole('heading', { level: 1, name: 'Fermatina' })).toBeVisible(); // the start screen

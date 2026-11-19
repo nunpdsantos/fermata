@@ -276,13 +276,29 @@ ${opts.main}
 </main>
 <footer class="foot">
 <div class="wrap">
-<p>${esc(newText(lang, 'footer'))}</p>
+<p>${footHtml(lang)}</p>
 <p class="feedback"><a href="${esc(pageFeedbackUrl(lang, h.path))}" target="_blank" rel="noopener noreferrer">${esc(appText(lang, 'report.menuItem'))}</a></p>
 </div>
 </footer>
 </body>
 </html>
 `;
+}
+
+/**
+ * The foot's sentence (2026-11-19, review): `footer`, with its words that
+ * open the app (`footerOpen`: "Open Fermatina", «Abre a Fermatina», «Abre
+ * Fermatina») an ordinary link to the app's home in this language. The one
+ * place every page's foot is written, so all 417 pages that tell the reader
+ * to open Fermatina also offer the way (the glossaries had no other link to
+ * it). checkSite checks the link on every page.
+ */
+export function footHtml(lang: SiteLang): string {
+  const text = newText(lang, 'footer');
+  const words = newText(lang, 'footerOpen');
+  const at = text.indexOf(words);
+  if (at < 0 || text.indexOf(words, at + 1) >= 0) throw new Error(`site: "${words}" is not in the ${lang} footer exactly once`);
+  return `${esc(text.slice(0, at))}<a href="${esc(appUrl(lang))}">${esc(words)}</a>${esc(text.slice(at + words.length))}`;
 }
 
 /** The two other languages of this page, as links (each in its own language). */
@@ -455,7 +471,7 @@ ${songs.map((s) => `<li><span class="song">${esc(s.song)}</span> <span class="ar
     ? `<section>
 <h2 class="label">${esc(newText(lang, 'onInstrument'))}</h2>
 <ul class="tasks">
-${module.tasks.map((task) => `<li>${instructionHtml(task.instruction)}</li>`).join('\n')}
+${module.tasks.map((task) => `<li>${instructionHtml(task.instruction, open)}</li>`).join('\n')}
 </ul>
 </section>`
     : '';

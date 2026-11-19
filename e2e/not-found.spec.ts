@@ -41,6 +41,10 @@ const UNKNOWN = [
   '/no-such-page',
   '/lessons/',
   '/en/lesson/?utm_source=test',
+  // The app's page is /index.html; the host answers /index with 404 (no clean URLs). So must an installed app
+  // (2026-11-19): Workbox's precache used to add ".html" to an address it did not hold, utm_ parameters dropped.
+  '/index',
+  '/index?utm_source=test',
 ];
 
 test.beforeEach(async ({ request }) => {

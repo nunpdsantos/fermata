@@ -9,7 +9,7 @@
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
 import { SITE_LANGS, appText, siteLessons, type SiteLang } from './content';
-import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, type PageKind } from './render';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, appUrl, type PageKind } from './render';
 import { LANGUAGE_NAMES, newText } from './strings';
 
 export interface SiteFiles {
@@ -197,10 +197,36 @@ export function homeFallbackLinks(): { lang: SiteLang; href: string; text: strin
 }
 
 /**
+ * When the home's way on shows with scripts on (2026-11-19, review of A18;
+ * measured on the build, served compressed, 390 px): `HOME_FALLBACK_DELAY`
+ * after the page's FIRST FRAME — a CSS animation's clock starts when the
+ * browser first draws, which waits for the app's stylesheet, not when the
+ * address is opened — then a fade of `HOME_FALLBACK_FADE`, slow at first
+ * (CSS's own slow-start curve, written as its cubic-bezier: Tailwind's
+ * class-name scanner reads every file, and the curve's keyword made it add
+ * an unused utility to the app's stylesheet; the fade is instant under
+ * reduced motion: src/index.css shortens every animation). The app
+ * drew 1.3 s after the first frame at 1.6 Mb/s with the CPU 4× or 6× slower,
+ * 2.2 s at 1.0 Mb/s, 4.3 s at 500 kb/s (slow 3G), 8.4 s at 250 kb/s: so a
+ * start on the first two never shows it, and slow 3G shows the line for
+ * about 1.2 s before the app. The values as index.html writes them.
+ */
+export const HOME_FALLBACK_DELAY = '2.5s';
+export const HOME_FALLBACK_FADE = '.6s';
+/** The style that keeps the way on hidden until the delay, then fades it in. */
+export const HOME_FALLBACK_ANIMATION = `animation:boot-links ${HOME_FALLBACK_FADE} cubic-bezier(.42,0,1,1) ${HOME_FALLBACK_DELAY} both`;
+export const HOME_FALLBACK_KEYFRAMES = '@keyframes boot-links{from{visibility:hidden;opacity:0}}';
+/** With scripts off: the links at once, without the "taking a while" lines (nothing is loading). */
+export const HOME_FALLBACK_NOSCRIPT = '<noscript><style>#boot-links{animation:none}#boot-links p{display:none}</style></noscript>';
+
+/**
  * What is wrong with the home's way on: #root empty and the links its next
  * element (index.html's entry script may follow them; the build moves it to
- * the head); hidden once #root has content; shown at once with scripts off;
- * the name, the links, their words and languages; no script among them.
+ * the head); hidden once #root has content; shown at once with scripts off,
+ * without the lines; with scripts on after the delay and fade above; the
+ * name, the links, their words and languages; each language's line (its
+ * words `bootSlow`, src/site/strings.ts) first in its item; upright regular
+ * text only; no script among them.
  */
 export function homeFallbackProblems(home: string): string[] {
   const problems: string[] = [];
@@ -222,8 +248,20 @@ export function homeFallbackProblems(home: string): string[] {
     const own = want.filter((l) => l.lang === lang);
     const item = links.match(new RegExp(`<li lang="${htmlLangFor(lang)}">([\\s\\S]*?)</li>`))?.[1] ?? '';
     if (!own.every((l) => item.includes(`href="${l.href}"`))) problems.push(`#boot-links: ${own.map((l) => l.href).join(' and ')} are not in one <li lang="${htmlLangFor(lang)}">`);
+    // Its line first, word for word, then its links.
+    const line = item.match(/^<p>([^<]*)<\/p><a\b/)?.[1];
+    if (line === undefined || decode(line) !== newText(lang, 'bootSlow')) problems.push(`#boot-links <li lang="${htmlLangFor(lang)}"> does not open on its line "${newText(lang, 'bootSlow')}"`);
   }
-  if (!/<noscript><style>#boot-links\{animation:none\}<\/style><\/noscript>/.test(home)) problems.push('no <noscript> style showing #boot-links at once when scripts are off');
+  if ((links.match(/<p\b/g) ?? []).length !== SITE_LANGS.length) problems.push(`#boot-links holds ${(links.match(/<p\b/g) ?? []).length} <p>: one line per language`);
+  if (!home.includes(HOME_FALLBACK_NOSCRIPT)) problems.push(`no <noscript> style showing #boot-links at once, without its lines, when scripts are off: ${HOME_FALLBACK_NOSCRIPT}`);
+  const style = home.match(/<style>(#boot-links\{[\s\S]*?)<\/style>/)?.[1] ?? '';
+  const rule = style.match(/^#boot-links\{([^}]*)\}/)?.[1] ?? '';
+  if (!rule.split(';').includes(HOME_FALLBACK_ANIMATION) || (rule.match(/animation/g) ?? []).length !== 1) problems.push(`#boot-links does not wait ${HOME_FALLBACK_DELAY} and fade in over ${HOME_FALLBACK_FADE}: expected "${HOME_FALLBACK_ANIMATION}" in "#boot-links{${rule}}"`);
+  if (!style.includes(HOME_FALLBACK_KEYFRAMES)) problems.push(`no ${HOME_FALLBACK_KEYFRAMES}`);
+  // Upright regular text only: a face index.html does not preload (the italic, a bold) would be fetched beside the app's script.
+  if (/italic|oblique/.test(style) || /<(?:em|i|b|strong|cite|dfn)\b/.test(links) || [...style.matchAll(/font-weight:\s*([^;}]*)/g)].some((m) => m[1].trim() !== '400') || !/#boot-links h1\{[^}]*font-style:normal;font-weight:400/.test(style)) {
+    problems.push('#boot-links is not upright regular text throughout (an italic or bold face would be fetched early, delaying the app)');
+  }
   return problems;
 }
 
@@ -393,6 +431,33 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       if (l.target !== '_blank' || l.rel !== 'noopener noreferrer') where(`feedback link has target="${l.target}" rel="${l.rel}": expected target="_blank" rel="noopener noreferrer"`);
       if (l.text !== label) where(`feedback link reads "${l.text}", not the menu's "${label}"`);
       if (!l.inFoot) where('feedback link is not in the <footer>');
+    }
+
+    // The foot's way to the app (2026-11-19): its sentence tells the reader
+    // to open Fermatina, so those words are an ordinary link to the app's
+    // home in the page's language, on every page.
+    const foot = html.slice(Math.max(0, html.search(/<footer\b/)), Math.max(0, html.indexOf('</footer>')));
+    const openWords = newText(kind.lang, 'footerOpen');
+    const openLinks = [...foot.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].filter((m) => textOf(m[2]) === openWords).map((m) => attrs(m[1]));
+    if (openLinks.length !== 1 || Object.keys(openLinks[0]).join() !== 'href' || openLinks[0].href !== appUrl(kind.lang)) {
+      where(`the foot says "${openWords}" without one ordinary link to ${appUrl(kind.lang)} (${JSON.stringify(openLinks)})`);
+    }
+
+    // A lesson's tasks (2026-11-19): a task that says to tap ‘C major scale’
+    // can be tapped on the page too — every quoted phrase is an ordinary link
+    // to the address of the page's own "Open this lesson in Fermatina".
+    // Read structurally: in the task list, every ‘…’ is the whole text of an
+    // <a class="query" href> and nothing else; no other mark of a phrase is left.
+    if (kind.kind === 'lesson') {
+      const ownRaw = html.match(/<p class="open"><a class="button" href="([^"]*)"/)?.[1];
+      const own = ownRaw === undefined ? null : decode(ownRaw);
+      if (own === null) where('no "open this lesson" button');
+      const tasks = html.match(/<ul class="tasks">([\s\S]*?)<\/ul>/)?.[1] ?? '';
+      const PHRASE = /<a class="query" href="([^"]*)">‘[^‘’<]*’<\/a>/g;
+      for (const m of tasks.matchAll(PHRASE)) if (decode(m[1]) !== own) where(`a task's quoted phrase links to ${decode(m[1])}, not to this lesson in the app (${own})`);
+      const left = tasks.replace(PHRASE, '').match(/<[^>]*\bclass="query"[^>]*>[^<]*|‘[^’<]*’?/);
+      if (left) where(`a task's quoted phrase is not an ordinary link to this lesson in the app: ${left[0]}`);
+      if ((html.match(/class="query"/g) ?? []).length !== (tasks.match(/class="query"/g) ?? []).length) where('a quoted phrase\'s mark outside the task list');
     }
 
     // Files the page loads: same origin, existing.

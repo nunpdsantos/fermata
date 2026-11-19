@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { execSync } from 'node:child_process'
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { parseReleaseNotes, versionInfo } from './src/release/releaseNotes.ts'
 import { NOT_FOUND_FILE, servedFile, type PathKind } from './src/site/notFound.ts'
@@ -117,6 +117,46 @@ function versionJson(): Plugin {
     generateBundle() {
       const info = versionInfo(RELEASES, buildId(), BUILD_DATE)
       this.emitFile({ type: 'asset', fileName: 'version.json', source: `${JSON.stringify(info, null, 2)}\n` })
+    },
+  }
+}
+
+/**
+ * The worker's precache answers a precached file at its own address only
+ * (2026-11-19, review of audit A21). Workbox's precacheAndRoute also tries
+ * `<address>.html` when an address matches nothing ("clean URLs", on by
+ * default: https://developer.chrome.com/docs/workbox/modules/workbox-precaching
+ * "Clean URLs", read 2026-11-19; workbox-precaching 7.4.1
+ * generateURLVariations, `cleanURLs = true`), after dropping utm_ / fbclid
+ * parameters, so an installed app answered /index (and /index?utm_source=x)
+ * with the app while the server answers 404. Workbox's generateSW, which
+ * vite-plugin-pwa runs, offers no option for it (its options:
+ * https://developer.chrome.com/docs/workbox/reference/workbox-build, read
+ * 2026-11-19; its template passes precacheAndRoute only directoryIndex and
+ * ignoreURLParametersMatching). So once the plugin has written dist/sw.js
+ * (its closeBundle; this one runs after it, in sequence), this sets
+ * `cleanURLs: false` on that one call, and fails the build if the call is
+ * not there in the expected shape. Nothing of the app needs a clean URL: its
+ * one page is index.html, answered at `/` by the directory index (unchanged)
+ * and at /index.html itself; the manifest's start_url and shortcut are `/`
+ * and `/?view=drill`. `npm run check:sw` checks the result.
+ */
+function workerExactPrecache(): Plugin {
+  return {
+    name: 'fermatina-worker-exact-precache',
+    apply: 'build',
+    closeBundle: {
+      order: 'post',
+      sequential: true,
+      handler() {
+        const file = new URL('sw.js', DIST_DIR)
+        const sw = readFileSync(file, 'utf8')
+        const calls = sw.match(/\.precacheAndRoute\(\[[^\]]*\],\{\}\)/g) ?? []
+        if (calls.length !== 1) {
+          throw new Error(`workerExactPrecache: expected one precacheAndRoute([...],{}) in dist/sw.js, found ${calls.length}: the generated worker changed shape`)
+        }
+        writeFileSync(file, sw.replace(calls[0], calls[0].replace(/,\{\}\)$/, ',{cleanURLs:!1})')))
+      },
     },
   }
 }
@@ -239,8 +279,11 @@ export default defineConfig({
         // `vite build` like the search pages) is the server's answer to an
         // address that is no file, never the app's: not precached either.
         globIgnores: ['**/node_modules/**/*', 'en/**', 'pt/**', 'es/**', 'pages.css', 'og.png', 'test/**', 'favicon.ico', '404.html'],
-        // The worker answers every NAVIGATION with the app's index.html (its
-        // navigation fallback). robots.txt and sitemap.xml (for search
+        // The worker's navigation fallback answers a navigation with the app's
+        // index.html; since 2026-11-18 only for the app's own address (the
+        // allowlist below), and this denylist is the second lock behind it,
+        // naming what must never be answered with the app even if the
+        // allowlist is ever widened. robots.txt and sitemap.xml (for search
         // engines: 2026-11-14) are files, not pages of the app, and the search
         // pages are pages of their own: a browser the worker controls gets
         // them from the server too — someone with the app installed who
@@ -249,7 +292,9 @@ export default defineConfig({
         // installed who opens /test/ gets the sheet, not the app. So does
         // /favicon.ico (2026-11-15): not precached, so a typed address would
         // otherwise get the app's shell (measured on the build).
-        // `npm run check:sw` tests every generated page against this list.
+        // `npm run check:sw` tests every generated page against this list —
+        // and only it can: while the allowlist stands, no address on this
+        // list reaches the fallback, so no browser test sees an entry go.
         navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/sitemap\.xml$/, /^\/favicon\.ico$/, /^\/(?:en|pt|es)(?:[/?#]|$)/, /^\/test(?:[/?#]|$)/],
         // And the fallback answers ONLY the app's own address (2026-11-18,
         // audit A21): `/` (or /index.html) with any query — the share links,
@@ -299,6 +344,8 @@ export default defineConfig({
         enabled: false,
       },
     }),
+    // After VitePWA has written dist/sw.js: its precache answers exact addresses only.
+    workerExactPrecache(),
   ],
   build: {
     rollupOptions: {

@@ -14,16 +14,21 @@ describe('escaping', () => {
   });
 });
 
+/** A lesson's "open in Fermatina" address, as the lesson page passes it (2026-11-19). */
+const OPEN = 'https://fermatina.com/?lesson=l1u3m1&lang=en';
+const LINK = '<a class="query" href="https://fermatina.com/?lesson=l1u3m1&amp;lang=en">';
+
 describe('a task\'s quoted queries (the lesson text\'s one markup)', () => {
-  it('become ‘query’ as the app shows them, whatever quotes the text used', () => {
-    expect(instructionHtml("Type 'C major scale' and trace the pattern")).toBe('Type <span class="query">‘C major scale’</span> and trace the pattern');
-    expect(instructionHtml('Toca “G7” e depois «C major chord»')).toBe('Toca <span class="query">‘G7’</span> e depois <span class="query">‘C major chord’</span>');
+  it('become ‘query’ as the app shows them, whatever quotes the text used, each an ordinary link to the lesson in the app (2026-11-19), its address escaped', () => {
+    expect(instructionHtml("Type 'C major scale' and trace the pattern", OPEN)).toBe(`Type ${LINK}‘C major scale’</a> and trace the pattern`);
+    expect(instructionHtml("Tap 'C major scale' then 'G major scale'", OPEN)).toBe(`Tap ${LINK}‘C major scale’</a> then ${LINK}‘G major scale’</a>`);
+    expect(instructionHtml('Toca “G7” e depois «C major chord»', OPEN)).toBe(`Toca ${LINK}‘G7’</a> e depois ${LINK}‘C major chord’</a>`);
     expect(rawQueryTokens("Type 'C major scale' then 'G major scale'")).toEqual(["'C major scale'", "'G major scale'"]);
   });
 
-  it('leave apostrophes and quoted prose that is not a query as written, escaped', () => {
-    expect(instructionHtml("Don't shift your clap to the 'and' between beats")).toBe('Don&#39;t shift your clap to the &#39;and&#39; between beats');
-    expect(instructionHtml('Compare <1,0,1> & "Diabelli"')).toBe('Compare &lt;1,0,1&gt; &amp; &quot;Diabelli&quot;');
+  it('leave apostrophes and quoted prose that is not a query as written, escaped, and link nothing', () => {
+    expect(instructionHtml("Don't shift your clap to the 'and' between beats", OPEN)).toBe('Don&#39;t shift your clap to the &#39;and&#39; between beats');
+    expect(instructionHtml('Compare <1,0,1> & "Diabelli"', OPEN)).toBe('Compare &lt;1,0,1&gt; &amp; &quot;Diabelli&quot;');
   });
 
   it('over the whole curriculum, no raw token is left and every query reads as the app reads it', () => {
@@ -31,13 +36,13 @@ describe('a task\'s quoted queries (the lesson text\'s one markup)', () => {
     for (const lang of SITE_LANGS) {
       for (const { module } of siteLessons(lang)) {
         for (const task of module.tasks) {
-          const html = instructionHtml(task.instruction);
+          const html = instructionHtml(task.instruction, OPEN);
           const shown = textOf(html);
           for (const raw of rawQueryTokens(task.instruction)) {
             tokens++;
             expect(shown, `${module.id} ${lang}`).not.toContain(raw);
           }
-          expect(html).not.toMatch(/<(?!\/?span[\s>])/);
+          expect(html).not.toMatch(/<(?!\/?a[\s>])/);
         }
       }
     }

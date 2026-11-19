@@ -53,29 +53,28 @@
          — documentShell.test.ts and `npm run check:bundle` fail until it
          matches. -->
     <script>try{var s=JSON.parse(localStorage.getItem('music-theory-app')||'null'),t=s&&s.state&&s.state.themeMode;if(t==='auto')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'fermata-night':'';if(t==='fermata-night'||t==='dark'){document.documentElement.classList.add('fermata-night');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#181208')}}catch(e){}</script>
-    <!-- A way on when the app does not start (2026-11-18, audit A18): plain
-         links, right after #root, to the pages that read without JavaScript,
-         the home and the lessons of each language. No script: they go
-         (display: none) the moment the app puts anything into #root, which
-         stays empty in this file; an animation delay keeps them hidden for
-         the first 4 s, so a normal start never shows them; the <noscript>
-         style shows them at once when scripts are off. src/site/check.ts
-         checks the links against the pages' own words. Upright, regular
-         text only: the one face index.html preloads, so the hidden links
-         ask for no font of their own (an italic heading made the browser
-         fetch the italic face early, competing with the app's script:
-         the app drew ~600 ms later on a slow connection, measured). -->
-    <style>#boot-links{box-sizing:border-box;max-width:32rem;margin:0 auto;padding:48px 16px;font-size:16px;line-height:1.5;animation:boot-links 0s 4s both}#root:not(:empty)+#boot-links{display:none}#boot-links h1{margin:0 0 16px;font-size:28px;font-style:normal;font-weight:400}#boot-links ul{margin:0;padding:0;list-style:none}#boot-links li{display:flex;flex-wrap:wrap;column-gap:24px}#boot-links a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent-text,#8f4a1e);text-decoration:underline;text-underline-offset:3px}@keyframes boot-links{from{visibility:hidden}}</style>
-    <noscript><style>#boot-links{animation:none}</style></noscript>
+    <!-- A way on when the app does not start (2026-11-18, audit A18; its
+         review 2026-11-19): plain links, right after #root, to the pages that
+         read without JavaScript, the home and the lessons of each language.
+         No script: they go (display: none) the moment the app puts anything
+         into #root, which stays empty in this file. With scripts on they wait
+         2.5 s from the page's first frame, then fade in with each language's
+         line ("taking a while to start"), true whether the start is slow or
+         the script failed; a normal start draws first. With scripts off the
+         <noscript> style shows the links at once, without the lines.
+         src/site/check.ts checks it all against the pages' own words. Upright
+         regular text only (an italic heading once delayed the app ~600 ms). -->
+    <style>#boot-links{box-sizing:border-box;max-width:32rem;margin:0 auto;padding:48px 16px;font-size:16px;line-height:1.5;animation:boot-links .6s cubic-bezier(.42,0,1,1) 2.5s both}#root:not(:empty)+#boot-links{display:none}#boot-links h1{margin:0 0 16px;font-size:28px;font-style:normal;font-weight:400}#boot-links ul{margin:0;padding:0;list-style:none}#boot-links li{display:flex;flex-wrap:wrap;column-gap:24px}#boot-links p{flex-basis:100%;margin:16px 0 0}#boot-links a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent-text,#8f4a1e);text-decoration:underline;text-underline-offset:3px}@keyframes boot-links{from{visibility:hidden;opacity:0}}</style>
+    <noscript><style>#boot-links{animation:none}#boot-links p{display:none}</style></noscript>
   </head>
   <body class="antialiased">
     <div id="root"></div>
     <div id="boot-links">
       <h1>Fermatina</h1>
       <ul>
-        <li lang="en"><a href="/en/">English</a><a href="/en/lessons/">Lessons</a></li>
-        <li lang="pt-PT"><a href="/pt/">Português</a><a href="/pt/licoes/">Lições</a></li>
-        <li lang="es-ES"><a href="/es/">Español</a><a href="/es/lecciones/">Lecciones</a></li>
+        <li lang="en"><p>Fermatina is taking a while to start. Meanwhile, you can read the lessons:</p><a href="/en/">English</a><a href="/en/lessons/">Lessons</a></li>
+        <li lang="pt-PT"><p>A Fermatina está a demorar a arrancar. Entretanto, podes ler as lições:</p><a href="/pt/">Português</a><a href="/pt/licoes/">Lições</a></li>
+        <li lang="es-ES"><p>Fermatina está tardando en arrancar. Mientras tanto, puedes leer las lecciones:</p><a href="/es/">Español</a><a href="/es/lecciones/">Lecciones</a></li>
       </ul>
     </div>
     <script type="module" src="/src/main.tsx"></script>
