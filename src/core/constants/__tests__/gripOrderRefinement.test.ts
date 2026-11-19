@@ -81,6 +81,14 @@ describe('the first grip of 24 common slash chords', () => {
     }
   });
 
+  it('a muted string a hand can damp (second review, item 3): Asus4/E opens on 0 0 2 2 3 0 and Cadd9/E on 0 3 2 0 3 0, and no grip with a muted string between open ones is offered', () => {
+    for (const [root, quality, bass, want] of [['A', 'sus4', 'E', '0-0-2-2-3-0'], ['C', 'add9', 'E', '0-3-2-0-3-0']] as const) {
+      const list = chordShapesForCapo({ ...buildChord(N(root), quality), bassNote: N(bass) }, 0, 0).shapes.map(frets);
+      expect(list[0], `${root} ${quality}/${bass}`).toBe(want);
+      expect(list).not.toContain(root === 'A' ? '0-0-0-x-x-0' : '0-x-0-0-1-0');
+    }
+  });
+
   it('A7/C♯: x 4 2 2 2 3, not x 4 5 0 5 5 (one open string up the neck is not first position)', () => {
     const list = chordShapesForCapo({ ...buildChord(N('A'), 'dominant7'), bassNote: N('C#') }, 0, 0).shapes.map(frets);
     expect(list[0]).toBe('x-4-2-2-2-3');
