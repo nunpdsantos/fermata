@@ -254,8 +254,8 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about simple and compound meter is true?',
-        hintTemplate: 'In compound meter the top number is 6, 9, or 12 and the beat divides into 3. In simple meter the beat divides into 2.',
+        promptTemplate: 'Which statement about simple and compound metre is true?',
+        hintTemplate: 'In compound metre the top number is 6, 9, or 12 and the beat divides into 3. In simple metre the beat divides into 2.',
         params: {
           choiceSets: [
             [

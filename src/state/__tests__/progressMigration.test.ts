@@ -29,11 +29,21 @@ import { EN_UNITS } from '../../i18n/content/__tests__/overlayEntries';
 import type { CurriculumProgress } from '../../core/types/curriculum';
 import { validateBackup, applyBackup } from '../../utils/backupHelpers';
 import identities from '../../data/exercises/__tests__/exerciseIdentities.json';
+import respellings from '../../data/exercises/__tests__/exerciseRespellings.json';
 import previousIdentities from './fixtures/learn-identities-v2.json';
 import v3Identities from './fixtures/learn-identities-v3.json';
 
-/** Current identities of every served exercise (snapshot pinned by exerciseIdentity.snapshot.test). */
-const NOW = identities as Record<string, Record<string, string>>;
+/**
+ * Current identities of every served exercise (snapshot pinned by
+ * exerciseIdentity.snapshot.test), up to spelling: an id respelled since
+ * (exerciseRespellings.json — the British pass of 2026-11-19, scores kept,
+ * proved in exerciseRespellings.test.ts) is the same exercise, so it counts
+ * at its fingerprint before the respelling (the earliest one, if respelled twice).
+ */
+const NOW: Record<string, Record<string, string>> = structuredClone(identities as Record<string, Record<string, string>>);
+for (const [, entry] of Object.entries(respellings as Record<string, { ids: Record<string, Record<string, string>> }>).sort(([a], [b]) => b.localeCompare(a))) {
+  for (const [m, ids] of Object.entries(entry.ids)) Object.assign((NOW[m] ??= {}), ids);
+}
 
 /**
  * Main-era (v1 content) fingerprints of the blob's ids — frozen oracle, taken

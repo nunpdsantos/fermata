@@ -20,7 +20,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the fugue exposition is true?',
-        hintTemplate: 'Fugue exposition: the subject enters in the tonic and the answer responds at the dominant level. A real answer transposes exactly, up a perfect 5th or down a perfect 4th. A tonal answer adjusts the opening: scale degree 5 is answered by 1, preserving the tonic–dominant frame rather than tonicizing the dominant immediately. Later voices alternate tonic and dominant entries; a countersubject is a recurring line that accompanies later entries.',
+        hintTemplate: 'Fugue exposition: the subject enters in the tonic and the answer responds at the dominant level. A real answer transposes exactly, up a perfect 5th or down a perfect 4th. A tonal answer adjusts the opening: scale degree 5 is answered by 1, preserving the tonic–dominant frame rather than tonicising the dominant immediately. Later voices alternate tonic and dominant entries; a countersubject is a recurring line that accompanies later entries.',
         params: {
           choiceSets: [
             [
@@ -30,10 +30,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: "The subject enters first in the dominant key, and the answer enters in the dominant", correct: false },
             ],
             [
-              { label: 'A tonal answer adjusts intervals to avoid tonicizing the dominant at the entry point', correct: true },
+              { label: 'A tonal answer adjusts intervals to avoid tonicising the dominant at the entry point', correct: true },
               { label: 'A tonal answer transposes the subject exactly to the dominant, adjusting no intervals at the entry point', correct: false },
               { label: "A tonal answer adjusts instrumentation to keep the subject in its original voice", correct: false },
-              { label: "A tonal answer preserves pitch intervals exactly and changes meter to establish the dominant", correct: false },
+              { label: "A tonal answer preserves pitch intervals exactly and changes metre to establish the dominant", correct: false },
             ],
             [
               { label: 'A real answer transposes the subject exactly to the dominant (up a P5 or down a P4)', correct: true },
@@ -318,7 +318,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about twelve-tone technique is true?',
-        hintTemplate: 'The tone row uses all 12 pitch classes in a fixed order. Transformations: P (prime), I (inversion), R (retrograde), RI (retrograde inversion). The 12x12 matrix organizes all 48 row forms.',
+        hintTemplate: 'The tone row uses all 12 pitch classes in a fixed order. Transformations: P (prime), I (inversion), R (retrograde), RI (retrograde inversion). The 12x12 matrix organises all 48 row forms.',
         params: {
           choiceSets: [
             [
@@ -404,15 +404,15 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Phasing shifts two identical repeating patterns gradually out of synchronization', correct: true },
-              { label: 'Phasing keeps two identical repeating patterns exactly synchronized', correct: false },
+              { label: 'Phasing shifts two identical repeating patterns gradually out of synchronisation', correct: true },
+              { label: 'Phasing keeps two identical repeating patterns exactly synchronised', correct: false },
               { label: 'Phasing expands two identical repeating patterns by adding notes', correct: false },
               { label: 'Phasing gives two identical repeating patterns new pitches chosen by chance', correct: false },
             ],
             [
               { label: 'An additive process lengthens a repeating pattern by gradually inserting notes', correct: true },
               { label: 'An additive process shortens a repeating pattern by gradually deleting notes', correct: false },
-              { label: 'An additive process shifts two repeating patterns gradually out of synchronization', correct: false },
+              { label: 'An additive process shifts two repeating patterns gradually out of synchronisation', correct: false },
               { label: 'An additive process chooses the notes of a repeating pattern by chance', correct: false },
             ],
             [
@@ -441,20 +441,20 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about polyrhythm, hemiola and metric modulation is true?',
-        hintTemplate: 'Polyrhythm: two divisions of the same span at once (3 against 2). Polymeter: two meters at once. Hemiola: 2 × 3 beats regrouped as 3 × 2. Metric modulation: a note value of the old tempo becomes a note value of the new one. In simple meter, a sixteenth-note quintuplet fits five equal notes into the span of four ordinary sixteenths.',
+        hintTemplate: 'Polyrhythm: two divisions of the same span at once (3 against 2). Polymetre: two metres at once. Hemiola: 2 × 3 beats regrouped as 3 × 2. Metric modulation: a note value of the old tempo becomes a note value of the new one. In simple metre, a sixteenth-note quintuplet fits five equal notes into the span of four ordinary sixteenths.',
         params: {
           choiceSets: [
             [
               { label: 'A polyrhythm sounds two conflicting divisions of the same span at once, e.g. 3 against 2', correct: true },
               { label: "A polyrhythm usually divides the same span identically in each part, e.g. 3 equal notes against 3 equal notes", correct: false },
               { label: "A polyrhythm speeds up a single rhythmic pattern, e.g. repeated eighth notes accelerating from 80 to 120 beats per minute", correct: false },
-              { label: "A polyrhythm changes every part to a new meter together, e.g. 3/4 followed by 4/4 at the next bar line", correct: false },
+              { label: "A polyrhythm changes every part to a new metre together, e.g. 3/4 followed by 4/4 at the next bar line", correct: false },
             ],
             [
-              { label: 'Polymeter sets two meters against each other, e.g. 3/4 in one part against 4/4 in another', correct: true },
-              { label: "Polymeter keeps the same meter in both parts, e.g. 3/4 in one part against 3/4 in another", correct: false },
-              { label: "Polymeter changes the meter of both parts together, e.g. 3/4 in both parts followed by 4/4 in both", correct: false },
-              { label: "Polymeter divides one shared meter differently, e.g. three notes against two inside one bar of 6/8", correct: false },
+              { label: 'Polymetre sets two metres against each other, e.g. 3/4 in one part against 4/4 in another', correct: true },
+              { label: "Polymetre keeps the same metre in both parts, e.g. 3/4 in one part against 3/4 in another", correct: false },
+              { label: "Polymetre changes the metre of both parts together, e.g. 3/4 in both parts followed by 4/4 in both", correct: false },
+              { label: "Polymetre divides one shared metre differently, e.g. three notes against two inside one bar of 6/8", correct: false },
             ],
             [
               { label: 'A hemiola regroups six beats from 2 × 3 into 3 × 2, e.g. two bars of 3/4 felt as one bar of 3/2', correct: true },
@@ -469,10 +469,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: "Metric modulation: if triplet eighths at ♩ = 120 become the new eighth notes, the new ♩ = 240", correct: false },
             ],
             [
-              { label: 'In simple meter, a sixteenth-note quintuplet fits five notes into the time of four ordinary sixteenths', correct: true },
-              { label: 'In simple meter, a sixteenth-note quintuplet fits five notes into the time of three ordinary sixteenths', correct: false },
-              { label: 'In simple meter, a sixteenth-note quintuplet fits five notes into the time of five ordinary sixteenths', correct: false },
-              { label: 'In simple meter, a sixteenth-note quintuplet fits five notes into the time of six ordinary sixteenths', correct: false },
+              { label: 'In simple metre, a sixteenth-note quintuplet fits five notes into the time of four ordinary sixteenths', correct: true },
+              { label: 'In simple metre, a sixteenth-note quintuplet fits five notes into the time of three ordinary sixteenths', correct: false },
+              { label: 'In simple metre, a sixteenth-note quintuplet fits five notes into the time of five ordinary sixteenths', correct: false },
+              { label: 'In simple metre, a sixteenth-note quintuplet fits five notes into the time of six ordinary sixteenths', correct: false },
             ],
           ],
         },

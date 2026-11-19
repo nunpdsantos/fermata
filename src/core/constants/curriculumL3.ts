@@ -24,7 +24,7 @@ const l3u9m1: CurriculumModule = {
     {
       title: 'What Is a Seventh Chord?',
       explanation:
-        'A seventh chord adds a fourth note — a seventh above the root — to a triad. Four notes instead of three. This extra note introduces richer color and greater harmonic tension than any triad can produce. Seventh chords are the harmonic backbone of jazz, pop, and Romantic-era classical music, and understanding them unlocks an entirely new dimension of chord vocabulary.',
+        'A seventh chord adds a fourth note — a seventh above the root — to a triad. Four notes instead of three. This extra note introduces richer colour and greater harmonic tension than any triad can produce. Seventh chords are the harmonic backbone of jazz, pop, and Romantic-era classical music, and understanding them unlocks an entirely new dimension of chord vocabulary.',
       tryThisQuery: 'Cmaj7',
       tryThisLabel: 'Hear Cmaj7 — warm, lush, jazzy',
     },
@@ -36,7 +36,7 @@ const l3u9m1: CurriculumModule = {
       tryThisLabel: 'Hear C7 — the dominant seventh demands resolution',
     },
     {
-      title: 'Comparing Seventh Chord Colors',
+      title: 'Comparing Seventh Chord Colours',
       explanation:
         'The difference between Cmaj7 and C7 is a single half step: B natural versus Bb. That one note transforms a lush, stable sonority into a chord bursting with tension. Similarly, Cm7 and Cm7b5 differ only in the fifth (G versus Gb), but the half-diminished quality is far darker and more restless. Training your ear to these subtle distinctions is the foundation of advanced harmonic listening.',
       tryThisQuery: 'Cm7',
@@ -70,7 +70,7 @@ const l3u9m2: CurriculumModule = {
   levelId: 'l3',
   title: 'Seventh Chord Inversions',
   subtitle:
-    'Four positions for every seventh chord — root position through third inversion',
+    'Four positions for every seventh chord — root position to third inversion',
   objectives: [
     'Identify and build root position and all three inversions of any seventh chord',
     'Use figured bass labels (7, 6/5, 4/3, 4/2) to name inversions',
@@ -94,7 +94,7 @@ const l3u9m2: CurriculumModule = {
     {
       title: 'Third Inversion and Bass Resolution',
       explanation:
-        'Third inversion (4/2) is the most unstable seventh chord position because the chordal seventh sits in the bass. The seventh is a dissonance that must resolve downward by step. In practice, a V4/2 resolves to I6 — the bass moves down by half step (F to E in C major) while the rest of the chord resolves normally. This downward-resolving bass gives third inversion its characteristic urgency and forward momentum.',
+        'Third inversion (4/2) is the most unstable seventh chord position because the chordal seventh sits in the bass. The seventh is a dissonance that must resolve downwards by step. In practice, a V4/2 resolves to I6 — the bass moves down by half step (F to E in C major) while the rest of the chord resolves normally. This downward-resolving bass gives third inversion its characteristic urgency and forward momentum.',
       tryThisQuery: 'Cmaj7/B',
       tryThisLabel:
         'Hear Cmaj7 in third inversion (4/2) — the seventh in the bass',
@@ -132,7 +132,7 @@ const l3u9m3: CurriculumModule = {
   objectives: [
     'Build seventh chords on every degree of the major scale and identify each quality',
     'Understand the dominant seventh (V7) and its tritone as the engine of tonal resolution',
-    'Recognize the ii-V-I progression as a foundational harmonic motion across Western music',
+    'Recognise the ii-V-I progression as a foundational harmonic motion across Western music',
   ],
   concepts: [
     {
@@ -145,7 +145,7 @@ const l3u9m3: CurriculumModule = {
     {
       title: 'The Dominant Seventh and Its Tritone',
       explanation:
-        'V7 is the most structurally important seventh chord in tonal music. In C major, G7 contains the notes G-B-D-F. The tritone between B and F is the source of its tension: B (the leading tone) pulls up to C, while F (the chordal seventh) pulls down to E. This double resolution in contrary motion — the diminished 5th B up to F contracting inward to the major 3rd C–E (with F below B instead — the augmented 4th F up to B — it expands outward to the minor 6th E–C) — is the fundamental engine driving tonal harmony toward the tonic.',
+        'V7 is the most structurally important seventh chord in tonal music. In C major, G7 contains the notes G-B-D-F. The tritone between B and F is the source of its tension: B (the leading tone) pulls up to C, while F (the chordal seventh) pulls down to E. This double resolution in contrary motion — the diminished 5th B up to F contracting inwards to the major 3rd C–E (with F below B instead — the augmented 4th F up to B — it expands outwards to the minor 6th E–C) — is the fundamental engine driving tonal harmony towards the tonic.',
       tryThisQuery: 'G7',
       tryThisLabel:
         'Hear the tritone inside G7 — B and F demand resolution',
@@ -168,12 +168,12 @@ const l3u9m3: CurriculumModule = {
     {
       id: 'l3u9m3t2',
       instruction:
-        "Play 'G7' then 'Cmaj7' — hear how the dominant seventh resolves to the tonic. The tritone B-F (a diminished 5th) closes inward to the major 3rd C-E. This is the V-I resolution that defines Western harmony",
+        "Play 'G7' then 'Cmaj7' — hear how the dominant seventh resolves to the tonic. The tritone B-F (a diminished 5th) closes inwards to the major 3rd C-E. This is the V-I resolution that defines Western harmony",
     },
     {
       id: 'l3u9m3t3',
       instruction:
-        "Play 'Dm7' then 'G7' — the ii-V progression is the most common two-chord motion in all of Western music. It combines pre-dominant function (ii) with dominant function (V) to create maximum forward momentum toward the tonic",
+        "Play 'Dm7' then 'G7' — the ii-V progression is the most common two-chord motion in all of Western music. It combines pre-dominant function (ii) with dominant function (V) to create maximum forward momentum towards the tonic",
     },
   ],
   prerequisites: ['l3u9m2'],
@@ -210,7 +210,7 @@ const l3u9m4: CurriculumModule = {
     {
       title: 'The ii\u00f87-V7-i Progression in Minor',
       explanation:
-        'The minor-key counterpart to the major ii-V-I: ii\u00f87-V7-i. In A minor: Bm7b5-E7-Am. The half-diminished ii\u00f87 has a darker, more restless quality than the minor seventh ii7 of major keys. Combined with V7 (which contains the raised leading tone G\u266F), this progression drives toward the minor tonic with an intensity that the major-key version cannot match. The viio7 can substitute for V7, adding even more tension.',
+        'The minor-key counterpart to the major ii-V-I: ii\u00f87-V7-i. In A minor: Bm7b5-E7-Am. The half-diminished ii\u00f87 has a darker, more restless quality than the minor seventh ii7 of major keys. Combined with V7 (which contains the raised leading tone G\u266F), this progression drives towards the minor tonic with an intensity that the major-key version cannot match. The viio7 can substitute for V7, adding even more tension.',
       tryThisQuery: 'E7',
       tryThisLabel:
         'Hear E7 — the V7 in A minor with the raised leading tone G\u266F',
@@ -254,7 +254,7 @@ const l3u10m1: CurriculumModule = {
   objectives: [
     'Understand SATB voicing with correct ranges, spacing, and doubling',
     'Apply doubling rules based on chord position and function',
-    'Recognize voice crossing and voice overlap errors',
+    'Recognise voice crossing and voice overlap errors',
   ],
   concepts: [
     {
@@ -276,7 +276,7 @@ const l3u10m1: CurriculumModule = {
       explanation:
         'Voice overlap is a subtler error than crossing: it occurs when a voice moves past where the adjacent voice was on the previous beat. For example, if the alto was on D4 in beat 1, the soprano must not descend below D4 on beat 2, even if the alto has also moved lower. Overlap blurs voice identities just as crossing does, making the lines harder to follow as independent melodies.',
       tryThisQuery: 'F major chord',
-      tryThisLabel: 'See F major — practice imagining SATB voicings on paper',
+      tryThisLabel: 'See F major — practise imagining SATB voicings on paper',
     },
   ],
   tasks: [
@@ -288,7 +288,7 @@ const l3u10m1: CurriculumModule = {
     {
       id: 'l3u10m1t2',
       instruction:
-        'Explain why doubling the leading tone (B in C major) is forbidden: both B notes must resolve upward to C, producing parallel octaves — one of the most serious voice-leading errors',
+        'Explain why doubling the leading tone (B in C major) is forbidden: both B notes must resolve upwards to C, producing parallel octaves — one of the most serious voice-leading errors',
     },
     {
       id: 'l3u10m1t3',
@@ -309,7 +309,7 @@ const l3u10m2: CurriculumModule = {
     'The four motion types and the parallel fifths/octaves rules that govern part writing',
   objectives: [
     'Identify the four types of voice motion: contrary, oblique, similar, parallel',
-    'Recognize and avoid forbidden parallel fifths and octaves',
+    'Recognise and avoid forbidden parallel fifths and octaves',
     'Understand direct (hidden) fifths and octaves and when they are acceptable',
   ],
   concepts: [
@@ -325,7 +325,7 @@ const l3u10m2: CurriculumModule = {
       explanation:
         'Parallel fifths occur when two voices a perfect fifth apart both move by the same interval to another perfect fifth. Parallel octaves are the same at the octave. Both are forbidden in common-practice harmony because the voices fuse acoustically — they stop sounding like independent melodic lines and collapse into a single reinforced line. Parallel thirds and sixths, by contrast, are encouraged because imperfect consonances maintain voice independence.',
       tryThisQuery: 'G major chord',
-      tryThisLabel: 'See G major — practice moving from C to G and checking for parallels',
+      tryThisLabel: 'See G major — practise moving from C to G and checking for parallels',
     },
     {
       title: 'Direct (Hidden) Fifths and Octaves',
@@ -442,7 +442,7 @@ const l3u10m4: CurriculumModule = {
     {
       title: 'The Cadential 6/4',
       explanation:
-        'The most important second-inversion pattern: I6/4 resolving to V at a cadence. The 6th and 4th above the bass act as double appoggiaturas that resolve stepwise down to the 5th and 3rd of V. Many theorists analyze this not as a tonic chord but as a decorated dominant — V with suspensions. This distinction matters: the cadential 6/4 functions as dominant, not tonic, despite its spelling.',
+        'The most important second-inversion pattern: I6/4 resolving to V at a cadence. The 6th and 4th above the bass act as double appoggiaturas that resolve stepwise down to the 5th and 3rd of V. Many theorists analyse this not as a tonic chord but as a decorated dominant — V with suspensions. This distinction matters: the cadential 6/4 functions as dominant, not tonic, despite its spelling.',
       tryThisQuery: 'C/G',
       tryThisLabel:
         'Hear I6/4 in C major (C/G) — at a cadence its E and C fall to D and B over the same G bass',
@@ -452,7 +452,7 @@ const l3u10m4: CurriculumModule = {
     {
       id: 'l3u10m4t1',
       instruction:
-        "Play 'C/E' then 'C/G' — same three notes, different bass note. First inversion sounds lighter and smoother; second inversion sounds unstable and wants to resolve downward",
+        "Play 'C/E' then 'C/G' — same three notes, different bass note. First inversion sounds lighter and smoother; second inversion sounds unstable and wants to resolve downwards",
     },
     {
       id: 'l3u10m4t2',
@@ -601,8 +601,8 @@ const l3u11m3: CurriculumModule = {
     'How the rate of chord change shapes musical momentum and phrase structure',
   objectives: [
     'Define harmonic rhythm as the rate of chord change independent of melodic rhythm',
-    'Hear how harmonic rhythm interacts with meter — strong beats vs. weak beats',
-    'Recognize the universal pattern of harmonic rhythm accelerating toward cadences',
+    'Hear how harmonic rhythm interacts with metre — strong beats vs. weak beats',
+    'Recognise the universal pattern of harmonic rhythm accelerating towards cadences',
   ],
   concepts: [
     {
@@ -613,9 +613,9 @@ const l3u11m3: CurriculumModule = {
       tryThisLabel: 'Hear C major — imagine holding this chord for four full bars',
     },
     {
-      title: 'Harmonic Rhythm, Meter, and Cadential Acceleration',
+      title: 'Harmonic Rhythm, Metre, and Cadential Acceleration',
       explanation:
-        'Chord changes are strongest on strong beats. In 4/4, changing chords on beats 1 and 3 feels grounded and natural; changing on beats 2 and 4 creates syncopated harmonic rhythm that feels unstable. A universal pattern across styles: harmonic rhythm accelerates toward cadences. A phrase might hold one chord for two bars, then change every bar, then every beat at the cadence — building momentum into the moment of arrival.',
+        'Chord changes are strongest on strong beats. In 4/4, changing chords on beats 1 and 3 feels grounded and natural; changing on beats 2 and 4 creates syncopated harmonic rhythm that feels unstable. A universal pattern across styles: harmonic rhythm accelerates towards cadences. A phrase might hold one chord for two bars, then change every bar, then every beat at the cadence — building momentum into the moment of arrival.',
       tryThisQuery: 'G7',
       tryThisLabel: 'Hear V7 — cadential acceleration often culminates on the dominant',
     },
@@ -631,7 +631,7 @@ const l3u11m3: CurriculumModule = {
     {
       id: 'l3u11m3t1',
       instruction:
-        'Listen to any piece and tap each time the chord changes. Is the harmonic rhythm slow (one chord per bar), moderate (two per bar), or fast (every beat)? Most phrases accelerate toward their cadences',
+        'Listen to any piece and tap each time the chord changes. Is the harmonic rhythm slow (one chord per bar), moderate (two per bar), or fast (every beat)? Most phrases accelerate towards their cadences',
     },
     {
       id: 'l3u11m3t2',
@@ -654,9 +654,9 @@ const l3u11m4: CurriculumModule = {
   levelId: 'l3',
   title: 'Non-Chord Tones (Part 1)',
   subtitle:
-    'Passing tones, neighbor tones, and anticipations — the seasoning of melody',
+    'Passing tones, neighbour tones, and anticipations — the seasoning of melody',
   objectives: [
-    'Identify passing tones, neighbor tones, and anticipations in a melodic line',
+    'Identify passing tones, neighbour tones, and anticipations in a melodic line',
     'Distinguish accented from unaccented non-chord tones',
     'Understand NCTs as stepwise embellishments that animate otherwise static chord tones',
   ],
@@ -669,16 +669,16 @@ const l3u11m4: CurriculumModule = {
       tryThisLabel: 'See C major — D, F, A, and B are non-chord tones against this chord',
     },
     {
-      title: 'Passing Tones and Neighbor Tones',
+      title: 'Passing Tones and Neighbour Tones',
       explanation:
-        'A passing tone fills the gap between two different chord tones, approached and left by step in the same direction (C-D-E over a C chord, where D is a passing tone between C and E). A neighbor tone decorates a single chord tone — it departs by step and returns to its starting note (C-D-C, where D is an upper neighbor). Both types come in accented (on a strong beat, more dramatic) and unaccented (on a weak beat, more common) varieties.',
+        'A passing tone fills the gap between two different chord tones, approached and left by step in the same direction (C-D-E over a C chord, where D is a passing tone between C and E). A neighbour tone decorates a single chord tone — it departs by step and returns to its starting note (C-D-C, where D is an upper neighbour). Both types come in accented (on a strong beat, more dramatic) and unaccented (on a weak beat, more common) varieties.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See C major scale — scale steps between chord tones are passing tones',
     },
     {
-      title: 'Anticipations and Incomplete Neighbors',
+      title: 'Anticipations and Incomplete Neighbours',
       explanation:
-        'An anticipation arrives early — a note belonging to the next chord sounds at the end of the current chord, then sustains as the harmony catches up. It creates forward momentum by jumping ahead of the harmonic change. An incomplete neighbor is approached by step but left by leap (or vice versa), having only one stepwise connection. Incomplete neighbors are more dramatic and angular than their complete, symmetrical counterparts.',
+        'An anticipation arrives early — a note belonging to the next chord sounds at the end of the current chord, then sustains as the harmony catches up. It creates forward momentum by jumping ahead of the harmonic change. An incomplete neighbour is approached by step but left by leap (or vice versa), having only one stepwise connection. Incomplete neighbours are more dramatic and angular than their complete, symmetrical counterparts.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'See G major — anticipating a note of the next chord creates momentum',
     },
@@ -692,12 +692,12 @@ const l3u11m4: CurriculumModule = {
     {
       id: 'l3u11m4t2',
       instruction:
-        'Sing or play E-F-E over a C major chord. F is an upper neighbor tone — it departs from E by step and returns to E, decorating the chord tone without changing harmony',
+        'Sing or play E-F-E over a C major chord. F is an upper neighbour tone — it departs from E by step and returns to E, decorating the chord tone without changing harmony',
     },
     {
       id: 'l3u11m4t3',
       instruction:
-        'Identify NCTs in a simple melody you know: play each note against the underlying chord and ask whether it belongs. Notes that do not belong are non-chord tones. Classify each as passing, neighbor, or anticipation based on its approach and departure',
+        'Identify NCTs in a simple melody you know: play each note against the underlying chord and ask whether it belongs. Notes that do not belong are non-chord tones. Classify each as passing, neighbour, or anticipation based on its approach and departure',
     },
   ],
   prerequisites: ['l3u11m3'],
@@ -783,7 +783,7 @@ export const L3_UNITS: CurriculumUnit[] = [
         'Hear the tritone inside V7 and understand its resolution as the engine of tonal music',
       ],
       bridgeText:
-        'You can now build, invert, and analyze every standard seventh chord and locate them within major and minor keys. Next, you\u2019ll learn how to connect these chords smoothly through voice leading — the art of making each voice sing its own melodic line.',
+        'You can now build, invert, and analyse every standard seventh chord and locate them within major and minor keys. Next, you\u2019ll learn how to connect these chords smoothly through voice leading — the art of making each voice sing its own melodic line.',
       tryThisQuery: 'Bm7b5',
       tryThisLabel: 'Build the half-diminished vii\u00f87 in C major',
       tryThisPrompt:
@@ -824,7 +824,7 @@ export const L3_UNITS: CurriculumUnit[] = [
     milestone: {
       skillsSummary: [
         'Identify all six cadence types and their relative strength as harmonic punctuation',
-        'Analyze phrase structures as periods (antecedent-consequent) or sentences (Satz)',
+        'Analyse phrase structures as periods (antecedent-consequent) or sentences (Satz)',
         'Hear how harmonic rhythm and non-chord tones shape the surface of tonal music',
         'Transpose any passage to a new key using interval or key-signature methods',
       ],

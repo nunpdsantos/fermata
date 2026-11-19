@@ -30,7 +30,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about suspensions is true?',
-        hintTemplate: 'Suspensions: 4-3 resolves to a 3rd, 7-6 to a 6th, 9-8 to an octave. The bass suspension 2-3 resolves downward (the bass descends by step; the interval above the bass grows from a 2nd to a 3rd). Chain suspensions create sequences. A suspension is prepared as a consonance and held into dissonance; decoration can insert a note before its downward step of resolution.',
+        hintTemplate: 'Suspensions: 4-3 resolves to a 3rd, 7-6 to a 6th, 9-8 to an octave. The bass suspension 2-3 resolves downwards (the bass descends by step; the interval above the bass grows from a 2nd to a 3rd). Chain suspensions create sequences. A suspension is prepared as a consonance and held into dissonance; decoration can insert a note before its downward step of resolution.',
         params: {
           choiceSets: [
             [
@@ -72,7 +72,7 @@ const templates: ModuleTemplateConfig[] = [
             [
           { label: 'In a decorated suspension, an extra note postpones the step down to the resolving pitch', correct: true },
           { label: 'In a decorated suspension, an extra note replaces the downward step with a leap', correct: false },
-          { label: 'In a decorated suspension, an extra note turns the resolution upward by a step', correct: false },
+          { label: 'In a decorated suspension, an extra note turns the resolution upwards by a step', correct: false },
           { label: 'In a decorated suspension, an extra note removes the need to resolve the dissonance', correct: false },
         ],
           ],
@@ -102,13 +102,13 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'An escape tone is approached by step and left by leap in the opposite direction', correct: true },
               { label: 'An escape tone is approached by leap and left by step in the opposite direction', correct: false },
               { label: 'An escape tone is the same thing as an anticipation of the next chord', correct: false },
-              { label: 'An escape tone must return to the note it left, just as a neighbor tone does', correct: false },
+              { label: 'An escape tone must return to the note it left, just as a neighbour tone does', correct: false },
             ],
             [
-          { label: 'A retardation is prepared and held into dissonance, then resolves upward by step', correct: true },
-          { label: 'A retardation is prepared and held into dissonance, then resolves upward by leap', correct: false },
-          { label: 'A retardation is reached by leap without preparation, then resolves upward by step', correct: false },
-          { label: 'A retardation is reached by leap without preparation, then resolves upward by leap', correct: false },
+          { label: 'A retardation is prepared and held into dissonance, then resolves upwards by step', correct: true },
+          { label: 'A retardation is prepared and held into dissonance, then resolves upwards by leap', correct: false },
+          { label: 'A retardation is reached by leap without preparation, then resolves upwards by step', correct: false },
+          { label: 'A retardation is reached by leap without preparation, then resolves upwards by leap', correct: false },
         ],
             [
               { label: 'B held over into a C major chord and rising to C: a 7-8 retardation', correct: true },
@@ -171,7 +171,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
           { label: 'Changing tones: the melody visits both adjacent pitches and circles back to its starting chord note', correct: true },
-          { label: 'Changing tones: the melody visits two intermediate pitches and moves onward to a different chord note', correct: false },
+          { label: 'Changing tones: the melody visits two intermediate pitches and moves onwards to a different chord note', correct: false },
           { label: 'Changing tones: the melody visits one adjacent pitch and circles back to its starting chord note', correct: false },
           { label: 'Changing tones: the melody repeats its starting chord note while the surrounding chords change', correct: false },
         ],

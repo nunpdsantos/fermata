@@ -205,7 +205,7 @@ describe('L6 — chromatic harmony', () => {
   it('second species follows Fux: weak-beat dissonance only as passing tones (W5-39; convention D-14)', () => {
     const c = mod(L6_UNITS, 'l6u20m1').concepts[1].explanation;
     expect(c).toMatch(/only as passing tones/);
-    expect(c).not.toMatch(/step away and return \(neighbor tone\)/);
+    expect(c).not.toMatch(/step away and return \(neighbou?r tone\)/);
     // the lesson and the exercise key now agree
     expect(correctLabel(exercise(exercisesL6, 'l6u20m1e2'))).toMatch(/passing tones/);
   });

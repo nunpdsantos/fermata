@@ -342,7 +342,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The treble clef is also called the G clef because it wraps around the second line, defining it as G.',
-      nudge: 'Each pitched clef began as a stylized letter and fixes one note on one line of the staff. Which clef has its curl wrapped around the second line from the bottom?',
+      nudge: 'Each pitched clef began as a stylised letter and fixes one note on one line of the staff. Which clef has its curl wrapped around the second line from the bottom?',
     },
   ],
 
@@ -640,7 +640,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l1u2m2e3',
       type: 'multiple_choice',
-      prompt: 'Which of the following best describes "simple meter"?',
+      prompt: 'Which of the following best describes "simple metre"?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -650,7 +650,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The bar contains 3 beats', correct: false },
         ],
       },
-      hint: 'In simple meter, beats subdivide into two. In compound meter, beats subdivide into three. 4/4 and 3/4 are simple meters.',
+      hint: 'In simple metre, beats subdivide into two. In compound metre, beats subdivide into three. 4/4 and 3/4 are simple metres.',
     },
   ],
 

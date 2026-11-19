@@ -9,6 +9,10 @@
  * Portuguese and Spanish moved the English clause texts out of the
  * generators into the Drill's text bundle: this proves not one English
  * character changed.
+ * Re-recorded once, on purpose, by the British spelling pass (19 November
+ * 2026): "toward" → "towards" in 20 explanations of the function family
+ * (the two drillTerms clauses), nothing else; no question, chip or answer
+ * changed, and the graded bank (drill-bank-graded-6de6c0e.json) is untouched.
  */
 import { describe, expect, it } from 'vitest';
 import { readFileSync, writeFileSync } from 'node:fs';

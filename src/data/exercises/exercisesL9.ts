@@ -53,7 +53,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Static', correct: false },
         ],
       },
-      hint: 'Ascending means moving upward in pitch. Descending means moving downward.',
+      hint: 'Ascending means moving upwards in pitch. Descending means moving downwards.',
       nudge: 'Think of pitch as height: if the second note is higher, did the melody go up or down? Pick the word that names that direction.',
     },
     {
@@ -91,7 +91,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         ],
       },
       hint: 'The major 3rd (4 semitones from root) gives major chords a bright, stable character.',
-      nudge: 'Listen to the 3rd above the root: is it 4 half steps (a brighter, open sound) or 3 half steps (a darker, more somber one)?',
+      nudge: 'Listen to the 3rd above the root: is it 4 half steps (a brighter, open sound) or 3 half steps (a darker, more sombre one)?',
     },
     {
       id: 'l9u30m2e2',
@@ -108,7 +108,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Minor', correct: true },
         ],
       },
-      hint: 'The minor 3rd (3 semitones from root) gives minor chords a darker, more somber quality.',
+      hint: 'The minor 3rd (3 semitones from root) gives minor chords a darker, more sombre quality.',
       nudge: "Sing the root and then the chord's 3rd: are they 4 half steps apart (brighter) or 3 (darker)?",
     },
     {
@@ -360,7 +360,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Harmonic minor', correct: false },
         ],
       },
-      hint: 'Natural minor (W-H-W-W-H-W-W) has a darker mood than major — the lowered 3rd, 6th and 7th shape its color.',
+      hint: 'Natural minor (W-H-W-W-H-W-W) has a darker mood than major — the lowered 3rd, 6th and 7th shape its colour.',
       nudge: 'Sing up from the tonic: is the 3rd 4 or 3 half steps above it? Then listen to the 7th: is it a whole step below the top tonic, or a half step with a step-and-a-half gap beneath it?',
     },
     {
@@ -421,7 +421,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Mixolydian', correct: false },
         ],
       },
-      hint: 'Lydian is like major with a raised 4th degree — listen for the bright #4 pulling upward.',
+      hint: 'Lydian is like major with a raised 4th degree — listen for the bright #4 pulling upwards.',
       nudge: 'Is the 3rd 4 or 3 half steps above the tonic? Compare the scale with the major (if 4) or the natural minor (if 3) and listen for the one degree that is different: the 2nd, the 4th, the 6th or the 7th?',
     },
     {
@@ -673,7 +673,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The major 3rd between the root and the 3rd', correct: false },
         ],
       },
-      hint: 'In G7 (G-B-D-F), B and F form a tritone (6 semitones). This dissonance creates the pull toward resolution to C major.',
+      hint: 'In G7 (G-B-D-F), B and F form a tritone (6 semitones). This dissonance creates the pull towards resolution to C major.',
     },
     {
       id: 'l9u31m5e4',
@@ -856,7 +856,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         targetSemitones: 1,
         direction: 'ascending',
       },
-      hint: 'E to F is a half step (1 semitone) between two different letter names — a diatonic half step, already inside C major. A chromatic half step keeps the letter name (F to F#). Either kind often works as a passing or neighbor motion in a melody.',
+      hint: 'E to F is a half step (1 semitone) between two different letter names — a diatonic half step, already inside C major. A chromatic half step keeps the letter name (F to F#). Either kind often works as a passing or neighbour motion in a melody.',
     },
     {
       id: 'l9u32m2e2',
@@ -1058,7 +1058,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Find the tonic by using the note named by the clef', correct: false },
         ],
       },
-      hint: 'Establishing the key center (tonic) in your ear is essential. Singing a quick scale or tonic arpeggio grounds your pitch perception before reading the melody.',
+      hint: 'Establishing the key centre (tonic) in your ear is essential. Singing a quick scale or tonic arpeggio grounds your pitch perception before reading the melody.',
       nudge: 'Before reading any notes, your ear needs a reference point: the pitch every other note is heard against. Which option gives your ear that home base?',
     },
   ],

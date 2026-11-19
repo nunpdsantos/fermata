@@ -13,7 +13,7 @@ const l1u1m1: CurriculumModule = {
   subtitle: 'The five-line grid that maps pitch to paper',
   objectives: [
     'Identify the five-line staff as the foundation of Western notation',
-    'Read treble and bass clef and know which pitches they center on',
+    'Read treble and bass clef and know which pitches they centre on',
     'Understand how position on the staff maps to pitch — higher = higher sound',
   ],
   concepts: [
@@ -27,7 +27,7 @@ const l1u1m1: CurriculumModule = {
     {
       title: 'Treble and Bass Clef',
       explanation:
-        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centers on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centers on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
+        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centres on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centres on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'C to C in treble clef and in bass clef',
       clefs: true,
@@ -83,7 +83,7 @@ const l1u1m3: CurriculumModule = {
   objectives: [
     'Define half steps and whole steps as the building blocks of all scales',
     'Understand sharps, flats, and naturals as pitch modifiers',
-    'Recognize enharmonic equivalents — same sound, different name',
+    'Recognise enharmonic equivalents — same sound, different name',
   ],
   concepts: [
     {
@@ -167,13 +167,13 @@ const l1u2m1: CurriculumModule = {
   objectives: [
     'Know the standard note values: whole, half, quarter, eighth, sixteenth',
     'Understand the 2:1 ratio — each value is half the duration of the one above it',
-    'Recognize rests as measured silence with the same duration hierarchy',
+    'Recognise rests as measured silence with the same duration hierarchy',
   ],
   concepts: [
     {
       title: 'The Duration Hierarchy',
       explanation:
-        'Music organizes time through a hierarchy of note values. A whole note lasts the longest. A half note is half as long. A quarter note is half of that — and so on down to eighth and sixteenth notes. Each level divides by two: 1 whole = 2 halves = 4 quarters = 8 eighths = 16 sixteenths. This system lets musicians write any rhythm with precision.',
+        'Music organises time through a hierarchy of note values. A whole note lasts the longest. A half note is half as long. A quarter note is half of that — and so on down to eighth and sixteenth notes. Each level divides by two: 1 whole = 2 halves = 4 quarters = 8 eighths = 16 sixteenths. This system lets musicians write any rhythm with precision.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear one bar each of whole, half, quarter and eighth notes',
       rhythm: { time: '4/4', notes: 'w | h h | q q q q | 8 8 8 8 8 8 8 8' },
@@ -206,18 +206,18 @@ const l1u2m2: CurriculumModule = {
   id: 'l1u2m2',
   unitId: 'u2',
   levelId: 'l1',
-  title: 'Meter and Time Signatures',
+  title: 'Metre and Time Signatures',
   subtitle: 'How beats group into measures — 2/4, 3/4, and 4/4',
   objectives: [
-    'Understand meter as the recurring pattern of strong and weak beats',
+    'Understand metre as the recurring pattern of strong and weak beats',
     'Read simple time signatures: 2/4, 3/4, 4/4',
-    'Feel the difference between duple (2), triple (3), and quadruple (4) meter',
+    'Feel the difference between duple (2), triple (3), and quadruple (4) metre',
   ],
   concepts: [
     {
-      title: 'Pulse, Meter, and Measures',
+      title: 'Pulse, Metre, and Measures',
       explanation:
-        "Music has a steady pulse — the beat you tap your foot to. Meter organizes those beats into recurring groups of 2, 3, or 4, with the first beat of each group feeling stronger. A measure (or bar) is one complete group, separated by barlines. The time signature at the beginning tells you the grouping: 4/4 means four quarter-note beats per measure. 3/4 means three. 2/4 means two.",
+        "Music has a steady pulse — the beat you tap your foot to. Metre organises those beats into recurring groups of 2, 3, or 4, with the first beat of each group feeling stronger. A measure (or bar) is one complete group, separated by barlines. The time signature at the beginning tells you the grouping: 4/4 means four quarter-note beats per measure. 3/4 means three. 2/4 means two.",
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear 4/4: four beats to a bar, the first one stressed',
       rhythm: { time: '4/4', notes: '>q q q q | >q q q q' },
@@ -225,14 +225,14 @@ const l1u2m2: CurriculumModule = {
     {
       title: 'Simple Time Signatures',
       explanation:
-        "In simple meter, each beat divides naturally into two equal parts. 4/4 is the most common time signature — four quarter-note beats per measure, with beat 1 strongest and beat 3 having a secondary accent. 3/4 gives music a waltz feel — ONE-two-three, ONE-two-three. 2/4 creates a march-like feel — ONE-two, ONE-two. The top number is beats per measure; the bottom number is which note value gets one beat.",
+        "In simple metre, each beat divides naturally into two equal parts. 4/4 is the most common time signature — four quarter-note beats per measure, with beat 1 strongest and beat 3 having a secondary accent. 3/4 gives music a waltz feel — ONE-two-three, ONE-two-three. 2/4 creates a march-like feel — ONE-two, ONE-two. The top number is beats per measure; the bottom number is which note value gets one beat.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'Hear 3/4: ONE-two-three, ONE-two-three',
       rhythm: { time: '3/4', notes: '>q q q | >q q q | >h q | >h.' },
     },
   ],
   tasks: [
-    { id: 'l1u2m2t1', instruction: 'Tap a steady beat and emphasize every 4th tap — you are feeling 4/4 meter. Now try emphasizing every 3rd tap — that is 3/4' },
+    { id: 'l1u2m2t1', instruction: 'Tap a steady beat and emphasise every 4th tap — you are feeling 4/4 metre. Now try emphasising every 3rd tap — that is 3/4' },
     { id: 'l1u2m2t2', instruction: 'Listen to a song you know and count beats until the pattern repeats. Most pop songs are in 4/4. Waltzes are in 3/4' },
   ],
   prerequisites: ['l1u2m1'],
@@ -272,7 +272,7 @@ const l1u3m1: CurriculumModule = {
     {
       title: 'Same Pattern, Same Sound',
       explanation:
-        "Because every major scale uses the exact same step pattern, they all share the same bright, resolved quality — just at different pitch levels. This is why musicians play in different keys: to match a singer's range, suit an instrument, or change the color of a piece.",
+        "Because every major scale uses the exact same step pattern, they all share the same bright, resolved quality — just at different pitch levels. This is why musicians play in different keys: to match a singer's range, suit an instrument, or change the colour of a piece.",
       tryThisQuery: 'D major scale',
       tryThisLabel: 'Build D major — two sharps',
     },
@@ -332,7 +332,7 @@ const l1u3m3: CurriculumModule = {
   unitId: 'u3',
   levelId: 'l1',
   title: 'Intervals by Number',
-  subtitle: 'Measuring distance between notes — unison through octave',
+  subtitle: 'Measuring distance between notes — unison to octave',
   objectives: [
     'Name intervals from unison to octave by counting letter names',
     'Distinguish melodic intervals (notes in sequence) from harmonic intervals (notes together)',
@@ -1233,7 +1233,7 @@ export const L1_UNITS: CurriculumUnit[] = [
         'Know all 12 chromatic pitches and see them on the keyboard',
       ],
       bridgeText:
-        "You know the 12 pitches and how distance works on the keyboard. Next you'll learn how time is organized in music — note values, rests, and meter.",
+        "You know the 12 pitches and how distance works on the keyboard. Next you'll learn how time is organised in music — note values, rests, and metre.",
       tryThisQuery: 'C chromatic scale',
       tryThisLabel: 'Play all 12 notes in order',
       tryThisPrompt: 'Can you name every note before hearing it?',
@@ -1242,7 +1242,7 @@ export const L1_UNITS: CurriculumUnit[] = [
   {
     id: 'u2',
     levelId: 'l1',
-    title: 'Rhythm and Meter',
+    title: 'Rhythm and Metre',
     description: 'Note values, rests, dots, ties, and simple time signatures',
     icon: 'scales',
     modules: [l1u2m1, l1u2m2],
@@ -1251,7 +1251,7 @@ export const L1_UNITS: CurriculumUnit[] = [
         'Know the note-value hierarchy from whole notes to sixteenth notes',
         'Understand dots and ties as duration modifiers',
         'Read simple time signatures: 2/4, 3/4, 4/4',
-        'Feel duple, triple, and quadruple meter',
+        'Feel duple, triple, and quadruple metre',
       ],
       bridgeText:
         "You understand both pitch and rhythm — the two dimensions of music notation. Now you'll combine them into scales, intervals, and your first chords.",
@@ -1284,7 +1284,7 @@ export const L1_UNITS: CurriculumUnit[] = [
       journeySummary: [
         'The staff, clefs, and how position maps to pitch',
         'Half steps, whole steps, sharps, flats, and all 12 chromatic notes',
-        'Note values, rests, and how beats group into meter',
+        'Note values, rests, and how beats group into metre',
         'The major scale pattern and your first four key signatures',
         'Intervals by number — the distance system of music',
         'Major triads — your first chords, bright and stable',

@@ -114,7 +114,7 @@ export const SCALE_CONTEXT_PT: Record<string, string> = {
     "9.ª e 4.ª com b7 — voicing de jazz moderno",
   "Half-whole pattern fits all chord tones including b9":
     "O padrão meio-tom/tom serve todas as notas do acorde, incluindo a b9",
-  "Spanish/Flamenco flavor with b2":
+  "Spanish/Flamenco flavour with b2":
     "Sabor espanhol/flamenco com b2",
   "Maximum tension for resolving to minor":
     "Tensão máxima para resolver para menor",
@@ -319,7 +319,7 @@ export const SCALE_CONTEXT_ES: Record<string, string> = {
     "9.ª y 4.ª con b7 — voicing de jazz moderno",
   "Half-whole pattern fits all chord tones including b9":
     "El patrón semitono/tono abarca todas las notas del acorde, incluida la b9",
-  "Spanish/Flamenco flavor with b2":
+  "Spanish/Flamenco flavour with b2":
     "Sabor español/flamenco con b2",
   "Maximum tension for resolving to minor":
     "Máxima tensión para resolver a menor",

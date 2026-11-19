@@ -11,7 +11,8 @@
  *   named or heard) — prompt rewording keeps the task.
  *
  * Used by the identity snapshot test and by scripts/progress/retire-exercise-ids.ts,
- * which also runs it against an older source tree (pass that tree's modules).
+ * which also runs it against an older source tree (pass that tree's modules),
+ * and by its --respelled mode (respelling.ts), which reads the items themselves.
  */
 import type { ExerciseConfig, ExerciseDefinition } from '../../../core/types/exercise';
 import type { ModuleTemplateConfig } from '../exerciseTemplates';
@@ -32,17 +33,23 @@ export interface TreeModules {
   generateAllForLevel: (configs: ModuleTemplateConfig[], lang: 'en', authored?: Record<string, ExerciseDefinition[]>) => Record<string, ExerciseDefinition[]>;
 }
 
-export function treeFingerprints(tree: TreeModules): Fingerprints {
-  const out: Fingerprints = {};
+/** moduleId → exerciseId → the served EN exercise, authored and generated, for one source tree. */
+export function treeItems(tree: TreeModules): Record<string, Record<string, ExerciseDefinition>> {
+  const out: Record<string, Record<string, ExerciseDefinition>> = {};
   tree.authored.forEach((authored, i) => {
     const generated = tree.generateAllForLevel(tree.templates[i], 'en', authored);
     for (const map of [authored, generated]) {
       for (const [moduleId, list] of Object.entries(map)) {
-        for (const ex of list) (out[moduleId] ??= {})[ex.id] = fingerprint(ex);
+        for (const ex of list) (out[moduleId] ??= {})[ex.id] = ex;
       }
     }
   });
   return out;
+}
+
+export function treeFingerprints(tree: TreeModules): Fingerprints {
+  return Object.fromEntries(Object.entries(treeItems(tree)).map(([moduleId, items]) =>
+    [moduleId, Object.fromEntries(Object.entries(items).map(([id, ex]) => [id, fingerprint(ex)]))]));
 }
 
 /** Ids whose exercise changed identity (or no longer exists) between two trees, per module. */

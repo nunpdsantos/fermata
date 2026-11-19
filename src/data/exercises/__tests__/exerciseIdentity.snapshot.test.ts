@@ -16,6 +16,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import snapshot from './exerciseIdentities.json';
+import respellings from './exerciseRespellings.json';
 import v3Snapshot from '../../../state/__tests__/fixtures/learn-identities-v3.json';
 import { treeFingerprints, changedIds, fingerprint } from './exerciseFingerprints';
 import { generateAllForLevel } from '../exerciseGenerator';
@@ -46,10 +47,15 @@ describe('exercise identities match the recorded snapshot', () => {
     expect(added, 'new ids: re-record the snapshot with the same script').toEqual({});
   });
 
-  it('the glossary adds no identities beyond the three EN typography items', () => {
-    expect(changedIds(v3Snapshot, current())).toEqual({
-      l4u13m1: ['l4u13m1g3'], l5u15m5: ['l5u15m5g3'], l8u27m1: ['l8u27m1g5'],
-    });
+  it('since the v3 recording: the three EN typography items of v4, plus exactly the ids respelled on 2026-11-19 (British spelling, scores kept)', () => {
+    // The glossary (PT/ES) added none; the British spelling pass changed 60 ids by spelling
+    // only (exerciseRespellings.json, proved in exerciseRespellings.test.ts).
+    const expected: Record<string, string[]> = { l4u13m1: ['l4u13m1g3'], l5u15m5: ['l5u15m5g3'], l8u27m1: ['l8u27m1g5'] };
+    for (const [m, ids] of Object.entries(respellings['2026-11-19'].ids)) expected[m] = [...(expected[m] ?? []), ...Object.keys(ids)];
+    const sorted = (o: Record<string, string[]>) =>
+      Object.fromEntries(Object.entries(o).map(([m, ids]) => [m, [...ids].sort((x, y) => x.localeCompare(y, 'en', { numeric: true }))]));
+    expect(changedIds(v3Snapshot, current())).toEqual(sorted(expected));
+    expect(Object.values(expected).flat().length).toBe(63);
   });
 
   it('the progress store version follows the retirement list', () => {

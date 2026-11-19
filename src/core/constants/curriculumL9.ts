@@ -26,21 +26,21 @@ const l9u30m1: CurriculumModule = {
   subtitle: 'Match pitch by ear, identify melodic direction, and perceive register differences',
   objectives: [
     'Match pitch by singing or identifying notes on the piano',
-    'Recognize ascending vs. descending melodic motion across registers',
+    'Recognise ascending vs. descending melodic motion across registers',
     'Distinguish high from low register and perceive relative register placement',
   ],
   concepts: [
     {
       title: 'Pitch Matching',
       explanation:
-        'The most fundamental aural skill is hearing a note and reproducing it — either by singing or finding it on an instrument. Start with single notes in the middle register (around middle C), then expand outward. Train by playing a note on the piano, then trying to find it again with your eyes closed. This builds the internal ear-to-hand connection that underpins all further ear training. The goal is not perfect pitch (which is largely innate) but reliable relative pitch — hearing a note in relation to a reference.',
+        'The most fundamental aural skill is hearing a note and reproducing it — either by singing or finding it on an instrument. Start with single notes in the middle register (around middle C), then expand outwards. Train by playing a note on the piano, then trying to find it again with your eyes closed. This builds the internal ear-to-hand connection that underpins all further ear training. The goal is not perfect pitch (which is largely innate) but reliable relative pitch — hearing a note in relation to a reference.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play through C major as a pitch reference',
     },
     {
       title: 'Direction of Motion',
       explanation:
-        'Can you tell if a melody goes up, down, or stays the same? This is more intuitive than it sounds — but making the judgment conscious and precise is the goal. Play two notes in sequence and identify the direction. Ascending motion moves toward higher pitch; descending moves lower. Start with wide leaps (an octave apart) and gradually narrow the gap until you can detect motion by a single half step. This trains the contour perception you will need for melodic dictation later.',
+        'Can you tell if a melody goes up, down, or stays the same? This is more intuitive than it sounds — but making the judgement conscious and precise is the goal. Play two notes in sequence and identify the direction. Ascending motion moves towards higher pitch; descending moves lower. Start with wide leaps (an octave apart) and gradually narrow the gap until you can detect motion by a single half step. This trains the contour perception you will need for melodic dictation later.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Listen to ascending stepwise motion',
     },
@@ -78,31 +78,31 @@ const l9u30m2: CurriculumModule = {
   unitId: 'u30',
   levelId: 'l9',
   title: 'Major vs Minor Recognition',
-  subtitle: 'Distinguishing major and minor tonality by ear — chords, scales, and overall color',
+  subtitle: 'Distinguishing major and minor tonality by ear — chords, scales, and overall colour',
   objectives: [
-    'Distinguish major vs. minor triads by ear — bright/open vs. dark/somber',
-    'Recognize major vs. minor tonality in scales and short melodies',
+    'Distinguish major vs. minor triads by ear — bright/open vs. dark/sombre',
+    'Recognise major vs. minor tonality in scales and short melodies',
     'Develop instant gut-level recognition before theoretical explanation',
   ],
   concepts: [
     {
       title: 'Major vs. Minor Chords',
       explanation:
-        'The most basic quality recognition in ear training. Major chords sound bright, open, and resolved. Minor chords sound dark, somber, and introspective. The theoretical explanation — the difference is the third degree, raised or lowered by a half step — is secondary at this stage. Train by playing major and minor chords side by side from the same root until the distinction becomes instant and automatic. This is a gut feeling first, an intellectual understanding second.',
+        'The most basic quality recognition in ear training. Major chords sound bright, open, and resolved. Minor chords sound dark, sombre, and introspective. The theoretical explanation — the difference is the third degree, raised or lowered by a half step — is secondary at this stage. Train by playing major and minor chords side by side from the same root until the distinction becomes instant and automatic. This is a gut feeling first, an intellectual understanding second.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear major — then try "C minor chord"',
     },
     {
       title: 'Major vs. Minor Tonality',
       explanation:
-        'Beyond individual chords, entire keys and melodies have a major or minor character. A melody in C major feels bright and settled; the same contour in C minor feels darker and more introspective. Listen to the overall emotional color rather than analyzing individual notes. Play a C major scale followed by a C natural minor scale — the shift in mood is unmistakable. This tonality recognition is the foundation for all further quality-based ear training.',
+        'Beyond individual chords, entire keys and melodies have a major or minor character. A melody in C major feels bright and settled; the same contour in C minor feels darker and more introspective. Listen to the overall emotional colour rather than analysing individual notes. Play a C major scale followed by a C natural minor scale — the shift in mood is unmistakable. This tonality recognition is the foundation for all further quality-based ear training.',
       tryThisQuery: 'C natural minor scale',
       tryThisLabel: 'Hear minor tonality — compare with C major scale',
     },
     {
-      title: 'Training the Instant Judgment',
+      title: 'Training the Instant Judgement',
       explanation:
-        'The goal of major/minor recognition is not analysis but reflex. You should hear the quality before your conscious mind names it. This requires repetition: play random major and minor chords from different roots and call out the quality as fast as possible. Speed matters because real music does not pause for you to analyze. Try less familiar roots — Ab, Db, F# — where your instrument familiarity cannot help. Once you can identify major vs. minor in under one second from any root, the skill is internalized.',
+        'The goal of major/minor recognition is not analysis but reflex. You should hear the quality before your conscious mind names it. This requires repetition: play random major and minor chords from different roots and call out the quality as fast as possible. Speed matters because real music does not pause for you to analyse. Try less familiar roots — Ab, Db, F# — where your instrument familiarity cannot help. Once you can identify major vs. minor in under one second from any root, the skill is internalised.',
       tryThisQuery: 'Ab major chord',
       tryThisLabel: 'Try major from a less familiar root — still bright?',
     },
@@ -123,7 +123,7 @@ const l9u30m2: CurriculumModule = {
     {
       id: 'l9u30m2t3',
       instruction:
-        "Play 'C major scale' then 'C natural minor scale'. Listen to the overall color shift. Can you feel the mood change before the scale is halfway through?",
+        "Play 'C major scale' then 'C natural minor scale'. Listen to the overall colour shift. Can you feel the mood change before the scale is halfway through?",
       query: 'C major scale',
     },
   ],
@@ -139,20 +139,20 @@ const l9u30m3: CurriculumModule = {
   objectives: [
     'Identify minor 2nd, major 2nd, minor 3rd, major 3rd, perfect 4th, tritone, and perfect 5th by ear',
     'Use song associations as mnemonic training aids for each interval',
-    'Recognize these intervals both ascending and descending',
+    'Recognise these intervals both ascending and descending',
   ],
   concepts: [
     {
       title: 'Song Associations: Small Intervals',
       explanation:
-        'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday (compare its 2nd and 3rd notes; the first two are the same pitch). Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle (compare its 2nd and 3rd notes; the first two are the same pitch). These are training wheels — the goal is to internalize each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
+        'A proven mnemonic technique: associate each interval with a familiar melody opening. Minor 2nd ascending = Jaws theme. Major 2nd = Happy Birthday (compare its 2nd and 3rd notes; the first two are the same pitch). Minor 3rd = Greensleeves. Major 3rd = When the Saints (oh-when). Perfect 4th = Here Comes the Bride. Tritone = The Simpsons (The-Simp). Perfect 5th = Twinkle Twinkle (compare its 2nd and 3rd notes; the first two are the same pitch). These are training wheels — the goal is to internalise each interval sound directly, then retire the crutch. Start with ascending intervals only, then add descending once ascending is solid.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play C major — hear each interval from the root',
     },
     {
       title: 'Perfect vs. Imperfect Consonance',
       explanation:
-        'The intervals in this module split into two families. Perfect consonances (P1, P4, P5) sound "open" and "hollow" — like a bell or an open string. They have a stark, bare quality. Imperfect consonances (m3, M3) sound "warm" and "blended" — the notes fuse smoothly but with more color. Seconds (m2, M2) are dissonances — they sound "rough" or "crunchy" when played together. The tritone is one of the sharpest dissonances (with the minor 2nd and major 7th) — tense, unstable, and demanding resolution. Learning to categorize by consonance/dissonance is faster than memorizing each interval individually. (In species counterpoint, studied in L4 and L6, the P4 above the bass is treated as a dissonance; the acoustic "perfect" classification here is ear-training-oriented.)',
+        'The intervals in this module split into two families. Perfect consonances (P1, P4, P5) sound "open" and "hollow" — like a bell or an open string. They have a stark, bare quality. Imperfect consonances (m3, M3) sound "warm" and "blended" — the notes fuse smoothly but with more colour. Seconds (m2, M2) are dissonances — they sound "rough" or "crunchy" when played together. The tritone is one of the sharpest dissonances (with the minor 2nd and major 7th) — tense, unstable, and demanding resolution. Learning to categorise by consonance/dissonance is faster than memorising each interval individually. (In species counterpoint, studied in L4 and L6, the P4 above the bass is treated as a dissonance; the acoustic "perfect" classification here is ear-training-oriented.)',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear the major 3rd (C to E) and perfect 5th (C to G)',
     },
@@ -168,7 +168,7 @@ const l9u30m3: CurriculumModule = {
     {
       id: 'l9u30m3t1',
       instruction:
-        "Tap 'C major chord' — the interval from C to E is a major 3rd, and C to G is a perfect 5th. Sing the two intervals separately. Memorize each sound",
+        "Tap 'C major chord' — the interval from C to E is a major 3rd, and C to G is a perfect 5th. Sing the two intervals separately. Memorise each sound",
       query: 'C major chord',
     },
     {
@@ -217,7 +217,7 @@ const l9u30m4: CurriculumModule = {
     {
       title: 'Interval Inversion Relationships',
       explanation:
-        'Large intervals are inversions of small ones: a major 6th is an inverted minor 3rd, a minor 7th is an inverted major 2nd, a major 7th is an inverted minor 2nd. This means their "flavor" is related — a minor 3rd and major 6th share warmth, a major 2nd and minor 7th share a bluesy quality. If you hear a large interval and cannot identify it directly, try mentally inverting it: does it sound like an inverted minor 3rd? Then it is a major 6th. This cross-referencing technique accelerates large-interval learning.',
+        'Large intervals are inversions of small ones: a major 6th is an inverted minor 3rd, a minor 7th is an inverted major 2nd, a major 7th is an inverted minor 2nd. This means their "flavour" is related — a minor 3rd and major 6th share warmth, a major 2nd and minor 7th share a bluesy quality. If you hear a large interval and cannot identify it directly, try mentally inverting it: does it sound like an inverted minor 3rd? Then it is a major 6th. This cross-referencing technique accelerates large-interval learning.',
       tryThisQuery: 'Cm7',
       tryThisLabel: 'Hear the minor 7th (C to Bb) — inversion of a major 2nd',
     },
@@ -252,7 +252,7 @@ const l9u30m5: CurriculumModule = {
   objectives: [
     'Hear intervals when both notes play simultaneously (harmonic intervals)',
     'Distinguish consonant from dissonant harmonic intervals by sound quality',
-    'Recognize compound intervals (9ths, 10ths, 11ths) as wider versions of simple intervals',
+    'Recognise compound intervals (9ths, 10ths, 11ths) as wider versions of simple intervals',
   ],
   concepts: [
     {
@@ -272,7 +272,7 @@ const l9u30m5: CurriculumModule = {
     {
       title: 'Speed and Fluency Drills',
       explanation:
-        'Interval recognition is only useful if it is fast. In real music, notes pass quickly — you do not have time for deliberation. The goal is to move from "analyze, then name" to "hear and know instantly." Train with timed drills: play two random notes and identify the interval within three seconds. Track accuracy over sessions. Start with a restricted set (perfect intervals only, or consonances only) and expand as accuracy exceeds 80 percent. Mixing melodic, harmonic, ascending, and descending presentations in the same drill builds robust, context-independent recognition.',
+        'Interval recognition is only useful if it is fast. In real music, notes pass quickly — you do not have time for deliberation. The goal is to move from "analyse, then name" to "hear and know instantly." Train with timed drills: play two random notes and identify the interval within three seconds. Track accuracy over sessions. Start with a restricted set (perfect intervals only, or consonances only) and expand as accuracy exceeds 80 per cent. Mixing melodic, harmonic, ascending, and descending presentations in the same drill builds robust, context-independent recognition.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear three intervals at once — P5, M3, and m3',
     },
@@ -309,7 +309,7 @@ const l9u31m1: CurriculumModule = {
   title: 'Scale Recognition: Major and Minor Forms',
   subtitle: 'Distinguishing major, natural minor, harmonic minor, and melodic minor by ear',
   objectives: [
-    'Distinguish major from natural minor by overall color and mood',
+    'Distinguish major from natural minor by overall colour and mood',
     'Identify harmonic minor by the exotic augmented second between degrees 6 and 7',
     'Identify melodic minor by the raised 6th and 7th ascending, creating a smooth jazz quality',
   ],
@@ -329,9 +329,9 @@ const l9u31m1: CurriculumModule = {
       tryThisLabel: 'Hear melodic minor — smooth and jazzy',
     },
     {
-      title: 'Key Center Anchoring',
+      title: 'Key Centre Anchoring',
       explanation:
-        'Scale recognition becomes harder when the root changes. You may identify A natural minor easily but struggle with Eb natural minor because the unfamiliar key distracts you. The fix: always anchor to the tonic first. Play the root note, establish it as "home," then listen to the scale. Once the key center is anchored, the relative intervals between degrees are the same in every key. Train by practicing scale recognition across all twelve roots — the quality should be identifiable regardless of the starting pitch.',
+        'Scale recognition becomes harder when the root changes. You may identify A natural minor easily but struggle with Eb natural minor because the unfamiliar key distracts you. The fix: always anchor to the tonic first. Play the root note, establish it as "home," then listen to the scale. Once the key centre is anchored, the relative intervals between degrees are the same in every key. Train by practising scale recognition across all twelve roots — the quality should be identifiable regardless of the starting pitch.',
       tryThisQuery: 'Eb natural minor scale',
       tryThisLabel: 'Hear natural minor from a less familiar root',
     },
@@ -346,7 +346,7 @@ const l9u31m1: CurriculumModule = {
     {
       id: 'l9u31m1t2',
       instruction:
-        "Play 'C major scale' then 'C natural minor scale'. Three degrees change. Can you hear all three shifts, or does the overall color change dominate your perception?",
+        "Play 'C major scale' then 'C natural minor scale'. Three degrees change. Can you hear all three shifts, or does the overall colour change dominate your perception?",
       query: 'C major scale',
     },
     {
@@ -366,7 +366,7 @@ const l9u31m2: CurriculumModule = {
   title: 'Scale Recognition: Modes',
   subtitle: 'Identifying all seven church modes by their characteristic tones',
   objectives: [
-    'Identify each of the seven church modes by its characteristic color',
+    'Identify each of the seven church modes by its characteristic colour',
     'Distinguish major-like modes (Ionian, Lydian, Mixolydian) from minor-like modes (Dorian, Phrygian, Aeolian, Locrian)',
     'Hear the single characteristic tone that differentiates each mode from plain major or natural minor',
   ],
@@ -374,7 +374,7 @@ const l9u31m2: CurriculumModule = {
     {
       title: 'Modal Character',
       explanation:
-        'Each mode has a characteristic color defined by one or two notes that differ from plain major or natural minor. Dorian is minor with a raised 6th — warm and jazzy. Phrygian has a flat 2nd — dark and Spanish-sounding. Lydian has a sharp 4th — dreamy and floating. Mixolydian has a flat 7th — bluesy and rock-inflected. Locrian has a flat 2nd and flat 5th — unstable and rarely used as a tonic. Focus on these "characteristic tones" when identifying modes by ear.',
+        'Each mode has a characteristic colour defined by one or two notes that differ from plain major or natural minor. Dorian is minor with a raised 6th — warm and jazzy. Phrygian has a flat 2nd — dark and Spanish-sounding. Lydian has a sharp 4th — dreamy and floating. Mixolydian has a flat 7th — bluesy and rock-inflected. Locrian has a flat 2nd and flat 5th — unstable and rarely used as a tonic. Focus on these "characteristic tones" when identifying modes by ear.',
       tryThisQuery: 'C dorian',
       tryThisLabel: 'Hear Dorian — minor but warm (raised 6th)',
     },
@@ -388,7 +388,7 @@ const l9u31m2: CurriculumModule = {
     {
       title: 'Characteristic Tone Ear Anchors',
       explanation:
-        'For each mode, train your ear on the one or two notes that make it unique. Dorian: play natural minor, then raise the 6th — hear the warmth enter. Phrygian: play natural minor, then lower the 2nd — hear it darken dramatically. Lydian: play major, then raise the 4th — hear it float. Mixolydian: play major, then lower the 7th — hear it relax into blues. Each characteristic tone creates a specific emotional shift. Memorize that shift, and you can identify any mode by finding its characteristic moment.',
+        'For each mode, train your ear on the one or two notes that make it unique. Dorian: play natural minor, then raise the 6th — hear the warmth enter. Phrygian: play natural minor, then lower the 2nd — hear it darken dramatically. Lydian: play major, then raise the 4th — hear it float. Mixolydian: play major, then lower the 7th — hear it relax into blues. Each characteristic tone creates a specific emotional shift. Memorise that shift, and you can identify any mode by finding its characteristic moment.',
       tryThisQuery: 'C phrygian',
       tryThisLabel: 'Hear Phrygian — the flat 2nd darkens everything',
     },
@@ -421,24 +421,24 @@ const l9u31m3: CurriculumModule = {
   unitId: 'u31',
   levelId: 'l9',
   title: 'Scale Recognition: Pentatonic, Blues, Symmetric',
-  subtitle: 'Recognizing special scales by ear — pentatonic, blues, whole-tone, and diminished',
+  subtitle: 'Recognising special scales by ear — pentatonic, blues, whole-tone, and diminished',
   objectives: [
     'Identify major and minor pentatonic scales by their open, gapped character',
-    'Recognize the blues scale by its added blue note (flat 5th)',
+    'Recognise the blues scale by its added blue note (flat 5th)',
     'Identify whole-tone and diminished scales by their symmetric, directionless quality',
   ],
   concepts: [
     {
       title: 'Pentatonic Scales',
       explanation:
-        'Pentatonic major sounds open and folk-like — five notes, no half steps, no tension. It is the sound of campfire songs and Celtic melodies. Minor pentatonic sounds bluesy and raw — the backbone of rock and blues guitar. Both pentatonic scales are instantly recognizable because they lack the half-step tensions of diatonic scales. The gaps in the scale (missing 4th and 7th in major pentatonic, for example) create a distinctive open quality that no seven-note scale has.',
+        'Pentatonic major sounds open and folk-like — five notes, no half steps, no tension. It is the sound of campfire songs and Celtic melodies. Minor pentatonic sounds bluesy and raw — the backbone of rock and blues guitar. Both pentatonic scales are instantly recognisable because they lack the half-step tensions of diatonic scales. The gaps in the scale (missing 4th and 7th in major pentatonic, for example) create a distinctive open quality that no seven-note scale has.',
       tryThisQuery: 'C pentatonic scale',
       tryThisLabel: 'Hear pentatonic — open, folk-like, no tension',
     },
     {
       title: 'The Blues Scale',
       explanation:
-        'The blues scale adds the flat 5th ("blue note") to minor pentatonic, creating grit and expressiveness. That single added note transforms clean pentatonic into something soulful and bending. The blue note sits between the perfect 4th and perfect 5th — a chromatic intruder that creates maximum tension against both neighbors. The blues scale is the backbone of blues, rock, and jazz improvisation, and its sound is instantly identifiable after even brief exposure.',
+        'The blues scale adds the flat 5th ("blue note") to minor pentatonic, creating grit and expressiveness. That single added note transforms clean pentatonic into something soulful and bending. The blue note sits between the perfect 4th and perfect 5th — a chromatic intruder that creates maximum tension against both neighbours. The blues scale is the backbone of blues, rock, and jazz improvisation, and its sound is instantly identifiable after even brief exposure.',
       tryThisQuery: 'blues scale',
       tryThisLabel: 'Hear the blues scale — gritty and expressive',
     },
@@ -460,7 +460,7 @@ const l9u31m3: CurriculumModule = {
     {
       id: 'l9u31m3t2',
       instruction:
-        "Play 'C whole tone scale' — notice how every step is the same size. There is no pull toward any particular note. The scale floats without direction",
+        "Play 'C whole tone scale' — notice how every step is the same size. There is no pull towards any particular note. The scale floats without direction",
       query: 'C whole tone scale',
     },
     {
@@ -488,19 +488,19 @@ const l9u31m4: CurriculumModule = {
     {
       title: 'Triad Qualities by Ear',
       explanation:
-        'Major sounds bright and settled — the default, stable chord. Minor sounds dark but still grounded — same stability, different color. Diminished sounds tense, small, and anxious — it wants to move somewhere. Augmented sounds strange, suspended, and directionless — no clear resolution. The key distinction: major and minor both have a perfect 5th (stability). Diminished and augmented have altered 5ths (instability). Train by playing all four qualities from the same root and closing your eyes before each one.',
+        'Major sounds bright and settled — the default, stable chord. Minor sounds dark but still grounded — same stability, different colour. Diminished sounds tense, small, and anxious — it wants to move somewhere. Augmented sounds strange, suspended, and directionless — no clear resolution. The key distinction: major and minor both have a perfect 5th (stability). Diminished and augmented have altered 5ths (instability). Train by playing all four qualities from the same root and closing your eyes before each one.',
       tryThisQuery: 'Cdim',
       tryThisLabel: 'Hear diminished — tense, small, anxious',
     },
     {
       title: 'Stable vs. Unstable Triads',
       explanation:
-        'The perfect 5th is the interval that provides stability to a chord. Major triads (major 3rd + perfect 5th) and minor triads (minor 3rd + perfect 5th) both contain it — that is why they sound grounded even though their color differs. Diminished triads replace the perfect 5th with a diminished 5th (one half step smaller), creating a compressed, anxious quality. Augmented triads replace it with an augmented 5th (one half step larger), creating an expanded, unresolved quality. Hearing stable vs. unstable is the first filter — then refine to the specific quality.',
+        'The perfect 5th is the interval that provides stability to a chord. Major triads (major 3rd + perfect 5th) and minor triads (minor 3rd + perfect 5th) both contain it — that is why they sound grounded even though their colour differs. Diminished triads replace the perfect 5th with a diminished 5th (one half step smaller), creating a compressed, anxious quality. Augmented triads replace it with an augmented 5th (one half step larger), creating an expanded, unresolved quality. Hearing stable vs. unstable is the first filter — then refine to the specific quality.',
       tryThisQuery: 'Caug',
       tryThisLabel: 'Hear augmented — strange, expanded, unresolved',
     },
     {
-      title: 'Recognizing Inversions',
+      title: 'Recognising Inversions',
       explanation:
         'When a triad is inverted, the bass note changes the perceived weight and stability. Root position sounds grounded and definitive — the root anchors everything. First inversion sounds lighter and more melodic — the 3rd in the bass creates a less stable but flowing feel. Second inversion sounds unstable — the 4th above the bass creates tension that historically requires resolution. Train by listening to the same chord in all its positions and noting how the character shifts while the quality (major/minor) remains the same.',
       tryThisQuery: 'C major chord',
@@ -523,7 +523,7 @@ const l9u31m4: CurriculumModule = {
     {
       id: 'l9u31m4t3',
       instruction:
-        "Play 'Cdim' then 'Caug' — both have altered 5ths and sound unstable, but in different ways. Diminished contracts inward (small, anxious). Augmented expands outward (strange, floating)",
+        "Play 'Cdim' then 'Caug' — both have altered 5ths and sound unstable, but in different ways. Diminished contracts inwards (small, anxious). Augmented expands outwards (strange, floating)",
       query: 'Cdim',
     },
   ],
@@ -552,7 +552,7 @@ const l9u31m5: CurriculumModule = {
     {
       title: 'The Dominant 7th vs. Major 7th Distinction',
       explanation:
-        'The single most important seventh chord distinction. Major 7th (Cmaj7) and dominant 7th (C7) share a major triad but differ by one note: B (major 7th) vs. Bb (minor 7th). That half-step difference transforms the chord from warm repose to bluesy tension. The dominant 7th demands resolution — it pulls toward a chord a 5th below (C7 wants to go to F). The major 7th is content to sit still. This distinction is the gateway to hearing functional harmony, because the dominant 7th is the engine of harmonic motion.',
+        'The single most important seventh chord distinction. Major 7th (Cmaj7) and dominant 7th (C7) share a major triad but differ by one note: B (major 7th) vs. Bb (minor 7th). That half-step difference transforms the chord from warm repose to bluesy tension. The dominant 7th demands resolution — it pulls towards a chord a 5th below (C7 wants to go to F). The major 7th is content to sit still. This distinction is the gateway to hearing functional harmony, because the dominant 7th is the engine of harmonic motion.',
       tryThisQuery: 'C7',
       tryThisLabel: 'Hear dominant 7th — tense, bluesy, needs to move',
     },
@@ -601,21 +601,21 @@ const l9u32m1: CurriculumModule = {
   subtitle: 'Transcribing short diatonic melodies by ear — stepwise and triadic motion',
   objectives: [
     'Transcribe short diatonic melodies by ear using a systematic process',
-    'Apply framework-first strategy: identify key, meter, and cadence before writing notes',
+    'Apply framework-first strategy: identify key, metre, and cadence before writing notes',
     'Handle stepwise motion and triadic skips (chord outlines like C-E-G) in major keys',
   ],
   concepts: [
     {
       title: 'The Dictation Process',
       explanation:
-        'Melodic dictation follows a systematic process — rushing to write notes immediately is the most common mistake. First listen: get the overall shape, the key, and the meter. Identify the tonic by finding the note that feels like "home" — usually the final note. Second listen: focus on the first few notes and the last few notes. Third listen: fill in the middle, building phrase by phrase. Always start with rhythm and contour (the up-and-down shape), then refine to exact pitches. Check your work: does the transcription make musical sense?',
+        'Melodic dictation follows a systematic process — rushing to write notes immediately is the most common mistake. First listen: get the overall shape, the key, and the metre. Identify the tonic by finding the note that feels like "home" — usually the final note. Second listen: focus on the first few notes and the last few notes. Third listen: fill in the middle, building phrase by phrase. Always start with rhythm and contour (the up-and-down shape), then refine to exact pitches. Check your work: does the transcription make musical sense?',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play a reference scale to anchor the key',
     },
     {
       title: 'Framework-First Strategy',
       explanation:
-        'Before writing a single note, establish the framework that constrains your choices. Identify the key by listening for the tonic — the note of rest and resolution. Tap the beat to find the meter (is it in 2, 3, or 4?). Listen for the cadence at the end — does it resolve conclusively (authentic cadence) or leave you hanging (half cadence)? Then fill in notes, starting with rhythm and overall direction. The framework eliminates wrong answers before you begin, making the detail work far easier.',
+        'Before writing a single note, establish the framework that constrains your choices. Identify the key by listening for the tonic — the note of rest and resolution. Tap the beat to find the metre (is it in 2, 3, or 4?). Listen for the cadence at the end — does it resolve conclusively (authentic cadence) or leave you hanging (half cadence)? Then fill in notes, starting with rhythm and overall direction. The framework eliminates wrong answers before you begin, making the detail work far easier.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear the tonic chord — your anchor point',
     },
@@ -641,7 +641,7 @@ const l9u32m1: CurriculumModule = {
     {
       id: 'l9u32m1t3',
       instruction:
-        'Practice identifying the last note of a melody — is it the tonic? If so, the melody ends with resolution. If not, it feels unfinished. This single observation establishes the key',
+        'Practise identifying the last note of a melody — is it the tonic? If so, the melody ends with resolution. If not, it feels unfinished. This single observation establishes the key',
     },
   ],
   prerequisites: ['l9u31m5'],
@@ -653,9 +653,9 @@ const l9u32m2: CurriculumModule = {
   unitId: 'u32',
   levelId: 'l9',
   title: 'Melodic Dictation: Chromatic',
-  subtitle: 'Transcribing melodies with chromatic passing tones, neighbor tones, and secondary dominants',
+  subtitle: 'Transcribing melodies with chromatic passing tones, neighbour tones, and secondary dominants',
   objectives: [
-    'Recognize chromatic passing tones and neighbor tones within diatonic melodies',
+    'Recognise chromatic passing tones and neighbour tones within diatonic melodies',
     'Hear the effect of secondary dominants in melodic lines — borrowed leading tones',
     'Progress through difficulty levels from chromatic embellishment to two-part dictation',
   ],
@@ -663,21 +663,21 @@ const l9u32m2: CurriculumModule = {
     {
       title: 'Chromatic Embellishment',
       explanation:
-        'Chromatic passing tones and neighbor tones are notes outside the key that connect or decorate diatonic notes. A chromatic passing tone fills in the gap between two diatonic notes a whole step apart — for example, C to C# to D in C major. A chromatic neighbor tone steps outside the key and immediately returns — D to D# to D. These notes create color and tension without changing the key. The ear training challenge is distinguishing chromatic embellishments (temporary departures) from actual modulations (permanent key changes). If the note resolves stepwise back into the key, it is likely an embellishment.',
+        'Chromatic passing tones and neighbour tones are notes outside the key that connect or decorate diatonic notes. A chromatic passing tone fills in the gap between two diatonic notes a whole step apart — for example, C to C# to D in C major. A chromatic neighbour tone steps outside the key and immediately returns — D to D# to D. These notes create colour and tension without changing the key. The ear training challenge is distinguishing chromatic embellishments (temporary departures) from actual modulations (permanent key changes). If the note resolves stepwise back into the key, it is likely an embellishment.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Play the diatonic frame — then imagine chromatic fill',
     },
     {
       title: 'Secondary Dominants in Melodies',
       explanation:
-        'When a melody briefly introduces a note outside the key that functions as a leading tone to a diatonic chord, you are hearing a secondary dominant influence. In C major, an F# might appear as a leading tone to G (the dominant) — it pulls strongly to G the way B pulls to C. In dictation, these borrowed leading tones are identifiable because they resolve by half step upward to a diatonic note. Hearing F# resolve to G in a C major melody is a secondary dominant cue: V/V (five of five). This is the bridge between diatonic and chromatic dictation.',
+        'When a melody briefly introduces a note outside the key that functions as a leading tone to a diatonic chord, you are hearing a secondary dominant influence. In C major, an F# might appear as a leading tone to G (the dominant) — it pulls strongly to G the way B pulls to C. In dictation, these borrowed leading tones are identifiable because they resolve by half step upwards to a diatonic note. Hearing F# resolve to G in a C major melody is a secondary dominant cue: V/V (five of five). This is the bridge between diatonic and chromatic dictation.',
       tryThisQuery: 'G7',
       tryThisLabel: 'Hear G7 — the leading tone B pulls to C',
     },
     {
       title: 'Difficulty Progression',
       explanation:
-        'Chromatic dictation scales in clear levels. Level 1: chromatic passing tones between diatonic notes (C-C#-D). Level 2: chromatic neighbor tones (D-D#-D). Level 3: secondary leading tones resolving upward by half step (F#-G in C major). Level 4: chromatic sequences where a diatonic pattern is transposed chromatically. Level 5: two-part dictation with chromatic elements in both voices. Never skip levels — each builds on the previous one. At each stage, maintain at least 80 percent accuracy before advancing.',
+        'Chromatic dictation scales in clear levels. Level 1: chromatic passing tones between diatonic notes (C-C#-D). Level 2: chromatic neighbour tones (D-D#-D). Level 3: secondary leading tones resolving upwards by half step (F#-G in C major). Level 4: chromatic sequences where a diatonic pattern is transposed chromatically. Level 5: two-part dictation with chromatic elements in both voices. Never skip levels — each builds on the previous one. At each stage, maintain at least 80 per cent accuracy before advancing.',
       tryThisQuery: 'A natural minor scale',
       tryThisLabel: 'Hear minor — dictation gets harder with variable 6th and 7th',
     },
@@ -686,12 +686,12 @@ const l9u32m2: CurriculumModule = {
     {
       id: 'l9u32m2t1',
       instruction:
-        'Play a C major scale slowly, then insert a chromatic passing tone between D and E (play D-D#-E). Now try C-C#-D. Hear how the chromatic note creates momentary color without disrupting the key',
+        'Play a C major scale slowly, then insert a chromatic passing tone between D and E (play D-D#-E). Now try C-C#-D. Hear how the chromatic note creates momentary colour without disrupting the key',
     },
     {
       id: 'l9u32m2t2',
       instruction:
-        'In a C major context, play the sequence E-F#-G. The F# is a secondary leading tone to G. It feels like a temporary tonicization — G briefly becomes the center of gravity before C reasserts itself',
+        'In a C major context, play the sequence E-F#-G. The F# is a secondary leading tone to G. It feels like a temporary tonicisation — G briefly becomes the centre of gravity before C reasserts itself',
     },
     {
       id: 'l9u32m2t3',
@@ -727,7 +727,7 @@ const l9u32m3: CurriculumModule = {
       explanation:
         'Cadences are the punctuation of music — learn to hear them before tackling full progressions. The authentic cadence (V-I) sounds final and conclusive — a period. The plagal cadence (IV-I) sounds softer and warmer — like "Amen." The half cadence (ending on V) sounds incomplete — a question mark. The deceptive cadence (V-vi) surprises: you expect resolution to I but land on vi instead. Identifying the cadence at the end of a phrase gives you two chords immediately and anchors the key.',
       tryThisQuery: 'G major chord',
-      tryThisLabel: 'Hear V (G) — does it pull toward C (I)?',
+      tryThisLabel: 'Hear V (G) — does it pull towards C (I)?',
     },
     {
       title: 'Progression Dictation Process',
@@ -746,7 +746,7 @@ const l9u32m3: CurriculumModule = {
     {
       id: 'l9u32m3t2',
       instruction:
-        'Practice bass line dictation separately from full harmonic analysis — sing or hum the lowest note you hear in each chord of a progression. The bass is always your starting point',
+        'Practise bass line dictation separately from full harmonic analysis — sing or hum the lowest note you hear in each chord of a progression. The bass is always your starting point',
     },
     {
       id: 'l9u32m3t3',
@@ -773,7 +773,7 @@ const l9u32m4: CurriculumModule = {
     {
       title: 'Movable-Do Solfege',
       explanation:
-        'In movable-do solfege, "do" always represents the tonic of the current key — regardless of what note that is. C major: do=C. G major: do=G. Bb major: do=Bb. This maps syllables to function, not absolute pitch. "Sol" always feels like the dominant, "ti" always feels like the leading tone pulling toward "do." This is the Kodaly/Berklee approach, and its proponents argue it trains functional hearing more directly — you learn to hear relationships, not just note names. Fixed-do (where do always equals C), the standard in conservatories of many countries including France and Italy, builds absolute-pitch association instead — both systems are mainstream.',
+        'In movable-do solfege, "do" always represents the tonic of the current key — regardless of what note that is. C major: do=C. G major: do=G. Bb major: do=Bb. This maps syllables to function, not absolute pitch. "Sol" always feels like the dominant, "ti" always feels like the leading tone pulling towards "do." This is the Kodaly/Berklee approach, and its proponents argue it trains functional hearing more directly — you learn to hear relationships, not just note names. Fixed-do (where do always equals C), the standard in conservatories of many countries including France and Italy, builds absolute-pitch association instead — both systems are mainstream.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Sing along: do-re-mi-fa-sol-la-ti-do',
     },
@@ -806,7 +806,7 @@ const l9u32m4: CurriculumModule = {
     {
       id: 'l9u32m4t3',
       instruction:
-        'Practice simple arpeggio patterns: do-mi-sol (major arpeggio), do-me-sol (minor arpeggio), sol-ti-re (dominant arpeggio). Sing these in at least three different keys to internalize the function, not the absolute pitch',
+        'Practise simple arpeggio patterns: do-mi-sol (major arpeggio), do-me-sol (minor arpeggio), sol-ti-re (dominant arpeggio). Sing these in at least three different keys to internalise the function, not the absolute pitch',
     },
   ],
   prerequisites: ['l9u32m3'],
@@ -821,21 +821,21 @@ const l9u32m5: CurriculumModule = {
   subtitle: 'Identifying texture, form, instruments, and style periods by ear',
   objectives: [
     'Identify musical texture: monophonic, homophonic, polyphonic, and homorhythmic',
-    'Recognize formal structures by ear: binary, ternary, rondo, and verse-chorus',
+    'Recognise formal structures by ear: binary, ternary, rondo, and verse-chorus',
     'Assign music to historical style periods by characteristic sonic traits',
   ],
   concepts: [
     {
       title: 'Texture Identification',
       explanation:
-        'Musical texture describes how many voices are present and how they relate to each other. Monophony is a single unaccompanied line — clean and exposed, like a solo flute melody. Homophony is one melody with supporting harmony underneath — the most common texture in Western music (think a singer with guitar chords). Polyphony has multiple independent melodies happening simultaneously — dense and complex, like a Bach fugue. Homorhythm is a special case where all voices move in the same rhythm, like a chorale. Learning to hear texture is learning to hear how music is organized vertically.',
+        'Musical texture describes how many voices are present and how they relate to each other. Monophony is a single unaccompanied line — clean and exposed, like a solo flute melody. Homophony is one melody with supporting harmony underneath — the most common texture in Western music (think a singer with guitar chords). Polyphony has multiple independent melodies happening simultaneously — dense and complex, like a Bach fugue. Homorhythm is a special case where all voices move in the same rhythm, like a chorale. Learning to hear texture is learning to hear how music is organised vertically.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'A chord is homophonic texture in miniature',
     },
     {
       title: 'Form by Ear',
       explanation:
-        'Hearing form means tracking repetition and contrast over time. When material returns, label it "A." When new material appears, label it "B." Binary form is AB (two contrasting sections). Ternary is ABA (departure and return). Rondo alternates a recurring theme with contrasting episodes: ABACA. Verse-chorus is the pop equivalent of alternating sections. Listen for sectional boundaries — cadences, pauses, key changes, and shifts in texture or dynamics all signal formal divisions. The skill is attention span: you must hold the first section in memory to recognize its return.',
+        'Hearing form means tracking repetition and contrast over time. When material returns, label it "A." When new material appears, label it "B." Binary form is AB (two contrasting sections). Ternary is ABA (departure and return). Rondo alternates a recurring theme with contrasting episodes: ABACA. Verse-chorus is the pop equivalent of alternating sections. Listen for sectional boundaries — cadences, pauses, key changes, and shifts in texture or dynamics all signal formal divisions. The skill is attention span: you must hold the first section in memory to recognise its return.',
       tryThisQuery: 'key of G',
       tryThisLabel: 'Explore G major — most forms start and end in the home key',
     },
@@ -884,12 +884,12 @@ export const L9_UNITS: CurriculumUnit[] = [
     milestone: {
       skillsSummary: [
         'Match pitch by ear and identify melodic direction across registers',
-        'Recognize major vs. minor tonality instinctively from chords and scales',
+        'Recognise major vs. minor tonality instinctively from chords and scales',
         'Identify all simple intervals (m2 through P8) by ear, ascending and descending, melodically and harmonically',
-        'Recognize compound intervals (9ths, 10ths, 11ths) as wider versions of simple intervals',
+        'Recognise compound intervals (9ths, 10ths, 11ths) as wider versions of simple intervals',
       ],
       bridgeText:
-        'You can hear pitch, direction, intervals, and consonance vs. dissonance. Now you\u2019ll train your ears to recognize entire scales, chord qualities, and complete musical passages.',
+        'You can hear pitch, direction, intervals, and consonance vs. dissonance. Now you\u2019ll train your ears to recognise entire scales, chord qualities, and complete musical passages.',
       tryThisQuery: 'Cm',
       tryThisLabel: 'Hear C minor — dark and grounded',
       tryThisPrompt: 'Can you tell it is minor before looking at the notes?',

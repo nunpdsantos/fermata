@@ -104,8 +104,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Supertonic', correct: false },
         ],
       },
-      hint: 'In a major scale, the 7th degree is a half step below the tonic. It "leads" strongly upward to the tonic, hence leading tone.',
-      nudge: 'In major, the 7th degree sits only a half step below the tonic (not a whole step), so it pulls strongly upward into it.',
+      hint: 'In a major scale, the 7th degree is a half step below the tonic. It "leads" strongly upwards to the tonic, hence leading tone.',
+      nudge: 'In major, the 7th degree sits only a half step below the tonic (not a whole step), so it pulls strongly upwards into it.',
     },
     {
       id: 'l2u4m2e3',
@@ -327,7 +327,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l2u6m1e1',
       type: 'multiple_choice',
-      prompt: 'In 6/8 time, how are the beats organized?',
+      prompt: 'In 6/8 time, how are the beats organised?',
       config: {
         type: 'multiple_choice',
         rhythm: { time: '6/8', notes: '>8 8 8 >8 8 8 | >q. >q.' },
@@ -338,12 +338,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '2 main beats, grouped as 4 + 2 eighth notes', correct: false },
         ],
       },
-      hint: '6/8 is compound duple meter: 6 eighth notes are grouped as 2 groups of 3. Each group of 3 forms one main beat, giving a ONE-two-three TWO-two-three feel.',
+      hint: '6/8 is compound duple metre: 6 eighth notes are grouped as 2 groups of 3. Each group of 3 forms one main beat, giving a ONE-two-three TWO-two-three feel.',
     },
     {
       id: 'l2u6m1e2',
       type: 'multiple_choice',
-      prompt: 'What defines compound meter?',
+      prompt: 'What defines compound metre?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -353,7 +353,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Each time signature has 8 as its bottom number', correct: false },
         ],
       },
-      hint: 'In compound meter, the beat unit is a dotted note that subdivides into three. In simple meter, beats subdivide into two.',
+      hint: 'In compound metre, the beat unit is a dotted note that subdivides into three. In simple metre, beats subdivide into two.',
     },
     {
       id: 'l2u6m1e3',
@@ -369,8 +369,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: '2 main beats', correct: false },
         ],
       },
-      hint: '9/8 is compound triple meter: 9 eighth notes form 3 groups of 3. Each group of 3 is one main beat (a dotted quarter note).',
-      nudge: '9/8 is a compound meter: the eighth notes are grouped in threes, and each group is one main beat. How many groups fit into nine eighth notes?',
+      hint: '9/8 is compound triple metre: 9 eighth notes form 3 groups of 3. Each group of 3 is one main beat (a dotted quarter note).',
+      nudge: '9/8 is a compound metre: the eighth notes are grouped in threes, and each group is one main beat. How many groups fit into nine eighth notes?',
     },
   ],
 

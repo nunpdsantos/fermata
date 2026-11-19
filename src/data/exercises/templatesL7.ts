@@ -241,7 +241,7 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze the structure of a blues form.',
+        promptTemplate: 'Analyse the structure of a blues form.',
         hintTemplate: 'The 12-bar blues: I7 (4 bars), IV7 (2 bars), I7 (2 bars), V7 (1), IV7 (1), I7 (2). Jazz blues adds ii-V motion and tritone subs.',
         params: {
           choiceSets: [
@@ -270,7 +270,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Analyze the rhythm changes form.',
+        promptTemplate: 'Analyse the rhythm changes form.',
         hintTemplate: 'Rhythm changes (from Gershwin\'s "I Got Rhythm"): AABA form, 32 bars. A sections: I-vi-ii-V turnarounds. Bridge: III7-VI7-II7-V7 (cycle of dominants).',
         params: {
           choiceSets: [
@@ -287,10 +287,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: "The bridge links dominant chords whose roots rise a half step each time", correct: false },
             ],
             [
-              { label: 'Rhythm changes form is AABA, totaling 32 bars', correct: true },
-              { label: "Rhythm changes form is ABAB, totaling 32 bars", correct: false },
-              { label: "Rhythm changes form is ABBA, totaling 32 bars", correct: false },
-              { label: "Rhythm changes form is ABAC, totaling 32 bars", correct: false },
+              { label: 'Rhythm changes form is AABA, totalling 32 bars', correct: true },
+              { label: "Rhythm changes form is ABAB, totalling 32 bars", correct: false },
+              { label: "Rhythm changes form is ABBA, totalling 32 bars", correct: false },
+              { label: "Rhythm changes form is ABAC, totalling 32 bars", correct: false },
             ],
           ],
         },
@@ -380,8 +380,8 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about upper structures and reharmonization is true?',
-        hintTemplate: 'An upper-structure triad sits over the dominant\'s shell (root, 3rd, b7); name its notes by their interval above the bass. Reharmonization swaps chords for others that still support the melody, often within the same function. Passing diminished chords can connect chords a step apart through chromatic bass motion.',
+        promptTemplate: 'Which statement about upper structures and reharmonisation is true?',
+        hintTemplate: 'An upper-structure triad sits over the dominant\'s shell (root, 3rd, b7); name its notes by their interval above the bass. Reharmonisation swaps chords for others that still support the melody, often within the same function. Passing diminished chords can connect chords a step apart through chromatic bass motion.',
         params: {
           choiceSets: [
             [
@@ -397,10 +397,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: "In C major, Em7 can replace Cmaj7: they share C, E and G and both have dominant function", correct: false },
             ],
             [
-              { label: "Reharmonization gives a familiar tune a fresh accompaniment by choosing different supporting chords", correct: true },
-              { label: "Reharmonization gives the original chords a different melody by replacing the melody notes above them", correct: false },
-              { label: "Reharmonization moves the melody and its original chords to a different key while preserving their harmonic functions", correct: false },
-              { label: "Reharmonization changes the inversion of the original chords while preserving the melody and the chord identities", correct: false },
+              { label: "Reharmonisation gives a familiar tune a fresh accompaniment by choosing different supporting chords", correct: true },
+              { label: "Reharmonisation gives the original chords a different melody by replacing the melody notes above them", correct: false },
+              { label: "Reharmonisation moves the melody and its original chords to a different key while preserving their harmonic functions", correct: false },
+              { label: "Reharmonisation changes the inversion of the original chords while preserving the melody and the chord identities", correct: false },
             ],
             [
               { label: 'C#dim7 between Cmaj7 and Dm7 is a passing chord: the bass rises chromatically C-C#-D', correct: true },
@@ -421,7 +421,7 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'chord_build',
-        promptTemplate: 'In Coltrane changes each key center is approached by its own V7. Build the V7 that leads into {key} major.',
+        promptTemplate: 'In Coltrane changes each key centre is approached by its own V7. Build the V7 that leads into {key} major.',
         hintTemplate: 'A dominant 7th resolves down a perfect 5th: the V7 of {key} is built a 5th above {key}, on {root}.',
         params: {
           // Giant Steps centres B, G, Eb (and the same cycle on C, E, Ab); root = key + perfect 5th
@@ -435,13 +435,13 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about Coltrane changes is true?',
-        hintTemplate: 'Giant Steps: three key centers a major 3rd apart (B, G, Eb), each reached through its own V7. Constant structure moves one chord quality in parallel, whatever the key.',
+        hintTemplate: 'Giant Steps: three key centres a major 3rd apart (B, G, Eb), each reached through its own V7. Constant structure moves one chord quality in parallel, whatever the key.',
         params: {
           choiceSets: [
             [
-              { label: 'Giant Steps moves through three key centers a major 3rd apart: B, G and Eb', correct: true },
-              { label: 'Giant Steps moves through key centers a perfect 5th apart, one step at a time around the circle of fifths', correct: false },
-              { label: 'Its key centers are a half step apart', correct: false },
+              { label: 'Giant Steps moves through three key centres a major 3rd apart: B, G and Eb', correct: true },
+              { label: 'Giant Steps moves through key centres a perfect 5th apart, one step at a time around the circle of fifths', correct: false },
+              { label: 'Its key centres are a half step apart', correct: false },
               { label: 'It stays in one key throughout', correct: false },
             ],
             [
@@ -470,7 +470,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about a mode\'s characteristic note is true?',
-        hintTemplate: 'Each mode has a characteristic note that distinguishes it. Dorian: natural 6. Phrygian: b2. Lydian: #4. Mixolydian: b7. Modal vamps emphasize these notes.',
+        hintTemplate: 'Each mode has a characteristic note that distinguishes it. Dorian: natural 6. Phrygian: b2. Lydian: #4. Mixolydian: b7. Modal vamps emphasise these notes.',
         params: {
           choiceSets: [
             [
@@ -486,16 +486,16 @@ const templates: ModuleTemplateConfig[] = [
               { label: "Lower just the third note of a major scale to obtain Lydian", correct: false },
             ],
             [
-              { label: 'A D Dorian vamp (Dm7 - G7) emphasizes the natural 6th (B natural over D)', correct: true },
-              { label: "A D Dorian vamp (Dm7 - Gm7) emphasizes the lowered 6th (Bb over D)", correct: false },
-              { label: "A D Dorian vamp (Dm7 - A7) emphasizes the raised 7th (C# over D)", correct: false },
-              { label: "A D Dorian vamp (Dmaj7 - Gmaj7) emphasizes the major 3rd (F# over D)", correct: false },
+              { label: 'A D Dorian vamp (Dm7 - G7) emphasises the natural 6th (B natural over D)', correct: true },
+              { label: "A D Dorian vamp (Dm7 - Gm7) emphasises the lowered 6th (Bb over D)", correct: false },
+              { label: "A D Dorian vamp (Dm7 - A7) emphasises the raised 7th (C# over D)", correct: false },
+              { label: "A D Dorian vamp (Dmaj7 - Gmaj7) emphasises the major 3rd (F# over D)", correct: false },
             ],
             [
-              { label: 'Phrygian is characterized by the b2 interval, giving it a Spanish/flamenco flavor', correct: true },
-              { label: "Phrygian is characterized by the #4 interval, giving it a Spanish/flamenco flavor", correct: false },
-              { label: 'Phrygian is characterized by the major 7th interval, giving it a Spanish/flamenco flavor', correct: false },
-              { label: "Phrygian is characterized by the natural 6th interval, giving it a Spanish/flamenco flavor", correct: false },
+              { label: 'Phrygian is characterised by the b2 interval, giving it a Spanish/flamenco flavour', correct: true },
+              { label: "Phrygian is characterised by the #4 interval, giving it a Spanish/flamenco flavour", correct: false },
+              { label: 'Phrygian is characterised by the major 7th interval, giving it a Spanish/flamenco flavour', correct: false },
+              { label: "Phrygian is characterised by the natural 6th interval, giving it a Spanish/flamenco flavour", correct: false },
             ],
           ],
         },
@@ -522,7 +522,7 @@ const templates: ModuleTemplateConfig[] = [
             ],
             [
               { label: "Planing slides every note of a chord in the same direction at once", correct: true },
-              { label: "Planing usually sends the highest chord tone upward while the lowest moves downward", correct: false },
+              { label: "Planing usually sends the highest chord tone upwards while the lowest moves downwards", correct: false },
               { label: "Planing holds every upper note still while moving the bass through the scale", correct: false },
               { label: "Planing breaks a chord into a melody by sounding its notes one after another", correct: false },
             ],
