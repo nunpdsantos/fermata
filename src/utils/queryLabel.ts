@@ -39,9 +39,18 @@ export interface QueryLabelNames {
   note?: (n: Note) => string;
 }
 
+/**
+ * A chord SYMBOL ("C7", "Am", "Cmaj7/G"): what the chord parser reads, written
+ * without a space. The parser also reads some phrases in words ("C major/E",
+ * "C minor add9"): those are words, and are named (review of bd14071).
+ */
+export function isChordSymbol(query: string): boolean {
+  return !/\s/.test(query.trim()) && parseChordSymbol(query) !== null;
+}
+
 /** The words inside a task phrase's quotes, for `query` (its token) in `names.lang`. */
 export function queryLabel(query: string, names: QueryLabelNames): string {
-  if (names.lang === 'en' || parseChordSymbol(query) !== null) return query;
+  if (names.lang === 'en' || isChordSymbol(query)) return query;
   const reading = resolveTheoryReadings(query)[0];
   if (!reading || reading.via === 'solfege') return query;
   // A name the locale lacks (the key itself, or nothing) is no name: the token stays.
