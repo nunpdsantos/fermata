@@ -153,7 +153,7 @@ describe('M46: the scale-position notice names every pitch it cannot reach, and 
   });
 
   it('where no one position plays them all, each pitch says where (C Locrian, Drop D, capo 9, position X)', async () => {
-    const reach = (await import('../../../core/utils/guitarPositions')).skippedReach(N('C'), 'locrian', 10, dropD, 9);
+    const reach = (await import('../../../core/utils/guitarPositionReach')).skippedReach(N('C'), 'locrian', 10, dropD, 9);
     expect(reach.playedIn).toBeNull();
     expect(reach.notes.map((x) => x.midi)).toEqual([53, 54]);
     const at = reach.notes.map((x) => x.playedIn!);

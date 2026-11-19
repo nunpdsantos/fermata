@@ -16,7 +16,8 @@ import { describe, expect, it } from 'vitest';
 import { SCALE_FORMULAS } from '../../constants/scales';
 import { GUITAR_TUNINGS } from '../../constants/guitarTunings';
 import type { Note, ScaleType } from '../../types/music';
-import { capoPositions, getGuitarPosition, GUITAR_MAX_FRET, skippedReach } from '../guitarPositions';
+import { capoPositions, getGuitarPosition, GUITAR_MAX_FRET } from '../guitarPositions';
+import { skippedReach } from '../guitarPositionReach';
 
 const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const TUNING_MIDI: Record<string, number[]> = {

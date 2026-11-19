@@ -20,8 +20,8 @@ import {
   GUITAR_MAX_FRET,
   capoPositions,
   positionForCapo,
-  skippedReach,
 } from '../../core/utils/guitarPositions.ts';
+import { skippedReach } from '../../core/utils/guitarPositionReach.ts';
 import type { PositionNote } from '../../core/utils/guitarPositions.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { noteToString } from '../../core/types/music.ts';
