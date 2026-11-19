@@ -1431,12 +1431,12 @@ test.describe('review B-2', () => {
     pt: {
       practice: 'A tua ronda de prática em «A pauta e as claves» ficou guardada: pergunta 2 de 3. Se começares esta revisão, essa perde-se.',
       review: 'A tua revisão de «A pauta e as claves» ficou guardada: pergunta 2 de 3. Se começares esta verificação, essa perde-se.',
-      back: 'Voltar a «A pauta e as claves»', startReview: 'Começar esta revisão', startCheck: 'Começar esta verificação', cancel: 'Cancelar',
+      back: 'Voltar a «A pauta e as claves»', startReview: 'Começar esta revisão', startCheck: 'Começar esta verificação', cancel: 'Cancelar', overview: 'Aprender teoria musical',
     },
     es: {
       practice: 'Tu ronda de práctica en «El pentagrama y las claves» se ha guardado: pregunta 2 de 3. Si empiezas este repaso, lo guardado se pierde.',
       review: 'Tu repaso de «El pentagrama y las claves» se ha guardado: pregunta 2 de 3. Si empiezas esta comprobación, lo guardado se pierde.',
-      back: 'Volver a «El pentagrama y las claves»', startReview: 'Empezar este repaso', startCheck: 'Empezar esta comprobación', cancel: 'Cancelar',
+      back: 'Volver a «El pentagrama y las claves»', startReview: 'Empezar este repaso', startCheck: 'Empezar esta comprobación', cancel: 'Cancelar', overview: 'Aprender teoría musical',
     },
   } as const;
   for (const lang of ['pt', 'es'] as const) {
@@ -1465,6 +1465,7 @@ test.describe('review B-2', () => {
       // Cancel: a review has no card, so it is left (as its own "Back to Learn"); nothing started, the kept round stays.
       await page.getByTestId('kept-cancel').click();
       await expect(choice).toHaveCount(0);
+      await expect(page.getByRole('heading', { level: 1, name: WORDS[lang].overview })).toBeVisible();
       await expect(page.getByTestId('focused-check')).toHaveCount(0);
       expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check.kind)).toBe('practice');
       // A review kept; a lesson's check started.
