@@ -227,14 +227,15 @@ const PANELS: [string, number][] = [
 test.describe('the demonstrations\' staves fit, from the narrowest phone to a laptop, day and night', () => {
   for (const [width, height, lang] of [[320, 740, 'pt'], [390, 844, 'en'], [1440, 900, 'en']] as const) {
     for (const theme of ['fermata', 'fermata-night'] as const) {
-      test(`${width}×${height} ${lang} ${theme}`, async ({ page, context }) => {
+      // One test per lesson (a single test opening all of them outran its 30 s under load).
+      for (const lesson of [...new Set(PANELS.map(([id]) => id))]) test(`${width}×${height} ${lang} ${theme} ${lesson}`, async ({ page, context }) => {
         const origin = new URL(test.info().project.use.baseURL!).origin;
         await context.addInitScript(([o, l, th]) => {
           if (location.origin === o) localStorage.setItem('music-theory-app', JSON.stringify({ state: { language: l, themeMode: th }, version: 6 }));
         }, [origin, lang, theme] as const);
         await page.setViewportSize({ width, height });
-        for (const [id, n] of PANELS) {
-          await openLesson(page, id);
+        await openLesson(page, lesson);
+        for (const [id, n] of PANELS.filter(([x]) => x === lesson)) {
           const panel = conceptPanel(page, n);
           await panel.scrollIntoViewIfNeeded();
           const svg = panel.locator('svg:has(g.vf-stavenote)');
