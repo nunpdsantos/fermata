@@ -1214,6 +1214,25 @@ body {
   }
 }
 
+/* The guitar dock's notice (a chord's: no grip with the bass, a tone left
+   out, shapes for standard tuning only; a scale position's note out of
+   reach). From 1024 px it keeps its own width and shares the controls row's
+   line where it fits — the chord chips give up width and scroll sideways,
+   the selected chip kept in view — so it adds no height to the dock (music
+   audit 2, the review of builder K, item 8: +26 px at 1440×900 in Open G,
+   pushing Explore's circle past the fold). Where it cannot fit (a scale
+   position's notice in Open G) it takes a line, as it always has below
+   1024 px. Outside the layers, so it wins over the element's `w-full`
+   utility without changing its markup (the owner's neck is recorded as is:
+   legacyNeck.test.tsx). */
+@media (min-width: 1024px) {
+  .fretboard-controls > p[role="status"] {
+    width: auto;
+    max-width: 100%;
+    flex: 0 1 auto;
+  }
+}
+
 /* ─── Explore workbench (W11-B, D-25 / D-29 / D-30) ───────────────
    Header (pickers · summary · Play · ⋯) over the work: the staff strip and
    the chords, with the circle of fifths beside them at ≥ 1200 px. The page
