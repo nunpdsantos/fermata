@@ -356,7 +356,7 @@ describe('"Show on the piano" only where the instrument shows the notes the demo
     ['l4u12m1', 2, L4_UNITS, false, 'E over D → C: a C major chord is not what is heard'],
     ['l7u23m5', 0, L7_UNITS, false, 'the stack with F: Cmaj13 has no F'],
     ['l9u30m3', 0, L9_UNITS, false, 'C–D … C–G: five notes, not the C major scale'],
-  ] as const)('%s c%s → %s (%s)', (id, concept, units, shown) => {
+  ] as const)('%s c%s → %s (%s)', (id, concept, units, shown, _why) => {
     renderLesson(units, id);
     const panel = conceptPanel(concept);
     expect(!!within(panel).queryByRole('button', { name: 'Show on the piano' })).toBe(shown);

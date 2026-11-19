@@ -45,6 +45,30 @@ const DEMOS: [string, Demonstration][] = LEVELS.flat().flatMap((u) => u.modules)
   ...m.tasks.flatMap((t) => Object.entries(t.demos ?? {}).map(([q, d]) => [`${t.id} ‘${q}’`, d] as [string, Demonstration])),
 ]);
 
+/**
+ * The form's other features, which no lesson uses yet, so that the drawing
+ * and the sound are proved to agree on them too: a tie across a bar line
+ * (one sound), a tied chord, dotted values, an eighth, a rest, and a sign the
+ * new bar must print again and a natural that cancels it.
+ */
+const FORM: [string, Demonstration][] = [
+  ['form: a held bass tied across the bar line', demonstration('form tie', {
+    tempo: 90, time: '4/4',
+    voices: [
+      { staff: 'treble', events: run('q', ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4']) },
+      { staff: 'bass', events: [note('w', 'C3', { tie: true }), note('w', 'C3')] },
+    ],
+  })],
+  ['form: dots, an eighth, a rest, a sign again and a natural', demonstration('form values', {
+    tempo: 100, time: '3/4', key: 'C',
+    voices: [{ staff: 'treble', events: [note('h.', 'F#4'), note('q.', 'F#4'), note('8', 'F4'), rest('q')] }],
+  })],
+  ['form: a tied chord, no metre', demonstration('form chord tie', {
+    tempo: 120,
+    voices: [{ staff: 'treble', events: [chord('h', ['C4', 'E4', 'G4'], { tie: true }), chord('h', ['C4', 'E4', 'G4']), chord('w', ['B3', 'D4', 'F4', 'G4'])] }],
+  })],
+];
+
 beforeAll(() => {
   (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver ??= class { observe() {} unobserve() {} disconnect() {} };
 });
@@ -65,7 +89,7 @@ describe('every demonstration in the lessons', () => {
     expect(demonstrationProblems(demo)).toEqual([]);
   });
 
-  it.each(DEMOS)('%s: its staff draws what it plays', async (_w, demo) => {
+  it.each([...DEMOS, ...FORM])('%s: its staff draws what it plays', async (_w, demo) => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ width: 360, height: 100, top: 0, left: 0, right: 360, bottom: 100, x: 0, y: 0, toJSON: () => ({}) } as DOMRect);
     const { container } = render(<DemoStaff demo={demo} description="x" />);
     const svg = await waitFor(() => {
@@ -111,6 +135,29 @@ describe('every demonstration in the lessons', () => {
       }
       expect(text).not.toMatch(/lessonDemo\.|lesson\.rhythm/);
     }
+  });
+});
+
+describe('what a demonstration sounds', () => {
+  it('a tie makes one sound of the notes it joins; a rest is silence; a dot adds half', () => {
+    const [tie, values] = [FORM[0][1], FORM[1][1]];
+    const bass = demonstrationSchedule(tie).filter((s) => s.midi < 60);
+    expect(bass.map((s) => [s.midi, s.at, s.duration])).toEqual([[48, 0, 8 * (60 / 90) * DEMO_SOUNDING]]);
+    const beat = 60 / 100;
+    expect(demonstrationSchedule(values).map((s) => [s.midi, +s.at.toFixed(6), +s.duration.toFixed(6)])).toEqual([
+      [66, 0, +(3 * beat * DEMO_SOUNDING).toFixed(6)],
+      [66, +(3 * beat).toFixed(6), +(1.5 * beat * DEMO_SOUNDING).toFixed(6)],
+      [65, +(4.5 * beat).toFixed(6), +(0.5 * beat * DEMO_SOUNDING).toFixed(6)],
+    ]);
+  });
+  it('notes that start together share the loudness: `together` counts them', () => {
+    const quartal = DEMOS.find(([w]) => w === 'l7u22m5 c0')![1];
+    expect(demonstrationSchedule(quartal).map((s) => s.together)).toEqual([1, 1, 1, 1, 4, 4, 4, 4]);
+  });
+  it('the drawing prints F♯ again in a new bar and a natural before the F that follows it', () => {
+    const plan = demoStaffPlan(FORM[1][1]);
+    expect(plan.voices[0].notes.map((n) => n.accidentals[0] ?? null)).toEqual(['#', '#', 'n', null]);
+    expect(plan.voices[0].barsAfter).toEqual([0]);
   });
 });
 

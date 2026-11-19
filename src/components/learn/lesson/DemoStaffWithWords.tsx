@@ -10,7 +10,8 @@ import { DemoStaff } from './DemoStaff';
 import { describeDemonstration } from './demoDescription';
 
 export default function DemoStaffWithWords({ demo }: { demo: Demonstration }) {
-  const { t, i18n } = useTranslation();
-  const description = useMemo(() => describeDemonstration(demo, t), [demo, t, i18n.language]);
+  // `t` is bound to the language, so a language change describes it again.
+  const { t } = useTranslation();
+  const description = useMemo(() => describeDemonstration(demo, t), [demo, t]);
   return <DemoStaff demo={demo} description={description} />;
 }

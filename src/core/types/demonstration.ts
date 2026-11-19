@@ -17,6 +17,33 @@
  * Pitches are WRITTEN pitches in scientific notation: letter, accidental,
  * octave, with C4 = middle C ('F#5', 'Bb3'). They are what sounds, too: a
  * demonstration is never transposed for the instrument.
+ *
+ * TO WRITE ONE (the next author): in the lesson's `curriculumL*.ts`, beside
+ * the concept's `tryThisQuery`,
+ *
+ *   demo: demonstration('l7u22m5 c2', {
+ *     tempo: 100, time: '4/4',
+ *     voices: [
+ *       { staff: 'treble', events: run('q', ['D4', 'E4', 'F4', 'G4', 'A4', 'Bb4', 'C5', 'D5']) },
+ *       { staff: 'bass', events: [note('w', 'D3'), note('w', 'D3')] },
+ *     ],
+ *   }),
+ *
+ * with `run` (notes one after another), `chord` (notes together), `note`,
+ * `rest` and `{ tie: true }` from `core/utils/demonstration.ts`. Rules the
+ * check enforces: one or two voices, the upper first, ending together; chords
+ * written low to high; a tie only to the same pitches; with a `time`, whole
+ * bars and no note across a bar line (split it and tie it). A key signature
+ * (`key`) is drawn and the notes under it carry only the signs the bar needs.
+ * The label must say what is heard: the tests compare the sentence with what
+ * sounds and what is drawn (`components/learn/__tests__/lessonDemonstrations.test.tsx`
+ * per lesson; `data/__tests__/lessonDemonstrations.corpus.test.tsx` lists
+ * every demonstration, so a new one is added to its list). "Show on the
+ * piano / guitar" appears only where the query shows exactly the notes the
+ * demonstration plays. A task whose quoted query must show a demonstration
+ * names it in the task's `demos: { 'key of G': … }`. Nothing here is
+ * translated: the words are the label (hash-gated as ever) and the generated
+ * text alternative (`i18n/lessonDemo/`).
  */
 import type { NaturalNote } from './music';
 

@@ -18,49 +18,9 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { Demonstration } from '../../../core/types/demonstration';
 import { loadVexFlow } from '../../../utils/vexflowLoader';
-import { keySignatureAlterations, staffLine, staffInkBounds } from '../../../utils/notationHelpers';
 import { useResolvedTheme } from '../../../hooks/useTheme';
 import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
-import { demoStaffPlan, type DemoClef, type DemoStaffPlan, type PlannedNote } from './demoStaffPlan';
-
-const STEM = 36;
-const STAFF_GAP = 84;
-
-/** Ink above and below a staff's top line origin (VexFlow's staveY), for the notes it holds. */
-function staffInk(plan: DemoStaffPlan, clef: DemoClef): { top: number; bottom: number } {
-  const base = staffInkBounds([], clef, { keySignature: plan.key });
-  let { top, bottom } = base;
-  if (Object.keys(keySignatureAlterations(plan.key)).length === 0) top = Math.min(top, 40);
-  for (const voice of plan.voices.filter((v) => v.staff === clef)) {
-    for (const n of voice.notes) {
-      if (n.rest) continue;
-      const ys = n.pitches.map((p) => 90 - 10 * staffLine(p, clef));
-      const hi = Math.min(...ys);
-      const lo = Math.max(...ys);
-      const accidental = n.accidentals.some(Boolean) ? 18 : 8;
-      top = Math.min(top, hi - accidental);
-      bottom = Math.max(bottom, lo + accidental);
-      if (n.duration.startsWith('w')) continue;
-      // The stem: forced (two voices) or VexFlow's rule, by the farther head from the middle line.
-      const up = n.stem ? n.stem === 1 : (60 - hi) <= (lo - 60) ;
-      if (up) top = Math.min(top, hi - STEM);
-      else bottom = Math.max(bottom, lo + STEM);
-    }
-  }
-  return { top, bottom };
-}
-
-/** Where each staff stands and how tall the drawing is. */
-export function demoStaffLayout(plan: DemoStaffPlan): { ys: number[]; height: number } {
-  const inks = plan.staves.map((clef) => staffInk(plan, clef));
-  const ys: number[] = [];
-  inks.forEach((ink, i) => {
-    if (i === 0) ys.push(Math.max(0, 4 - ink.top));
-    else ys.push(Math.max(ys[i - 1] + STAFF_GAP, ys[i - 1] + inks[i - 1].bottom + 8 - ink.top));
-  });
-  const last = inks.length - 1;
-  return { ys, height: Math.ceil(Math.max(100, ys[last] + inks[last].bottom + 4)) };
-}
+import { demoStaffPlan, demoStaffLayout, type PlannedNote } from './demoStaffPlan';
 
 export function DemoStaff({ demo, description }: { demo: Demonstration; description: string }) {
   const containerRef = useRef<HTMLDivElement>(null);

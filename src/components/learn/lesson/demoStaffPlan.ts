@@ -18,7 +18,7 @@
 import type { PitchedNote } from '../../../core/types/music';
 import type { Demonstration, DemoValue } from '../../../core/types/demonstration';
 import { demoBeats, demoNote } from '../../../core/utils/demonstration';
-import { pitchedNoteToVexKey, keySignatureAlterations } from '../../../utils/notationHelpers';
+import { pitchedNoteToVexKey, keySignatureAlterations, staffLine, staffInkBounds } from '../../../utils/notationHelpers';
 import { writtenOctave } from '../../../core/utils/degreeSpelling';
 
 export type DemoClef = 'treble' | 'bass';
@@ -122,4 +122,43 @@ export function demoStaffPlan(demo: Demonstration): DemoStaffPlan {
     }
   }
   return { staves, ...(demo.key ? { key: demo.key } : {}), ...(demo.time ? { time: demo.time } : {}), voices };
+}
+
+const STEM = 36;
+const STAFF_GAP = 84;
+
+/** Ink above and below a staff's top line origin (VexFlow's staveY), for the notes it holds. */
+function staffInk(plan: DemoStaffPlan, clef: DemoClef): { top: number; bottom: number } {
+  const base = staffInkBounds([], clef, { keySignature: plan.key });
+  let { top, bottom } = base;
+  if (Object.keys(keySignatureAlterations(plan.key)).length === 0) top = Math.min(top, 40);
+  for (const voice of plan.voices.filter((v) => v.staff === clef)) {
+    for (const n of voice.notes) {
+      if (n.rest) continue;
+      const ys = n.pitches.map((p) => 90 - 10 * staffLine(p, clef));
+      const hi = Math.min(...ys);
+      const lo = Math.max(...ys);
+      const accidental = n.accidentals.some(Boolean) ? 18 : 8;
+      top = Math.min(top, hi - accidental);
+      bottom = Math.max(bottom, lo + accidental);
+      if (n.duration.startsWith('w')) continue;
+      // The stem: forced (two voices) or VexFlow's rule, by the farther head from the middle line.
+      const up = n.stem ? n.stem === 1 : (60 - hi) <= (lo - 60);
+      if (up) top = Math.min(top, hi - STEM);
+      else bottom = Math.max(bottom, lo + STEM);
+    }
+  }
+  return { top, bottom };
+}
+
+/** Where each staff stands (staveY of each, top down) and how tall the drawing is. */
+export function demoStaffLayout(plan: DemoStaffPlan): { ys: number[]; height: number } {
+  const inks = plan.staves.map((clef) => staffInk(plan, clef));
+  const ys: number[] = [];
+  inks.forEach((ink, i) => {
+    if (i === 0) ys.push(Math.max(0, 4 - ink.top));
+    else ys.push(Math.max(ys[i - 1] + STAFF_GAP, ys[i - 1] + inks[i - 1].bottom + 8 - ink.top));
+  });
+  const last = inks.length - 1;
+  return { ys, height: Math.ceil(Math.max(100, ys[last] + inks[last].bottom + 4)) };
 }

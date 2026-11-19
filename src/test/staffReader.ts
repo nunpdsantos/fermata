@@ -75,9 +75,9 @@ export function readStaffSvg(svg: Element): DrawnScore {
   // ── Staves: their lines, clef, key and time signatures ──
   type StaffGeo = { top: number; bottom: number; staff: DrawnStaff; x0: number; x1: number };
   const geos: StaffGeo[] = [];
-  const staveGroups = [...svg.querySelectorAll('g.vf-stave')];
+  const staveGroups = Array.from(svg.querySelectorAll('g.vf-stave'));
   for (const g of staveGroups) {
-    const ys = [...g.querySelectorAll('path')].map((p) => {
+    const ys = Array.from(g.querySelectorAll('path')).map((p) => {
       const m = /M\s*([\d.-]+)\s+([\d.-]+)\s*L\s*([\d.-]+)/.exec(p.getAttribute('d') ?? '');
       return m ? { y: Math.floor(Number(m[2])), x0: Number(m[1]), x1: Number(m[3]) } : null;
     }).filter((v): v is { y: number; x0: number; x1: number } => v !== null);
@@ -98,29 +98,29 @@ export function readStaffSvg(svg: Element): DrawnScore {
   };
   const pitchOf = (step: number, acc: string) => `${LETTERS[((step % 7) + 7) % 7]}${acc === 'n' ? '' : acc}${Math.floor(step / 7)}`;
 
-  for (const g of svg.querySelectorAll('g.vf-clef')) {
+  for (const g of Array.from(svg.querySelectorAll('g.vf-clef'))) {
     const t = g.querySelector('text');
     if (!t || !geos.length) continue;
     const geo = geos[staffOf(num(t, 'y'))];
     geo.staff.clef = code(t) === 0xe050 ? 'treble' : code(t) === 0xe062 ? 'bass' : '?';
   }
-  for (const g of svg.querySelectorAll('g.vf-keysignature')) {
-    for (const t of g.querySelectorAll('text')) {
+  for (const g of Array.from(svg.querySelectorAll('g.vf-keysignature'))) {
+    for (const t of Array.from(g.querySelectorAll('text'))) {
       const geo = geos[staffOf(num(t, 'y'))];
       const sign = ACC[code(t)];
       if (sign !== '#' && sign !== 'b') continue;
       geo.staff.signature.push({ sign, letter: LETTERS[((stepAt(geo, num(t, 'y')) % 7) + 7) % 7] });
     }
   }
-  for (const g of svg.querySelectorAll('g.vf-timesignature')) {
-    const digits = [...g.querySelectorAll('text')].sort((a, b) => num(a, 'y') - num(b, 'y'))
+  for (const g of Array.from(svg.querySelectorAll('g.vf-timesignature'))) {
+    const digits = Array.from(g.querySelectorAll('text')).sort((a, b) => num(a, 'y') - num(b, 'y'))
       .map((t) => String.fromCharCode(48 + code(t) - 0xe080));
     if (digits.length >= 2 && geos.length) geos[staffOf(num(g.querySelector('text')!, 'y'))].staff.time = `${digits[0]}/${digits[1]}`;
   }
 
   // ── Bar lines inside the staff (not its two ends) ──
   const barlines: number[][] = geos.map(() => []);
-  for (const g of svg.querySelectorAll('g.vf-stavebarline')) {
+  for (const g of Array.from(svg.querySelectorAll('g.vf-stavebarline'))) {
     const r = g.querySelector('rect');
     if (!r) continue;
     const x = num(r, 'x');
@@ -133,8 +133,8 @@ export function readStaffSvg(svg: Element): DrawnScore {
   // ── Notes, chords and rests ──
   type Raw = DrawnNote & { heads: { x: number; y: number; step: number; printed?: string }[] };
   const raws: Raw[] = [];
-  for (const g of svg.querySelectorAll('g.vf-stavenote')) {
-    const texts = [...g.querySelectorAll('text')];
+  for (const g of Array.from(svg.querySelectorAll('g.vf-stavenote'))) {
+    const texts = Array.from(g.querySelectorAll('text'));
     const heads = texts.filter((t) => NOTEHEAD[code(t)] !== undefined);
     const rest = texts.find((t) => REST[code(t)] !== undefined);
     const anchor = heads[0] ?? rest;
@@ -183,7 +183,7 @@ export function readStaffSvg(svg: Element): DrawnScore {
   }
 
   // Ties: a path from one notehead to a later one on the same staff.
-  const tieGroups = [...svg.querySelectorAll('g.vf-stavetie')];
+  const tieGroups = Array.from(svg.querySelectorAll('g.vf-stavetie'));
   for (const g of tieGroups) {
     const m = /M\s*([\d.-]+)\s+([\d.-]+)\s*Q\s*[\d.-]+\s+[\d.-]+\s*,\s*([\d.-]+)/.exec(g.querySelector('path')?.getAttribute('d') ?? '');
     if (!m) continue;
@@ -194,7 +194,7 @@ export function readStaffSvg(svg: Element): DrawnScore {
     if (from && to && from !== to) from.tiedToNext = true;
   }
 
-  const brace = [...svg.querySelectorAll('path')].some((p) => /C/.test(p.getAttribute('d') ?? '') && !p.closest('g.vf-stavetie') && !p.closest('g.vf-stavenote'));
+  const brace = Array.from(svg.querySelectorAll('path')).some((p) => /C/.test(p.getAttribute('d') ?? '') && !p.closest('g.vf-stavetie') && !p.closest('g.vf-stavenote'));
   return {
     staves: geos.map((g) => g.staff),
     notes: raws.map(({ heads: _heads, ...n }) => n),
