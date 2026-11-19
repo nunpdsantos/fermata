@@ -253,6 +253,15 @@ function scoreFields(q: string, title: string, subtitle: string, keywords: reado
 }
 
 /**
+ * The English titles in the American spelling a learner may still type
+ * (titles are British since 19 November 2026): "compound meter" finds
+ * "Compound Metre" exactly as it found "Compound Meter". Only ever adds a
+ * match; a British query matches the title as written.
+ */
+const american = (s: string) =>
+  s.replace(/(colo|neighbo|flavo|favo)ur/gi, '$1r').replace(/(cen|me)tre/gi, '$1ter').replace(/([iy])s(ation|ing|e[sd]?)\b/gi, '$1z$2').replace(/wards\b/gi, 'ward');
+
+/**
  * Lesson search. With a localized index (Portuguese/Spanish), a module
  * matches on its localized title, subtitle and keywords as well as the
  * English ones (lessons quote English queries), and hits carry the localized
@@ -267,7 +276,7 @@ export function findModulesByQuery(
   if (q.length < 2) return [];
   const matches: Array<{ entry: ModuleIndexEntry; score: number }> = [];
   for (const entry of MODULE_INDEX) {
-    let score = scoreFields(q, entry.title, entry.subtitle, entry.keywords);
+    let score = Math.max(scoreFields(q, entry.title, entry.subtitle, entry.keywords), scoreFields(q, american(entry.title), american(entry.subtitle), []));
     const loc = localized?.titles[entry.id];
     if (loc) {
       score = Math.max(score, scoreFields(q, loc[0], loc[1], localized?.keywords[entry.id] ?? []));
