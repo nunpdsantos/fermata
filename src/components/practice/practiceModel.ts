@@ -204,20 +204,30 @@ export function allowedFingers(route: PracticeRoute, i: number, n: FingeredNote,
 /**
  * The barrés the hand holds at event `i`, from the fingers shown (a teacher's included): one finger across two or
  * more strings at one fret among the notes held with it — and, where the route marks it, the index rolling from
- * one string to the next at one fret between two single notes in turn (guitarFingering's partial barré). Only
- * those under which event `i` has a note.
+ * one string to the next at one fret between two single notes in turn (guitarFingering's partial barré).
+ *
+ * A grip held through a ringing window (a right-hand bar, a broken chord's group of three) keeps its barré down
+ * on every step of it, so its cue stands on every step, whether or not that step plucks a string under it (the
+ * review of 19 November 2026: in 1,136 right-hand bars holding a barré, 1,232 of 4,406 strokes showed none, as if
+ * the finger lifted). Elsewhere, and for a roll, only a barré under which event `i` has a note.
  */
 export function barreCues(route: PracticeRoute, i: number, fingerOf: FingerOf = suggested): BarreCue[] {
   const held = heldWith(route, i);
+  const at = (event: number, note: FingeredNote): HeldPlace => ({ stringIndex: note.stringIndex, fret: note.fret, finger: fingerOf(event, note) });
+  const mine = route.events[i].notes.map((n) => at(i, n));
+  const onMine = (c: BarreCue) => mine.some((p) => p.finger === c.finger && p.fret === c.fret && 6 - p.stringIndex >= c.from && 6 - p.stringIndex <= c.to);
+  const grip = barresAmong(held.map(({ event, note }) => at(event, note))).filter((c) => route.overRinging || onMine(c));
   // A roll is the route's own partial barré (guitarFingering's `barre` on the second note), kept while the index
   // is still the finger shown on both; another finger moving to the next string at one fret lifts and lands.
   const index = (event: number) => route.events[event].notes.length === 1 && fingerOf(event, route.events[event].notes[0]) === 1;
   // (A right-hand bar holds its own grip: nothing rolls in from the bar before.)
   const rolled = !route.events[i].numeral && i > 0 && route.events[i].notes[0].barre && index(i) && index(i - 1)
     ? [{ event: i - 1, note: route.events[i - 1].notes[0] }] : [];
-  const places = [...rolled, ...held].map(({ event, note }) => ({ stringIndex: note.stringIndex, fret: note.fret, finger: fingerOf(event, note) }));
-  const mine = route.events[i].notes.map((n) => ({ stringIndex: n.stringIndex, fret: n.fret, finger: fingerOf(i, n) }));
-  return barresAmong(places).filter((c) => mine.some((p) => p.finger === c.finger && p.fret === c.fret && 6 - p.stringIndex >= c.from && 6 - p.stringIndex <= c.to));
+  if (!rolled.length) return grip;
+  // The roll, taken together with what is held now (it may widen a barré of the window at the same fret).
+  const rolls = barresAmong([...rolled, ...held].map(({ event, note }) => at(event, note))).filter(onMine);
+  return [...grip.filter((g) => !rolls.some((r) => r.finger === g.finger && r.fret === g.fret)), ...rolls]
+    .sort((a, b) => a.fret - b.fret || a.from - b.from);
 }
 
 export function routeFingerKey(root: Note, type: ScaleType, tuning: GuitarTuning, route: PracticeRoute, event: number, n: FingeredNote): string {

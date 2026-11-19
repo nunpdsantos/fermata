@@ -171,7 +171,7 @@ test('M39: the stroke keeps the step and the tempo, paused and while playing, bo
   await context.close();
 });
 
-test('M41: B major (p+a) i m i names the barré and its strings, printed and spoken; a step off the barré has none', async ({ browser }) => {
+test('M41: B major (p+a) i m i names the barré and its strings, printed and spoken, on every stroke of the bar that holds it', async ({ browser }) => {
   for (const viewport of [{ w: 1440, h: 900 }, { w: 390, h: 844 }]) {
     const { context, sheet } = await open(browser, { ...viewport, key: B });
     await tab(sheet, 'Right hand');
@@ -180,8 +180,12 @@ test('M41: B major (p+a) i m i names the barré and its strings, printed and spo
     await expect(current(sheet)).toContainText('a · F♯ · Left hand 1 · string 1 fret 2 · Partial barré');
     await expect(sheet.getByTestId('practice-barre')).toHaveText('Barré: finger 1 across strings 1 to 5, fret 2');
     await expect(sheet.locator('.practice-event').first()).toHaveAttribute('aria-label', 'Step 1: B + F#. Barré: finger 1 across strings 1 to 5, fret 2');
+    // Step 2 plucks string 3 at fret 4: the index stays down, so the line and the step's name stay; its note has no barré word.
+    await expect(sheet.locator('.practice-event').nth(1)).toHaveAttribute('aria-label', 'Step 2: B. Barré: finger 1 across strings 1 to 5, fret 2');
     await next(sheet).click();
-    await expect(sheet.getByTestId('practice-barre')).toHaveCount(0);
+    await expect(sheet.getByTestId('practice-barre')).toHaveText('Barré: finger 1 across strings 1 to 5, fret 2');
+    await expect(current(sheet)).toContainText(/i · B · Left hand \d · string 3 fret 4/);
+    await expect(current(sheet)).not.toContainText('Partial barré');
     await context.close();
   }
 });
