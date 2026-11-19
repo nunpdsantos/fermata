@@ -268,7 +268,7 @@ describe('nothing else in search changes', () => {
 
 describe('Quick Search ranks for the learner in the store', () => {
   const lessonRows = () =>
-    screen.queryAllByRole('button')
+    screen.queryAllByRole('option')
       .map((b) => b.textContent ?? '')
       .filter((text) => text.endsWith('Lesson'))
       .map((text) => text.slice(0, -'Lesson'.length));
@@ -277,7 +277,7 @@ describe('Quick Search ranks for the learner in the store', () => {
   it('the owner (no profile) sees main\'s lessons for "key"; once the profile says player, the chords track is among them', () => {
     useAppStore.setState({ learnerProfile: null, language: 'en', quickSearchOpen: true });
     render(<QuickSearch />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'key' } });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'key' } });
     expect(lessonRows()).toEqual(['l1u3m2', 'l2u4m1', 'l2u5m3', 'l4u14m5'].map(title));
 
     act(() => useAppStore.setState({ learnerProfile: 'player' }));

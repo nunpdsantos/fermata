@@ -80,7 +80,8 @@ async function openLesson(page: Page, title: string) {
   await expect(dialog).toBeVisible();
   await dialog.locator('input').fill(title);
   // QuickSearch appends the localized result type; a scale can share the title.
-  await dialog.getByRole('button', { name: new RegExp(`^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+(Lesson|Lição|Lección)$`) }).click();
+  // Its results are listbox options since the 2026-11-18 audit (A14).
+  await dialog.getByRole('option', { name: new RegExp(`^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+(Lesson|Lição|Lección)$`) }).click();
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
   await page.waitForTimeout(700);
 }

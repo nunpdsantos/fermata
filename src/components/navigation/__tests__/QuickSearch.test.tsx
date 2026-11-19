@@ -50,12 +50,12 @@ const chordLabels = (q: string) =>
 describe('QuickSearch ranking (getResults)', () => {
   it('exact symbol parse ranks first among chord results', () => {
     const labels = chordLabels('Cmaj7');
-    expect(labels[0]).toBe('C Major 7');
+    expect(labels[0]).toBe('C Major 7th');
   });
 
   it('exact parse before completions: "Cm7" leads, then minor extensions follow', () => {
     const labels = chordLabels('Cm7');
-    expect(labels[0]).toBe('C Minor 7');
+    expect(labels[0]).toBe('C Minor 7th');
     // completions of the m-stem appear after the exact hit
     expect(labels.length).toBeGreaterThan(1);
   });
@@ -67,25 +67,25 @@ describe('QuickSearch ranking (getResults)', () => {
 describe('QuickSearch hint completions', () => {
   it('"Cmaj" surfaces Cmaj7 (and the maj family)', () => {
     const labels = chordLabels('Cmaj');
-    expect(labels).toContain('C Major 7');
-    expect(labels).toContain('C Major 9');
+    expect(labels).toContain('C Major 7th');
+    expect(labels).toContain('C Major 9th');
   });
 
   it('"C7#" surfaces the sharp-altered dominants', () => {
     const labels = chordLabels('C7#');
-    // 7#9 → "C 7#9"; 7#11 (no 9) → named dominant7sharp11 "C 7#11" (WS14: was algorithmic);
-    // 7#5 → augmented7 "C Augmented 7"
+    // 7#9 → dominant7sharp9; 7#11 (no 9) → named dominant7sharp11 (WS14: was algorithmic);
+    // 7#5 → augmented7. Named as Explore's chord heading names them (audit A13).
     expect(labels).toEqual(
-      expect.arrayContaining(['C 7♯9', 'C 7♯11', 'C Augmented 7']),
+      expect.arrayContaining(['C Dominant 7th Sharp 9', 'C Dominant 7th Sharp 11', 'C Augmented 7th']),
     );
   });
 
   it('"Cm" surfaces minor + minor-7/9/6 family', () => {
     const labels = chordLabels('Cm');
     expect(labels).toContain('C Minor');
-    expect(labels).toContain('C Minor 7');
+    expect(labels).toContain('C Minor 7th');
     // major must not leak into the minor stem
-    expect(labels).not.toContain('C Major 7');
+    expect(labels).not.toContain('C Major 7th');
   });
 
   it('caps chord results at 8', () => {
@@ -120,16 +120,16 @@ describe('QuickSearch verbal forms', () => {
     expect(labels).toContain('C♯ Minor');
   });
 
-  it('"d flat major seven" resolves to Db Major 7 (spelled-out number)', () => {
-    expect(chordLabels('d flat major seven')).toContain('D♭ Major 7');
+  it('"d flat major seven" resolves to Db Major 7th (spelled-out number)', () => {
+    expect(chordLabels('d flat major seven')).toContain('D♭ Major 7th');
   });
 
-  it('"g dominant" resolves to G Dominant 7', () => {
-    expect(chordLabels('g dominant')).toContain('G Dominant 7');
+  it('"g dominant" resolves to G Dominant 7th', () => {
+    expect(chordLabels('g dominant')).toContain('G Dominant 7th');
   });
 
-  it('"f sharp diminished seventh" resolves to F# Diminished 7', () => {
-    expect(chordLabels('f sharp diminished seventh')).toContain('F♯ Diminished 7');
+  it('"f sharp diminished seventh" resolves to F# Diminished 7th', () => {
+    expect(chordLabels('f sharp diminished seventh')).toContain('F♯ Diminished 7th');
   });
 });
 
@@ -139,7 +139,7 @@ describe('QuickSearch verbal forms', () => {
 describe('QuickSearch symbol + slash + quality-name', () => {
   it('slash chord "Cmaj7/G" resolves with the bass note', () => {
     const labels = chordLabels('Cmaj7/G');
-    expect(labels[0]).toBe('C Major 7/G');
+    expect(labels[0]).toBe('C Major 7th/G');
   });
 
   it('full quality NAME ("Half-Diminished") is findable via the fuzzy layer', () => {
@@ -159,9 +159,9 @@ describe('QuickSearch symbol + slash + quality-name', () => {
 describe('QuickSearch rendered integration', () => {
   it('typing a chord shows the result and selecting it sets the store chord', () => {
     render(<QuickSearch />);
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     fireEvent.change(input, { target: { value: 'Cmaj7' } });
-    const row = screen.getByText('C Major 7');
+    const row = screen.getByText('C Major 7th');
     expect(row).toBeDefined();
     fireEvent.click(row);
     const chord = useAppStore.getState().selectedChord;
@@ -172,9 +172,9 @@ describe('QuickSearch rendered integration', () => {
 
   it('a hint completion is clickable and selects that chord', () => {
     render(<QuickSearch />);
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
     fireEvent.change(input, { target: { value: 'Cmaj' } });
-    fireEvent.click(screen.getByText('C Major 9'));
+    fireEvent.click(screen.getByText('C Major 9th'));
     expect(useAppStore.getState().selectedChord?.quality).toBe('major9');
   });
 

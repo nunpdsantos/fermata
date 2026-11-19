@@ -196,7 +196,7 @@ test('a lesson\'s rhythm brings its own count-in: never opened, the metronome lo
   await page.keyboard.press('Control+k');
   const search = page.getByRole('dialog').filter({ has: page.locator('input') });
   await search.locator('input').fill('Note Values and Rests');
-  await search.getByRole('button', { name: /^Note Values and Rests\s+Lesson$/ }).click();
+  await search.getByRole('option', { name: /^Note Values and Rests\s+Lesson$/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Note Values and Rests' })).toBeVisible({ timeout: 15_000 });
   const tryThis = page.getByTestId('inline-try-this').filter({ has: page.getByTestId('rhythm-staff') }).first();
   const hear = tryThis.getByRole('button', { name: 'Hear it' });

@@ -51,7 +51,7 @@ async function openInstrumentQuestion(page: Page) {
   await page.keyboard.press('Control+k');
   const search = page.getByRole('dialog', { name: 'Quick search' });
   await search.locator('input').fill('The Major Scale');
-  await search.getByRole('button', { name: /^The Major Scale/ }).first().click();
+  await search.getByRole('option', { name: /^The Major Scale/ }).first().click();
   await expect(page.getByRole('heading', { level: 1, name: 'The Major Scale' })).toBeVisible();
   await page.getByRole('button', { name: 'Start the check' }).click();
   await expect(page.getByTestId('focused-check')).toBeVisible();

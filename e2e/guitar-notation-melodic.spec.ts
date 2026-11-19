@@ -96,7 +96,7 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       const dialog = page.getByRole('dialog').filter({ has: page.locator('input') });
       await expect(dialog).toBeVisible();
       await dialog.locator('input').fill(title);
-      await dialog.getByRole('button', { name: new RegExp(`^${title}\\s+(Lesson|Lição|Lección)$`) }).click();
+      await dialog.getByRole('option', { name: new RegExp(`^${title}\\s+(Lesson|Lição|Lección)$`) }).click();
       await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
       await audit(page, true);
       await page.getByRole('button', { name: labels[lang].check }).click();

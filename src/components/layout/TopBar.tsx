@@ -11,6 +11,7 @@ import { requestDemo, useDemoRequest } from '../../state/demoRequest.ts';
 import { resumeAudio } from '../../core/services/audio.ts';
 import { TunerHost } from '../tuner/TunerHost.tsx';
 import { openTuner, useTunerRequest } from '../tuner/tunerRequest.ts';
+import { useMetronomeRequest } from '../../state/metronomeRequest.ts';
 import { MicSwitch } from '../tuner/MicSwitch.tsx';
 import { micOff, useMic } from '../../services/microphone/micSwitch.ts';
 import { microphoneSupported } from '../../services/microphone/support.ts';
@@ -124,6 +125,12 @@ export function TopBar() {
     document.querySelector<HTMLElement>('[data-testid="metronome-play"]')?.focus({ preventScroll: true });
   };
   const [closeMetronome] = useState(() => () => setMetronomeOpen(false));
+  // Quick Search's "Metronome" result asks for the same opening (state/metronomeRequest.ts).
+  const openMetronomeRef = useRef(openMetronome);
+  useEffect(() => { openMetronomeRef.current = openMetronome; });
+  useEffect(() => useMetronomeRequest.subscribe((now, before) => {
+    if (now.asked !== before.asked) openMetronomeRef.current();
+  }), []);
   // Where its bar is never shown (Drill, the tour playing) the menu does not offer it.
   const tourPlaying = useDemoRequest() !== null;
   const offerMetronome = view !== 'drill' && !tourPlaying;

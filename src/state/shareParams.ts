@@ -2,7 +2,8 @@
  * The address-bar parameters of a shared link — the wave-1 contract (2026-11-10).
  *
  * OWNER: the share-links branch (stream E) in wave 1; the progression branch
- * (stream S) in wave 2, which added `prog`, `bpm` and `capo`. It may extend
+ * (stream S) in wave 2, which added `prog`, `bpm` and `capo`; search and
+ * sharing (stream B) in the audit round of 2026-11-18, which added `inv`. It may extend
  * this file (parsing, building links); every other branch may only IMPORT
  * the names exported here, and must not change this file.
  *
@@ -32,6 +33,10 @@
  *   bpm    (wave 2) the panel's tempo, a whole number 50–200; read only
  *          beside `prog`.
  *   capo   (wave 2) the guitar capo, a whole number 0–9 (setCapoFret).
+ *   inv    (audit A6, 2026-11-18) the chord's inversion: a whole number from
+ *          1 to the chord's number of notes − 1 (`chord=C&inv=1` = C major
+ *          with E in the bass); read only beside a valid `chord`. Absent (every
+ *          link made before) or 0 = root position; anything else is ignored.
  *
  * NOT share parameters either: `view` (above) and `lang` (2026-11-14, the
  * search pages' links: i18n/language.ts `LANG_PARAM`), which chooses the
@@ -44,7 +49,7 @@
  */
 import { LANG_PARAM } from '../i18n/language.ts';
 
-export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo'] as const;
+export const SHARE_PARAM_KEYS = ['key', 'scale', 'chord', 'inst', 'lesson', 'prog', 'bpm', 'capo', 'inv'] as const;
 
 export type ShareParamKey = (typeof SHARE_PARAM_KEYS)[number];
 
@@ -126,6 +131,8 @@ export interface ShareLinkValues {
   prog?: string;
   bpm?: string;
   capo?: string;
+  /** The chord's inversion, 1 … notes − 1 (only with `chord`). */
+  inv?: string;
 }
 
 /** `?key=D&scale=major&chord=A&inst=guitar` — in the grammar's order, `#` as `%23`. */
