@@ -12,5 +12,6 @@
     "both": "{{missing}} em falta, {{extra}} a mais"
   },
   "circleChordLabel": "{{chord}} ({{numeral}}) em {{scale}} — escolher {{key}}",
-  "circleOpens": "Abre {{key}}"
+  "circleOpens": "Abre {{key}}",
+  "presetCounted": "Os números contam-se em {{key}}, a tonalidade desta progressão comum."
 }

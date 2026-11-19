@@ -8,6 +8,7 @@
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, act, within, waitFor } from '@testing-library/react';
 import { useAppStore } from '../../../../state/store';
+import { buildChord } from '../../../../core/constants/chords';
 import { ChordsCard } from '../../ChordsCard';
 import { ProgressionHost } from '../../ProgressionHost';
 import { closeProgressionPanel, isProgressionPanelOpen, resetProgressionPanel } from '../../../../state/progressionPanel';
@@ -245,7 +246,8 @@ describe('the capo (guitar only)', () => {
     for (const c of ['E♭', 'A♭', 'B♭']) add(c);
     const ideas = screen.getByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' });
     // Fret 3 (C, F, G) is no idea since audit Q11: F has no open shape.
-    expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual(['No capo', 'Fret 1: D, G, A', 'Fret 6: A, D, E']);
+    // Fret 8 (G, C, D) since the search reaches fret 9, the capo's last.
+    expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual(['No capo', 'Fret 1: D, G, A', 'Fret 6: A, D, E', 'Fret 8: G, C, D']);
     fireEvent.click(within(ideas).getByRole('radio', { name: 'Fret 6: A, D, E' }));
     expect(getCapoFret()).toBe(6);
     expect(screen.getByTestId('progression-capo-now').textContent).toBe('Capo on fret 6: play A, D, E.');
@@ -349,25 +351,25 @@ describe('a request (a lesson, a link)', () => {
 });
 
 // Audit 2026-11-18, Q11: F B♭ C was offered "Fret 1: E, A, B" and "Fret 5:
-// C, F, G" under "Capo ideas, for shapes with open strings". Only fret 3 gives
-// all three an open shape (D, G, A). F C Dm B♭ has no such fret at all: none
-// is offered, and the line says so plainly.
+// C, F, G" under "Capo ideas, for shapes with open strings". Frets 3 (D, G, A)
+// and 8 (A, D, E) give all three an open shape. F C Dm B♭ has no such fret at
+// all, up to the capo's 9: none is offered, and the line says so plainly.
 describe('Q11: capo ideas only where every shape is open; none said plainly (EN / PT / ES)', () => {
   const words = {
-    en: ['Capo ideas, for shapes with open strings', 'No capo', 'Fret 3: D, G, A', 'No capo gives every one of these chords a shape with open strings.'],
-    pt: ['Ideias de capo, para formas com cordas soltas', 'Sem capo', 'Traste 3: D, G, A', 'Nenhum capo dá a todos estes acordes uma forma com cordas soltas.'],
-    es: ['Ideas de capo, para formas con cuerdas al aire', 'Sin capo', 'Traste 3: D, G, A', 'Ningún capo da a todos estos acordes una forma con cuerdas al aire.'],
+    en: ['Capo ideas, for shapes with open strings', 'No capo', 'Fret 3: D, G, A', 'Fret 8: A, D, E', 'No capo gives every one of these chords a shape with open strings.'],
+    pt: ['Ideias de capo, para formas com cordas soltas', 'Sem capo', 'Traste 3: D, G, A', 'Traste 8: A, D, E', 'Nenhum capo dá a todos estes acordes uma forma com cordas soltas.'],
+    es: ['Ideas de capo, para formas con cuerdas al aire', 'Sin capo', 'Traste 3: D, G, A', 'Traste 8: A, D, E', 'Ningún capo da a todos estos acordes una forma con cuerdas al aire.'],
   } as const;
   for (const lang of ['en', 'pt', 'es'] as const) {
     it(lang, async () => {
       const { default: i18n } = await import('../../../../i18n');
       await i18n.changeLanguage(lang);
-      const [group, none, fret3, plain] = words[lang];
+      const [group, none, fret3, fret8, plain] = words[lang];
       try {
         useAppStore.setState({ instrument: 'guitar', selectedKey: { natural: 'F', accidental: '' }, language: lang, progression: { chords: ['F', 'Bb', 'C'], bpm: 90, beats: 4 } });
         await openPanel();
         const ideas = screen.getByRole('radiogroup', { name: group });
-        expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual([none, fret3]);
+        expect(within(ideas).getAllByRole('radio').map((r) => r.textContent)).toEqual([none, fret3, fret8]);
         cleanup();
         resetProgressionPanel();
         useAppStore.setState({ progression: { chords: ['F', 'C', 'Dm', 'Bb'], bpm: 90, beats: 4 } });
@@ -383,40 +385,103 @@ describe('Q11: capo ideas only where every shape is open; none said plainly (EN 
 
 // Audit 2026-11-18, A7: in F natural minor the preset "ii–V–I: B♭m E♭ A♭ · in
 // A♭ major" opened as iv–VII–III in F minor — the promised cadence was gone.
-// A preset is read in the key it advertises: one shown in another key moves
-// Explore there (as the panel's own "Switch to" does), so its chips carry
-// the preset's own numbers. Every preset, from every scale the picker offers.
-describe('A7: a common progression is numbered in the key it names', () => {
+// Fix pass (item 3): moving Explore to A♭ major replaced the learner's key,
+// scale, chord and comparison with no word. A preset shown in another key is
+// NUMBERED in that key, the panel says which, and "Switch to" moves Explore
+// only when the learner takes it.
+describe('A7: a common progression is numbered in the key it names; nothing of the learner\'s moves', () => {
   const numerals = () => Array.from(screen.getByTestId('progression-chips').querySelectorAll('.prog-chip-numeral')).map((e) => e.textContent);
-  it('F natural minor → ii–V–I in A♭ major: B♭m ii, E♭ V, A♭ I, and Explore is in A♭ major', async () => {
-    useAppStore.setState({ selectedKey: { natural: 'F', accidental: '' }, selectedScale: 'natural_minor' });
+  const learner = () => {
+    const s = useAppStore.getState();
+    return JSON.stringify({ key: s.selectedKey, scale: s.selectedScale, chord: s.selectedChord, degree: s.selectedDegree, comparison: s.comparisonScale });
+  };
+  it('F natural minor → ii–V–I in A♭ major: B♭m ii, E♭ V, A♭ I; Explore stays in F minor until "Switch to A♭ major"', async () => {
+    const chord = buildChord({ natural: 'F', accidental: '' }, 'minor');
+    useAppStore.setState({ selectedKey: { natural: 'F', accidental: '' }, selectedScale: 'natural_minor', selectedChord: chord, selectedDegree: 3, comparisonScale: 'dorian' });
+    const before = learner();
     await openPanel();
     fireEvent.click(screen.getByRole('button', { name: 'ii–V–I: B♭m E♭ A♭ · in A♭ major' }));
     expect(chips()).toEqual(['B♭mii', 'E♭V', 'A♭I']);
+    expect(learner()).toBe(before);
+    expect(screen.getByTestId('progression-preset-key').textContent).toContain('The numbers are counted in A♭ major, the key of this common progression.');
+    fireEvent.click(within(screen.getByTestId('progression-preset-key')).getByRole('button', { name: 'Switch to A♭ major' }));
     expect(useAppStore.getState().selectedScale).toBe('major');
     expect(useAppStore.getState().selectedKey).toEqual({ natural: 'A', accidental: 'b' });
+    expect(chips()).toEqual(['B♭mii', 'E♭V', 'A♭I']);
+    expect(screen.queryByTestId('progression-preset-key')).toBeNull();
   });
-  it('every preset from every picker scale (37) reads with the preset\'s own numerals', async () => {
+  it('the line holds across a reload of the list and ends with the learner\'s first change', async () => {
+    useAppStore.setState({ selectedKey: { natural: 'F', accidental: '' }, selectedScale: 'natural_minor', progression: { chords: ['Bbm', 'Eb', 'Ab'], bpm: 90, beats: 4 } });
+    await openPanel();
+    expect(chips()).toEqual(['B♭mii', 'E♭V', 'A♭I']);
+    add('Fm');
+    expect(screen.queryByTestId('progression-preset-key')).toBeNull();
+    expect(numerals()).toEqual(['iv', 'VII', 'III', 'i']);
+  });
+  it('every preset from every picker scale (37) on four roots: the preset\'s own numerals, and the learner\'s key, scale, chord, degree and comparison untouched', async () => {
     const { SCALE_GROUPS } = await import('../../../navigation/keyChoice');
     const { preferredRootSpelling } = await import('../../../../core/utils/degreeSpelling');
     const { PROGRESSION_PRESETS } = await import('../../../../core/utils/progression');
     const types = SCALE_GROUPS.flatMap((g) => g.options);
     expect(types).toHaveLength(37);
     const wrong: string[] = [];
+    let elsewhere = 0;
+    let picks = 0;
     render(<><ChordsCard /><ProgressionHost /></>);
     fireEvent.click(screen.getByTestId('progression-toggle'));
     await screen.findByTestId('progression-panel');
     for (const type of types) {
-      for (const preset of PROGRESSION_PRESETS) {
-        act(() => useAppStore.setState({ selectedKey: preferredRootSpelling(5, type), selectedScale: type, progression: undefined }));
-        // By the exact id: jsdom matches [data-preset="i-iv-v"] to "I-IV-V" too.
-        const button = Array.from(screen.getByTestId('progression-preset-list').querySelectorAll<HTMLButtonElement>('[data-preset]')).find((b) => b.dataset.preset === preset.id)!;
-        const label = button.getAttribute('aria-label');
-        fireEvent.click(button);
-        const got = numerals();
-        if (got.join(' ') !== preset.numerals.join(' ')) wrong.push(`${type} → "${label}": ${got.join(' ')}`);
+      for (const pc of [0, 3, 6, 10]) {
+        const root = preferredRootSpelling(pc, type);
+        for (const preset of PROGRESSION_PRESETS) {
+          act(() => useAppStore.setState({ selectedKey: root, selectedScale: type, selectedChord: buildChord(root, 'major'), selectedDegree: 2, comparisonScale: 'dorian', progression: undefined }));
+          const before = learner();
+          // By the exact id: jsdom matches [data-preset="i-iv-v"] to "I-IV-V" too.
+          const button = Array.from(screen.getByTestId('progression-preset-list').querySelectorAll<HTMLButtonElement>('[data-preset]')).find((b) => b.dataset.preset === preset.id)!;
+          const label = button.getAttribute('aria-label') ?? '';
+          fireEvent.click(button);
+          picks++;
+          const got = numerals();
+          const where = `${root.natural}${root.accidental} ${type} → "${label}"`;
+          if (got.join(' ') !== preset.numerals.join(' ')) wrong.push(`${where}: ${got.join(' ')}`);
+          if (learner() !== before) wrong.push(`${where}: the learner's key, scale, chord, degree or comparison changed`);
+          if (label.includes(' · in ')) {
+            elsewhere++;
+            if (!screen.queryByTestId('progression-preset-key')) wrong.push(`${where}: no line naming the key`);
+          }
+        }
       }
     }
-    expect(wrong.slice(0, 10), `${wrong.length} presets read in another key`).toEqual([]);
-  }, 60_000);
+    expect(picks).toBe(37 * 4 * 8);
+    expect(elsewhere).toBeGreaterThan(400);
+    expect(wrong.slice(0, 10), `${wrong.length} wrong`).toEqual([]);
+  }, 120_000);
 });
+
+// Fix pass (item 4b): the learner's own capo was added as a chip to the group
+// named "Capo ideas, for shapes with open strings" even when it was none —
+// F B♭ C with the capo on 1 listed "Fret 1: E, A, B", the audit's complaint.
+describe('a capo that is no idea is named apart, never offered as one', () => {
+  it('F B♭ C, the capo on 1: "Capo on fret 1: play E, A, B."; the ideas are frets 3 and 8, none checked', async () => {
+    useAppStore.setState({ instrument: 'guitar', selectedKey: { natural: 'F', accidental: '' }, progression: { chords: ['F', 'Bb', 'C'], bpm: 90, beats: 4 } });
+    setCapoFret(1);
+    await openPanel();
+    expect(screen.getByTestId('progression-capo-now').textContent).toBe('Capo on fret 1: play E, A, B.');
+    const ideas = screen.getByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' });
+    const radios = within(ideas).getAllByRole('radio');
+    expect(radios.map((r) => r.textContent)).toEqual(['No capo', 'Fret 3: D, G, A', 'Fret 8: A, D, E']);
+    expect(radios.filter((r) => r.getAttribute('aria-checked') === 'true')).toHaveLength(0);
+    fireEvent.click(within(ideas).getByRole('radio', { name: 'No capo' }));
+    expect(getCapoFret()).toBe(0);
+  });
+  it('G D Em C, the capo on 2: no idea, the capo named and "No capo" takes it off', async () => {
+    useAppStore.setState({ instrument: 'guitar', progression: { chords: ['G', 'D', 'Em', 'C'], bpm: 90, beats: 4 } });
+    setCapoFret(2);
+    await openPanel();
+    expect(screen.queryByRole('radiogroup', { name: 'Capo ideas, for shapes with open strings' })).toBeNull();
+    expect(screen.getByTestId('progression-capo-now').textContent).toBe('Capo on fret 2: play F, C, Dm, B♭.');
+    fireEvent.click(screen.getByRole('button', { name: 'No capo' }));
+    expect(getCapoFret()).toBe(0);
+  });
+});
+

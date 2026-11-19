@@ -9,7 +9,10 @@ import {
 import { chordName, fitSentence, keyLineSentences, keyLabel } from '../progressionText';
 import { MAX_PROGRESSION_CHORDS } from '../../../../state/progressionSave';
 import { PROGRESSION_PRESETS, capoOptions, hasOpenGrip, presetChords } from '../../../../core/utils/progression';
-import { chordBelowCapo } from '../../../../core/constants/guitarChordShapes';
+import { chordBelowCapo, getChordShapesWithFallback } from '../../../../core/constants/guitarChordShapes';
+import { getPitchClass } from '../../../../core/constants/notes';
+import { MAX_CAPO_FRET } from '../../../../state/capo';
+import type { Chord } from '../../../../core/types/music';
 
 const n = (s: string): Note => ({ natural: s[0] as Note['natural'], accidental: s.slice(1) as Note['accidental'] });
 const major = (s: string) => ({ root: n(s), mode: 'major' as const });
@@ -191,7 +194,8 @@ describe('capo', () => {
     const chords = readChords(['Eb', 'Ab', 'Bb']);
     const ideas = capoIdeas(chords, major('Eb'));
     expect(ideas.map((o) => [o.fret, o.shapes.map((s) => chordSymbol(s.shape))])).toEqual([
-      [1, ['D', 'G', 'A']], [6, ['A', 'D', 'E']],
+      // Fret 8 (G C D) since the search reaches every fret the capo can be set to (9).
+      [1, ['D', 'G', 'A']], [6, ['A', 'D', 'E']], [8, ['G', 'C', 'D']],
     ]);
     expect(capoShapes(chords, major('Eb'), 3).map(chordSymbol)).toEqual(['C', 'F', 'G']);
   });
@@ -282,3 +286,66 @@ describe('common progressions and the "Another chord" roots', () => {
     expect(txt(major('Db'))).toBe('C Db D Eb E F Gb G Ab A Bb B');
   });
 });
+
+// Fix pass (independent review, items 4 and 7): the capo tests took the app's
+// own hasOpenGrip / chordBelowCapo as truth. Here each idea is checked by
+// arithmetic — the shape's root + the fret is the chord's root, its tones
+// moved up by the fret are the chord's tones, and the library grip counted as
+// open really sounds an open string and only the shape's tones (standard
+// tuning E A D G B E) — over every fret the capo can be set to (1 … 9; the
+// search stopped at 7, so "No capo gives every one of these chords a shape
+// with open strings" was false for E♭ major's I–V–vi–IV, G D Em C at fret 8).
+describe('capo ideas by arithmetic, every fret the capo can take', () => {
+  const OPEN = [4, 9, 2, 7, 11, 4]; // E A D G B E, 6th → 1st
+  const pcs = (c: Chord) => new Set([...c.notes, ...(c.bassNote ? [c.bassNote] : [])].map(getPitchClass));
+  /** A library grip of type "open" at the nut that sounds an open string, the root and nothing but the shape's tones. */
+  const openStringGrip = (shape: Chord) => getChordShapesWithFallback(shape).some(({ shape: s, baseFret }) => {
+    if (s.type !== 'open' || baseFret !== 0) return false;
+    const sounding = s.strings.flatMap((p, i) => (p.fret === null || p.fret < 0 ? [] : [{ abs: baseFret + p.fret, pc: (OPEN[i] + baseFret + p.fret) % 12 }]));
+    const tones = pcs(shape);
+    return sounding.length >= 3 && sounding.every((x) => tones.has(x.pc)) && sounding.some((x) => x.abs === 0) && sounding.some((x) => x.pc === getPitchClass(shape.root));
+  });
+  const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+  it('the oracle knows its grips: E A D G C Am Em Dm sound an open string; F and B do not', () => {
+    for (const s of ['E', 'A', 'D', 'G', 'C', 'Am', 'Em', 'Dm']) expect(openStringGrip(readChords([s])[0]), s).toBe(true);
+    for (const s of ['F', 'B', 'Bb', 'F#m']) expect(openStringGrip(readChords([s])[0]), s).toBe(false);
+  });
+  it('every preset, in each of the 24 keys the panel counts in: each idea true by arithmetic; "no capo gives …" true over frets 1 … 9', () => {
+    expect(MAX_CAPO_FRET).toBe(9);
+    const wrong: string[] = [];
+    let ideasPastSeven = 0;
+    let noIdeaCases = 0;
+    for (const mode of ['major', 'minor'] as const) {
+      for (const root of ROOTS) {
+        for (const view of presetViews({ root: n(root), mode })) {
+          const where = `${view.preset.id} in ${view.key.root.natural}${view.key.root.accidental} ${view.key.mode}`;
+          const ideas = capoIdeas(view.chords, view.key);
+          for (const idea of ideas) {
+            if (idea.fret > 7) ideasPastSeven++;
+            if (idea.fret < 1 || idea.fret > MAX_CAPO_FRET) wrong.push(`${where}: fret ${idea.fret}`);
+            idea.shapes.forEach(({ shape }, i) => {
+              const chord = view.chords[i];
+              if ((getPitchClass(shape.root) + idea.fret) % 12 !== getPitchClass(chord.root)) wrong.push(`${where}: fret ${idea.fret}, ${chordSymbol(shape)} + ${idea.fret} is not ${chordSymbol(chord)}`);
+              const moved = new Set([...pcs(shape)].map((p) => (p + idea.fret) % 12));
+              const want = pcs(chord);
+              if (moved.size !== want.size || [...want].some((p) => !moved.has(p))) wrong.push(`${where}: fret ${idea.fret}, ${chordSymbol(shape)}'s tones moved are not ${chordSymbol(chord)}'s`);
+              if (!openStringGrip(shape)) wrong.push(`${where}: fret ${idea.fret} gives ${chordSymbol(shape)}, no grip with an open string`);
+            });
+          }
+          // The sentence shown when there is no idea and no capo already gives every chord an open shape.
+          const noneAtZero = !view.chords.every((c) => openStringGrip(c));
+          if (ideas.length === 0 && noneAtZero) {
+            noIdeaCases++;
+            for (let fret = 1; fret <= MAX_CAPO_FRET; fret++) {
+              if (view.chords.every((c) => openStringGrip(chordBelowCapo(c, fret)))) wrong.push(`${where}: "no capo gives …" but fret ${fret} does`);
+            }
+          }
+        }
+      }
+    }
+    expect(ideasPastSeven, 'frets 8 and 9 are searched').toBeGreaterThan(0);
+    expect(noIdeaCases, 'both branches').toBeGreaterThan(0);
+    expect(wrong.slice(0, 10), `${wrong.length} wrong`).toEqual([]);
+  });
+});
+

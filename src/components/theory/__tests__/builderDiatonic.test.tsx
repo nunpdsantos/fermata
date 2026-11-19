@@ -20,7 +20,6 @@ import { ChordBuilderPanel } from '../ChordBuilderPanel';
 import { SCALE_GROUPS } from '../../navigation/keyChoice';
 import { buildScale } from '../../../core/constants/scales';
 import { buildChord, CHORD_FORMULAS, getDiatonicChordsForScale } from '../../../core/constants/chords';
-import { getPitchClass, getSimplestSpelling } from '../../../core/constants/notes';
 import { letterDistance, preferredRootSpelling } from '../../../core/utils/degreeSpelling';
 import { identifyChordFromNotes } from '../../../core/utils/reverseChordParser';
 import type { ChordQuality, Note, ScaleType } from '../../../core/types/music';
