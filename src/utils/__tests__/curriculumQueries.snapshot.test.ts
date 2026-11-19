@@ -170,7 +170,11 @@ function collect(): Record<string, Row> {
  * slash chord whose bass is a chord tone (C/E, C/G, G7/F, Dm7/C, Db/F …),
  * which opened with the bass doubled under a root-position chord and the
  * Voicing chip on Root, and now opens as that inversion (C/E = C major,
- * 1st inversion: utils/chordSelection.ts).
+ * 1st inversion: utils/chordSelection.ts). At integration (19 November 2026) the
+ * lesson corrections of the same audit were listed too, by their finding: A23
+ * (l4u14m5: E then Am, Em then Am), A25 (l7u23m3: one parent scale: F lydian
+ * dominant, B altered), A27 (l4u12m5: the chord list G7/F C/E) and A29
+ * (l7u21m5: the chord list F7 F#dim7 C7/G, and the task's C7/G).
  */
 const CHANGED = JSON.parse(readFileSync(resolve(process.cwd(), 'src/utils/__tests__/fixtures/curriculumQueries.changes.json'), 'utf8')) as Record<
   string,
@@ -208,6 +212,6 @@ describe('the curriculum queries resolve as they did at 6de6c0e, except where a 
     }
     expect(unexpected).toEqual([]);
     expect(listedButSame).toEqual([]);
-    expect(Object.values(CHANGED).filter((c) => !['A2', 'A3', 'review item 7'].includes(c.finding))).toEqual([]);
+    expect(Object.values(CHANGED).filter((c) => !['A2', 'A3', 'review item 7', 'A23', 'A25', 'A27', 'A29'].includes(c.finding))).toEqual([]);
   });
 });
