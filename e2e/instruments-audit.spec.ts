@@ -122,7 +122,13 @@ for (const viewport of [{ w: 1440, h: 900 }, { w: 1024, h: 768 }, { w: 390, h: 8
         const n = await sheet.locator('.practice-event').count();
         const failures: string[] = [];
         const expectAt = async (index: number, how: string) => {
-          const s = await stripState(sheet);
+          // The strip follows the active chip in a passive effect (PracticePlayer), a moment after the press: give it
+          // up to half a second (read at once, it lost that race in 1 check of some 2,000 on a loaded machine).
+          let s = await stripState(sheet);
+          for (let tries = 0; tries < 10 && (s.index !== index || !s.inside); tries++) {
+            await page.waitForTimeout(50);
+            s = await stripState(sheet);
+          }
           if (s.index !== index || !s.inside || s.vertical.some((v) => v !== 0)) failures.push(`${tab} ${how} ${index}: ${JSON.stringify(s)}`);
         };
         for (let i = 1; i < n; i++) { await press(next); await expectAt(i, 'forward'); }
@@ -323,7 +329,8 @@ test('Q14: in the dock bar of a piano check on a short screen, the octaves stay 
     const { context, page } = await open(browser, viewport);
     try {
       const dev = await page.request.get('/src/state/store.ts');
-      test.skip(!dev.ok(), 'raising the check state reads the dev server\'s modules');
+      // `ok()` alone is not enough: a server that answers unknown addresses with the app's page says 200 here.
+      test.skip(!(dev.ok() && (dev.headers()['content-type'] ?? '').includes('javascript')), 'raising the check state reads the dev server\'s modules');
       await page.evaluate(async () => {
         const m = await import(/* @vite-ignore */ '/src/state/store.ts' as string) as { useAppStore: { setState: (s: object) => void } };
         m.useAppStore.setState({ exerciseInputActive: true });

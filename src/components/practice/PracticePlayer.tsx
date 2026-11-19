@@ -71,10 +71,13 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
     const chip = cursor.current;
     const strip = chip?.parentElement;
     if (!chip || !strip) return;
+    // Whole inside the strip's padding, not flush with its edge: a chip brought flush was found cut by 2 px at some
+    // steps (19 November 2026; e2e/instruments-audit.spec.ts "the active chip stays in the strip").
     const box = strip.getBoundingClientRect();
     const at = chip.getBoundingClientRect();
-    if (at.left < box.left) strip.scrollLeft -= box.left - at.left;
-    else if (at.right > box.right) strip.scrollLeft += at.right - box.right;
+    const pad = parseFloat(getComputedStyle(strip).paddingLeft) || 0;
+    if (at.left < box.left + pad) strip.scrollLeft -= box.left + pad - at.left;
+    else if (at.right > box.right - pad) strip.scrollLeft += at.right - (box.right - pad);
   }, [index]);
 
   const play = async (event?: number) => {

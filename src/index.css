@@ -2360,7 +2360,9 @@ p.explore-prose {
 .practice-neck { border: 1px solid var(--border); border-radius: 12px; background: var(--bg); padding: 8px 4px; }
 .practice-events { display: flex; gap: 4px; overflow-x: auto; padding: 4px; }
 .practice-event { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: var(--tap); min-height: var(--tap); padding: 4px 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); background: var(--card); font-size: var(--text-ui); }
-.practice-event[aria-current="step"] { border: 2px solid var(--accent-text); background: var(--bg); }
+/* The thicker edge takes its pixel from the padding: the current chip is the size of the others, so stepping
+   moves no chip (until 19 November 2026 it was 2 px wider, and its edge could end up cut by the strip's). */
+.practice-event[aria-current="step"] { border: 2px solid var(--accent-text); padding: 3px 7px; background: var(--bg); }
 .practice-event:focus-visible { outline: 2px solid var(--focus-outline); outline-offset: 2px; }
 .practice-availability { font-size: var(--text-ui); }
 .practice-availability summary { min-height: var(--tap); display: flex; align-items: center; cursor: pointer; color: var(--accent-text); }

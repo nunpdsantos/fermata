@@ -14,7 +14,6 @@ import { welcomeSeenState } from './helpers/welcome';
  * the guitar selected (laptop and phone, EN and PT) for the owner's eye.
  */
 
-const PORT = Number(process.env.PW_PORT ?? 5173);
 const SHOTS = process.env.TASK_SHOTS;
 
 type Lang = 'en' | 'pt' | 'es';
@@ -28,7 +27,9 @@ const WORDS: Record<Lang, { heading: Record<Instrument, string>; show: Record<In
 
 /** A learner with a settings save: the language, the instrument, Learn. */
 async function learner(browser: Browser, lang: Lang, instrument: Instrument, viewport = { width: 1440, height: 900 }) {
-  const state = welcomeSeenState(`http://localhost:${PORT}`);
+  // The run's own address (dev or build): seeded under PW_PORT alone, the save belonged to another origin on the
+  // build and the learner arrived with the defaults, English and the piano (19 November 2026).
+  const state = welcomeSeenState(test.info().project.use.baseURL!);
   state.origins[0].localStorage = state.origins[0].localStorage.map((e) =>
     e.name === 'music-theory-app' ? { ...e, value: JSON.stringify({ state: { language: lang, themeMode: 'fermata', lastView: 'learn', instrument }, version: 6 }) } : e);
   const context = await browser.newContext({ storageState: state, viewport, serviceWorkers: 'block', reducedMotion: 'reduce' });
@@ -45,12 +46,28 @@ async function openLesson(page: Page, id: string) {
   await tasks(page).scrollIntoViewIfNeeded();
 }
 
-/** What the instrument is showing (the lesson borrows the main store's selection). */
+let devModules: boolean | undefined;
+/** The dev server serves /src modules; the build does not (there the lit keys and the dots stand alone). */
+async function hasDevModules(page: Page) {
+  if (devModules === undefined) {
+    const res = await page.request.get('/src/state/store.ts');
+    devModules = res.ok() && (res.headers()['content-type'] ?? '').includes('javascript');
+  }
+  return devModules;
+}
+
+/** What the instrument is showing (the lesson borrows the main store's selection): read from the store, dev server only. */
 const selection = (page: Page): Promise<string> =>
   page.evaluate(`(async () => {
     const s = (await import('/src/state/store.ts')).useAppStore.getState();
     return s.selectedKey.natural + s.selectedKey.accidental + ' ' + s.selectedScale;
   })()`);
+
+/** The pitch classes of the piano keys lit as scale notes (what a learner sees; the build has this too). */
+const litPitchClasses = (page: Page) =>
+  page.locator('[data-piano-key][data-scale-note]').evaluateAll((keys) =>
+    [...new Set(keys.map((k) => Number((k as HTMLElement).dataset.midi) % 12))].sort((a, b) => a - b));
+const G_MAJOR = [0, 2, 4, 6, 7, 9, 11];
 
 for (const lang of ['en', 'pt', 'es'] as const) {
   for (const instrument of ['piano', 'guitar'] as const) {
@@ -67,19 +84,23 @@ for (const lang of ['en', 'pt', 'es'] as const) {
       // The link is a button that opens the Try This in place, under its task.
       const link = tasks(page).getByRole('button', { name: '‘G major scale’' });
       await expect(link).toHaveAttribute('aria-expanded', 'false');
-      expect(await selection(page)).not.toBe('G major');
+      // On the build (19 November 2026: all seven of these failed there, importing a /src module the build
+      // does not serve) the store cannot be read: what the instrument shows is asserted in both, the store on dev.
+      const dev = await hasDevModules(page);
+      if (!dev) test.info().annotations.push({ type: 'note', description: 'the build serves no /src modules: the store is not read, the lit keys / dots are' });
+      if (dev) expect(await selection(page)).not.toBe('G major');
+      if (instrument === 'piano') expect(await litPitchClasses(page)).not.toEqual(G_MAJOR);
       await link.click();
       await expect(link).toHaveAttribute('aria-expanded', 'true');
       const panel = tasks(page).getByTestId('inline-try-this');
       await expect(panel).toBeVisible();
       await expect(panel).toContainText('‘G major scale’');
       await panel.getByRole('button', { name: w.show[instrument] }).click();
-      await expect.poll(() => selection(page)).toBe('G major');
+      if (dev) await expect.poll(() => selection(page)).toBe('G major');
 
       if (instrument === 'piano') {
         // The keys of G major are lit, F♯ among them, F not.
-        await expect.poll(() => page.locator('[data-piano-key][data-scale-note]').evaluateAll((keys) =>
-          [...new Set(keys.map((k) => Number((k as HTMLElement).dataset.midi) % 12))].sort((a, b) => a - b))).toEqual([0, 2, 4, 6, 7, 9, 11]);
+        await expect.poll(() => litPitchClasses(page)).toEqual(G_MAJOR);
       } else {
         // The fretboard draws the scale's dots.
         await expect(page.locator('[data-dot]').first()).toBeVisible({ timeout: 10_000 });
