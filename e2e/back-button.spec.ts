@@ -899,6 +899,29 @@ test.describe('review B-1', () => {
     await context.close();
   });
 
+  test('A4: a check left by a tab is still Learn\'s current screen (held, as before); a lesson opened over it puts it away (held no more)', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const mode = MODES[0];
+    const { context, page } = await open(browser, mode);
+    await startAnswered(mode, page, answerKey());
+    await tab(page, 'explore').click();
+    await expectView(page, 'explore');
+    expect(await devModule<boolean>(page, '/src/services/workInProgress.ts', 'hasWorkInProgress') ?? true).toBe(true);
+    expect((await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check)).away).toBeUndefined();
+    // Quick Search opens another lesson: Learn's current screen is that lesson now.
+    await page.keyboard.press('Control+k');
+    const search = page.getByRole('dialog').filter({ has: page.locator('input') });
+    await search.locator('input').fill('Relative and Parallel Keys');
+    await search.getByRole('option', { name: /^Relative and Parallel Keys/ }).first().click();
+    await expect(lessonHeading(page, 'Relative and Parallel Keys')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check.away)).toBe(true);
+    expect(await devModule<boolean>(page, '/src/services/workInProgress.ts', 'hasWorkInProgress') ?? false).toBe(false);
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Show me around' }).click();
+    await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+    await context.close();
+  });
+
   test('A6: Back into Explore brings the chord back as it was left (its detail open); tapping Explore\'s own tab still clears it', async ({ browser }) => {
     const { context, page } = await open(browser, MODES[0]);
     await page.getByTestId('chords-card').getByRole('button').filter({ hasText: /^V/ }).first().click();
@@ -1068,6 +1091,29 @@ test.describe('review B-1', () => {
     }
     await page.keyboard.press('a');
     expect(await devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests')).toBe(true);
+    await context.close();
+  });
+
+  test('A14: a touch that scrolls (it ends in touchend, with no tap) arms nothing; a tap does (dev server, Chromium)', async ({ browser }) => {
+    const mode = MODES[1];
+    const { context, page } = await open(browser, mode);
+    const armed = () => devModule<boolean>(page, '/src/state/appHistory.ts', 'isArmedForTests');
+    if ((await armed()) === undefined || page.context().browser()?.browserType().name() !== 'chromium') {
+      test.info().annotations.push({ type: 'note', description: 'reads the app\'s own module through CDP touches: dev server, Chromium only' });
+      await context.close();
+      return;
+    }
+    await press(mode, tab(page, 'learn'));
+    await back(page); // a traversal disarms
+    expect(await armed()).toBe(false);
+    const cdp = await context.newCDPSession(page);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 500 }] });
+    for (let k = 1; k <= 8; k++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y: 500 - k * 30 }] });
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await page.waitForTimeout(300);
+    expect(await armed()).toBe(false);
+    await press(mode, page.getByTestId('key-summary'));
+    expect(await armed()).toBe(true);
     await context.close();
   });
 

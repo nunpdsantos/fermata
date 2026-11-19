@@ -186,6 +186,14 @@ describe('Back and Forward', () => {
     // And an equal index without a foreign entry between: no bounce either.
     pop(here);
     expect(go).not.toHaveBeenCalled();
+    // With an entry known beyond it (a Forward would pass over onto it): still nothing.
+    armForTests();
+    goTo('learn', 'level/l1');
+    pop(here); // Back to it
+    go.mockClear();
+    pop(here); // the same entry again (a foreign one between, already gone)
+    expect(go).not.toHaveBeenCalled();
+    expect(seen).toEqual(['']);
   });
 
   it('a fragment link\'s entry is rewritten as ours, under the next index, and the address keeps no fragment', () => {
@@ -219,6 +227,22 @@ describe('Back and Forward', () => {
     pop({ fm: 1, i: 1, v: 'learn', s: 'module/l1/u3/l1u3m4', l: 0 }); // the hop lands
     expect(window.history.replaceState).toHaveBeenLastCalledWith({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }, '');
     layer.unmount();
+  });
+
+  it('the app\'s own way back: when it lands, nothing is shown again (the view already shows it) and nothing is said', () => {
+    const seen: string[] = [];
+    render(<><ShowLearn seen={seen} /><KeeperOf view="learn" text="kept" /></>);
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    goTo('learn', 'level/l1');
+    goTo('learn', 'unit/l1/u2');
+    backTo('learn', '');
+    expect(go).toHaveBeenLastCalledWith(-2);
+    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }); // it lands
+    expect(seen).toEqual([]);
+    expect(useToastStore.getState().toasts).toEqual([]);
+    expect(currentEntry()).toMatchObject({ i: 1, s: '' });
   });
 
   it('the app\'s own way back is Back to the screen\'s earlier entry in this view, when the tab has one; else it rewrites the entry', () => {
@@ -361,6 +385,16 @@ describe('sheets and dialogs (layers)', () => {
 
 describe('what arms a push (the HTML Standard\'s activation-triggering events, and less)', () => {
   it('a back/forward-cache restore (pageshow, persisted) disarms; a normal load arms nothing (review A12)', () => {
+    // Through the listener the module installs:
+    armForTests(true);
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+    expect(isArmedForTests()).toBe(false);
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: false }));
+    expect(isArmedForTests()).toBe(false);
+    armForTests(true);
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: false }));
+    expect(isArmedForTests()).toBe(true);
+    // And the handler itself:
     armForTests(true);
     onPageShow(new PageTransitionEvent('pageshow', { persisted: true }));
     expect(isArmedForTests()).toBe(false);
