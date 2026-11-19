@@ -94,19 +94,23 @@ describe('the central promise: capo 1–9 × the 24 major and minor triads', () 
   });
 
   it('a grip that gains a bass note is checked again with the capo as the nut (and may then not fit)', () => {
-    // B♭7 / A♭ (third inversion), capo 7: the lower chord's D7-shape takes its
-    // bass on string 5; the A7-shape with the bass added would need fret 16.
-    const bb7 = buildChord(N('A', '#'), 'dominant7');
-    const placed = chordShapesForCapo(bb7, 3, 7);
+    // G7 / F (third inversion), capo 5: the lower chord's open D7 takes its
+    // bass on string 5; the E7-shape barre with the bass would need fret 16.
+    // (Until 2026-11-18 this was B♭7 / A♭ at capo 7, x 11 8 10 9 10: that grip
+    // needed five fingers once the D7 shape was fingered as a hand plays it,
+    // QA audit Q1, and the board now says so for it.)
+    const g7 = buildChord(N('G'), 'dominant7');
+    const placed = chordShapesForCapo(g7, 3, 5);
     expect(placed.bassMatched).toBe(true);
     expect(placed.shapes.length).toBeGreaterThan(0);
     for (const e of placed.shapes) {
-      expect(isPlayableChordShape(e, 15, 7), e.shape.name).toBe(true);
+      expect(isPlayableChordShape(e, 15, 5), e.shape.name).toBe(true);
       for (const f of absFrets(e)) if (f !== null) expect(f, e.shape.name).toBeLessThanOrEqual(15);
     }
-    // The bass is lowest on the first grip: G♯ (pc 8).
-    expect(lowestPc(placed.shapes[0])).toBe(8);
-    expect(absFrets(placed.shapes[0])).toEqual([null, 11, 8, 10, 9, 10]);
+    // The bass is lowest on the first grip: F (pc 5).
+    expect(lowestPc(placed.shapes[0])).toBe(5);
+    expect(absFrets(placed.shapes[0])).toEqual([null, 8, 5, 7, 6, 7]);
+    expect(chordShapesForCapo(buildChord(N('A', '#'), 'dominant7'), 3, 7).bassMatched).toBe(false);
   });
 
   it('the bass is judged on the grips left once they are moved up: none can take it, so the board says so', () => {

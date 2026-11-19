@@ -399,6 +399,11 @@ const FIT_CASES = [
   // 1024×768: the glyph alone (at least 116 px left).
   { w: 1024, h: 768, touch: false, lang: 'es', chord: false },
   { w: 1024, h: 768, touch: false, lang: 'pt', chord: true },
+  // Since the chord chips scroll on one line beside the button (review of
+  // a611beb), also Spanish with a chord, and a tablet with a chord.
+  { w: 1024, h: 768, touch: false, lang: 'es', chord: true },
+  { w: 768, h: 1024, touch: true, lang: 'pt', chord: true },
+  { w: 768, h: 1024, touch: true, lang: 'es', chord: true },
   // A phone on its side, scale view (at least 59 px left; with a chord a line is added inside the capped sheet — accepted, not asserted).
   { w: 844, h: 390, touch: true, lang: 'es', chord: false, detent: 'half' },
   { w: 844, h: 390, touch: true, lang: 'pt', chord: false, detent: 'full' },

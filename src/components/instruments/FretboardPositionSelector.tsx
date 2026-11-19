@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { POSITION_NUMBERS, OPEN_POSITION, toRomanNumeral } from '../../core/utils/guitarPositions.ts';
 import type { FretboardLabelMode } from '../../state/fingeringStore.ts';
@@ -18,20 +19,44 @@ interface ChordShapeSelectorProps {
   labels: string[];
   selectedIdx: number;
   onSelect: (idx: number) => void;
+  /**
+   * The dock's controls row: the chips stay on ONE line and scroll sideways
+   * with the app's edge fade where they do not fit (index.css
+   * .chord-shapes-line: beside "Flip neck" and the tuning from 640 px, so
+   * the button takes width from the chips, never a line — its "adds no
+   * height" rule holds in every language; a line of their own below).
+   * The full neck's header keeps the wrapping chips.
+   */
+  oneLine?: boolean;
 }
 
 /** Which grip of the chord: a ChipGroup (one of many — D-28 choice chip). */
-export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect }: ChordShapeSelectorProps) {
+export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, oneLine = false }: ChordShapeSelectorProps) {
   const { t } = useTranslation();
+  const rowRef = useRef<HTMLDivElement>(null);
+  // The selected chip in view: its row scrolls sideways, nothing else moves.
+  useLayoutEffect(() => {
+    const row = rowRef.current?.querySelector<HTMLElement>('.chip-group');
+    const chip = row?.querySelector<HTMLElement>('[aria-checked="true"]');
+    if (!oneLine || !row || !chip) return;
+    const box = row.getBoundingClientRect();
+    const at = chip.getBoundingClientRect();
+    if (at.left < box.left) row.scrollLeft -= box.left - at.left;
+    else if (at.right > box.right) row.scrollLeft += at.right - box.right;
+  }, [oneLine, selectedIdx, labels]);
+  const group = (
+    <ChipGroup
+      label={t('fretboard.chordPosition')}
+      className={oneLine ? 'chip-row-scroll' : undefined}
+      value={selectedIdx}
+      onChange={onSelect}
+      options={Array.from({ length: shapeCount }, (_, idx) => ({ value: idx, label: labels[idx] }))}
+    />
+  );
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div ref={rowRef} className={oneLine ? 'chord-shapes-line flex items-center gap-2' : 'flex items-center gap-2 flex-wrap'}>
       <span className={GROUP_LABEL_CLASS} style={GROUP_LABEL_STYLE} aria-hidden="true" data-term="position">{t('fretboard.position')}</span>
-      <ChipGroup
-        label={t('fretboard.chordPosition')}
-        value={selectedIdx}
-        onChange={onSelect}
-        options={Array.from({ length: shapeCount }, (_, idx) => ({ value: idx, label: labels[idx] }))}
-      />
+      {oneLine ? <EdgeFade>{group}</EdgeFade> : group}
     </div>
   );
 }

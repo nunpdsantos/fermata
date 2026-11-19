@@ -6,6 +6,7 @@ import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
 import { chordShapesForCapo } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
+import { chordChipLabel } from './chordChipLabel.ts';
 import {
   getGuitarPosition,
   suggestGuitarPosition,
@@ -464,21 +465,12 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [scaleView, stepPosition]);
 
-  // Position labels for chord shapes
+  // Position labels for chord shapes: the learner's name in the learner's
+  // language, with or without a capo (chordChipLabel.ts; the capo rule of the
+  // seat's decision S-3, final review of wave 2, now for every grip — QA
+  // audit Q1: "AMaj13 barre" and "Pos 5" reached the screen).
   const positionLabels = useMemo(() => {
-    const baseLabels = chordShapes.map(({ shape, baseFret }) => {
-      if (capo > 0) {
-        // With a capo (the seat's decision S-3, final review of wave 2): the
-        // library's "G shape" / "E barre" in the learner's language, and a
-        // grip the voicing generator named by ITS fret ("Pos 1", "Open": the
-        // lower chord's) named by the fret it is drawn at.
-        const named = /^(.+) (shape|barre)(\/.+)?$/.exec(shape.shortName ?? '');
-        if (named) return t(named[2] === 'shape' ? 'capo.shapeChip' : 'capo.barreChip', { shape: named[1] }) + (named[3] ?? '');
-        return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
-      }
-      if (shape.shortName) return shape.shortName;
-      return baseFret === capo ? t('fretboard.chordOpen') : t('fretboard.chordFret', { fret: baseFret });
-    });
+    const baseLabels = chordShapes.map((entry) => chordChipLabel(entry, capo, t));
     const counts = new Map<string, number>();
     for (const l of baseLabels) counts.set(l, (counts.get(l) ?? 0) + 1);
     const indexTracker = new Map<string, number>();
@@ -585,6 +577,14 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return;
       }
 
+      // Enter / Space play the keyboard's cell here, never inside the state
+      // updater below: React runs updaters twice in development, which played
+      // the note twice (found checking QA audit A10, 2026-11-18).
+      if ((key === 'Enter' || key === ' ') && focusedCell) {
+        handleCellActivate(getFretNote(focusedCell.stringIdx, focusedCell.fret));
+        return;
+      }
+
       setFocusedCell((stored) => {
         // Never a fret behind the capo (see focusedCell).
         const prev = stored && stored.fret < capo ? { ...stored, fret: capo } : stored;
@@ -595,11 +595,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
           return { stringIdx: rows[0], fret: initFret };
         }
 
-        if (key === 'Enter' || key === ' ') {
-          const fn = getFretNote(prev.stringIdx, prev.fret);
-          handleCellActivate(fn);
-          return prev;
-        }
+        if (key === 'Enter' || key === ' ') return prev;
 
         // The arrows follow the drawing: → is the cell drawn on the right,
         // ↑ the string drawn above (neckOrientation.ts).
@@ -612,7 +608,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
         return { stringIdx, fret };
       });
     },
-    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate]
+    [quickSearchOpen, visibleFrets, playableFrets, capo, rows, getFretNote, handleCellActivate, focusedCell]
   );
 
   // Announce the focused note for screen readers, with the context-aware
@@ -871,6 +867,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               labels={positionLabels}
               selectedIdx={selectedShapeIdx}
               onSelect={setSelectedShapeIdx}
+              oneLine
             />
           )}
           {capoLine && <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="capo-line">{capoLine}</p>}
@@ -1086,7 +1083,10 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
             const openNumber = (
               <div key="open" style={{ width: 'var(--fret-open-width)', flexShrink: 0 }} className="flex items-center justify-center">
                 {mode === 'chord' && !isOpenChordShape ? (
-                  <span className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12 }}>{lowestVisibleFret}fr</span>
+                  // The window's first fret is already numbered beside this
+                  // column, so "2fr" printed it twice (QA audit Q6): it is
+                  // kept for a screen reader only, which hears the row as before.
+                  <span className="sr-only">{lowestVisibleFret}fr</span>
                 ) : atNut ? (
                   <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
                 ) : null}
