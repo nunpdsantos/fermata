@@ -297,7 +297,7 @@ describe('common progressions and the "Another chord" roots', () => {
 // with open strings" was false for E♭ major's I–V–vi–IV, G D Em C at fret 8).
 describe('capo ideas by arithmetic, every fret the capo can take', () => {
   const OPEN = [4, 9, 2, 7, 11, 4]; // E A D G B E, 6th → 1st
-  const pcs = (c: Chord) => new Set([...c.notes, ...(c.bassNote ? [c.bassNote] : [])].map(getPitchClass));
+  const pcs = (c: Chord) => new Set<number>([...c.notes, ...(c.bassNote ? [c.bassNote] : [])].map(getPitchClass));
   /** A library grip of type "open" at the nut that sounds an open string, the root and nothing but the shape's tones. */
   const openStringGrip = (shape: Chord) => getChordShapesWithFallback(shape).some(({ shape: s, baseFret }) => {
     if (s.type !== 'open' || baseFret !== 0) return false;
