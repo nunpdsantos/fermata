@@ -46,10 +46,10 @@ describe('English is spelt the British way (the owner\'s ruling, 18 November 202
     expect(where('lvl:')).toBe(27);
     expect(where('moduleIndex:')).toBe(2 * MODULE_INDEX.length);
     expect(where('drill:')).toBe(1615);
-    // every English namespace file: the entry locales and the eleven lazy ones
+    // every English namespace file: the entry locales and the twelve lazy ones
     expect(Object.keys(NAMESPACES).sort()).toEqual([
       '../backupFile/en.json', '../drillTerms/en.json', '../exploreTools/en.json', '../glossary/en.json', '../learnWords/en.json',
-      '../locales/en.json', '../metronomeTool/en.json', '../midiInput/en.json', '../moved/en.json', '../practice/en.json',
+      '../lessonDemo/en.json', '../locales/en.json', '../metronomeTool/en.json', '../midiInput/en.json', '../moved/en.json', '../practice/en.json',
       '../tuner/en.json', '../tuner/mic.en.json',
     ]);
     expect(where('testSheet')).toBeGreaterThan(100);

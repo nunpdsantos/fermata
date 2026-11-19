@@ -167,7 +167,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial de Wagner (Here Comes the Bride). Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
           tryThisLabel:
-            'Toca C maior — ouve cada intervalo a partir da fundamental',
+            'Ouve cada intervalo a partir da fundamental, da 2.ª menor à 5.ª perfeita: C–Db, C–D, C–Eb, C–E, C–F, C–Gb e C–G',
         },
         {
           title: 'Consonância perfeita vs. imperfeita',
@@ -221,7 +221,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
           tryThisLabel:
-            'Toca C maior descendente — ouve os intervalos ao contrário',
+            'Ouve os intervalos amplos a descer a partir do C agudo: C–E (6.ª menor), C–Eb (6.ª maior), C–D (7.ª menor), C–Db (7.ª maior) e C–C (oitava)',
         },
         {
           title: 'Relações de inversão de intervalos',

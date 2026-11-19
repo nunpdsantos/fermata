@@ -44,6 +44,15 @@ export interface CurriculumConcept {
    * unchanged.
    */
   descending?: boolean;
+  /**
+   * A demonstration written out note by note (second audit, M50–M56), for a
+   * sentence a scale, a chord or a chord list cannot say: notes together and
+   * in sequence at written pitches, a note held while others move, a key
+   * signature after the clef. When set, "Hear it" plays it and the staff draws
+   * it (`core/types/demonstration.ts`); the query stays the concept's, for
+   * "Open in Explore" and, where it shows the same notes, "Show on …".
+   */
+  demo?: import('./demonstration').Demonstration;
   /** Simplified explanation for children's audience mode */
   childDescription?: string;
   /** Simplified query for children's audience mode */
@@ -56,6 +65,14 @@ export interface CurriculumTask {
   instruction: string;
   /** Query to fire via onQuery — optional, some tasks are observational */
   query?: string;
+  /**
+   * The demonstration a quoted query of this task opens (keyed by the query
+   * as quoted), where the task asks about something only a demonstration
+   * shows — l1u3m2's "how many sharps does the key signature show?" (second
+   * audit, M50). The query itself, its button and the saved tick are as
+   * before.
+   */
+  demos?: Readonly<Record<string, import('./demonstration').Demonstration>>;
 }
 
 /** A single lesson module */

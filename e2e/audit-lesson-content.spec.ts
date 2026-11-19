@@ -64,11 +64,11 @@ async function hear(page: Page, panel: ReturnType<Page['locator']>) {
 const C4 = 60;
 
 test.describe('audit A22, A27, A29: what the demonstrations play', () => {
-  test('A22 — "Descending Large Intervals": C5 down to C4, one note at a time', async ({ page }) => {
+  test('A22 — "Descending Large Intervals": every interval falls, from C5 (since the second audit\'s fix pass, the large intervals themselves)', async ({ page }) => {
     await openLesson(page, 'l9u30m4');
     test.skip(!(await hasDevModules(page)), 'dev server only');
     const played = await hear(page, page.locator('[data-section="c1"] [data-testid="inline-try-this"]'));
-    expect(played).toEqual([[C4 + 12], [C4 + 11], [C4 + 9], [C4 + 7], [C4 + 5], [C4 + 4], [C4 + 2], [C4]]);
+    expect(played).toEqual([[C4 + 12], [C4 + 4], [C4 + 12], [C4 + 3], [C4 + 12], [C4 + 2], [C4 + 12], [C4 + 1], [C4 + 12], [C4]]);
   });
 
   test('A27 — V4/2: G7/F then C/E, the bass falling F3 → E3; both chords shown', async ({ page }) => {

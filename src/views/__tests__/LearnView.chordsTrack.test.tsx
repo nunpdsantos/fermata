@@ -39,6 +39,7 @@ vi.mock('../../components/notation/StaffNotation.tsx', async () => {
   return { StaffNotation: () => React.createElement('div', { 'data-testid': 'staff-mock' }) };
 });
 const played = vi.hoisted(() => ({ timed: [] as { note: { natural: string; accidental: string; octave: number }; at: number }[][], chords: [] as string[][] }));
+const pitchText = (n: { natural: string; accidental: string; octave: number }) => `${n.natural}${n.accidental}${n.octave}`;
 vi.mock('../../core/services/audio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../core/services/audio')>();
   return {
@@ -46,7 +47,8 @@ vi.mock('../../core/services/audio', async (importOriginal) => {
     resumeAudio: async () => {},
     cancelScheduledAudio: () => {},
     playTimedNotes: (notes: { note: { natural: string; accidental: string; octave: number }; at: number }[]) => { played.timed.push(notes); },
-    playChordVoiced: (notes: { natural: string; accidental: string }[]) => { played.chords.push(notes.map((n) => `${n.natural}${n.accidental}`)); },
+    // A chord button plays exactly the pitches its chord has in the list (second audit, QA P7).
+    playPitchedNotes: (notes: { natural: string; accidental: string; octave: number }[]) => { played.chords.push(notes.map((n) => `${n.natural}${n.accidental}${n.octave}`)); },
     playScale: () => {},
   };
 });
@@ -160,7 +162,9 @@ describe('"From the chords you know" in Learn (wave 2)', () => {
 
     // A chord button: that chord on the guitar (selected) and sounding.
     fireEvent.click(within(first).getByRole('button', { name: 'Em: hear it and show it on the guitar' }));
-    await waitFor(() => expect(played.chords).toEqual([['E', 'G', 'B']]));
+    // Em exactly as "Hear it" sounded it, the list's fourth chord (E3 B3 G4).
+    await waitFor(() => expect(played.chords).toEqual([played.timed[0].filter((n) => n.at === 3).map((n) => pitchText(n.note))]));
+    expect(played.chords).toEqual([['E3', 'B3', 'G4']]);
     expect(useAppStore.getState().selectedChord).toMatchObject({ root: { natural: 'E', accidental: '' }, quality: 'minor' });
     expect(useAppStore.getState().view).toBe('learn');
 

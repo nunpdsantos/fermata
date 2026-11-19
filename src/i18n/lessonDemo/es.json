@@ -1,0 +1,26 @@
+{
+  "staff": {
+    "treble": "Pentagrama en clave de sol",
+    "bass": "Pentagrama en clave de fa",
+    "grand": "Sistema de pentagramas, claves de sol y de fa"
+  },
+  "sharps_one": "un sostenido en la armadura de clave: {{notes}}",
+  "sharps_other": "{{count}} sostenidos en la armadura de clave: {{notes}}",
+  "flats_one": "un bemol en la armadura de clave: {{notes}}",
+  "flats_other": "{{count}} bemoles en la armadura de clave: {{notes}}",
+  "noSigns": "sin sostenidos ni bemoles en la armadura de clave",
+  "time": "en {{time}}",
+  "upper": "Voz superior",
+  "lower": "Voz inferior",
+  "onTreble": "en el pentagrama de clave de sol",
+  "onBass": "en el pentagrama de clave de fa",
+  "together": "{{notes}} a la vez",
+  "then": ", después ",
+  "and": " y ",
+  "values": {
+    "w": "redondas",
+    "h": "blancas",
+    "q": "negras",
+    "8": "corcheas"
+  }
+}
