@@ -46,6 +46,10 @@ import { coveredFoot, landChordDetail } from './chordScrollLanding';
 import { fitScaleChips } from './fitScaleChips';
 
 import { getKeyScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
+import { SCALE_GROUPS } from '../navigation/keyChoice.ts';
+
+/** The Scale picker's scales in its teaching order: where no listed scale holds a chord, those that do. */
+const CATALOGUE = SCALE_GROUPS.flatMap((g) => g.options);
 import { Term } from '../../glossary/Term.tsx';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { functionTermId, qualityTermId, scaleTermId } from '../../glossary/termIds.ts';
@@ -223,7 +227,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
   const scaleSuggestions = useMemo(
     () => {
       const priority = { primary: 0, secondary: 1, color: 2 };
-      return [...getKeyScaleSuggestions(chord, scale)].sort((a, b) =>
+      return [...getKeyScaleSuggestions(chord, scale, CATALOGUE)].sort((a, b) =>
         Number(!!b.keyNotes) - Number(!!a.keyNotes) || priority[a.fit] - priority[b.fit]);
     },
     [chord, scale],

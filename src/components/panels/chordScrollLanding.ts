@@ -70,9 +70,7 @@ export function coveredFoot(scroller: HTMLElement): number {
  */
 export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
-  const savedPadding = scroller.style.paddingBottom;
   const savedScrollPadding = scroller.style.scrollPaddingTop;
-  const padding = parseFloat(getComputedStyle(scroller).paddingBottom) || 0;
   const rowSelector = '.explore-card-head, .chord-row, [data-chord-scroll-row], button, label, h2, .type-label';
   let spans: RowSpan[] = [];
   let frame = 0;
@@ -110,19 +108,23 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // The metronome's bar covers only part of the column's foot (it stands
     // over the instrument's right end): the landing is chosen as before, and
     // only where that leaves a control of the detail under the bar is it
-    // chosen again within the room above the bar — kept if fewer are then
-    // covered (where even the room above the bar is too short for the whole
-    // detail, ▶ Chord's row first).
+    // chosen again within the room above the bar — and kept if it leaves
+    // ▶ Chord / ▶ Arpeggio clear where the first did not, or as clear and
+    // fewer other controls covered (review of the second round: in
+    // Portuguese at 1280×800 «Arpejo» landed 15 px under the bar).
     const covered = coveredFoot(scroller);
     const underBar = (top: number) => {
       const bar = metronomeBar();
       if (!bar || covered <= 0) return 0;
       const b = bar.getBoundingClientRect();
       const shift = scroller.scrollTop - top;
-      return [...detail.querySelectorAll('button, .type-label')].filter((el) => {
+      const under = (el: Element) => {
         const r = el.getBoundingClientRect();
         return r.height > 0 && r.bottom + shift > b.top + 1 && r.top + shift < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
-      }).length;
+      };
+      const actions = [...detail.querySelectorAll('.chord-detail-actions button')];
+      const others = [...detail.querySelectorAll('button, .type-label')].filter((el) => !actions.includes(el));
+      return actions.filter(under).length * 1000 + others.filter(under).length;
     };
     const targetFor = (height = scroller.clientHeight, whole = false) => chordLanding(candidates.map(measure), measure(detail), measure(detail.querySelector('.chord-detail-actions')!).bottom, height, clear, keep(whole));
     const choose = () => {
@@ -138,9 +140,15 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     }
     const detailTop = measure(detail).top;
     spans = wholeRows([...before.map(measure), { top: detailTop, bottom: detailTop }]);
-    const currentPadding = parseFloat(getComputedStyle(scroller).paddingBottom) || 0;
-    const naturalMax = scroller.scrollHeight - scroller.clientHeight - currentPadding + padding;
-    scroller.style.paddingBottom = `${padding + Math.max(0, Math.ceil(target - naturalMax))}px`;
+    // The tail the landing needs, as a floor under the column's own padding
+    // (`--chord-tail`, index.css: max() with it), never in place of it: the
+    // metronome's room opened later still applies (review of the second
+    // round: an inline 2 px shadowed the bar's 62).
+    scroller.style.removeProperty('--chord-tail');
+    const padding = parseFloat(getComputedStyle(scroller).paddingBottom) || 0;
+    const naturalMax = scroller.scrollHeight - scroller.clientHeight;
+    const extra = Math.max(0, Math.ceil(target - naturalMax));
+    if (extra > 0) scroller.style.setProperty('--chord-tail', `${padding + extra}px`);
     scroller.scrollTo?.({ top: target, behavior: 'auto' });
     clip();
   };
@@ -151,7 +159,11 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(land);
   });
-  observer.observe(scroller);
+  // Its border box: the column's own padding changing (the metronome's room
+  // coming or going, this landing's tail) is no reason to land again —
+  // re-landing then moved the column under the learner (review of the
+  // second round).
+  observer.observe(scroller, { box: 'border-box' });
   if (strip) observer.observe(strip);
   observer.observe(detail);
   scroller.addEventListener('scroll', clip, { passive: true });
@@ -159,7 +171,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     cancelAnimationFrame(frame);
     observer.disconnect();
     scroller.removeEventListener('scroll', clip);
-    scroller.style.paddingBottom = savedPadding;
+    scroller.style.removeProperty('--chord-tail');
     scroller.style.scrollPaddingTop = savedScrollPadding;
     card.style.clipPath = '';
     delete detail.dataset.compactSource;

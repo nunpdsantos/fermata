@@ -1,5 +1,5 @@
 import type { Note, PitchedNote } from '../../core/types/music';
-import { chordVoicingPitches } from '../../core/utils/pianoLayout';
+import { chordVoicingPitches, slashChordNotesAbove } from '../../core/utils/pianoLayout';
 import type { InstrumentType } from '../../state/storeTypes';
 
 /** Explore's reference staff starts at 4. Guitar sounds that picture one
@@ -34,9 +34,10 @@ export function exploreRegister(instrument: InstrumentType, pianoOctave: number)
 export function exploreChordVoicing(
   instrument: InstrumentType,
   pianoOctave: number,
-  chord: { notes: Note[]; bassNote?: Note },
+  chord: { root: Note; notes: Note[]; bassNote?: Note },
   invertedNotes: Note[] = [],
 ): PitchedNote[] {
-  return exploreRegister(instrument, pianoOctave)
-    .chordPitches(invertedNotes.length > 0 ? invertedNotes : chord.notes, chord.bassNote);
+  // A bass outside the chord sounds once, on every inversion chip.
+  const above = slashChordNotesAbove(chord, invertedNotes.length > 0 ? invertedNotes : chord.notes);
+  return exploreRegister(instrument, pianoOctave).chordPitches(above, chord.bassNote);
 }

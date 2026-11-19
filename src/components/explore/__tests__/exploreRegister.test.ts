@@ -3,7 +3,7 @@ import { exploreRegister } from '../exploreRegister';
 import { buildScale, SCALE_FORMULAS } from '../../../core/constants/scales';
 import { buildChord } from '../../../core/constants/chords';
 import { getMidiNumber, getScaleNotesWithOctaves, chordVoicingPitches, octaveFitsKeyboard } from '../../../core/utils/pianoLayout';
-import { staffPlan } from '../../../utils/notationHelpers';
+import { registerClef, staffPlan } from '../../../utils/notationHelpers';
 import type { Note, PitchedNote, ScaleType } from '../../../core/types/music';
 import { SELECTABLE_ROOTS } from '../../../core/utils/__tests__/theoryOracle';
 
@@ -72,7 +72,8 @@ describe('Explore register', () => {
     ]);
   });
 
-  it('every root × all scales × every octave the piano offers: at most 3 ledger lines up to C5, 5 at C6 and C7 (VexFlow has no 15ma clef)', () => {
+  it('every root × all scales × every octave the piano offers: the most ledger lines, octave by octave, are exactly 3 at C0, 2 from C1 to C5, 5 at C6 and C7 (VexFlow has no 15ma clef)', () => {
+    const most: Record<number, number> = {};
     for (const root of [...SELECTABLE_ROOTS, 'Cb', 'B#']) {
       for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
         const scale = buildScale(note(root), type).notes;
@@ -84,9 +85,19 @@ describe('Explore register', () => {
           // Staff lines as diatonic steps: treble E4 … F5, bass G2 … A3.
           const [bottom, top] = plan.clef === 'treble' ? [4 * 7 + 2, 5 * 7 + 3] : [2 * 7 + 4, 3 * 7 + 5];
           const ledgers = Math.max(Math.floor((bottom - Math.min(...steps)) / 2), Math.floor((Math.max(...steps) - top) / 2), 0);
-          expect(ledgers, `${root} ${type} octave ${octave}: ${plan.clef} ${plan.annotation ?? ''} ${plan.keys.join(' ')}`).toBeLessThanOrEqual(octave >= 6 ? 5 : 3);
+          most[octave] = Math.max(most[octave] ?? 0, ledgers);
         }
       }
     }
+    expect(most).toEqual({ 0: 3, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 5, 7: 5 });
+  });
+
+  it('a tie between the clefs takes the treble; fewer ledger lines take the bass', () => {
+    const pitch = (name: string, octave: number) => ({ ...note(name), octave });
+    // C/E as written at C4: E3 C4 E4 G4 — three ledger lines either way.
+    expect(registerClef([pitch('E', 3), pitch('C', 4), pitch('E', 4), pitch('G', 4)])).toEqual({ clef: 'treble' });
+    // C3 G3 E4 (C major at C3): four below the treble, two above the bass.
+    expect(registerClef([pitch('C', 3), pitch('G', 3), pitch('E', 4)])).toEqual({ clef: 'bass' });
+    expect(registerClef([])).toEqual({ clef: 'treble' });
   });
 });

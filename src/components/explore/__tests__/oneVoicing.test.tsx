@@ -33,6 +33,7 @@ import { buildScale } from '../../../core/constants/scales';
 import { octaveFitsKeyboard } from '../../../core/utils/pianoLayout';
 import { chordFromParsed, parseChordSymbol } from '../../../core/utils/chordParser';
 import { inversionOfBass } from '../../../utils/chordSelection';
+import { getPitchClass } from '../../../core/constants/notes';
 import { cancelScheduledAudio, setInstrumentVoice } from '../../../core/services/audio';
 import { installMockAudioContext } from '../../../test/mockAudioContext';
 import { stringToNote, type Chord, type Note, type ScaleType } from '../../../core/types/music';
@@ -183,6 +184,42 @@ describe('M58: one voicing — ▶ Chord, the small staff, ▶ Arpeggio and the 
     expect(m.staff).toEqual(midis);
     expect(m.lit).toEqual(midis);
     expect(m.arpeggio).toEqual(midis.map((x) => [x]));
+  });
+
+  // Review of the second round: the outside bass was taken out only where it
+  // stood first, so an inversion chip (which moves it) doubled it again —
+  // C/D on 1st Inv was D3 C4 E4 G4 D5, Dm7/G six notes. Every chip, by pitch class.
+  it.each(['C/D', 'C/Bb', 'Dm7/G'])('%s: on every inversion chip the bass sounds once, lowest, the same on every surface', async (symbol) => {
+    const { chord } = chordAsOpened(symbol, false);
+    const bassPc = getPitchClass(chord.bassNote!);
+    for (const instrument of ['piano', 'guitar'] as const) {
+      for (let inv = 0; inv < chord.notes.length; inv++) {
+        const m = await measureChord(chord, inv, instrument, 4, false);
+        const label = `${instrument} ${symbol} inv ${inv}`;
+        const block = m.block[0];
+        expect(block.filter((x) => x % 12 === bassPc), `${label}: the bass once`).toHaveLength(1);
+        expect(block[0] % 12, `${label}: the bass lowest`).toBe(bassPc);
+        expect(block.length, `${label}: the chord's tones above it, each once`).toBe(chord.notes.length);
+        expect(m.staff, label).toEqual(block);
+        expect(m.arpeggio.flat(), label).toEqual(block);
+        if (instrument === 'piano') expect(m.lit, label).toEqual(block);
+      }
+    }
+  }, 60_000);
+
+  // A tone button names the voicing's FIRST sounding of its pitch class: a
+  // doubled bass (C/E as written) is the bass, E3, not the E4 above it.
+  it('Simple view, C/E at C4: the E tone button plays and pins E3, the bass', async () => {
+    const { chord } = chordAsOpened('C/E', true);
+    useAppStore.setState({ exploreDetail: 'simple', selectedChord: chord, chordInversion: 0 });
+    const view = render(<ChordsCard />);
+    const e = [...view.container.querySelectorAll<HTMLElement>('.tone-btn')].find((b) => b.textContent === 'E')!;
+    noteOn.mockClear();
+    await click(e);
+    const [note, octave] = noteOn.mock.calls.at(-1) as [Note, number];
+    expect(`${note.natural}${octave}`).toBe('E3');
+    expect(useFocusNoteStore.getState().pinned?.midi).toBe(52);
+    view.unmount();
   });
 
   it('piano at C3: C major is C3 G3 E4 (open) in the chord, the arpeggio and the staff (bass clef), not C3 E3 G3 / C4 E4 G4', async () => {

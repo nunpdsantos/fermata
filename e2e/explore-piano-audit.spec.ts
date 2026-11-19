@@ -232,55 +232,121 @@ test.describe('M59: the staff strip follows the piano\'s octave', () => {
   });
 });
 
+/** Wait until the work column, the circle column and the dock keep their sizes, and the work column its scroll, for three frames. */
+async function settled(page: Page) {
+  await page.evaluate(() => new Promise<void>((resolve) => {
+    const read = () => ['.explore-main', '.explore-aside', '.explore-work', '[data-testid="instrument-dock"]', '[data-testid="chord-detail"]']
+      .map((sel) => { const e = document.querySelector(sel); return e ? `${e.clientHeight}/${e.scrollHeight}/${e.scrollTop}/${Math.round(e.getBoundingClientRect().top)}` : '-'; }).join('|');
+    let last = read(); let same = 0; let frames = 0;
+    const tick = () => { const now = read(); same = now === last ? same + 1 : 0; last = now; if (same >= 3 || ++frames > 120) resolve(); else requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }));
+}
+
 test.describe('P5: an area that scrolls shows a fade at its foot while it has more', () => {
-  /** The fade's paint: the pseudo-element that draws it, and whether its scroller has content below its foot. */
+  /** Each fade: whether it is painted, and the box it is drawn in; and how much content its scroller has below its foot. */
   const cues = (page: Page) => page.evaluate(() => {
-    const work = document.querySelector('.explore-work')!;
     const root = document.querySelector('.explore-root')!;
-    const opacity = (el: Element, pseudo: string) => Number(getComputedStyle(el, pseudo).opacity);
     const below = (el: HTMLElement | null) => {
-      if (!el || !/(auto|scroll)/.test(getComputedStyle(el).overflowY)) return false;
+      if (!el || !/(auto|scroll)/.test(getComputedStyle(el).overflowY) || el.scrollHeight <= el.clientHeight + 1) return 0;
       const foot = el.getBoundingClientRect().top + el.clientTop + el.clientHeight;
-      return Math.max(...Array.from(el.children).map((c) => c.getBoundingClientRect().bottom)) > foot + 1;
+      return Math.max(0, Math.round(Math.max(...Array.from(el.children).map((c) => c.getBoundingClientRect().bottom)) - foot));
     };
+    const fade = (el: Element | null, pseudo: string) => {
+      if (!el) return { opacity: NaN, width: NaN, position: '' };
+      const cs = getComputedStyle(el, pseudo);
+      return { opacity: Number(cs.opacity), width: parseFloat(cs.width), position: cs.position };
+    };
+    // A column's content width: where its own last item (the fade) is drawn.
+    const box = (sel: string) => {
+      const e = document.querySelector<HTMLElement>(sel);
+      if (!e) return null;
+      const cs = getComputedStyle(e);
+      return { width: e.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) };
+    };
+    const main = document.querySelector<HTMLElement>('.explore-main');
+    const aside = document.querySelector<HTMLElement>('.explore-aside');
     return {
-      main: { more: below(document.querySelector('.explore-main')), fade: opacity(work, '::before') },
-      aside: { more: below(document.querySelector('.explore-aside')), fade: opacity(work, '::after') },
-      work: { more: below(document.querySelector('.explore-work')) || below(root as HTMLElement), fade: opacity(root, '::after') },
+      main: { below: below(main), fade: fade(main, '::after'), box: box('.explore-main') },
+      aside: { below: below(aside), fade: fade(aside, '::after'), box: box('.explore-aside') },
+      work: { below: Math.max(below(document.querySelector('.explore-work')), below(root as HTMLElement)), fade: fade(root, '::after') },
     };
   });
+  const shown = (c: { below: number; fade: { opacity: number } }) => ({ more: c.below > 1, fade: c.fade.opacity });
+  /** The fade is its OWN column's: held at the column's foot (sticky), as wide as the column's content. */
+  const overItsColumn = (c: { fade: { width: number; position: string }; box: { width: number } | null }, label: string) => {
+    expect(c.box, label).not.toBeNull();
+    expect(c.fade.position, `${label}: held at the column's visible foot`).toBe('sticky');
+    expect(Math.abs(c.fade.width - c.box!.width), `${label}: the fade is as wide as its column`).toBeLessThanOrEqual(1);
+  };
 
-  test('1280×720 with the guitar: both columns overflow and both fade; scrolled to the foot, the fade goes', async ({ browser, baseURL }) => {
+  test('1280×720 with the guitar: both columns overflow and both fade, each over its own column; scrolled to the foot, the fade goes', async ({ browser, baseURL }) => {
     const { context, page } = await open(browser, baseURL!, { w: 1280, h: 720, state: { instrument: 'guitar' } });
     await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
-    await page.waitForTimeout(400);
+    await settled(page);
     let c = await cues(page);
-    expect(c.main).toEqual({ more: true, fade: 1 });
-    expect(c.aside).toEqual({ more: true, fade: 1 });
+    expect(shown(c.main)).toEqual({ more: true, fade: 1 });
+    expect(shown(c.aside)).toEqual({ more: true, fade: 1 });
+    overItsColumn(c.main, 'work column');
+    overItsColumn(c.aside, 'circle column');
     await page.locator('.explore-aside').evaluate((el) => { el.scrollTop = el.scrollHeight; });
     await page.locator('.explore-main').evaluate((el) => { el.scrollTop = el.scrollHeight; });
-    await page.waitForTimeout(300);
+    await settled(page);
     c = await cues(page);
-    expect(c.main).toEqual({ more: false, fade: 0 });
-    expect(c.aside).toEqual({ more: false, fade: 0 });
-    // The fades take no room: the work column ends where it did.
+    expect(shown(c.main)).toEqual({ more: false, fade: 0 });
+    expect(shown(c.aside)).toEqual({ more: false, fade: 0 });
     await context.close();
   });
+
+  test('1366×768 with the guitar, chord I open: a cut of a few px gets the fade too', async ({ browser, baseURL }) => {
+    const { context, page } = await open(browser, baseURL!, { w: 1366, h: 768, state: { instrument: 'guitar' } });
+    await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+    await page.locator('.chord-row button').first().click();
+    await expect(page.getByTestId('chord-detail')).toBeVisible();
+    await settled(page);
+    const c = await cues(page);
+    console.log(`[cue] 1366×768 guitar, chord I: ${c.main.below} px below the work column's foot`);
+    expect(c.main.below, 'a small cut (the review measured 6 px)').toBeGreaterThan(1);
+    expect(c.main.below).toBeLessThan(40);
+    expect(c.main.fade.opacity).toBe(1);
+    // The circle column fits here: its fade stays off (each fade reads its own column).
+    expect(shown(c.aside)).toEqual({ more: false, fade: 0 });
+    overItsColumn(c.main, 'work column');
+    await context.close();
+  });
+
+  for (const language of ['en', 'pt']) {
+    test(`1440×900, Open G, a chord selected (the audit's figure 5c), ${language.toUpperCase()}: the circle column's cut fact gets the fade`, async ({ browser, baseURL }) => {
+      const { context, page } = await open(browser, baseURL!, { w: 1440, h: 900, state: { instrument: 'guitar', guitarTuningId: 'open-g', language } });
+      await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+      await page.locator('.chord-row button').first().click();
+      await expect(page.getByTestId('chord-detail')).toBeVisible();
+      await settled(page);
+      const c = await cues(page);
+      console.log(`[cue] 1440×900 Open G ${language}, chord I: ${c.aside.below} px below the circle column's foot`);
+      expect(c.aside.below, 'the notice line makes the dock taller: the last fact is cut').toBeGreaterThan(1);
+      expect(c.aside.fade.opacity).toBe(1);
+      overItsColumn(c.aside, 'circle column');
+      // The work column fits: its fade stays off.
+      expect(shown(c.main)).toEqual({ more: false, fade: 0 });
+      await context.close();
+    });
+  }
 
   test('1440×900, standard tuning: nothing overflows, no fade; the fades add no height (measured with and without them)', async ({ browser, baseURL }) => {
     const { context, page } = await open(browser, baseURL!, { w: 1440, h: 900, state: { instrument: 'guitar' } });
     await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
     await page.locator('.chord-row button').nth(4).click();
-    await page.waitForTimeout(500);
+    await settled(page);
     const c = await cues(page);
-    expect([c.main.fade, c.aside.fade, c.work.fade]).toEqual([0, 0, 0]);
+    expect([c.main.fade.opacity, c.aside.fade.opacity, c.work.fade.opacity]).toEqual([0, 0, 0]);
     const size = () => page.evaluate(() => ['.explore-main', '.explore-aside', '.explore-work'].map((s) => {
       const e = document.querySelector(s)!;
       return [e.scrollHeight, e.clientHeight];
     }));
     const withCues = await size();
-    await page.addStyleTag({ content: '.explore-root::after, .explore-work::before, .explore-work::after { display: none !important; }' });
-    await page.waitForTimeout(200);
+    await page.addStyleTag({ content: '.explore-root::after, .explore-main::after, .explore-aside::after { display: none !important; }' });
+    await settled(page);
     expect(await size()).toEqual(withCues);
     await context.close();
   });
@@ -290,8 +356,8 @@ test.describe('P5: an area that scrolls shows a fade at its foot while it has mo
     const dock = page.getByTestId('instrument-dock');
     await expect(dock).toHaveAttribute('data-detent', 'half');
     await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
-    await page.waitForTimeout(500);
-    expect((await cues(page)).work).toEqual({ more: true, fade: 1 });
+    await settled(page);
+    expect(shown((await cues(page)).work)).toEqual({ more: true, fade: 1 });
     const geo = await page.evaluate(() => {
       const d = document.querySelector('[data-testid="instrument-dock"]')!;
       const content = d.querySelector('.detent-content')!.getBoundingClientRect();
@@ -304,8 +370,8 @@ test.describe('P5: an area that scrolls shows a fade at its foot while it has mo
     expect(geo.view, 'the view keeps at least 120 px').toBeGreaterThanOrEqual(120);
     // Scrolled to the foot, the chords card is above the sheet and the fade goes.
     await page.locator('.explore-work').evaluate((el) => { el.scrollTop = el.scrollHeight; });
-    await page.waitForTimeout(300);
-    expect((await cues(page)).work).toEqual({ more: false, fade: 0 });
+    await settled(page);
+    expect(shown((await cues(page)).work)).toEqual({ more: false, fade: 0 });
     const cards = await page.locator('.chord-row button').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().bottom));
     const sheetTop = (await dock.boundingBox())!.y;
     expect(Math.max(...cards)).toBeLessThanOrEqual(sheetTop + 0.5);
@@ -313,76 +379,115 @@ test.describe('P5: an area that scrolls shows a fade at its foot while it has mo
   });
 });
 
+const WORDS = {
+  en: { more: 'More', metronome: 'Metronome', all: 'All Chords', build: 'Build', strip: 'Chromatic strip from C' },
+  pt: { more: 'Mais', metronome: 'Metrónomo', all: 'Todos os acordes', build: 'Construir', strip: 'Faixa cromática a partir de C' },
+  es: { more: 'Más', metronome: 'Metrónomo', all: 'Todos los acordes', build: 'Construir', strip: 'Franja cromática desde C' },
+} as const;
+
 test.describe('the chord detail lands clear of the metronome\'s bar', () => {
-  // The bar is a fixed overlay above the instrument's right end. Where the
+  // The bar is a fixed overlay above the instrument's right end. After the
+  // landing has settled: ▶ Chord and ▶ Arpeggio are never under it; where the
   // whole detail fits in the room between the held strip (or the column's
-  // top) and the bar, nothing of it may land under the bar; where it cannot
-  // (1366×768: 111 px of room for a 142 px detail), ▶ Chord's row stays clear
-  // and nothing under the bar is stuck there (it scrolls out). At 153caab
-  // the landing counted the bar's band as visible: at 1440×900, All Chords
-  // and Build landed "Learn about this" under it.
+  // top) and the bar, nothing of it is; nothing of the detail, and no wedge
+  // of the circle, is stuck there (each can be scrolled out). At 153caab the
+  // landing counted the bar's band as visible (1440×900: "Learn about this"
+  // under it); at fa31a35, in Portuguese at 1280×800, «Arpejo» settled 15 px
+  // under it.
   for (const [w, h] of [[1440, 900], [1536, 864], [1366, 768], [1280, 800]] as const) {
-    test(`${w}×${h}, guitar: with the bar open, In key, All Chords and Build land clear of it where they fit`, async ({ browser, baseURL }) => {
-      const { context, page } = await open(browser, baseURL!, { w, h, state: { instrument: 'guitar' } });
-      await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
-      await page.getByRole('button', { name: /^More/ }).click();
-      await page.getByRole('menuitem', { name: 'Metronome' }).click();
-      await expect(page.getByTestId('metronome')).toHaveAttribute('data-measured', 'true');
-      await page.waitForTimeout(400);
-      const look = () => page.evaluate(() => {
-        const b = document.querySelector('[data-testid="metronome"]')!.getBoundingClientRect();
-        const main = document.querySelector<HTMLElement>('.explore-main')!;
-        const strip = document.querySelector<HTMLElement>('.strip-card')!;
-        const detail = document.querySelector<HTMLElement>('[data-testid="chord-detail"]')!;
-        const covers = (el: Element) => {
-          const r = el.getBoundingClientRect();
-          return r.height > 0 && r.bottom > b.top + 1 && r.top < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
-        };
-        const controls = Array.from(detail.querySelectorAll('button, .type-label'));
-        const under = controls.filter(covers);
-        // Can each be scrolled out from under the bar? (the work column's whole range, 8 px steps)
-        const start = main.scrollTop;
-        const stuck = under.filter((el) => {
-          for (let y = 0; y <= main.scrollHeight - main.clientHeight; y += 8) {
-            main.scrollTop = y;
-            if (!covers(el)) return false;
+    for (const instrument of ['piano', 'guitar'] as const) {
+      for (const language of ['en', 'pt', 'es'] as const) {
+        test(`${w}×${h}, ${instrument}, ${language.toUpperCase()}: with the bar open, In key, All Chords and Build land clear of it`, async ({ browser, baseURL }) => {
+          test.setTimeout(90_000);
+          const t = WORDS[language];
+          const { context, page } = await open(browser, baseURL!, { w, h, state: { instrument, language } });
+          if (instrument === 'guitar') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+          await page.getByRole('button', { name: new RegExp(`^${t.more}`) }).click();
+          await page.getByRole('menuitem', { name: t.metronome }).click();
+          await expect(page.getByTestId('metronome')).toHaveAttribute('data-measured', 'true');
+          await settled(page);
+          const look = () => page.evaluate(() => {
+            const b = document.querySelector('[data-testid="metronome"]')!.getBoundingClientRect();
+            const main = document.querySelector<HTMLElement>('.explore-main')!;
+            const aside = document.querySelector<HTMLElement>('.explore-aside')!;
+            const strip = document.querySelector<HTMLElement>('.strip-card')!;
+            const detail = document.querySelector<HTMLElement>('[data-testid="chord-detail"]')!;
+            const covers = (el: Element) => {
+              const r = el.getBoundingClientRect();
+              return r.height > 0 && r.bottom > b.top + 1 && r.top < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
+            };
+            const freeable = (el: Element, scroller: HTMLElement) => {
+              const start = scroller.scrollTop;
+              for (let y = 0; y <= scroller.scrollHeight - scroller.clientHeight; y += 8) {
+                scroller.scrollTop = y;
+                if (!covers(el)) { scroller.scrollTop = start; return true; }
+              }
+              scroller.scrollTop = start;
+              return false;
+            };
+            const under = Array.from(detail.querySelectorAll('button, .type-label')).filter(covers);
+            const wedges = Array.from(aside.querySelectorAll('g[role="button"], text')).filter(covers);
+            const edge = getComputedStyle(strip).position === 'sticky' ? strip.getBoundingClientRect().bottom : main.getBoundingClientRect().top;
+            const name = (el: Element) => (el.textContent ?? '').trim().slice(0, 20);
+            return {
+              room: Math.round(b.top - edge - 16), detail: Math.round(detail.getBoundingClientRect().height),
+              under: under.map(name),
+              stuck: [...under.filter((el) => !freeable(el, main)), ...wedges.filter((el) => !freeable(el, aside))].map(name),
+              actionsUnder: Array.from(detail.querySelectorAll('.chord-detail-actions button')).filter(covers).map(name),
+            };
+          });
+          const land = async (label: string) => {
+            await expect(page.getByTestId('chord-detail')).toBeVisible();
+            await settled(page);
+            await page.waitForTimeout(400); // a late re-landing (fonts, notation) comes within ~300 ms
+            await settled(page);
+            const r = await look();
+            console.log(`[landing] ${w}×${h} ${instrument} ${language} ${label}: room ${r.room} px, detail ${r.detail} px, under the bar ${JSON.stringify(r.under)}`);
+            expect(r.actionsUnder, `${label}: ▶ Chord / ▶ Arpeggio clear of the bar`).toEqual([]);
+            if (r.detail <= r.room) expect(r.under, `${label}: the detail fits above the bar, so nothing of it is under it`).toEqual([]);
+            expect(r.stuck, `${label}: nothing stuck under the bar (the detail, the circle's wedges)`).toEqual([]);
+          };
+          const top = async () => { await page.locator('.explore-main').evaluate((el) => { el.scrollTop = 0; }); await settled(page); };
+          for (let i = 0; i < 7; i++) {
+            await top();
+            await page.locator('.chord-row button').nth(i).click();
+            await land(`In key ${i + 1}`);
           }
-          return true;
+          await top();
+          await page.getByRole('tab', { name: t.all, exact: true }).click();
+          await page.locator('[data-quality="minor"]').click();
+          await land('All Chords, minor');
+          await top();
+          await page.getByRole('tab', { name: t.build, exact: true }).click();
+          await page.getByRole('group', { name: t.strip }).getByRole('button').nth(4).click();
+          await page.getByRole('group', { name: t.strip }).getByRole('button').nth(7).click();
+          await land('Build, C major');
+          await context.close();
         });
-        main.scrollTop = start;
-        const edge = getComputedStyle(strip).position === 'sticky' ? strip.getBoundingClientRect().bottom : main.getBoundingClientRect().top;
-        return {
-          room: Math.round(b.top - edge - 16), detail: Math.round(detail.getBoundingClientRect().height),
-          under: under.map((el) => (el.textContent ?? '').trim().slice(0, 20)),
-          stuck: stuck.map((el) => (el.textContent ?? '').trim().slice(0, 20)),
-          actionsUnder: Array.from(detail.querySelectorAll('.chord-detail-actions button')).some(covers),
-        };
-      });
-      const land = async (label: string) => {
-        await expect(page.getByTestId('chord-detail')).toBeVisible();
-        await page.waitForTimeout(500);
-        const r = await look();
-        console.log(`[landing] ${w}×${h} ${label}: room ${r.room} px, detail ${r.detail} px, under the bar ${JSON.stringify(r.under)}`);
-        expect(r.actionsUnder, `${label}: ▶ Chord / ▶ Arpeggio clear of the bar`).toBe(false);
-        if (r.detail <= r.room) expect(r.under, `${label}: the detail fits above the bar, so nothing of it is under it`).toEqual([]);
-        expect(r.stuck, `${label}: nothing stuck under the bar`).toEqual([]);
-      };
-      const top = () => page.locator('.explore-main').evaluate((el) => { el.scrollTop = 0; });
-      for (const i of [0, 2, 4, 6]) {
-        await top();
-        await page.locator('.chord-row button').nth(i).click();
-        await land(`In key ${i + 1}`);
       }
-      await top();
-      await page.getByRole('tab', { name: 'All Chords', exact: true }).click();
-      await page.locator('[data-quality="minor"]').click();
-      await land('All Chords, minor');
-      await top();
-      await page.getByRole('tab', { name: 'Build', exact: true }).click();
-      await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(4).click();
-      await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(7).click();
-      await land('Build, C major');
-      await context.close();
+    }
+  }
+});
+
+test('a chord opened first and the metronome after: the work column still ends below the bar (its tail never replaces the bar\'s room)', async ({ browser, baseURL }) => {
+  // Review of the second round: the landing wrote its tail as an inline
+  // padding (2 px here) that shadowed the bar's room (index.css, 54 + 8 px).
+  for (const [w, h] of [[1366, 768], [1280, 800], [1536, 864]] as const) {
+    const { context, page } = await open(browser, baseURL!, { w, h, state: { instrument: 'guitar' } });
+    await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+    await page.locator('.chord-row button').nth(4).click();
+    await expect(page.getByTestId('chord-detail')).toBeVisible();
+    await settled(page);
+    await page.getByRole('button', { name: /^More/ }).click();
+    await page.getByRole('menuitem', { name: 'Metronome' }).click();
+    await expect(page.getByTestId('metronome')).toHaveAttribute('data-measured', 'true');
+    await settled(page);
+    const r = await page.evaluate(() => {
+      const m = document.querySelector<HTMLElement>('.explore-main')!;
+      return { pad: parseFloat(getComputedStyle(m).paddingBottom), room: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--metro-room')) };
     });
+    expect(r.room, `${w}×${h}: the bar takes room`).toBeGreaterThan(0);
+    expect(r.pad, `${w}×${h}: the work column's padding covers the bar's room`).toBeGreaterThanOrEqual(r.room + 8);
+    await context.close();
   }
 });

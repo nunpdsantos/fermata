@@ -23,7 +23,20 @@
 
 const SCROLLING = /(auto|scroll)/;
 
-/** Does `el` scroll, and does its content (not its padding) go on below its visible foot? */
+/**
+ * Does `el` scroll, and does its content (not its padding) go on below its
+ * visible foot — by any amount over 1 px (a sub-pixel is rounding, not a cut)?
+ *
+ * "Its content" is the boxes of its DIRECT children. That cannot see a child
+ * with `display: contents` (it has no box) nor a grandchild that overflows
+ * its parent. Measured on 19 November 2026 (the review of the second round),
+ * at 1280×720, 1366×768, 1440×900, 390×844, 375×667, 844×390 and 768×1024,
+ * piano and guitar, with a chord, All Chords, Build and the Progression panel
+ * open: no Explore scroller has a `display: contents` child, and the only
+ * descendants reaching below their scroller's children are the staff
+ * strip's SVG glyphs, whose boxes are the font's whole em box (taller than
+ * the ink, inside the drawing) — not layout overflow, and nothing to scroll.
+ */
 export function contentBelow(el: HTMLElement | null): boolean {
   if (!el || !SCROLLING.test(getComputedStyle(el).overflowY)) return false;
   if (el.scrollHeight <= el.clientHeight + 1) return false;

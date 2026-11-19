@@ -23,8 +23,12 @@ function scroller(childBottom: number, opts: { scrollHeight: number; overflowY?:
 afterEach(() => { document.body.innerHTML = ''; vi.unstubAllGlobals(); });
 
 describe('contentBelow: content, not scroll room', () => {
-  it('a scroller whose last child ends below its foot has more', () => {
+  it('a scroller whose last child ends below its foot has more — however small the cut, from 2 px', () => {
     expect(contentBelow(scroller(340, { scrollHeight: 340 }))).toBe(true);
+    expect(contentBelow(scroller(302, { scrollHeight: 302 }))).toBe(true);
+    // Up to 1 px is rounding (a sub-pixel border), not a cut.
+    expect(contentBelow(scroller(301, { scrollHeight: 302 }))).toBe(false);
+    expect(contentBelow(scroller(300, { scrollHeight: 302 }))).toBe(false);
   });
   it('one that scrolls only into its padding (a landing\'s tail padding, the metronome\'s room) has none', () => {
     expect(contentBelow(scroller(300, { scrollHeight: 380 }))).toBe(false);

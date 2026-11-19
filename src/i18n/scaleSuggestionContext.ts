@@ -186,6 +186,14 @@ export const SCALE_CONTEXT_PT: Record<string, string> = {
     "b5 e #9 — combinação alterada clássica",
   "Symmetric scale option":
     "Opção de escala simétrica",
+  "Safe melodic choice — five notes, none clashes; it leaves out the major 7th":
+    "Escolha melódica segura — cinco notas, nenhuma choca; deixa de fora a 7.ª maior",
+  "Blues/rock idiom: the scale's b3 rubs against the chord's major 3rd — that clash is the blues sound":
+    "Linguagem blues/rock: o b3 da escala roça na 3.ª maior do acorde — esse choque é o som do blues",
+  "Blues/rock context (the \"Hendrix chord\"): the scale's b3 is the chord's #9 — it has no major 3rd":
+    "Contexto blues/rock (o «acorde de Hendrix»): o b3 da escala é a #9 do acorde — não tem 3.ª maior",
+  "Holds every note of this chord":
+    "Contém todas as notas deste acorde",
 };
 
 export const SCALE_CONTEXT_ES: Record<string, string> = {
@@ -365,6 +373,14 @@ export const SCALE_CONTEXT_ES: Record<string, string> = {
     "b5 y #9 — combinación alterada clásica",
   "Symmetric scale option":
     "Opción de escala simétrica",
+  "Safe melodic choice — five notes, none clashes; it leaves out the major 7th":
+    "Opción melódica segura — cinco notas, ninguna choca; deja fuera la 7.ª mayor",
+  "Blues/rock idiom: the scale's b3 rubs against the chord's major 3rd — that clash is the blues sound":
+    "Lenguaje blues/rock: el b3 de la escala roza con la 3.ª mayor del acorde — ese choque es el sonido del blues",
+  "Blues/rock context (the \"Hendrix chord\"): the scale's b3 is the chord's #9 — it has no major 3rd":
+    "Contexto blues/rock (el «acorde de Hendrix»): el b3 de la escala es la #9 del acorde — no tiene 3.ª mayor",
+  "Holds every note of this chord":
+    "Contiene todas las notas de este acorde",
 };
 
 /**
