@@ -1,0 +1,18 @@
+{
+  "continue": "Continue",
+  "checkKept": "Your check is kept: question {{current}} of {{total}}.",
+  "practiceKept": "Your practice round is kept: question {{current}} of {{total}}.",
+  "reviewKept": "Your review is kept: question {{current}} of {{total}}.",
+  "continueCheck": "Continue the check",
+  "continuePractice": "Continue the practice round",
+  "drillKept": "Your Drill session is kept, on the question you were on.",
+  "sprintKept": "Your Sprint is paused, with the time it had left.",
+  "otherCheckKept": "Your check in “{{title}}” is kept: question {{current}} of {{total}}.",
+  "otherReviewKept": "Your review of “{{title}}” is kept: question {{current}} of {{total}}.",
+  "otherPracticeKept": "Your practice round in “{{title}}” is kept: question {{current}} of {{total}}.",
+  "startCheckLetsGo": "If you start this check, that one is lost.",
+  "startReviewLetsGo": "If you start this review, that one is lost.",
+  "backToKept": "Back to “{{title}}”",
+  "startCheckHere": "Start this check",
+  "startReviewHere": "Start this review"
+}

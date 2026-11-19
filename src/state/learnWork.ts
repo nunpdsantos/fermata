@@ -13,7 +13,7 @@ export function persistedLearnCheckInProgress(now = Date.now()): boolean {
   const check = saved.state.check;
   if (check == null) return false;
   if (!isObject(check)) throw new Error('Unknown Learn check');
-  if (check.finished === true) return false;
+  if (check.finished === true || check.away === true) return false;
   if (typeof check.at === 'number' && Number.isFinite(check.at)) {
     if (!isFresh(check.at, now)) return false;
     if (check.finished === false) return true;
@@ -27,7 +27,7 @@ export function persistedLearnCheckInProgress(now = Date.now()): boolean {
 }
 
 export function registerLearnWorkInProgress(): () => void {
-  // Seat decision: check-only, unfinished and fresh, even behind another view.
+  // Seat decision: check-only, unfinished, fresh and not put away by Back (second audit round), even behind another view.
   // Reading a module/review is idle; review/practice exercise checks still count.
   return registerWorkInProgress('learn', () => persistedLearnCheckInProgress());
 }

@@ -111,6 +111,7 @@ export const PRACTICE_NOUNS: Phrases = [
   [/\bpractice tasks?\b/i, 'noun: the lesson\'s practice tasks'],
   [/· practice\b/, 'noun: "{{title}} · practice"'],
   [/\bpractice answers\b/i, 'noun: the practice round\'s answers'],
+  [/\bpractice round\b/i, 'noun: the practice round (a check\'s missed questions, kept by Back: backNav)'],
 ];
 
 /** American in one use only: an occurrence passes only inside one of these phrases. */

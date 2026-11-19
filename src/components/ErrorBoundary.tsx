@@ -76,6 +76,20 @@ interface State {
   error: Error | null;
 }
 
+/**
+ * A recovery's reload: this tab's history entry forgets its place first
+ * (state/appHistory.ts keeps it across a reload), so the app comes back where
+ * a fresh start puts it, not on the screen that may have crashed (second
+ * audit round, review A7).
+ */
+function forgetPlace(): void {
+  try {
+    window.history.replaceState(null, '');
+  } catch {
+    // Nothing to forget.
+  }
+}
+
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false, error: null };
 
@@ -127,6 +141,7 @@ export class ErrorBoundary extends Component<Props, State> {
         // Unreadable blob: the store's own shape guard drops bad fields on boot.
       }
     }
+    forgetPlace();
     reloadPage();
   };
 
@@ -152,7 +167,10 @@ export class ErrorBoundary extends Component<Props, State> {
     import('../state/drillStore')
       .then((m) => m.useDrillStore.getState().resetDrillData())
       .catch(() => {})
-      .finally(() => reloadPage());
+      .finally(() => {
+        forgetPlace();
+        reloadPage();
+      });
   };
 
   render() {

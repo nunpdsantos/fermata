@@ -4,12 +4,14 @@ import { createPortal } from 'react-dom';
 import { ScrollBody } from './ScrollBody';
 import { IconButton } from './Button';
 import { focusableIn, trapTab } from './focus';
+import { useBackLayer } from '../../state/appHistory';
 
 /**
  * SHEET (design system v2, D-28) — a modal panel: a bottom sheet on phones
  * (drag the handle down, tap the scrim, press Escape or the ✕ to close), a
  * panel under the top bar on wider screens. It traps Tab, moves focus into
- * itself on open and RETURNS focus to whatever opened it on close.
+ * itself on open and RETURNS focus to whatever opened it on close. The
+ * browser's Back closes it as Escape does (state/appHistory.ts, audit P3).
  *
  * The non-modal, resizable sheet with detents (the phone instrument dock) is
  * DetentSheet.
@@ -46,6 +48,7 @@ export function Sheet({ open, onClose, title, closeLabel, children, actions, tes
   useLayoutEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
+  useBackLayer(open, () => onCloseRef.current());
 
   useEffect(() => {
     if (!open) return;
