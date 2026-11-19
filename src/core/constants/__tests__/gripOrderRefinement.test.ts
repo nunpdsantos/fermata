@@ -69,7 +69,7 @@ describe('the first grip of 24 common slash chords', () => {
 });
 
 describe('three strings first while a fuller grip is offered: only where every fuller grip doubles an outside bass', () => {
-  it('every request with an asked bass, no capo (12 roots × every quality × each inversion and 12 slash basses): 0', () => {
+  it('every request with an asked bass, no capo (12 roots × every quality × each inversion and 12 slash basses): these four power chords only', () => {
     const thin: string[] = [];
     let requests = 0;
     const sounding = (e: Placed) => e.shape.strings.filter((p) => p.fret !== null).length;
