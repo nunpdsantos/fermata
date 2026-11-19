@@ -85,6 +85,15 @@ async function noPushWithoutActivation(page: Page) {
 /** The browser's Back / Forward; the app may pass over an entry that shows nothing new, so callers assert what they expect to see. */
 const back = (page: Page) => page.goBack();
 const forward = (page: Page) => page.goForward();
+/** The mouse's own back button (sent to the browser as a real input event, not an entry picked by Playwright). */
+async function mouseBack(page: Page) {
+  if (page.context().browser()?.browserType().name() !== 'chromium') return void (await page.goBack());
+  const cdp = await page.context().newCDPSession(page);
+  for (const type of ['mousePressed', 'mouseReleased'] as const) {
+    await cdp.send('Input.dispatchMouseEvent', { type, x: 20, y: 300, button: 'back', buttons: type === 'mousePressed' ? 8 : 0, clickCount: 1 });
+  }
+  await cdp.detach();
+}
 async function expectLeft(page: Page) {
   await expect.poll(() => page.url(), { message: 'Back at the first screen leaves Fermatina' }).toBe('about:blank');
 }
@@ -103,10 +112,11 @@ function answerKey(): Map<string, string> {
 }
 async function keyed(page: Page, key: Map<string, string>) {
   const prompt = (await page.getByTestId('check-prompt').textContent())!.trim();
-  const labels = await page.getByTestId('check-answers').locator('button').evaluateAll((bs) => bs.map((b) => b.getAttribute('data-answer') ?? ''));
+  const buttons = await page.getByTestId('check-answers').locator('button').evaluateAll((bs) => bs.map((b) => ({ label: b.getAttribute('data-answer') ?? '', tried: b.getAttribute('data-state') === 'tried' })));
+  const labels = buttons.map((b) => b.label);
   const right = key.get(`${prompt}|${[...labels].sort().join('§')}`);
   expect(right, `answer key for "${prompt}"`).toBeTruthy();
-  return { right: right!, wrong: labels.find((l) => l !== right)! };
+  return { right: right!, wrong: buttons.find((b) => b.label !== right && !b.tried)!.label };
 }
 const option = (page: Page, label: string) => page.getByTestId('check-answers').locator(`button[data-answer="${label.replace(/"/g, '\\"')}"]`);
 async function answer(mode: Mode, page: Page, label: string) {
@@ -141,10 +151,11 @@ for (const mode of MODES) {
       await expect(page.getByTestId('drill-intro')).toBeVisible();
       expect(await historyLength(page)).toBe(start + 2);
 
-      await back(page);
+      // With a mouse, its own back button; with touch, the browser's Back.
+      await (mode.touch ? back(page) : mouseBack(page));
       await expectView(page, 'learn');
       await expect(overview(page)).toBeVisible();
-      await back(page);
+      await (mode.touch ? back(page) : mouseBack(page));
       await expectView(page, 'explore');
       await forward(page);
       await expectView(page, 'learn');
@@ -365,6 +376,8 @@ for (const mode of MODES) {
         await expect(dialog).toHaveCount(0);
         await expectView(page, 'explore');
       };
+      // The "⋯" menu itself (a menu is not a dialog, but nothing is left open over another screen).
+      await closesOnBack(() => press(mode, page.getByTestId('app-menu').getByRole('button').first()), page.getByRole('menu'));
       // Settings ("⋯" → Settings).
       await closesOnBack(async () => {
         await press(mode, page.getByTestId('app-menu').getByRole('button').first());
@@ -475,6 +488,46 @@ test('Learn deep links: Quick Search, "Learn about this" and Drill\'s family lin
   await expect(panel.locator('p.text-xl').first()).toHaveText(missed!);
   await expect(panel.getByRole('button', { name: 'Continue', exact: true })).toBeVisible();
   expect(prompt).toBeTruthy();
+  await noPushWithoutActivation(page);
+  await context.close();
+});
+
+test('a lesson reopened while its check is kept: the lesson, its card offering the check; a tab back into Learn reopens the check itself', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const mode = MODES[0];
+  const key = answerKey();
+  const { context, page } = await open(browser, mode);
+  await tab(page, 'learn').click();
+  await levelOneCard(page).click();
+  await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.unit) }).first().click();
+  const row = page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first();
+  await row.click();
+  await page.getByTestId('check-card').getByRole('button', { name: 'Start the check' }).click();
+  const q1 = await keyed(page, key);
+  await answer(mode, page, q1.right);
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  const state = await checkState(page);
+  await back(page);
+  await back(page);
+  await expect(unitPage(page)).toBeVisible();
+  await row.click();
+  await expect(lessonHeading(page, LESSON.title)).toBeVisible();
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
+  await expect(page.getByTestId('check-kept')).toHaveText(`Your check is kept: question 2 of ${LESSON.questions}.`);
+  // Quick Search's lesson result, the same.
+  await tab(page, 'explore').click();
+  await page.keyboard.press('Control+k');
+  const search = page.getByRole('dialog').filter({ has: page.locator('input') });
+  await search.locator('input').fill(LESSON.title);
+  await search.getByRole('option', { name: new RegExp(`^${LESSON.title}`) }).first().click();
+  await expect(page.getByTestId('check-kept')).toBeVisible();
+  // Into the check, then away by a tab and back by the tab: the check itself, as before this change.
+  await page.getByTestId('check-continue').click();
+  expect(await checkState(page)).toEqual(state);
+  await tab(page, 'drill').click();
+  await tab(page, 'learn').click();
+  await expect(page.getByTestId('focused-check')).toBeVisible();
+  expect(await checkState(page)).toEqual(state);
   await noPushWithoutActivation(page);
   await context.close();
 });
@@ -630,5 +683,59 @@ test('the landscape full neck: Back closes it', async ({ browser }) => {
   await expectView(page, 'explore');
   await back(page);
   await expectView(page, 'learn');
+  await context.close();
+});
+
+test('the build, with the service worker in control and then offline: Back, Forward and a reload land where the table says', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const mode = MODES[1];
+  const { context, page } = await open(browser, mode, {}, '/', 'allow');
+  const manifest = await page.request.get('/manifest.webmanifest');
+  test.skip(!(manifest.headers()['content-type'] ?? '').includes('json'), 'No service worker on the dev server: the build only');
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller, undefined, { timeout: 20_000 });
+  await page.waitForTimeout(3000); // the precache settles
+  const key = answerKey();
+
+  const walk = async () => {
+    await press(mode, tab(page, 'learn'));
+    await press(mode, levelOneCard(page));
+    await press(mode, page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.unit) }).first());
+    await press(mode, page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first());
+    await expect(lessonHeading(page, LESSON.title)).toBeVisible();
+    const card = page.getByTestId('check-card');
+    await press(mode, (await card.getByTestId('check-continue').count()) ? card.getByTestId('check-continue') : card.getByRole('button', { name: 'Start the check' }));
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    const q = await keyed(page, key);
+    await answer(mode, page, q.wrong);
+    const state = await checkState(page);
+    await back(page);
+    await expect(page.getByTestId('check-kept')).toBeVisible();
+    await forward(page);
+    expect(await checkState(page)).toEqual(state);
+    await page.reload();
+    await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
+    expect(await checkState(page)).toEqual(state);
+    await back(page);
+    await expect(lessonHeading(page, LESSON.title)).toBeVisible();
+    await back(page);
+    await expect(unitPage(page)).toBeVisible();
+    for (let i = 0; i < 3; i++) await back(page);
+    await expectView(page, 'explore');
+    return state;
+  };
+  await walk();
+
+  // Offline: every request the page or the worker makes fails; the worker alone answers.
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+  await context.route('**/*', (route) => route.abort('internetdisconnected'));
+  await page.reload();
+  await expectView(page, 'explore');
+  await walk();
+  await back(page);
+  await expectLeft(page);
+  await forward(page);
+  await expectView(page, 'explore');
+  await noPushWithoutActivation(page);
   await context.close();
 });

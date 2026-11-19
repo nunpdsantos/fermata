@@ -82,6 +82,24 @@ type Dir = 1 | -1;
 interface Layer {
   close: () => void;
   tour: boolean;
+  /** A layer that can go without telling (a menu): open while this holds. */
+  live?: () => boolean;
+}
+
+/** Drop the layers that went without telling. */
+function prune(): void {
+  for (let k = layers.length - 1; k >= 0; k--) if (layers[k].live && !layers[k].live!()) layers.splice(k, 1);
+}
+
+function openLayer(layer: Layer): void {
+  prune();
+  layers.push(layer);
+  // One entry per layer above what the entry on screen covers; a layer
+  // that closed by itself left its entry, which the next one reuses (and
+  // StrictMode's second mount pushes nothing).
+  if (layers.length > cur.l && armed && !restoring && (layer.tour || !tourPlaying())) {
+    write({ ...cur, i: cur.i + 1, l: layers.length }, true);
+  }
 }
 
 const VIEWS: readonly string[] = ['explore', 'learn', 'drill'];
@@ -205,13 +223,7 @@ export function useBackLayer(open: boolean, close: () => void, tour = false): vo
   useEffect(() => {
     if (!open) return;
     const layer: Layer = { close: () => ref.current(), tour };
-    layers.push(layer);
-    // One entry per layer above what the entry on screen covers; a layer
-    // that closed by itself left its entry, which the next one reuses (and
-    // StrictMode's second mount pushes nothing).
-    if (layers.length > cur.l && armed && !restoring && (tour || !tourPlaying())) {
-      write({ ...cur, i: cur.i + 1, l: layers.length }, true);
-    }
+    openLayer(layer);
     return () => {
       const k = layers.indexOf(layer);
       if (k >= 0) layers.splice(k, 1);
@@ -252,7 +264,8 @@ function onPopState(e: PopStateEvent): void {
     return;
   }
   const dir: Dir = to.i < from.i ? -1 : 1;
-  // Sheets and dialogs first, the top one first, as Escape does.
+  // Sheets, dialogs and menus first, the top one first, as Escape does.
+  prune();
   const extra = layers.length - to.l;
   if (dir < 0 && extra > 0) {
     for (const layer of layers.slice(-extra).reverse()) layer.close();
@@ -301,6 +314,24 @@ function onTabClick(e: MouseEvent): void {
   shows.get(v)?.('', -1);
 }
 
+/**
+ * A "⋯" menu (ui/Menu.tsx, in the entry bundle, which cannot import this
+ * module) is a layer too: its button opening it is seen here, in the capture
+ * phase, and the layer lives while a menu is in the page. Back closes it as
+ * its Escape does (a keydown on the menu).
+ */
+const openMenu = () => document.querySelector<HTMLElement>('[role="menu"]');
+function onMenuButton(e: Event): void {
+  const button = e.target instanceof Element ? e.target.closest('[aria-haspopup="menu"]') : null;
+  if (!button || button.getAttribute('aria-expanded') === 'true') return;
+  if (e instanceof KeyboardEvent && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  openLayer({
+    tour: false,
+    live: () => openMenu() !== null,
+    close: () => openMenu()?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })),
+  });
+}
+
 /** Chromium's user activations (MDN, "User activation"): keydown (not Escape), mousedown, a touch's or pen's pointerup, touchend. */
 function arm(e: Event): void {
   if (!e.isTrusted) return;
@@ -330,6 +361,8 @@ export function installAppHistory(): void {
   });
   for (const type of ['keydown', 'mousedown', 'pointerup', 'touchend']) window.addEventListener(type, arm, true);
   document.addEventListener('click', onTabClick, true);
+  document.addEventListener('click', onMenuButton, true);
+  document.addEventListener('keydown', onMenuButton, true);
   useAppStore.subscribe((state, prev) => {
     const target = state.pendingLearnTarget;
     const deep = target !== null && target !== prev.pendingLearnTarget;

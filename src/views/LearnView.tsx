@@ -42,7 +42,7 @@ function initialScreen(target: LearnDeepLink | null): LearnScreen {
   const kept = place === undefined ? null : learnScreenOf(place);
   if (kept) return withSavedSection(kept);
   // A deep link (opened by its effect below as well): no other screen first, which would be written in its entry.
-  if (target) return { type: 'module', ...target };
+  if (target) return { type: 'module', ...target, run: false };
   const saved = restorableScreen();
   if (!saved) return { type: 'levels' };
   const { type, levelId, unitId, moduleId, section } = saved;
@@ -87,8 +87,8 @@ export function LearnView() {
   const navigate = useCallback((next: LearnScreen, dir: 'forward' | 'back') => {
     if (dir === 'forward') goTo('learn', learnPlace(next));
     setDirection(dir);
-    // The lesson already shown (a deep link to it): its check stays as it is.
-    setScreen((now) => (next.type === 'module' && next.run === undefined && now.type === 'module' && now.moduleId === next.moduleId ? { ...next, run: now.run } : next));
+    // The deep link a mount already opened: the same screen, kept as it is.
+    setScreen((now) => (now.type === 'module' && next.type === 'module' && now.moduleId === next.moduleId && now.run === next.run ? now : next));
   }, []);
   // Back / Forward, and the Learn tab tapped while Learn shows (P10's class): the screen the entry names.
   useShowPlace('learn', (place, dir) => {
@@ -107,7 +107,9 @@ export function LearnView() {
   const goToLevelBack = useCallback((levelId: string) => navigate({ type: 'level', levelId }, 'back'), [navigate]);
   const goToUnit = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'forward'), [navigate]);
   const goToUnitBack = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'back'), [navigate]);
-  const goToModule = useCallback((levelId: string, unitId: string, moduleId: string, section?: string) => navigate({ type: 'module', levelId, unitId, moduleId, section }, 'forward'), [navigate]);
+  // A lesson the learner opens shows the lesson: a check of it kept by Back waits on its card
+  // (only a return — a reload, the tab, Back / Forward — reopens a check by itself).
+  const goToModule = useCallback((levelId: string, unitId: string, moduleId: string, section?: string) => navigate({ type: 'module', levelId, unitId, moduleId, section, run: false }, 'forward'), [navigate]);
   const goToReview = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'review', levelId, unitId, moduleId }, 'forward'), [navigate]);
   // The level's celebration covers the screen: Back dismisses it, as a tap does (audit P3).
   const dismissCelebration = useCallback(() => {
@@ -124,7 +126,7 @@ export function LearnView() {
     if (!pendingLearnTarget) return;
     const { levelId, unitId, moduleId } = pendingLearnTarget;
     setPendingLearnTarget(null);
-    queueMicrotask(() => navigate({ type: 'module', levelId, unitId, moduleId }, 'forward'));
+    queueMicrotask(() => navigate({ type: 'module', levelId, unitId, moduleId, run: false }, 'forward'));
   }, [pendingLearnTarget, setPendingLearnTarget, navigate]);
 
   // Scroll to top on screen change (a lesson opened at a section scrolls

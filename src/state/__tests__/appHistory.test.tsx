@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Menu } from '../../components/ui/Menu';
 import { useState } from 'react';
 import { useAppStore } from '../store';
 import { useWelcomeStore } from '../welcomeGate';
@@ -221,6 +222,24 @@ describe('sheets and dialogs (layers)', () => {
     // Its return is ours: nothing more happens.
     pop({ fm: 1, i: 1, v: 'learn', l: 0 });
     expect(closed).toBe(1);
+  });
+
+  it('a "⋯" menu is one too (seen from here: Menu is in the entry bundle): Back closes it, as Escape does', () => {
+    armForTests();
+    render(<Menu label="More" items={[{ id: 'a', label: 'Settings', onSelect: () => undefined }]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.queryByRole('menu')).not.toBeNull();
+    expect(pushes().map((e) => e.l)).toEqual([1]);
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(go).not.toHaveBeenCalled();
+    // Closed by its own item: gone without telling, and the next layer reuses its entry.
+    armForTests(); // the next tap (a Back is no user activation)
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Settings' }));
+    expect(screen.queryByRole('menu')).toBeNull();
+    render(<Sheetish open onClose={() => undefined} />);
+    expect(pushes()).toHaveLength(2);
   });
 
   it('Forward never reopens a closed one', () => {
