@@ -145,13 +145,16 @@ function midiFromFrequency(frequency: number): number {
  * Generate a Karplus-Strong plucked string waveform with physical modeling.
  *
  * Algorithm:
- * 1. Create a circular delay line whose length = sampleRate / frequency
+ * 1. Create a circular delay line of a whole number of samples N, chosen so
+ *    that N − 1, the averaging's half sample, the stiffness allpass and the
+ *    tuning allpass (4d) add up to exactly sampleRate / frequency (see C)
  * 2. Fill it with brightness-filtered noise shaped by a half-sine window (excitation)
  * 3. Apply a pick-position comb filter to remove the harmonic at the pick point
  * 4. Loop with:
  *    a. Frequency-dependent damping (high notes decay faster)
- *    b. One-pole allpass for string stiffness (inharmonicity)
- *    c. Standard KS lossy averaging
+ *    b. Standard KS lossy averaging (half a sample of delay)
+ *    c. One-pole allpass for string stiffness (inharmonicity)
+ *    d. One-pole tuning allpass: the fraction of a sample the line cannot hold
  * 5. Blend ~20% body resonance (2-pole bandpass at ~200 Hz)
  */
 export function generateKSBuffer(
@@ -161,12 +164,6 @@ export function generateKSBuffer(
 ): Float32Array {
   const totalSamples = Math.floor(sampleRate * params.duration);
   const output = new Float32Array(totalSamples);
-
-  // Delay line length determines the fundamental frequency
-  const delayLength = Math.round(sampleRate / frequency);
-  if (delayLength < 2) return output;
-
-  const delayLine = new Float32Array(delayLength);
 
   // --- A. Frequency-dependent damping ---
   // Real strings lose energy faster at high pitch. Gentle scaling so
@@ -178,6 +175,27 @@ export function generateKSBuffer(
   // Nylon strings have low stiffness → nearly harmonic overtones.
   // Subtle allpass shift adds just enough life without metallic character.
   const stiffness = Math.max(0, Math.min(0.25, 0.25 - frequency / 20000));
+
+  // --- C. Tuning (audit M60, 19 November 2026) ---
+  // The loop's delay at the fundamental is the delay line's whole samples
+  // (N − 1 between a write and its read as "next"), the averaging filter's
+  // half sample, the stiffness allpass's phase delay and a TUNING allpass's,
+  // which holds what is left (the fraction a whole-sample line cannot: Jaffe
+  // and Smith, "Extensions of the Karplus-Strong plucked-string algorithm",
+  // 1983). Until then the line was round(sampleRate / frequency) long and the
+  // two filters' delay was ignored: up to −6 cents (E4 at 48 kHz). A
+  // one-pole allpass with coefficient c delays a low note by (1 − c) / (1 + c)
+  // samples (exact as the frequency goes to 0; against the exact phase delay
+  // the note is off by under 0.002 cent on the open strings, 0.4 cent at C7),
+  // and the tuning one holds 0.1 to 1.1 samples, where its phase is flattest.
+  const period = sampleRate / frequency;
+  const stiffnessDelay = (1 - stiffness) / (1 + stiffness);
+  const delayLength = Math.floor(period + 0.5 - stiffnessDelay - 0.1);
+  if (delayLength < 2) return output;
+  const fraction = period - (delayLength - 0.5 + stiffnessDelay);
+  const tuning = (1 - fraction) / (1 + fraction);
+
+  const delayLine = new Float32Array(delayLength);
 
   // --- 1. Fill delay line with shaped excitation ---
   // Raised cosine window (never below 0.5) shapes the pluck displacement
@@ -217,6 +235,8 @@ export function generateKSBuffer(
   // --- 3. KS loop with stiffness allpass ---
   let allpassState = 0;
   let prevInput = 0;
+  let tuningState = 0;
+  let tuningInput = 0;
   let readIndex = 0;
 
   for (let i = 0; i < totalSamples; i++) {
@@ -234,6 +254,12 @@ export function generateKSBuffer(
     prevInput = averaged;
     allpassState = allpassOut;
     averaged = allpassOut;
+
+    // Tuning allpass (C): the fraction of a sample the line cannot hold.
+    const tuned = tuning * (averaged - tuningState) + tuningInput;
+    tuningInput = averaged;
+    tuningState = tuned;
+    averaged = tuned;
 
     delayLine[readIndex] = averaged;
     readIndex = nextIndex;
