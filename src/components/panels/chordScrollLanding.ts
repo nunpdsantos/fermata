@@ -23,9 +23,16 @@ export function rowClipEdge(rows: RowSpan[], coveredBottom: number): number {
 
 /** Coordinates are relative to the scroll content, not the moving viewport.
  * The 8px above and below are separate from the strip's border box. */
-export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: number, height: number, clearance: number) {
+export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: number, height: number, clearance: number, keep?: { rows: RowSpan[]; through: number }) {
   if (detail.bottom <= height - 8 && rows.every((row) => row.top >= clearance)) return 0;
   const available = height - clearance - 8;
+  // Build with the strip scrolling (a laptop under 900 px tall): the earliest
+  // of the card's head and the builder's root row from which the chord's
+  // first row (▶ Chord) still fits, before the whole detail — the notes and
+  // the readout are what the learner is working on (the owner's ruling,
+  // 19 November 2026).
+  const kept = keep?.rows.find((row) => keep.through - row.top <= available);
+  if (kept) return Math.max(0, kept.top - clearance);
   const first = rows.find((row) => detail.bottom - row.top <= available)
     // On short laptops keep the selected row with the play actions when
     // the remaining detail needs scrolling. Otherwise show the detail top.
@@ -34,7 +41,14 @@ export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: nu
   return Math.max(0, first.top - clearance);
 }
 
-export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement, roomAbove: () => number) {
+/**
+ * `strip` is the staff strip held at the top of the work column (sticky), or
+ * null where it scrolls with the work — the Build tab on a laptop shorter
+ * than 900 px (the owner's ruling, 19 November 2026): the same whole-row
+ * landing then, with nothing to clear but `roomAbove()`, and the row the
+ * work column's top edge would cut in half clipped away.
+ */
+export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
   const savedPadding = scroller.style.paddingBottom;
   const savedScrollPadding = scroller.style.scrollPaddingTop;
@@ -50,7 +64,10 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   const clip = () => {
     // The border box includes the strip's border. Its 8px safety clearance
     // also clears the small card shadow; don't clamp this to action height.
-    const edge = rowClipEdge(spans, strip.getBoundingClientRect().bottom - contentTop());
+    // With the strip scrolling, the work column's own top edge is what cuts
+    // a row: the tabs half shown above the builder's root row are hidden too.
+    const covered = strip ? strip.getBoundingClientRect().bottom : scroller.getBoundingClientRect().top + scroller.clientTop;
+    const edge = rowClipEdge(spans, covered - contentTop());
     card.style.clipPath = `inset(${Math.max(0, edge - measure(card).top)}px 0 0)`;
   };
   const land = () => {
@@ -58,9 +75,18 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     const before = [...card.querySelectorAll<HTMLElement>(rowSelector)]
       .filter((el) => !detail.contains(el) && !!(el.compareDocumentPosition(detail) & Node.DOCUMENT_POSITION_FOLLOWING));
     const candidates = before.filter((el) => el.matches('.explore-card-head, .chord-row, [data-chord-scroll-row]'));
-    const clear = Math.max(roomAbove(), strip.getBoundingClientRect().bottom - scroller.getBoundingClientRect().top + 8);
+    const clear = strip ? Math.max(roomAbove(), strip.getBoundingClientRect().bottom - scroller.getBoundingClientRect().top + 8) : roomAbove();
     scroller.style.scrollPaddingTop = `${clear}px`;
-    const targetFor = () => chordLanding(candidates.map(measure), measure(detail), measure(detail.querySelector('.chord-detail-actions')!).bottom, scroller.clientHeight, clear);
+    // Where the strip scrolls (Build, under 900 px tall): keep the card's
+    // head, or else the builder's root row, with the chord's first row and
+    // ▶ Chord when they fit.
+    const builderRoot = strip ? null : card.querySelector<HTMLElement>('.chord-builder > [data-chord-scroll-row]');
+    const head = card.querySelector<HTMLElement>('.explore-card-head');
+    const firstRow = detail.querySelector<HTMLElement>('.chord-detail-row');
+    const keep = () => builderRoot && head && firstRow
+      ? { rows: [measure(head), measure(builderRoot)], through: Math.max(measure(firstRow).bottom, measure(detail.querySelector('.chord-detail-actions')!).bottom) }
+      : undefined;
+    const targetFor = () => chordLanding(candidates.map(measure), measure(detail), measure(detail.querySelector('.chord-detail-actions')!).bottom, scroller.clientHeight, clear, keep());
     let target = targetFor();
     if (measure(card.querySelector('.explore-card-head')!).top < target + clear) {
       detail.dataset.compactSource = 'true';
@@ -82,7 +108,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     frame = requestAnimationFrame(land);
   });
   observer.observe(scroller);
-  observer.observe(strip);
+  if (strip) observer.observe(strip);
   observer.observe(detail);
   scroller.addEventListener('scroll', clip, { passive: true });
   return () => {

@@ -344,17 +344,22 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
     // sheet at 844×390, Half).
     const scroller = scrollerOf(el);
     const strip = scroller?.querySelector<HTMLElement>(':scope > .strip-card');
-    const sticky = strip && getComputedStyle(strip).position === 'sticky';
+    const sticky = !!strip && getComputedStyle(strip).position === 'sticky';
+    // The workbench's work column (≥ 1200 px): its strip is held at the top,
+    // except on the Build tab of a laptop under 900 px tall, where it scrolls
+    // with the work (the owner's ruling, 19 November 2026) — the same
+    // whole-row landing then, with no strip to clear.
+    const workbench = !!scroller && !!strip && scroller.classList.contains('explore-main');
     const behavior = reduceMotion ? 'auto' : 'smooth';
     // Keep the recorded nearest/clamped behaviour on the other layouts.
-    if (!scroller || !sticky) {
+    if (!scroller || !workbench) {
       el.style.scrollMarginTop = `${roomAbove(el)}px`;
       el.scrollIntoView?.({ block: 'nearest', behavior });
       return;
     }
     // Whole-row landings are atomic; smooth intermediate offsets can hide
     // the play action while the learner is already trying to use it.
-    return landChordDetail(el, scroller, strip, () => roomAbove(el));
+    return landChordDetail(el, scroller, sticky ? strip : null, () => roomAbove(el));
   }, [chordId, reduceMotion, sourceTab]);
   const playIcon = <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>;
 

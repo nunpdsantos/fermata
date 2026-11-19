@@ -42,3 +42,31 @@ it('merges labels and controls that share a row before choosing its gap', () => 
   expect(wholeRows([row(200, 12), row(190, 36), row(232, 64), row(238, 36)]))
     .toEqual([row(190, 36), row(232, 64)]);
 });
+
+// The owner's ruling of 19 November 2026: on Build, with the strip scrolling
+// (a laptop under 900 px tall), the landing keeps the card's head, or else the
+// builder's root row, with the chord's first row and ▶ Chord. Spans measured
+// at 1366×768 and 1536×864 (EN piano, C E G): the head at 192, the root row at
+// 238, the notes at 278, the readout at 377, the detail 448–590 with ▶ Chord
+// ending at 537; the work column 331 / 427 px tall, 19 px of room above.
+const head = row(192, 42), root = row(238, 36);
+const buildRows = [head, root, row(278, 91), row(377, 61)];
+const builtDetail = row(448, 142);
+
+it('Build, the strip scrolling: the root row through ▶ Chord when the head cannot fit with them (1366×768)', () => {
+  const target = chordLanding(buildRows, builtDetail, 537, 331, 19, { rows: [head, root], through: 537 });
+  expect(target).toBe(root.top - 19);
+  expect(537 - target).toBeLessThanOrEqual(331 - 8);
+  // Without the preference the whole detail wins and the root row, the notes
+  // and the readout's top go off screen: what the ruling changes.
+  expect(chordLanding(buildRows, builtDetail, 537, 331, 19)).toBe(377 - 19);
+});
+
+it('Build, the strip scrolling: the head as well when it fits (1536×864)', () => {
+  expect(chordLanding(buildRows, builtDetail, 537, 427, 19, { rows: [head, root], through: 537 })).toBe(head.top - 19);
+});
+
+it('Build, the strip scrolling: the usual landing when the root row cannot fit with ▶ Chord (the longest readout)', () => {
+  const tall = { rows: [head, root], through: root.top + 330 };
+  expect(chordLanding(buildRows, builtDetail, 537, 331, 19, tall)).toBe(chordLanding(buildRows, builtDetail, 537, 331, 19));
+});

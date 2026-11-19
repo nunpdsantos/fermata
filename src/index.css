@@ -3136,6 +3136,25 @@ html[data-metro-room] .learn-scroll {
    page never scrolls, CLAUDE.md "What scrolls"). */
 .chord-detail { position: relative; }
 
+/* Explore's tools (stream C), the owner's ruling of 19 November 2026: on the
+   Build tab of a laptop under 900 px tall (1280×800, 1366×768, 1536×864) the
+   staff strip scrolls with the work instead of staying at the top of the
+   work column, so the builder's root row, its 13 notes, the readout, ▶ Chord
+   and the chord's first row can be on screen together (under the held strip
+   1366×768 left 154 px, and the readout with ▶ Chord needs 163). In key and
+   All Chords keep it held: there the strip shows the chord's tones while the
+   detail scrolls under it. At 1440×900 nothing changes. The detail's landing
+   (CurrentChordPanel, chordScrollLanding) reads the strip's position. */
+@media screen and (min-width: 1200px) and (max-height: 899px) {
+  .explore-main:has(> .chords-card[data-mode="build"]) > .strip-card { position: static; }
+  /* The builder's rows 6 px apart and the readout's padding 6 px (8 and 8
+     elsewhere) take 8 px off the root row to ▶ Chord: 299 px, where
+     1366×768 leaves 299 with the guitar and 304 with the piano (the room
+     less the toast's clearance above and 8 px below); 307 did not fit. */
+  .chord-builder > :not(:last-child) { margin-block-end: 6px; }
+  .builder-readout { padding-block: 6px; }
+}
+
 /* Instruments stream (builder D), QA audit 2026-11-18 Q14: a phone's octave
    row that does not fit rests on whole pills. Its window ends between two
    pills, as the staff strip's resting edge ends between noteheads, and the

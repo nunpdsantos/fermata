@@ -104,7 +104,9 @@ export function ChordsCard() {
   return (
     <section ref={cardRef} className="explore-card chords-card" aria-labelledby="chords-title" data-testid="chords-card"
       // While the panel hides the tabs, the tab they will show again (the tour reads it).
-      data-chords-tab={progression && !simple ? mode : undefined}>
+      data-chords-tab={progression && !simple ? mode : undefined}
+      // The tab shown (the Build tab un-pins the staff strip on a shorter laptop: index.css).
+      data-mode={progression ? undefined : mode}>
       <div className="explore-card-head">
         {/* The heading names what the panel lists (audit 2026-11-18, Q10):
             the key's chords, every chord on the key's root, or a chord built
