@@ -13,27 +13,27 @@ const l4u12m1: CurriculumModule = {
   objectives: [
     'Understand the three-phase suspension pattern: preparation, dissonance, resolution',
     'Identify all four suspension types by their intervals above the bass',
-    'Recognize the 2-3 bass suspension: the bass resolves downward by step, and the interval above it grows from a 2nd to a 3rd',
+    'Recognise the 2-3 bass suspension: the bass resolves downwards by step, and the interval above it grows from a 2nd to a 3rd',
   ],
   concepts: [
     {
       title: 'The Suspension Mechanism',
       explanation:
-        'A suspension is a note held (tied) from the previous chord into the new chord, creating a dissonance that resolves by step (usually downward). It has three phases: preparation (consonant note in the previous chord), suspension (the same note held over into the new chord, now dissonant, on a strong beat), and resolution (the held note moves by step to a consonant chord tone). The dissonance on the strong beat is what gives suspensions their expressive power \u2014 the listener expects consonance and gets tension instead.',
+        'A suspension is a note held (tied) from the previous chord into the new chord, creating a dissonance that resolves by step (usually downwards). It has three phases: preparation (consonant note in the previous chord), suspension (the same note held over into the new chord, now dissonant, on a strong beat), and resolution (the held note moves by step to a consonant chord tone). The dissonance on the strong beat is what gives suspensions their expressive power \u2014 the listener expects consonance and gets tension instead.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear the consonant resolution target',
     },
     {
       title: 'Suspension Types: 4-3, 7-6, 9-8',
       explanation:
-        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downward by step. A decorated (ornamented) suspension adds one or more notes between the suspension and its resolution, such as a brief lower neighbor, before the line arrives on its resolution a step below.',
+        'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downwards by step. A decorated (ornamented) suspension adds one or more notes between the suspension and its resolution, such as a brief lower neighbour, before the line arrives on its resolution a step below.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Imagine holding C over this chord (4-3 sus)',
     },
     {
       title: 'The 2-3 Bass Suspension',
       explanation:
-        'The 2-3 suspension is unique: it occurs in the bass voice rather than an upper voice. The bass note is held from the previous chord, forming a 2nd against a stationary upper voice, then resolves downward by step. The label "2-3" describes the interval above the bass: as the bass descends, that interval grows from a 2nd to a 3rd — the upper voice does not move. The bass, like all standard suspensions, resolves by step downward. (Kostka/Payne, Tonal Harmony, Ch. 12.)',
+        'The 2-3 suspension is unique: it occurs in the bass voice rather than an upper voice. The bass note is held from the previous chord, forming a 2nd against a stationary upper voice, then resolves downwards by step. The label "2-3" describes the interval above the bass: as the bass descends, that interval grows from a 2nd to a 3rd — the upper voice does not move. The bass, like all standard suspensions, resolves by step downwards. (Kostka/Payne, Tonal Harmony, Ch. 12.)',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hold E in an upper voice while the bass descends D → C — the interval above the bass grows from a 2nd to a 3rd',
     },
@@ -61,11 +61,11 @@ const l4u12m2: CurriculumModule = {
   unitId: 'u12',
   levelId: 'l4',
   title: 'Appoggiatura, Escape Tone, and Retardation',
-  subtitle: 'Accented and unaccented non-chord tones approached by leap or resolved upward',
+  subtitle: 'Accented and unaccented non-chord tones approached by leap or resolved upwards',
   objectives: [
     'Identify the appoggiatura by its leap approach and step resolution on a strong beat',
-    'Recognize the escape tone as the reverse: step approach, leap departure',
-    'Understand the retardation as a suspension that resolves upward instead of down',
+    'Recognise the escape tone as the reverse: step approach, leap departure',
+    'Understand the retardation as a suspension that resolves upwards instead of down',
   ],
   concepts: [
     {
@@ -85,9 +85,9 @@ const l4u12m2: CurriculumModule = {
     {
       title: 'The Retardation',
       explanation:
-        'A retardation uses the same held-note mechanism as a suspension but resolves upward by step instead of downward. The most typical retardation is 7-8: the leading tone is held over from the dominant chord and resolves up to the tonic. It sounds like a suspension that goes the "wrong" way. Retardations are less common than suspensions because upward resolution is less natural in tonal voice leading, but the 7-8 retardation is idiomatic at cadential points.',
+        'A retardation uses the same held-note mechanism as a suspension but resolves upwards by step instead of downwards. The most typical retardation is 7-8: the leading tone is held over from the dominant chord and resolves up to the tonic. It sounds like a suspension that goes the "wrong" way. Retardations are less common than suspensions because upward resolution is less natural in tonal voice leading, but the 7-8 retardation is idiomatic at cadential points.',
       tryThisQuery: 'G major chord',
-      tryThisLabel: 'The B in G major can retard upward to C',
+      tryThisLabel: 'The B in G major can retard upwards to C',
     },
   ],
   tasks: [
@@ -113,11 +113,11 @@ const l4u12m3: CurriculumModule = {
   unitId: 'u12',
   levelId: 'l4',
   title: 'Pedal Point and Changing Tones',
-  subtitle: 'Sustained bass notes and double-neighbor ornaments',
+  subtitle: 'Sustained bass notes and double-neighbour ornaments',
   objectives: [
     'Understand the pedal point as a sustained note over changing harmonies',
     'Identify bass, inverted, internal, and double pedal types',
-    'Recognize changing tones (double neighbor) as a paired ornamental figure',
+    'Recognise changing tones (double neighbour) as a paired ornamental figure',
   ],
   concepts: [
     {
@@ -135,9 +135,9 @@ const l4u12m3: CurriculumModule = {
       tryThisLabel: 'G is the dominant pedal note in C major',
     },
     {
-      title: 'Changing Tones (Double Neighbor)',
+      title: 'Changing Tones (Double Neighbour)',
       explanation:
-        'Changing tones are a pair of neighbor tones in sequence: chord tone, upper neighbor, lower neighbor, back to the original chord tone (or the reverse order). Also called a "neighbor group" or "double neighbor." They create a decorative orbit around a single pitch, embellishing it from both sides before returning. The figure typically spans a weak-beat position and adds melodic interest without disrupting the underlying harmony.',
+        'Changing tones are a pair of neighbour tones in sequence: chord tone, upper neighbour, lower neighbour, back to the original chord tone (or the reverse order). Also called a "neighbour group" or "double neighbour." They create a decorative orbit around a single pitch, embellishing it from both sides before returning. The figure typically spans a weak-beat position and adds melodic interest without disrupting the underlying harmony.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Imagine orbiting around E with F then D',
     },
@@ -153,7 +153,7 @@ const l4u12m3: CurriculumModule = {
     },
     {
       id: 'l4u12m3t3',
-      instruction: "A changing tone figure around E in C major: E-F-D-E. The F is the upper neighbor, D is the lower neighbor, and the figure returns to E. This double-neighbor ornament decorates a single chord tone from both sides",
+      instruction: "A changing tone figure around E in C major: E-F-D-E. The F is the upper neighbour, D is the lower neighbour, and the figure returns to E. This double-neighbour ornament decorates a single chord tone from both sides",
     },
   ],
   prerequisites: ['l4u12m2'],
@@ -175,7 +175,7 @@ const l4u12m4: CurriculumModule = {
     {
       title: 'V7 Tendency Tones',
       explanation:
-        'The dominant seventh chord contains two tendency tones that create its powerful gravitational pull toward the tonic. The leading tone (the 3rd of V7) resolves up by half step to the tonic. The chordal 7th resolves down by step to the 3rd of I. Together, these two voices form a tritone that contracts to an imperfect consonance (a 3rd or 6th), generating the strongest harmonic drive in tonal music.',
+        'The dominant seventh chord contains two tendency tones that create its powerful gravitational pull towards the tonic. The leading tone (the 3rd of V7) resolves up by half step to the tonic. The chordal 7th resolves down by step to the 3rd of I. Together, these two voices form a tritone that contracts to an imperfect consonance (a 3rd or 6th), generating the strongest harmonic drive in tonal music.',
       tryThisQuery: 'G7',
       tryThisLabel: 'Hear the unresolved tension of G7',
     },
@@ -222,7 +222,7 @@ const l4u12m5: CurriculumModule = {
   objectives: [
     'Resolve root position and all three inversions of V7 to their proper tonic targets',
     'Understand why V4/2 almost always resolves to I6 (first-inversion tonic)',
-    'Recognize how inversion determines bass motion and resolution',
+    'Recognise how inversion determines bass motion and resolution',
   ],
   concepts: [
     {
@@ -280,20 +280,20 @@ const l4u13m1: CurriculumModule = {
   objectives: [
     'Build and identify ii7 (minor 7th in major) and ii\u00F87 (half-diminished in minor)',
     'Understand the ii7-V7-I progression as the strongest functional sequence in tonal harmony',
-    'Recognize IV7/IVmaj7 as a subdominant seventh with added warmth',
+    'Recognise IV7/IVmaj7 as a subdominant seventh with added warmth',
   ],
   concepts: [
     {
       title: 'The ii7 Chord',
       explanation:
-        'The ii7 is the most important pre-dominant chord. In major keys it is a minor seventh chord; in minor keys it becomes a half-diminished seventh (ii\u00F87). The progression ii7-V7-I is the strongest functional sequence in tonal harmony because the root of ii7 (D) is a common tone with the 5th of V (D in G-B-D-F), creating a seamless voice-leading connection. The bass moves by descending fifth (or ascending fourth) at each step, reinforcing the gravitational pull toward the tonic.',
+        'The ii7 is the most important pre-dominant chord. In major keys it is a minor seventh chord; in minor keys it becomes a half-diminished seventh (ii\u00F87). The progression ii7-V7-I is the strongest functional sequence in tonal harmony because the root of ii7 (D) is a common tone with the 5th of V (D in G-B-D-F), creating a seamless voice-leading connection. The bass moves by descending fifth (or ascending fourth) at each step, reinforcing the gravitational pull towards the tonic.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'Hear ii7 in the key of C',
     },
     {
       title: 'The IV7 / IVmaj7 Chord',
       explanation:
-        'IVmaj7 serves a subdominant (pre-dominant) function with added warmth and color. The major seventh interval gives it a lush quality distinct from the simpler IV triad. The seventh intensifies the pull toward the dominant by adding another voice that wants to resolve. While less common than ii7 in classical practice, IVmaj7 appears frequently in jazz and pop harmony as an alternative pre-dominant sonority.',
+        'IVmaj7 serves a subdominant (pre-dominant) function with added warmth and colour. The major seventh interval gives it a lush quality distinct from the simpler IV triad. The seventh intensifies the pull towards the dominant by adding another voice that wants to resolve. While less common than ii7 in classical practice, IVmaj7 appears frequently in jazz and pop harmony as an alternative pre-dominant sonority.',
       tryThisQuery: 'Fmaj7',
       tryThisLabel: 'Hear IVmaj7 in the key of C',
     },
@@ -331,7 +331,7 @@ const l4u13m2: CurriculumModule = {
   subtitle: 'iii7, vi7, Imaj7 \u2014 tonic-function sevenths and the jazz tonic',
   objectives: [
     'Understand iii7 as a tonic substitute and circle-of-fifths link',
-    'Recognize vi7 as the primary tonic-function substitute and deceptive resolution target',
+    'Recognise vi7 as the primary tonic-function substitute and deceptive resolution target',
     'Distinguish Imaj7 (jazz tonic) from I7 (blues tonic)',
   ],
   concepts: [
@@ -345,7 +345,7 @@ const l4u13m2: CurriculumModule = {
     {
       title: 'The Tonic Seventh: Imaj7',
       explanation:
-        'In classical harmony, the 7th on a tonic chord is typically treated as a passing tone or suspension that resolves. In jazz and pop, Imaj7 is the standard tonic voicing \u2014 warm, rich, and sophisticated. The major seventh interval (B in Cmaj7) adds color without creating dominant-quality tension. Imaj7 is the resting point of the ii7-V7-Imaj7 progression, the most characteristic jazz cadence.',
+        'In classical harmony, the 7th on a tonic chord is typically treated as a passing tone or suspension that resolves. In jazz and pop, Imaj7 is the standard tonic voicing \u2014 warm, rich, and sophisticated. The major seventh interval (B in Cmaj7) adds colour without creating dominant-quality tension. Imaj7 is the resting point of the ii7-V7-Imaj7 progression, the most characteristic jazz cadence.',
       tryThisQuery: 'Cmaj7',
       tryThisLabel: 'Hear the jazz tonic: Cmaj7',
     },
@@ -384,7 +384,7 @@ const l4u13m3: CurriculumModule = {
   objectives: [
     'Build and resolve vii\u00F87 (half-diminished, in major) and viio7 (fully diminished, in minor)',
     'Understand leading-tone sevenths as rootless dominant ninths',
-    'Recognize the enharmonic flexibility of the fully diminished seventh chord',
+    'Recognise the enharmonic flexibility of the fully diminished seventh chord',
   ],
   concepts: [
     {
@@ -397,7 +397,7 @@ const l4u13m3: CurriculumModule = {
     {
       title: 'The Fully Diminished viio7',
       explanation:
-        'The viio7 in minor keys is built from the raised 7th degree of harmonic minor. All four notes are tendency tones pulling toward resolution, making it the most tense of all diatonic seventh chords. In A minor, G#dim7 contains G#-B-D-F \u2014 every note wants to move by step. The fully diminished seventh divides the octave into equal minor thirds, giving it a symmetric, restless quality.',
+        'The viio7 in minor keys is built from the raised 7th degree of harmonic minor. All four notes are tendency tones pulling towards resolution, making it the most tense of all diatonic seventh chords. In A minor, G#dim7 contains G#-B-D-F \u2014 every note wants to move by step. The fully diminished seventh divides the octave into equal minor thirds, giving it a symmetric, restless quality.',
       tryThisQuery: 'Bdim7',
       tryThisLabel: 'Hear the fully diminished viio7',
     },
@@ -438,15 +438,15 @@ const l4u13m4: CurriculumModule = {
   objectives: [
     'Classify every diatonic chord by function: Tonic (T), Pre-Dominant (PD), Dominant (D)',
     'Understand the standard progression T \u2192 PD \u2192 D \u2192 T as the fundamental harmonic sentence',
-    'Recognize retrogressions and chord substitution within functional groups',
+    'Recognise retrogressions and chord substitution within functional groups',
   ],
   concepts: [
     {
       title: 'The Three Harmonic Functions',
       explanation:
-        'Every diatonic chord serves one of three functions. Tonic (T) chords \u2014 I, vi, and sometimes iii \u2014 provide stability and the sense of home. Pre-Dominant (PD) chords \u2014 ii and IV \u2014 create departure and motion, signaling that the harmony is heading somewhere. Dominant (D) chords \u2014 V and vii\u00B0 \u2014 generate tension and urgency that demands resolution back to the tonic. The degree colors in this app encode these functions: blue for tonic stability, amber for dominant tension.',
+        'Every diatonic chord serves one of three functions. Tonic (T) chords \u2014 I, vi, and sometimes iii \u2014 provide stability and the sense of home. Pre-Dominant (PD) chords \u2014 ii and IV \u2014 create departure and motion, signalling that the harmony is heading somewhere. Dominant (D) chords \u2014 V and vii\u00B0 \u2014 generate tension and urgency that demands resolution back to the tonic. The degree colours in this app encode these functions: blue for tonic stability, amber for dominant tension.',
       tryThisQuery: 'key of C',
-      tryThisLabel: 'See function colors on the degree bar',
+      tryThisLabel: 'See function colours on the degree bar',
     },
     {
       title: 'The Standard Functional Progression',
@@ -466,7 +466,7 @@ const l4u13m4: CurriculumModule = {
   tasks: [
     {
       id: 'l4u13m4t1',
-      instruction: "Open 'key of C' and classify each diatonic chord: I(T), ii(PD), iii(T), IV(PD), V(D), vi(T), vii\u00B0(D). Notice how the degree bar colors map to these functions",
+      instruction: "Open 'key of C' and classify each diatonic chord: I(T), ii(PD), iii(T), IV(PD), V(D), vi(T), vii\u00B0(D). Notice how the degree bar colours map to these functions",
       query: 'key of C',
     },
     {
@@ -488,7 +488,7 @@ const l4u13m5: CurriculumModule = {
   title: 'Harmonic Sequences',
   subtitle: 'Repeating harmonic patterns that create directed motion through a key',
   objectives: [
-    'Recognize descending-fifths, ascending-seconds, and descending-thirds sequence patterns',
+    'Recognise descending-fifths, ascending-seconds, and descending-thirds sequence patterns',
     'Understand how sequences create directional harmonic momentum that overrides normal functional logic',
     'Hear sequences in context across Baroque, Classical, and pop styles',
   ],
@@ -512,7 +512,7 @@ const l4u13m5: CurriculumModule = {
       explanation:
         'In an ascending-seconds sequence, roots move up by step: I-ii-iii-IV-V, creating a climbing sensation. First inversions are often used to keep the bass line smooth (the 5-6 technique): in the ascending 5-6 sequence each root-position (5/3) chord is followed by a 6/3 chord over the same bass note, and then the bass rises a step. In a descending-thirds sequence, roots fall by thirds: I-vi-IV-ii, producing a gentle, falling motion common in Romantic music. Each pair in a thirds sequence shares a common tone, making the voice leading exceptionally smooth.',
       tryThisQuery: 'Dm7',
-      tryThisLabel: 'ii7 sits at the center of many sequences',
+      tryThisLabel: 'ii7 sits at the centre of many sequences',
     },
   ],
   tasks: [
@@ -567,7 +567,7 @@ const l4u14m1: CurriculumModule = {
     {
       title: 'First and Second Species',
       explanation:
-        'First species (1:1) places one counterpoint note against each note in the cantus firmus (given melody). Every interval must be consonant. Begin and end on P1, P5, or P8, use mostly imperfect consonances, and never approach perfect consonances in parallel motion. Second species (2:1) adds two notes against each cantus firmus note. Strong beats must be consonant; in strict species the only dissonance allowed on a weak beat is the passing tone, approached and left by step (dissonant neighbor tones arrive later, in third species — though some modern texts admit them earlier). Weak beats may also be consonant — a leap to a consonant interval is permitted. This is where non-chord tones first enter counterpoint.',
+        'First species (1:1) places one counterpoint note against each note in the cantus firmus (given melody). Every interval must be consonant. Begin and end on P1, P5, or P8, use mostly imperfect consonances, and never approach perfect consonances in parallel motion. Second species (2:1) adds two notes against each cantus firmus note. Strong beats must be consonant; in strict species the only dissonance allowed on a weak beat is the passing tone, approached and left by step (dissonant neighbour tones arrive later, in third species — though some modern texts admit them earlier). Weak beats may also be consonant — a leap to a consonant interval is permitted. This is where non-chord tones first enter counterpoint.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Imagine a second voice against this line',
     },
@@ -595,34 +595,34 @@ const l4u14m2: CurriculumModule = {
   id: 'l4u14m2',
   unitId: 'u14',
   levelId: 'l4',
-  title: 'Asymmetric and Mixed Meters',
-  subtitle: 'Counting in 5, 7, and beyond \u2014 additive and mixed meters',
+  title: 'Asymmetric and Mixed Metres',
+  subtitle: 'Counting in 5, 7, and beyond \u2014 additive and mixed metres',
   objectives: [
-    'Count and feel asymmetric meters: 5/4, 5/8, 7/4, 7/8',
-    'Understand additive meter groupings (2+3, 3+2, 2+2+3) as the building blocks of irregular rhythm',
-    'Recognize mixed meters where the time signature changes from measure to measure',
+    'Count and feel asymmetric metres: 5/4, 5/8, 7/4, 7/8',
+    'Understand additive metre groupings (2+3, 3+2, 2+2+3) as the building blocks of irregular rhythm',
+    'Recognise mixed metres where the time signature changes from measure to measure',
   ],
   concepts: [
     {
-      title: 'Asymmetric Meters',
+      title: 'Asymmetric Metres',
       explanation:
-        'Asymmetric meters have beat counts that do not divide evenly into equal groups. 5/4 or 5/8 groups as either 2+3 or 3+2 \u2014 the grouping determines the rhythmic feel entirely. 7/4 or 7/8 groups as 2+2+3, 2+3+2, or 3+2+2. The unequal grouping creates a lopsided groove that is characteristic of Balkan folk music, progressive rock, and much 20th-century concert music.',
+        'Asymmetric metres have beat counts that do not divide evenly into equal groups. 5/4 or 5/8 groups as either 2+3 or 3+2 \u2014 the grouping determines the rhythmic feel entirely. 7/4 or 7/8 groups as 2+2+3, 2+3+2, or 3+2+2. The unequal grouping creates a lopsided groove that is characteristic of Balkan folk music, progressive rock, and much 20th-century concert music.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear 7/8 grouped 2+2+3',
       rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8 | >8 8 >8 8 >8 8 8', grouping: [2, 2, 3] },
     },
     {
-      title: 'Additive Meters',
+      title: 'Additive Metres',
       explanation:
-        'Additive meters are built by combining groups of 2 and 3 beats. 5 = 2+3 or 3+2. 7 = 2+2+3 or 2+3+2 or 3+2+2. 8 = 3+3+2, common in Balkan music and some rock. 11 = 2+2+3+2+2, used by Dave Brubeck and others. The internal grouping pattern is what gives each meter its distinctive character \u2014 the same total number of beats with different groupings creates entirely different rhythmic feels.',
+        'Additive metres are built by combining groups of 2 and 3 beats. 5 = 2+3 or 3+2. 7 = 2+2+3 or 2+3+2 or 3+2+2. 8 = 3+3+2, common in Balkan music and some rock. 11 = 2+2+3+2+2, used by Dave Brubeck and others. The internal grouping pattern is what gives each metre its distinctive character \u2014 the same total number of beats with different groupings creates entirely different rhythmic feels.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Hear 5/4 grouped 3+2',
       rhythm: { time: '5/4', notes: '>q q q >q q | >q q q >q q', grouping: [3, 2] },
     },
     {
-      title: 'Mixed Meters and Cut Time',
+      title: 'Mixed Metres and Cut Time',
       explanation:
-        'Mixed meter changes the time signature from measure to measure: one bar of 4/4, the next of 3/4, then 5/4. This creates an unpredictable, shifting rhythmic surface common in film scores and progressive rock. Cut time (alla breve, 2/2) uses two half-note beats per measure \u2014 a 2/2 bar has the same total duration as a 4/4 bar, but the beat unit is the half note rather than the quarter, so the music is counted in 2 and gains a broader, faster-moving feel with stronger metric drive. Cut time is standard in marches and fast Classical movements.',
+        'Mixed metre changes the time signature from measure to measure: one bar of 4/4, the next of 3/4, then 5/4. This creates an unpredictable, shifting rhythmic surface common in film scores and progressive rock. Cut time (alla breve, 2/2) uses two half-note beats per measure \u2014 a 2/2 bar has the same total duration as a 4/4 bar, but the beat unit is the half note rather than the quarter, so the music is counted in 2 and gains a broader, faster-moving feel with stronger metric drive. Cut time is standard in marches and fast Classical movements.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'Hear cut time: two half-note beats to a bar',
       rhythm: { time: '2/2', notes: '>h h | >q q h | >w' },
@@ -639,7 +639,7 @@ const l4u14m2: CurriculumModule = {
     },
     {
       id: 'l4u14m2t3',
-      instruction: "Alternate a 4/4 bar with a 3/4 bar and repeat the cycle several times \u2014 this is the simplest mixed meter. Notice how the shifting bar length creates an unpredictable, asymmetric rhythmic feel even from two symmetric meters",
+      instruction: "Alternate a 4/4 bar with a 3/4 bar and repeat the cycle several times \u2014 this is the simplest mixed metre. Notice how the shifting bar length creates an unpredictable, asymmetric rhythmic feel even from two symmetric metres",
     },
   ],
   prerequisites: ['l4u14m1'],
@@ -651,24 +651,24 @@ const l4u14m3: CurriculumModule = {
   unitId: 'u14',
   levelId: 'l4',
   title: 'Chromatic Embellishment',
-  subtitle: 'Adding chromatic color to diatonic harmony without changing the key',
+  subtitle: 'Adding chromatic colour to diatonic harmony without changing the key',
   objectives: [
-    'Recognize chromatic passing tones and chromatic neighbor tones',
+    'Recognise chromatic passing tones and chromatic neighbour tones',
     'Distinguish chromatic embellishment (decorative) from structural chromaticism (secondary dominants, modulation)',
-    'Hear how chromatic motion adds smoothness and color to voice leading',
+    'Hear how chromatic motion adds smoothness and colour to voice leading',
   ],
   concepts: [
     {
-      title: 'Chromatic Passing and Neighbor Tones',
+      title: 'Chromatic Passing and Neighbour Tones',
       explanation:
-        'A chromatic passing tone fills in a whole step with a non-diatonic note: C-C\u266F-D uses the chromatic C\u266F to connect two diatonic tones smoothly. A chromatic neighbor tone orbits a chord tone using a chromatic half step: E-E\u266D-E creates a tighter orbit than a diatonic neighbor. Both add smoothness and color to otherwise plain diatonic lines. They are especially common in bass lines and inner voices, where the added chromaticism enriches the texture without disrupting the melody.',
+        'A chromatic passing tone fills in a whole step with a non-diatonic note: C-C\u266F-D uses the chromatic C\u266F to connect two diatonic tones smoothly. A chromatic neighbour tone orbits a chord tone using a chromatic half step: E-E\u266D-E creates a tighter orbit than a diatonic neighbour. Both add smoothness and colour to otherwise plain diatonic lines. They are especially common in bass lines and inner voices, where the added chromaticism enriches the texture without disrupting the melody.',
       tryThisQuery: 'chromatic scale',
       tryThisLabel: 'Hear all 12 chromatic steps',
     },
     {
       title: 'Embellishment vs. Structural Chromaticism',
       explanation:
-        'At this level, chromaticism is decorative \u2014 it adds color to diatonic harmony without changing the key. A chromatic passing tone between scale degrees 4 and 5 is decoration. A V/V chord (secondary dominant) is structural chromaticism that briefly points to a new tonal center. The distinction matters: embellishment ornaments the surface while structure alters the harmonic direction. Structural chromaticism including secondary dominants and modulation comes in Level 5.',
+        'At this level, chromaticism is decorative \u2014 it adds colour to diatonic harmony without changing the key. A chromatic passing tone between scale degrees 4 and 5 is decoration. A V/V chord (secondary dominant) is structural chromaticism that briefly points to a new tonal centre. The distinction matters: embellishment ornaments the surface while structure alters the harmonic direction. Structural chromaticism including secondary dominants and modulation comes in Level 5.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'The diatonic framework chromaticism decorates',
     },
@@ -704,11 +704,11 @@ const l4u14m4: CurriculumModule = {
   unitId: 'u14',
   levelId: 'l4',
   title: 'Roman Numeral Analysis Practice',
-  subtitle: 'Analyzing real harmonic progressions with full Roman numeral notation',
+  subtitle: 'Analysing real harmonic progressions with full Roman numeral notation',
   objectives: [
-    'Analyze chord progressions with complete Roman numeral notation including quality and inversion',
+    'Analyse chord progressions with complete Roman numeral notation including quality and inversion',
     'Identify cadences, non-chord tones, and inversions in context',
-    'Develop fluency in reading chorale-style textures and labeling harmonic function',
+    'Develop fluency in reading chorale-style textures and labelling harmonic function',
   ],
   concepts: [
     {
@@ -721,14 +721,14 @@ const l4u14m4: CurriculumModule = {
     {
       title: 'Reading Chorale Textures',
       explanation:
-        'Four-voice chorale texture places soprano and alto on the treble staff (stems up and down respectively), tenor and bass on the bass staff. Start analysis by identifying the bass note \u2014 it determines the inversion. Then identify the remaining chord tones above. Circle any notes that do not fit the chord \u2014 these are non-chord tones. Suspensions and passing tones can make chords look wrong on the surface; always analyze the underlying harmony at the point of resolution.',
+        'Four-voice chorale texture places soprano and alto on the treble staff (stems up and down respectively), tenor and bass on the bass staff. Start analysis by identifying the bass note \u2014 it determines the inversion. Then identify the remaining chord tones above. Circle any notes that do not fit the chord \u2014 these are non-chord tones. Suspensions and passing tones can make chords look wrong on the surface; always analyse the underlying harmony at the point of resolution.',
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'A simple chord to practice identifying',
+      tryThisLabel: 'A simple chord to practise identifying',
     },
     {
       title: 'Common Analysis Traps',
       explanation:
-        'The most common mistake is misidentifying chords in inversion by looking only at the bass note. A chord with E in the bass, G above, and C above is not E minor \u2014 it is C major in first inversion (I6). Another trap: suspensions make the chord look "wrong" at the moment of dissonance. Always analyze through to the resolution to determine the actual harmony. Context determines the best reading when a note could serve as either a chord tone or a non-chord tone.',
+        'The most common mistake is misidentifying chords in inversion by looking only at the bass note. A chord with E in the bass, G above, and C above is not E minor \u2014 it is C major in first inversion (I6). Another trap: suspensions make the chord look "wrong" at the moment of dissonance. Always analyse through to the resolution to determine the actual harmony. Context determines the best reading when a note could serve as either a chord tone or a non-chord tone.',
       tryThisQuery: 'C/E',
       tryThisLabel: 'C/E is I6, not an E chord',
     },
@@ -736,12 +736,12 @@ const l4u14m4: CurriculumModule = {
   tasks: [
     {
       id: 'l4u14m4t1',
-      instruction: "Tap 'C/E' \u2014 this is C major in first inversion (I6 in C major). The bass note is E, but the chord is still C major. Practice identifying the root, not just the lowest note",
+      instruction: "Tap 'C/E' \u2014 this is C major in first inversion (I6 in C major). The bass note is E, but the chord is still C major. Practise identifying the root, not just the lowest note",
       query: 'C/E',
     },
     {
       id: 'l4u14m4t2',
-      instruction: "Analyze this progression in C major: C-Dm-G-C. In Roman numerals: I-ii-V-I. Function labels: T-PD-D-T. This is the fundamental harmonic sentence in its simplest form",
+      instruction: "Analyse this progression in C major: C-Dm-G-C. In Roman numerals: I-ii-V-I. Function labels: T-PD-D-T. This is the fundamental harmonic sentence in its simplest form",
     },
     {
       id: 'l4u14m4t3',
@@ -760,13 +760,13 @@ const l4u14m5: CurriculumModule = {
   objectives: [
     'Understand how the three minor scale forms produce different diatonic chord qualities',
     'Know the practical chord vocabulary of minor keys drawn from all three forms',
-    'Recognize the subtonic VII chord in natural minor and the augmented III+ problem in harmonic minor',
+    'Recognise the subtonic VII chord in natural minor and the augmented III+ problem in harmonic minor',
   ],
   concepts: [
     {
       title: 'The Minor Key Chord Palette',
       explanation:
-        'In practice, minor keys draw chords from all three minor forms: V and vii\u00B0 from harmonic minor (because the leading tone is needed for strong cadences), i, iv, VI, and III from natural minor (using the unaltered 6th and 7th), and ii and IV from melodic minor ascending (which raises the 6th, in addition to the 7th) \u2014 typically where the raised 6th climbs by step to the raised 7th. A major IV used for its brighter color is also often described as borrowed from the parallel major (mode mixture, Level 5); both descriptions are common. This gives minor keys more chord options than major keys, not fewer. The composer chooses which form to use based on voice leading needs and the desired harmonic color.',
+        'In practice, minor keys draw chords from all three minor forms: V and vii\u00B0 from harmonic minor (because the leading tone is needed for strong cadences), i, iv, VI, and III from natural minor (using the unaltered 6th and 7th), and ii and IV from melodic minor ascending (which raises the 6th, in addition to the 7th) \u2014 typically where the raised 6th climbs by step to the raised 7th. A major IV used for its brighter colour is also often described as borrowed from the parallel major (mode mixture, Level 5); both descriptions are common. This gives minor keys more chord options than major keys, not fewer. The composer chooses which form to use based on voice leading needs and the desired harmonic colour.',
       tryThisQuery: 'A natural minor scale',
       tryThisLabel: 'See the natural minor foundation',
     },
@@ -780,7 +780,7 @@ const l4u14m5: CurriculumModule = {
     {
       title: 'The Fluid Minor System',
       explanation:
-        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor VII-i cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analyzing real music, where minor-key harmony rarely stays within a single scale form throughout.',
+        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor VII-i cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analysing real music, where minor-key harmony rarely stays within a single scale form throughout.',
       tryThisQuery: 'A harmonic minor scale',
       tryThisLabel: 'Compare with natural minor above',
     },
@@ -839,10 +839,10 @@ export const L4_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Build and resolve all diatonic seventh chords including ii7, iii7, vi7, vii\u00F87, and viio7',
         'Classify every diatonic chord by harmonic function: Tonic, Pre-Dominant, or Dominant',
-        'Recognize descending-fifths, ascending-seconds, and descending-thirds harmonic sequences',
+        'Recognise descending-fifths, ascending-seconds, and descending-thirds harmonic sequences',
       ],
       bridgeText:
-        'You can now build every diatonic seventh chord, understand how each functions within a key, and hear how chords move in sequential patterns. The final unit applies all of this knowledge to counterpoint, meter, chromatic embellishment, analysis, and the rich harmonic world of minor keys.',
+        'You can now build every diatonic seventh chord, understand how each functions within a key, and hear how chords move in sequential patterns. The final unit applies all of this knowledge to counterpoint, metre, chromatic embellishment, analysis, and the rich harmonic world of minor keys.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'Start a ii7-V7-Imaj7 progression',
       tryThisPrompt: 'Can you trace the ii7-V7-Imaj7 progression and identify the function of each chord?',
@@ -851,8 +851,8 @@ export const L4_UNITS: CurriculumUnit[] = [
   {
     id: 'u14',
     levelId: 'l4',
-    title: 'Counterpoint, Meter, Analysis, and Minor Harmony',
-    description: 'Two-part counterpoint, asymmetric meters, chromatic embellishment, Roman numeral analysis, and minor key chord systems',
+    title: 'Counterpoint, Metre, Analysis, and Minor Harmony',
+    description: 'Two-part counterpoint, asymmetric metres, chromatic embellishment, Roman numeral analysis, and minor key chord systems',
     icon: 'chords',
     modules: [l4u14m1, l4u14m2, l4u14m3, l4u14m4, l4u14m5],
     milestone: {

@@ -11,7 +11,7 @@ const l8u25m1: CurriculumModule = {
   title: 'Fugue: Exposition and Subject/Answer',
   subtitle: 'Fugue exposition structure, subject vs. answer, and the countersubject',
   objectives: [
-    'Analyze the fugue exposition: voice entries, subject, answer, countersubject',
+    'Analyse the fugue exposition: voice entries, subject, answer, countersubject',
     'Distinguish real answer from tonal answer',
     'Identify the countersubject and its role in invertible counterpoint',
     'Understand double and triple fugue at awareness level',
@@ -53,7 +53,7 @@ const l8u25m1: CurriculumModule = {
     {
       id: 'l8u25m1t3',
       instruction:
-        'Compare the subject and answer note by note. Where do they differ? If the answer is tonal, identify the specific interval that was adjusted and explain why (the subject\'s opening emphasized scale degrees 1 and 5).',
+        'Compare the subject and answer note by note. Where do they differ? If the answer is tonal, identify the specific interval that was adjusted and explain why (the subject\'s opening emphasised scale degrees 1 and 5).',
     },
   ],
   prerequisites: ['l7u23m5'],
@@ -68,7 +68,7 @@ const l8u25m2: CurriculumModule = {
   subtitle: 'Transitional episodes, stretto technique, and subject transformations',
   objectives: [
     'Identify episodes and their motivic material (subject fragments, sequences)',
-    'Recognize stretto passages and gauge the tightness of overlapping entries',
+    'Recognise stretto passages and gauge the tightness of overlapping entries',
     'Understand augmentation, diminution, inversion, and retrograde of the subject',
     'Trace the tonal journey of middle entries through related keys',
   ],
@@ -124,7 +124,7 @@ const l8u25m3: CurriculumModule = {
   subtitle: 'Canons at various intervals and special types',
   objectives: [
     'Understand canon at various intervals (unison, octave, 5th, 4th, etc.)',
-    'Recognize special canon types (inversion, retrograde, augmentation/diminution)',
+    'Recognise special canon types (inversion, retrograde, augmentation/diminution)',
     'Know the difference between strict canon and free imitation',
   ],
   concepts: [
@@ -182,16 +182,16 @@ const l8u26m1: CurriculumModule = {
   title: 'Sonata Form in Depth',
   subtitle: 'Exposition, development, and recapitulation in full sectional detail',
   objectives: [
-    'Analyze sonata-form exposition: FTG, TR, medial caesura, STG, CT',
+    'Analyse sonata-form exposition: FTG, TR, medial caesura, STG, CT',
     'Identify development techniques: fragmentation, sequence, false recapitulation, retransition',
     'Understand the recapitulation\'s tonal resolution and Beethoven\'s expanded coda',
-    'Recognize concerto form as a double-exposition adaptation of sonata principles',
+    'Recognise concerto form as a double-exposition adaptation of sonata principles',
   ],
   concepts: [
     {
       title: 'Sonata Form: The Exposition',
       explanation:
-        'The exposition contains a first theme group (FTG) in the tonic that establishes character and key, a modulatory transition (TR) that builds energy and shifts tonal center, a medial caesura (MC) — the dramatic pause marking arrival in the new key — a second theme group (STG) in the secondary key (typically V in major, III in minor) offering contrasting character, and closing material (CT) that reinforces the new key with potentially multiple closing ideas. The repeat sign at the end of the exposition is structurally significant: it ensures the listener internalizes the tonal polarity between tonic and dominant before the development dismantles it.',
+        'The exposition contains a first theme group (FTG) in the tonic that establishes character and key, a modulatory transition (TR) that builds energy and shifts tonal centre, a medial caesura (MC) — the dramatic pause marking arrival in the new key — a second theme group (STG) in the secondary key (typically V in major, III in minor) offering contrasting character, and closing material (CT) that reinforces the new key with potentially multiple closing ideas. The repeat sign at the end of the exposition is structurally significant: it ensures the listener internalises the tonal polarity between tonic and dominant before the development dismantles it.',
       tryThisQuery: 'key of C',
       tryThisLabel: 'See the tonic key — home base of sonata form',
     },
@@ -205,7 +205,7 @@ const l8u26m1: CurriculumModule = {
     {
       title: 'Concerto Form: Double Exposition',
       explanation:
-        'Concerto form adapts sonata principles with a double exposition: the orchestral exposition presents both themes in the tonic, then the soloist\'s exposition restates the first theme in tonic and the second in the dominant, following standard sonata tonal logic. The development features solo-orchestral interplay. The recapitulation resolves both themes to the tonic. A cadenza — the soloist\'s unaccompanied virtuosic passage — typically precedes the final coda, originally improvised but increasingly written out from Beethoven onward.',
+        'Concerto form adapts sonata principles with a double exposition: the orchestral exposition presents both themes in the tonic, then the soloist\'s exposition restates the first theme in tonic and the second in the dominant, following standard sonata tonal logic. The development features solo-orchestral interplay. The recapitulation resolves both themes to the tonic. A cadenza — the soloist\'s unaccompanied virtuosic passage — typically precedes the final coda, originally improvised but increasingly written out from Beethoven onwards.',
       tryThisQuery: 'circle of fifths',
       tryThisLabel: 'See the key relationships that sonata forms traverse',
     },
@@ -239,7 +239,7 @@ const l8u26m2: CurriculumModule = {
   subtitle: 'Theme and variations, chaconne, passacaglia, rondo, and ritornello',
   objectives: [
     'Distinguish sectional theme-and-variations from continuous variation forms',
-    'Analyze chaconne (repeating harmonic pattern) and passacaglia (ground bass)',
+    'Analyse chaconne (repeating harmonic pattern) and passacaglia (ground bass)',
     'Identify rondo forms (5-part, 7-part) and sonata-rondo hybrids',
     'Understand Baroque ritornello form and its relationship to rondo',
   ],
@@ -254,14 +254,14 @@ const l8u26m2: CurriculumModule = {
     {
       title: 'Rondo Forms: Five-Part, Seven-Part, and Sonata-Rondo',
       explanation:
-        'Rondo form features a recurring refrain (A) alternating with contrasting episodes: five-part rondo (A-B-A-C-A), seven-part (A-B-A-C-A-B-A or A-B-A-C-A-D-A). The refrain typically returns in the tonic each time, providing structural stability. Sonata-rondo hybridizes the two forms — A-B-A-development-A-B-A — combining rondo\'s structural clarity with sonata\'s developmental ambition. The B section returns in the tonic during the second half, mirroring sonata form\'s tonal resolution. This hybrid dominates Classical-era finales.',
+        'Rondo form features a recurring refrain (A) alternating with contrasting episodes: five-part rondo (A-B-A-C-A), seven-part (A-B-A-C-A-B-A or A-B-A-C-A-D-A). The refrain typically returns in the tonic each time, providing structural stability. Sonata-rondo hybridises the two forms — A-B-A-development-A-B-A — combining rondo\'s structural clarity with sonata\'s developmental ambition. The B section returns in the tonic during the second half, mirroring sonata form\'s tonal resolution. This hybrid dominates Classical-era finales.',
       tryThisQuery: 'key of C',
       tryThisLabel: 'See C major — the tonic that each rondo refrain reaffirms',
     },
     {
       title: 'Ritornello Form',
       explanation:
-        'Baroque ritornello form alternates a recurring orchestral passage (the ritornello) with solo episodes. The full ritornello appears in the tonic at the start and end; fragments of it return in different keys between solo episodes, creating a tonal journey. Conceptually similar to rondo but more fluid — the ritornello is rarely restated complete in the middle, and the solo episodes are more improvisatory. Vivaldi\'s concertos epitomize the form: bold opening ritornello, virtuosic solo passages, ritornello fragments in related keys, complete ritornello return at the close.',
+        'Baroque ritornello form alternates a recurring orchestral passage (the ritornello) with solo episodes. The full ritornello appears in the tonic at the start and end; fragments of it return in different keys between solo episodes, creating a tonal journey. Conceptually similar to rondo but more fluid — the ritornello is rarely restated complete in the middle, and the solo episodes are more improvisatory. Vivaldi\'s concertos epitomise the form: bold opening ritornello, virtuosic solo passages, ritornello fragments in related keys, complete ritornello return at the close.',
       tryThisQuery: 'circle of fifths',
       tryThisLabel: 'See the key relationships that ritornello traverses',
     },
@@ -302,7 +302,7 @@ const l8u26m3: CurriculumModule = {
     {
       title: 'The Four Orchestral Families',
       explanation:
-        'Strings (violin, viola, cello, double bass) form the orchestra\'s backbone — they sustain, articulate, and span the widest dynamic range through techniques like pizzicato, tremolo, harmonics, and col legno. Woodwinds (flute, oboe, clarinet, bassoon and their auxiliaries) contribute distinct timbral colors and excel in melodic writing. Brass (horn, trumpet, trombone, tuba) deliver power and brilliance, dominating climaxes. Percussion divides into pitched (timpani, xylophone, glockenspiel, vibraphone, marimba, celesta) and unpitched (snare drum, bass drum, cymbals, triangle), providing rhythmic definition, color, and structural punctuation.',
+        'Strings (violin, viola, cello, double bass) form the orchestra\'s backbone — they sustain, articulate, and span the widest dynamic range through techniques like pizzicato, tremolo, harmonics, and col legno. Woodwinds (flute, oboe, clarinet, bassoon and their auxiliaries) contribute distinct timbral colours and excel in melodic writing. Brass (horn, trumpet, trombone, tuba) deliver power and brilliance, dominating climaxes. Percussion divides into pitched (timpani, xylophone, glockenspiel, vibraphone, marimba, celesta) and unpitched (snare drum, bass drum, cymbals, triangle), providing rhythmic definition, colour, and structural punctuation.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See the range — strings span nearly this entire keyboard',
     },
@@ -316,7 +316,7 @@ const l8u26m3: CurriculumModule = {
     {
       title: 'Orchestral Texture and Doubling',
       explanation:
-        'Orchestration is the art of distributing musical ideas across the ensemble for maximum effect. Octave doubling (e.g., flute and violin an octave apart) thickens a melody without changing its character. Unison doubling (e.g., oboe and violin at the same pitch) blends timbres to create a composite color unavailable from either instrument alone. Choir scoring assigns a complete chord to one family (a brass chorale or woodwind choir). The choice of which instrument carries the melody, which provides harmonic fill, and which supplies rhythmic energy defines the character of every orchestral passage.',
+        'Orchestration is the art of distributing musical ideas across the ensemble for maximum effect. Octave doubling (e.g., flute and violin an octave apart) thickens a melody without changing its character. Unison doubling (e.g., oboe and violin at the same pitch) blends timbres to create a composite colour unavailable from either instrument alone. Choir scoring assigns a complete chord to one family (a brass chorale or woodwind choir). The choice of which instrument carries the melody, which provides harmonic fill, and which supplies rhythmic energy defines the character of every orchestral passage.',
       tryThisQuery: 'key of F',
       tryThisLabel: 'See F major — the sounding key of a horn reading in C',
     },
@@ -356,7 +356,7 @@ const l8u27m1: CurriculumModule = {
     'Understand pitch class and the integer notation system (0-11)',
     'Calculate interval class (IC) and the interval class vector (ICV)',
     'Find normal order and prime form of pitch-class sets',
-    'Identify sets by their Forte catalog numbers',
+    'Identify sets by their Forte catalogue numbers',
   ],
   concepts: [
     {
@@ -369,14 +369,14 @@ const l8u27m1: CurriculumModule = {
     {
       title: 'Pitch-Class Sets: Normal Order and Prime Form',
       explanation:
-        'A pitch-class set is an unordered collection of distinct pitch classes — the post-tonal equivalent of a chord. Normal order (also called normal form) is the most compact ascending arrangement: rotate the set until the span from first to last element is smallest (using left-packing to break ties). Prime form transposes the normal order to start on 0, then compares with the inversion to select whichever is more tightly packed to the left. {C, E, G} has normal order [0,4,7]; its inversion gives [0,3,7], which is more tightly left-packed, so prime form = [0,3,7]. {D, F, A} reduces directly to [0,3,7]. Allen Forte\'s catalog assigns each prime form a number — 3-11 for [0, 3, 7] — creating a universal classification system for post-tonal sonorities. Two packing conventions exist — Forte\'s "packed to the left" (used here) and Rahn\'s "packed from the right" — and they disagree for a handful of set classes (none used in this level).',
+        'A pitch-class set is an unordered collection of distinct pitch classes — the post-tonal equivalent of a chord. Normal order (also called normal form) is the most compact ascending arrangement: rotate the set until the span from first to last element is smallest (using left-packing to break ties). Prime form transposes the normal order to start on 0, then compares with the inversion to select whichever is more tightly packed to the left. {C, E, G} has normal order [0,4,7]; its inversion gives [0,3,7], which is more tightly left-packed, so prime form = [0,3,7]. {D, F, A} reduces directly to [0,3,7]. Allen Forte\'s catalogue assigns each prime form a number — 3-11 for [0, 3, 7] — creating a universal classification system for post-tonal sonorities. Two packing conventions exist — Forte\'s "packed to the left" (used here) and Rahn\'s "packed from the right" — and they disagree for a handful of set classes (none used in this level).',
       tryThisQuery: 'Cm',
       tryThisLabel: 'See C minor — Forte set 3-11, prime form [0,3,7]',
     },
     {
       title: 'Interval Class Vector and Z-Relations',
       explanation:
-        'The interval class vector (ICV), or interval vector, is a six-digit fingerprint counting every IC present in a set. For [0, 4, 7] (major triad), the ICV is <0,0,1,1,1,0>: one IC3, one IC4, one IC5. Two sets with identical ICVs but different prime forms are Z-related — structurally distinct, yet sharing exactly the same interval content. Z-related pairs are relatively rare in the catalog and are a central curiosity of set theory. The ICV provides an efficient way to compare the sonorous character of sets: sets with similar ICVs share harmonic "color" even if their pitch-class content differs entirely.',
+        'The interval class vector (ICV), or interval vector, is a six-digit fingerprint counting every IC present in a set. For [0, 4, 7] (major triad), the ICV is <0,0,1,1,1,0>: one IC3, one IC4, one IC5. Two sets with identical ICVs but different prime forms are Z-related — structurally distinct, yet sharing exactly the same interval content. Z-related pairs are relatively rare in the catalogue and are a central curiosity of set theory. The ICV provides an efficient way to compare the sonorous character of sets: sets with similar ICVs share harmonic "colour" even if their pitch-class content differs entirely.',
       tryThisQuery: 'C major chord',
       tryThisLabel: 'See the major triad — ICV <0,0,1,1,1,0>',
     },
@@ -390,7 +390,7 @@ const l8u27m1: CurriculumModule = {
     {
       id: 'l8u27m1t2',
       instruction:
-        'Take the set {C, Db, E} = {0, 1, 4}. Find the normal order by trying all rotations: [0,1,4] (span 4), [1,4,0]=[1,4,12] (span 11), [4,0,1]=[4,12,13] (span 9). Normal order is [0,1,4]. Is this also the prime form? Compare with the inversion: [0,11,8] normalized to [0,3,4] — which is more left-packed?',
+        'Take the set {C, Db, E} = {0, 1, 4}. Find the normal order by trying all rotations: [0,1,4] (span 4), [1,4,0]=[1,4,12] (span 11), [4,0,1]=[4,12,13] (span 9). Normal order is [0,1,4]. Is this also the prime form? Compare with the inversion: [0,11,8] normalised to [0,3,4] — which is more left-packed?',
     },
     {
       id: 'l8u27m1t3',
@@ -425,7 +425,7 @@ const l8u27m2: CurriculumModule = {
     {
       title: 'The Twelve-Tone Matrix',
       explanation:
-        'Each of the four row forms can be transposed to start on any of the 12 pitch classes, yielding 48 row forms total (P0-P11, R0-R11, I0-I11, RI0-RI11). These are organized into a 12x12 matrix: P forms read left to right, R forms read right to left, I forms read top to bottom, and RI forms read bottom to top. The matrix is the composer\'s complete toolkit — every possible serial derivation of the row is visible at a glance. Webern favored rows with high internal symmetry, where some forms are identical to others, effectively reducing the 48 to fewer distinct series.',
+        'Each of the four row forms can be transposed to start on any of the 12 pitch classes, yielding 48 row forms total (P0-P11, R0-R11, I0-I11, RI0-RI11). These are organised into a 12x12 matrix: P forms read left to right, R forms read right to left, I forms read top to bottom, and RI forms read bottom to top. The matrix is the composer\'s complete toolkit — every possible serial derivation of the row is visible at a glance. Webern favoured rows with high internal symmetry, where some forms are identical to others, effectively reducing the 48 to fewer distinct series.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See 7 of the 12 pitch classes — a row uses all 12',
     },
@@ -467,22 +467,22 @@ const l8u27m3: CurriculumModule = {
   objectives: [
     'Identify quartal/quintal harmony as a complete harmonic language',
     'Distinguish chromatic planing from diatonic planing',
-    'Recognize polytonality, polymodality, and pandiatonicism in context',
+    'Recognise polytonality, polymodality, and pandiatonicism in context',
   ],
   concepts: [
     {
       title: 'Quartal/Quintal Harmony and Planing',
       explanation:
-        'Quartal harmony builds chords from stacked perfect fourths rather than thirds, producing sonorities that are neither major nor minor — open, ambiguous, and characteristic of Hindemith, Bartok, and Copland. Quintal harmony uses stacked fifths (inversionally equivalent to fourths). Planing moves an entire chord structure in parallel: chromatic planing transposes every note by the same number of semitones (preserving exact chord quality), while diatonic planing moves within a scale (changing quality to fit the key). Debussy\'s parallel ninth chords and Ravel\'s parallel triads exemplify planing as a structural harmonic technique, not merely a coloristic device.',
+        'Quartal harmony builds chords from stacked perfect fourths rather than thirds, producing sonorities that are neither major nor minor — open, ambiguous, and characteristic of Hindemith, Bartok, and Copland. Quintal harmony uses stacked fifths (inversionally equivalent to fourths). Planing moves an entire chord structure in parallel: chromatic planing transposes every note by the same number of semitones (preserving exact chord quality), while diatonic planing moves within a scale (changing quality to fit the key). Debussy\'s parallel ninth chords and Ravel\'s parallel triads exemplify planing as a structural harmonic technique, not merely a colouristic device.',
       tryThisQuery: 'whole tone scale',
       tryThisLabel: 'Hear the whole tone scale — pure symmetric territory for planing',
     },
     {
       title: 'Polytonality, Polymodality, and Pandiatonicism',
       explanation:
-        'Polytonality layers two or more keys simultaneously — Milhaud\'s bitonality might place C major in the right hand against F# major in the left, creating a dense, shimmering sonority that is neither tonal nor atonal. Polymodality superimposes different modes on the same tonic: C Lydian in the melody with C Mixolydian in the accompaniment produces nine distinct pitch classes \u2014 the standard seven plus F# (from Lydian) and Bb (from Mixolydian) \u2014 with conflicting modal inflections across voices. Pandiatonicism uses all notes of a diatonic scale freely, discarding functional harmonic rules — any combination is valid, producing music that sounds tonal but resists resolution. Stravinsky\'s neoclassical works epitomize this technique.',
+        'Polytonality layers two or more keys simultaneously — Milhaud\'s bitonality might place C major in the right hand against F# major in the left, creating a dense, shimmering sonority that is neither tonal nor atonal. Polymodality superimposes different modes on the same tonic: C Lydian in the melody with C Mixolydian in the accompaniment produces nine distinct pitch classes \u2014 the standard seven plus F# (from Lydian) and Bb (from Mixolydian) \u2014 with conflicting modal inflections across voices. Pandiatonicism uses all notes of a diatonic scale freely, discarding functional harmonic rules — any combination is valid, producing music that sounds tonal but resists resolution. Stravinsky\'s neoclassical works epitomise this technique.',
       tryThisQuery: 'C augmented chord',
-      tryThisLabel: 'Hear C augmented — the whole-tone triad, no tonal center',
+      tryThisLabel: 'Hear C augmented — the whole-tone triad, no tonal centre',
     },
     {
       title: 'Microtonality and Spectral Awareness',
@@ -521,7 +521,7 @@ const l8u27m4: CurriculumModule = {
   objectives: [
     'Understand minimalist compositional processes: phase shifting, additive process, pulse-based evolution',
     'Distinguish Cage\'s chance operations from Lutoslawski\'s controlled aleatory',
-    'Recognize extended techniques: prepared piano, multiphonics, sprechstimme',
+    'Recognise extended techniques: prepared piano, multiphonics, sprechstimme',
     'Survey mobile form and indeterminate notation at awareness level',
   ],
   concepts: [
@@ -542,7 +542,7 @@ const l8u27m4: CurriculumModule = {
     {
       title: 'Extended Techniques',
       explanation:
-        'Extended techniques transform instruments beyond their conventional sound palette. Prepared piano (John Cage) places bolts, screws, rubber, and felt between strings, converting the piano into a one-person percussion ensemble with unpredictable timbres. Multiphonics coax multiple simultaneous pitches from a single wind instrument through specialized fingering and embouchure. Sul ponticello (bowing near the bridge) and col legno (striking with the wood of the bow) radically alter string timbre. Sprechstimme (half-sung, half-spoken vocal delivery, first used by Humperdinck in 1897 and made famous by Schoenberg\'s Pierrot lunaire) inhabits the territory between speech and song. These techniques redefined what constitutes musical material itself.',
+        'Extended techniques transform instruments beyond their conventional sound palette. Prepared piano (John Cage) places bolts, screws, rubber, and felt between strings, converting the piano into a one-person percussion ensemble with unpredictable timbres. Multiphonics coax multiple simultaneous pitches from a single wind instrument through specialised fingering and embouchure. Sul ponticello (bowing near the bridge) and col legno (striking with the wood of the bow) radically alter string timbre. Sprechstimme (half-sung, half-spoken vocal delivery, first used by Humperdinck in 1897 and made famous by Schoenberg\'s Pierrot lunaire) inhabits the territory between speech and song. These techniques redefined what constitutes musical material itself.',
       tryThisQuery: 'C diminished scale',
       tryThisLabel: 'Hear the octatonic scale — Bartok and Stravinsky\'s resource',
     },
@@ -575,8 +575,8 @@ const l8u27m5: CurriculumModule = {
   subtitle: 'Complex tuplets, cross-rhythms, polyrhythm, and metric modulation',
   objectives: [
     'Execute and hear complex tuplets and cross-rhythms',
-    'Understand polyrhythm vs. polymeter',
-    'Recognize hemiola and metric modulation',
+    'Understand polyrhythm vs. polymetre',
+    'Recognise hemiola and metric modulation',
   ],
   concepts: [
     {
@@ -587,16 +587,16 @@ const l8u27m5: CurriculumModule = {
       tryThisLabel: 'Play the scale — try grouping notes in 3s then 2s',
     },
     {
-      title: 'Polyrhythm vs. Polymeter and Hemiola',
+      title: 'Polyrhythm vs. Polymetre and Hemiola',
       explanation:
-        'Polyrhythm and polymeter are often confused but structurally distinct. Polyrhythm layers different rhythmic groupings within a shared meter — the downbeats still align (3-against-2 within a single bar of 6/8). Polymeter layers different meters simultaneously — one voice in 3/4 against another in 4/4 — so downbeats diverge and realign only at the lowest common multiple (every 12 beats). Hemiola is a specific and historically ubiquitous cross-rhythm: two bars of triple meter (3+3) reinterpreted as three groups of duple (2+2+2), or vice versa in compound time. Hemiola pervades Handel, Brahms, and Latin American music, creating a momentary metric ambiguity that energizes cadential and transitional passages.',
+        'Polyrhythm and polymetre are often confused but structurally distinct. Polyrhythm layers different rhythmic groupings within a shared metre — the downbeats still align (3-against-2 within a single bar of 6/8). Polymetre layers different metres simultaneously — one voice in 3/4 against another in 4/4 — so downbeats diverge and realign only at the lowest common multiple (every 12 beats). Hemiola is a specific and historically ubiquitous cross-rhythm: two bars of triple metre (3+3) reinterpreted as three groups of duple (2+2+2), or vice versa in compound time. Hemiola pervades Handel, Brahms, and Latin American music, creating a momentary metric ambiguity that energises cadential and transitional passages.',
       tryThisQuery: 'A harmonic minor scale',
       tryThisLabel: 'Play in groups of 2, then 3 — feel the cross-rhythm',
     },
     {
       title: 'Metric Modulation and Additive Rhythm',
       explanation:
-        'Metric modulation (Elliott Carter\'s signature technique) uses a shared rhythmic value to pivot between tempos with mathematical precision. If triplet eighth notes in the old tempo become regular eighth notes in the new tempo, the new tempo is exactly 3/2 of the old. Quintuplet-based modulations yield 5:4 ratios; the technique chains to traverse multiple tempos. Additive rhythms build patterns from unequal groupings — 2+2+3, 3+2+2+3 — producing asymmetric meters central to Balkan music (aksak), Bartok, Stravinsky, and progressive rock. Irrational time signatures (e.g., 4/3, 5/6) extend this logic further, specifying tempo relationships rather than traditional beat divisions.',
+        'Metric modulation (Elliott Carter\'s signature technique) uses a shared rhythmic value to pivot between tempos with mathematical precision. If triplet eighth notes in the old tempo become regular eighth notes in the new tempo, the new tempo is exactly 3/2 of the old. Quintuplet-based modulations yield 5:4 ratios; the technique chains to traverse multiple tempos. Additive rhythms build patterns from unequal groupings — 2+2+3, 3+2+2+3 — producing asymmetric metres central to Balkan music (aksak), Bartok, Stravinsky, and progressive rock. Irrational time signatures (e.g., 4/3, 5/6) extend this logic further, specifying tempo relationships rather than traditional beat divisions.',
       tryThisQuery: 'D dorian scale',
       tryThisLabel: 'Play the Dorian mode — try accenting every 5th note',
     },
@@ -610,7 +610,7 @@ const l8u27m5: CurriculumModule = {
     {
       id: 'l8u27m5t2',
       instruction:
-        'Take a passage in 3/4 time and count 6 beats across two bars (1-2-3-1-2-3). Now regroup those same 6 beats as 2+2+2. The melody that was in triple meter is now perceived in duple — you have created a hemiola. Where does this appear in music you know?',
+        'Take a passage in 3/4 time and count 6 beats across two bars (1-2-3-1-2-3). Now regroup those same 6 beats as 2+2+2. The melody that was in triple metre is now perceived in duple — you have created a hemiola. Where does this appear in music you know?',
     },
     {
       id: 'l8u27m5t3',
@@ -636,7 +636,7 @@ export const L8_UNITS: CurriculumUnit[] = [
     modules: [l8u25m1, l8u25m2, l8u25m3],
     milestone: {
       skillsSummary: [
-        'Analyze fugue exposition: subject, answer (real vs. tonal), and countersubject',
+        'Analyse fugue exposition: subject, answer (real vs. tonal), and countersubject',
         'Identify episodes, stretto, augmentation, diminution, and inversion in fugues',
         'Classify canons by interval, transformation type, and degree of strictness',
       ],
@@ -656,7 +656,7 @@ export const L8_UNITS: CurriculumUnit[] = [
     modules: [l8u26m1, l8u26m2, l8u26m3],
     milestone: {
       skillsSummary: [
-        'Analyze sonata form in full detail: FTG, TR, STG, CT, development, and recapitulation',
+        'Analyse sonata form in full detail: FTG, TR, STG, CT, development, and recapitulation',
         'Distinguish the variation forms (theme and variations, chaconne, passacaglia) from rondo and ritornello form',
         'Identify orchestral families, timbres, and transposing instruments',
       ],
@@ -676,10 +676,10 @@ export const L8_UNITS: CurriculumUnit[] = [
     modules: [l8u27m1, l8u27m2, l8u27m3, l8u27m4, l8u27m5],
     milestone: {
       skillsSummary: [
-        'Analyze pitch-class sets using integer notation, normal order, prime form, and interval vectors',
+        'Analyse pitch-class sets using integer notation, normal order, prime form, and interval vectors',
         'Construct twelve-tone rows, derive all 48 forms, and build a matrix',
         'Identify planing, polytonality, pandiatonicism, and minimalist processes',
-        'Distinguish polyrhythm from polymeter, recognize hemiola, and calculate metric modulations',
+        'Distinguish polyrhythm from polymetre, recognise hemiola, and calculate metric modulations',
       ],
       bridgeText: '',
       tryThisQuery: 'C whole tone scale',
