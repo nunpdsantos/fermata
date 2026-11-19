@@ -87,10 +87,15 @@ beforeEach(() => {
 // ─── resolveSample ──────────────────────────────────────────────────────────
 
 describe('resolveSample', () => {
-  it('maps a sampled note to itself at rate 1', () => {
-    expect(resolveSample(40)).toEqual({ file: 'E2', rate: 1 }); // low E, ladder start
-    expect(resolveSample(60)).toEqual({ file: 'C4', rate: 1 }); // middle C
-    expect(resolveSample(84)).toEqual({ file: 'C6', rate: 1 }); // ladder end
+  // Since audit M60 (19 November 2026) each rate also takes out the sample's own measured error
+  // (guitarSampleTuning.ts; the files are measured against those figures in e2e/tuner-reference.spec.ts):
+  // E2 +0.4, C4 +8.0, C6 +5.0, A2 +0.2, C3 −0.5, D3 +3.3, G4 +2.7 cents.
+  const cents = (c: number) => 2 ** (-c / 1200);
+
+  it('maps a sampled note to itself, played lower or higher by its measured error', () => {
+    expect(resolveSample(40)).toEqual({ file: 'E2', rate: cents(0.4) }); // low E, ladder start
+    expect(resolveSample(60)).toEqual({ file: 'C4', rate: cents(8.0) }); // middle C
+    expect(resolveSample(84)).toEqual({ file: 'C6', rate: cents(5.0) }); // ladder end
   });
 
   it('resolves each of the four gap notes to a ±1-semitone neighbour', () => {
@@ -98,26 +103,26 @@ describe('resolveSample', () => {
     // the lower (earlier) neighbour, so every gap shifts UP one semitone.
     const aSharp2 = resolveSample(46); // A#2 → A2 (45) +1st  [B2 (47) is the other tie]
     expect(aSharp2.file).toBe('A2');
-    expect(aSharp2.rate).toBeCloseTo(2 ** (1 / 12), 6);
+    expect(aSharp2.rate).toBeCloseTo(2 ** (1 / 12) * cents(0.2), 12);
 
     const cSharp3 = resolveSample(49); // C#3 → C3 (48) +1st
     expect(cSharp3.file).toBe('C3');
-    expect(cSharp3.rate).toBeCloseTo(2 ** (1 / 12), 6);
+    expect(cSharp3.rate).toBeCloseTo(2 ** (1 / 12) * cents(-0.5), 12);
 
     const dSharp3 = resolveSample(51); // D#3 → D3 (50) +1st
     expect(dSharp3.file).toBe('D3');
-    expect(dSharp3.rate).toBeCloseTo(2 ** (1 / 12), 6);
+    expect(dSharp3.rate).toBeCloseTo(2 ** (1 / 12) * cents(3.3), 12);
 
     const gSharp4 = resolveSample(68); // G#4 → G4 (67) +1st  [A4 (69) is the other tie]
     expect(gSharp4.file).toBe('G4');
-    expect(gSharp4.rate).toBeCloseTo(2 ** (1 / 12), 6);
+    expect(gSharp4.rate).toBeCloseTo(2 ** (1 / 12) * cents(2.7), 12);
   });
 
   it('clamps notes outside the ladder to the end samples', () => {
     expect(resolveSample(39).file).toBe('E2'); // below low E
-    expect(resolveSample(39).rate).toBeCloseTo(2 ** (-1 / 12), 6);
+    expect(resolveSample(39).rate).toBeCloseTo(2 ** (-1 / 12) * cents(0.4), 12);
     expect(resolveSample(86).file).toBe('C6'); // above high C
-    expect(resolveSample(86).rate).toBeCloseTo(2 ** (2 / 12), 6);
+    expect(resolveSample(86).rate).toBeCloseTo(2 ** (2 / 12) * cents(5.0), 12);
   });
 });
 
@@ -153,9 +158,9 @@ describe('startNote / stopNote', () => {
 
   it('plays a gap note via its neighbour at the pitch-shifted rate once loaded', async () => {
     await preload();
-    expect(startNote(46)).toBe(true); // A#2 → A2 +1 semitone
+    expect(startNote(46)).toBe(true); // A#2 → A2 +1 semitone, less A2's +0.2 cents (audit M60)
     const src = sources[sources.length - 1];
-    expect(src.playbackRate.value).toBeCloseTo(2 ** (1 / 12), 6);
+    expect(src.playbackRate.value).toBeCloseTo(2 ** (1 / 12) * 2 ** (-0.2 / 1200), 12);
     expect(src.start).toHaveBeenCalled();
   });
 

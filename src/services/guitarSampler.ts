@@ -21,6 +21,8 @@
  * nearest-sample resolveSample, offline-safe preload, _resetForTesting.
  */
 
+import { GUITAR_SAMPLE_CENTS } from './guitarSampleTuning.ts';
+
 const SAMPLE_BASE_URL = '/samples/guitar';
 
 // The 39 recorded notes, E2 (MIDI 40) … C6 (MIDI 84). Sharps use 's' in the
@@ -103,7 +105,11 @@ function getContext(): AudioContext {
   return audioContext;
 }
 
-/** Nearest ladder sample for a MIDI note + the playbackRate to reach it. */
+/**
+ * Nearest ladder sample for a MIDI note + the playbackRate to reach it: the
+ * semitones between them, less the sample's own measured error, so the note
+ * sounds at its pitch (audit M60, `guitarSampleTuning.ts`).
+ */
 export function resolveSample(midi: number): { file: string; rate: number } {
   let best = LADDER[0];
   let bestDist = Math.abs(midi - best.midi);
@@ -114,7 +120,7 @@ export function resolveSample(midi: number): { file: string; rate: number } {
       bestDist = dist;
     }
   }
-  return { file: best.file, rate: 2 ** ((midi - best.midi) / 12) };
+  return { file: best.file, rate: 2 ** ((midi - best.midi) / 12 - (GUITAR_SAMPLE_CENTS[best.file] ?? 0) / 1200) };
 }
 
 /** Fetch + decode the full ladder once. Safe to call repeatedly. */
