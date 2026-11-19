@@ -37,6 +37,7 @@ import { MODULE_INDEX } from '../../data/moduleIndex';
 import { CURRICULUM_LEVELS } from '../../core/constants/levels';
 import { CHORD_SCALE_MAP } from '../../core/constants/chordScaleRelationships';
 import { GUIDE_TEMPLATE, SHEET_TEMPLATES, UI_TEMPLATES } from '../../site/testSheet/data';
+import { NEW_STRINGS } from '../../site/strings';
 import { renderBank } from '../../components/drill/__tests__/drillCorpus';
 import { AMBIGUOUS_AMERICAN, SPELLINGS } from '../../data/exercises/__tests__/respelling';
 
@@ -245,7 +246,7 @@ export const NOT_READ_AS_CODE: readonly (readonly [RegExp, string])[] = [
   [/^src\/i18n\/content\/(pt|es)\//, 'Portuguese / Spanish overlays'],
   [/^src\/(i18n\/(scaleSuggestionContext|chordQualityNames)|i18n\/content\/musicTerms|data\/moduleIndexI18n|data\/moduleTitles\.(pt|es)|components\/theory\/chordCategoryLabel)\.tsx?$/,
     'Portuguese / Spanish words (an English key here repeats an English text read elsewhere)'],
-  [/^src\/site\//, 'the public pages\' and the test sheet\'s own code: another builder\'s area this round; the pages print the curriculum, read above'],
+  [/^src\/site\//, 'the public pages\' and the test sheet\'s own code: their English sentences are read as data above (strings.ts NEW_STRINGS.en, the sheet\'s templates) and the pages print the curriculum, read above; the rest is markup, CSS and schema.org names'],
   [/^src\/core\/utils\/rhythm\.ts$|^src\/release\/releaseNotes\.ts$/, 'messages for whoever writes lessons or release notes (validation that fails a test or the build), never shown to a learner'],
   [/\.d\.ts$/, 'type declarations'],
 ];
@@ -327,6 +328,7 @@ export function englishCorpus(): [string, string][] {
   for (const [q, list] of Object.entries(CHORD_SCALE_MAP)) list.forEach((s, i) => s.context && out.push([`chordScale:${q}[${i}]`, s.context]));
   for (const [file, mod] of Object.entries(NAMESPACES)) walk(mod.default, file.replace('../', 'i18n/'), out);
   walkEn({ ui: UI_TEMPLATES, sheets: SHEET_TEMPLATES, guide: GUIDE_TEMPLATE }, 'testSheet', out);
+  walk(NEW_STRINGS.en, 'site/strings.en', out); // the public pages' own sentences (the home page's fallback lines too)
   for (const r of renderBank('en')) out.push([`drill:${r.id}`, [r.question, ...r.choices, r.explanation, r.answer].join(' | ')]);
   for (const f of codeFiles()) out.push(...codeTexts(f));
   return out;
