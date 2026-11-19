@@ -101,13 +101,24 @@ afterEach(() => {
 });
 
 describe('a healthy export', () => {
-  it('is byte for byte today\'s file, and says "Backup downloaded"', async () => {
+  it('is byte for byte today\'s file, and says "Backup downloaded" — in the sheet too, where the toast is covered (second fix pass)', async () => {
     await loadApp();
     const text = await exportFromSettings();
     expect(text).toBe(TODAYS_FILE);
     expect(toasts()).toEqual([{ type: 'success', message: i18n.t('backup.exported') }]);
-    expect(screen.queryByTestId('data-note')).toBeNull();
+    const notes = await screen.findAllByTestId('data-note');
+    expect(notes.map((n) => [n.textContent, n.getAttribute('role'), n.getAttribute('data-tone')])).toEqual([[i18n.t('backup.exported'), 'alert', 'success']]);
   });
+
+  for (const lang of ['pt', 'es'] as const) {
+    it(`${lang}: the line in the sheet is in the learner's language`, async () => {
+      await i18n.changeLanguage(lang);
+      await loadApp();
+      await exportFromSettings();
+      const note = await screen.findByTestId('data-note');
+      expect(note.textContent).toBe(lang === 'pt' ? 'Backup transferido' : 'Backup descargado');
+    });
+  }
 });
 
 describe('a damaged save', () => {

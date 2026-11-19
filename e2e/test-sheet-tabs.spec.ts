@@ -138,6 +138,33 @@ test.describe('two tabs of the sheet (audit A5)', () => {
   });
 });
 
+test.describe('the answers on screen are the truth for the visit (second fix pass)', () => {
+  test('another tab clears the sheet\'s key: the answers on screen stay, Send carries them, and the next answer saves them all again', async ({ browser }) => {
+    const { context, toGoogle } = await fresh(browser);
+    const a = await open(context, '/test/?lang=en#new');
+    const b = await open(context, '/test/?lang=en#player');
+    await choose(a, 'n1', 'ok');
+    await choose(a, 'n2', 'hard');
+    await b.evaluate((k) => localStorage.removeItem(k), KEY); // A hears of it (a storage event)
+    await a.waitForTimeout(300);
+    await checked(a, 'n1', 'ok');
+    await checked(a, 'n2', 'hard');
+    await expect(a.locator('#progress')).toHaveText(/^2 of /);
+    const [popup] = await Promise.all([context.waitForEvent('page'), a.getByRole('button', { name: ui('en').sendButton, exact: true }).click()]);
+    await popup.waitForLoadState('domcontentloaded');
+    expect(toGoogle).toHaveLength(1);
+    const find = ui('en').find as Record<string, string>;
+    expect(decodeURIComponent(toGoogle[0])).toContain(`→ ${find.ok}`);
+    expect(decodeURIComponent(toGoogle[0])).toContain(`→ ${find.hard}`);
+    await choose(a, 'n3', 'no');
+    await reload(a);
+    await checked(a, 'n1', 'ok');
+    await checked(a, 'n2', 'hard');
+    await checked(a, 'n3', 'no');
+    await context.close();
+  });
+});
+
 test.describe('an empty dry run (audit A20)', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
     test(`${lang}: nothing answered — "Send my answers" opens no form and says why; one answer is then enough`, async ({ browser }) => {

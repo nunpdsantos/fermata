@@ -113,9 +113,13 @@ export function retireChangedExerciseScores(progress: CurriculumProgress, fromVe
  * latest tab's. A module result the save no longer has (a reset, an import
  * without it) holds only this tab's changes since its base, on a new result
  * (`passed: false` unless passed since: the guard needs it), never its older
- * scores. And the store's own invariant holds after any merge: a review
- * schedule only for a completed module (it would otherwise come up for review).
+ * scores — and, if no answer was recorded in it since, it is not written at
+ * all (second fix pass: "passed" alone made a result with no attempt, which
+ * the store never writes). And the store's own invariant holds after any
+ * merge: a review schedule only for a completed module (it would otherwise
+ * come up for review).
  */
+const newResult = onEmpty({ scores: {}, totalAttempts: 0, lastAttemptAt: 0, passed: false }, { scores: { '*': 'atomic' }, totalAttempts: 'sum', lastAttemptAt: 'max', passed: 'or' });
 const PROGRESS_FIELDS: Rule = {
   progress: {
     completedModules: 'set',
@@ -123,7 +127,10 @@ const PROGRESS_FIELDS: Rule = {
     exemptedModules: 'set',
     unlockedLevels: 'set',
     exerciseResults: {
-      '*': onEmpty({ scores: {}, totalAttempts: 0, lastAttemptAt: 0, passed: false }, { scores: { '*': 'atomic' }, totalAttempts: 'sum', lastAttemptAt: 'max', passed: 'or' }),
+      '*': (b, m, t) => {
+        const r = newResult(b, m, t) as { totalAttempts?: number } | undefined;
+        return isPlainObject(t) || r?.totalAttempts ? r : undefined;
+      },
     },
     reviewSchedules: { '*': 'atomic' },
   },
@@ -305,6 +312,7 @@ export const useProgressStore = create<ProgressStore>()(
     {
       name: 'music-theory-progress',
       version: PROGRESS_STORE_VERSION,
+      // Another tab's save is read only when it is real progress as saved, before migrating ({ progress } in every version).
       storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', (): TabStore => useProgressStore, PROGRESS_MERGE_RULE, isValidPersistedProgress)),
       partialize: (state) => ({ progress: state.progress }),
       // Migrate from old format (raw CurriculumProgress) to wrapped { progress },

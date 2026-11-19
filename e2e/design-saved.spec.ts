@@ -8,7 +8,8 @@ import { LOCALE, type Lang } from './helpers/wave1';
  * named (two lines) and with an import the browser would not save; the start
  * screen's line by "I have a progress file"; the test sheet's empty Send
  * (build only); the moving panel's line on the old address (fix pass,
- * 2026-11-19: its export's result shows in the panel, which covers toasts). Phone 390×844 and 320×568, landscape 844×390, laptop
+ * 2026-11-19: its export's result shows in the panel, which covers toasts);
+ * a whole export's "Backup downloaded" in both (second fix pass). Phone 390×844 and 320×568, landscape 844×390, laptop
  * 1440×900, day and night, EN / PT / ES: type ≥ 12 px, tap ≥ --tap, text
  * contrast, nothing cut off, no sideways scroll, and the sentence on screen.
  */
@@ -30,6 +31,7 @@ const name = (v: V) => `${v.lang} ${v.w}×${v.h} ${v.scheme === 'light' ? 'day' 
 const MORE = { en: 'More', pt: 'Mais', es: 'Más' } as const;
 const SETTINGS = { en: 'Settings', pt: 'Definições', es: 'Ajustes' } as const;
 const EXPORT = { en: 'Export backup', pt: 'Exportar dados', es: 'Exportar datos' } as const;
+const DOWNLOADED = { en: 'Backup downloaded', pt: 'Backup transferido', es: 'Backup descargado' } as const;
 
 async function open(browser: Browser, v: V, saved: Record<string, string>) {
   const origin = new URL(test.info().project.use.baseURL!).origin;
@@ -123,6 +125,34 @@ for (const v of [CASES[0], CASES[3], CASES[5], CASES[9]]) {
     await check(page, v, `${name(v)} moving panel`, note);
     await context.close();
   });
+
+  test(`${name(v)}: the moving panel (old address) says a whole export was downloaded, in the panel (second fix pass)`, async ({ browser, baseURL }) => {
+    test.setTimeout(90_000);
+    const context = await browser.newContext({
+      viewport: { width: v.w, height: v.h }, isMobile: v.touch, hasTouch: v.touch, locale: LOCALE[v.lang], colorScheme: v.scheme,
+      reducedMotion: 'reduce', serviceWorkers: 'block', storageState: { cookies: [], origins: [] },
+    });
+    const local = new URL(baseURL!).origin;
+    await context.route(`${OLD}/**`, (route) => relay(route, local));
+    await context.route(/^https?:\/\/(www\.)?fermatina\.com(\/|$)/, (route) => route.abort());
+    await context.routeWebSocket(/fermata-music\.vercel\.app|fermatina\.com/, (ws) => ws.close());
+    await context.addInitScript(([settings]) => {
+      if (sessionStorage.getItem('__seeded')) return;
+      localStorage.setItem('fermata-welcome-v1', 'seen');
+      localStorage.setItem('music-theory-app', settings);
+      sessionStorage.setItem('__seeded', '1');
+    }, [settingsSave(v)] as const);
+    const page = await context.newPage();
+    await page.goto(`${OLD}/`);
+    await page.getByTestId('toast-region').getByRole('button', { name: MOVE[v.lang] }).click();
+    await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: MOVED_EXPORT[v.lang] }).click()]);
+    const note = page.getByTestId('moved-note');
+    await expect(note).toHaveCount(1);
+    await expect(note).toHaveText(DOWNLOADED[v.lang]);
+    await expect(note).toHaveAttribute('data-tone', 'success');
+    await check(page, v, `${name(v)} moving panel, whole`, note);
+    await context.close();
+  });
 }
 
 for (const v of CASES) {
@@ -146,6 +176,19 @@ for (const v of CASES) {
     await expect(notes).toHaveCount(1);
     await expect(notes).toHaveAttribute('role', 'alert');
     await check(page, v, `${name(v)} import`, notes);
+    await context.close();
+  });
+
+  test(`${name(v)}: Settings → Your data says a whole export was downloaded, in the sheet (second fix pass)`, async ({ browser }) => {
+    test.setTimeout(90_000);
+    const { context, page } = await open(browser, v, { 'fermata-welcome-v1': 'seen', 'music-theory-app': settingsSave(v) });
+    await openSettings(page, v.lang);
+    await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: EXPORT[v.lang] }).click()]);
+    const notes = page.getByTestId('data-note');
+    await expect(notes).toHaveCount(1);
+    await expect(notes).toHaveText(DOWNLOADED[v.lang]);
+    await expect(notes).toHaveAttribute('data-tone', 'success');
+    await check(page, v, `${name(v)} whole export`, notes);
     await context.close();
   });
 

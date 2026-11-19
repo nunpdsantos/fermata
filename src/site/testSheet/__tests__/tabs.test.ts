@@ -144,6 +144,67 @@ describe('a browser that reads storage but refuses to save (fix pass, 2026-11-19
   });
 });
 
+describe('the page\'s own answers are the truth for the visit (second fix pass, 2026-11-19): what is stored is merged into them, never over them', () => {
+  const copied = () => { $('#copy-btn').click(); return $<HTMLTextAreaElement>('#out').value; };
+  const checked = (task: string) => ['ok', 'hard', 'no'].filter((r) => $<HTMLInputElement>(`#r-${task}-${r}`).checked);
+
+  it('a browser that ignores writes without a word: Copy and Send carry every answer on screen, and the count says so', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true);
+    load('/test/#new');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
+    choose('n1', 'ok');
+    choose('n2', 'hard');
+    type('#note-n1', 'hello');
+    expect($('#progress').textContent).toBe('2 of 8 answered');
+    const text = copied();
+    expect(text).toContain(`→ ${ui('en').find.ok}\n   hello`);
+    expect(text).toContain(`→ ${ui('en').find.hard}`);
+    $('#send-btn').click();
+    expect($('#sheet-status').textContent).toBe('');
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(decodeURIComponent((open.mock.calls[0] as [string])[0])).toContain('hello');
+  });
+
+  it('the key cleared underneath (browser data cleared, no event): the answers on screen stay, are sent and copied, and the next answer saves them all again', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true);
+    load('/test/#new');
+    choose('n1', 'ok');
+    choose('n2', 'hard');
+    localStorage.removeItem(SHEET_STORAGE_KEY);
+    $('#send-btn').click();
+    expect($('#sheet-status').textContent).toBe('');
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(copied()).toContain(`→ ${ui('en').find.hard}`);
+    choose('n3', 'no');
+    expect(saved().a).toEqual({ n1: { r: 'ok', note: '', hint: false }, n2: { r: 'hard', note: '', hint: false }, n3: { r: 'no', note: '', hint: false } });
+    expect([checked('n1'), checked('n2'), checked('n3')]).toEqual([['ok'], ['hard'], ['no']]);
+    expect($('#progress').textContent).toBe('3 of 8 answered');
+  });
+
+  it('an emptied key and a storage event: the screen keeps its answers; another tab\'s answer to a task this page left alone still shows', () => {
+    load('/test/#new');
+    choose('n1', 'ok');
+    otherTabSaves({ lang: 'en', a: {}, q: {} });
+    expect(checked('n1')).toEqual(['ok']);
+    otherTabSaves({ lang: 'en', a: { n1: { r: 'no', note: '', hint: false }, n4: { r: 'hard', note: 'theirs', hint: false } }, q: {} });
+    expect(checked('n1')).toEqual(['ok']); // this page's own answer stays its own
+    expect(checked('n4')).toEqual(['hard']);
+    expect($<HTMLTextAreaElement>('#note-n4').value).toBe('theirs');
+    expect(copied()).toContain('theirs');
+  });
+
+  it('answers this page loaded on opening are on screen: a cleared key does not take them out of Send or Copy', () => {
+    localStorage.setItem(SHEET_STORAGE_KEY, JSON.stringify({ lang: 'en', a: { n2: { r: 'ok', note: 'from before', hint: false } }, q: {} }));
+    load('/test/#new');
+    localStorage.removeItem(SHEET_STORAGE_KEY);
+    window.dispatchEvent(new StorageEvent('storage', { key: SHEET_STORAGE_KEY }));
+    expect(checked('n2')).toEqual(['ok']);
+    expect(copied()).toContain('from before');
+  });
+});
+
 describe('"Send my answers" with nothing answered (A20)', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
     it(`${lang}: nothing opens; one line says what to do; one answer then opens the form`, () => {

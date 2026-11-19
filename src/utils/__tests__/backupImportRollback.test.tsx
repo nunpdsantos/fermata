@@ -127,6 +127,26 @@ describe('applyBackup: all sections or none', () => {
     // The others are back.
     expect(localStorage.getItem('music-theory-progress')).toBe(OLD['music-theory-progress']);
   });
+
+  it('a key that refused BOTH the write and the putting back still holds its old data: it is read back, and not reported as coming from the backup (second fix pass)', () => {
+    const before = allStorage();
+    storageFullAt(2, ['music-theory-progress']); // progress: its write refused, then its restore refused too
+    const result = applyBackup(BACKUP, localStorage);
+    expect(result).toEqual({ ok: false, restored: true, notRestored: [] });
+    expect(allStorage()).toEqual(before);
+  });
+
+  it('the review\'s storage: a key that refuses every write, beside two that take them', () => {
+    const mem = new Map([['music-theory-app', 'OLD-APP'], ['music-theory-progress', 'OLD-PROGRESS'], ['fermata-drill-v1', 'OLD-DRILL']]);
+    const storage = {
+      getItem: (k: string) => mem.get(k) ?? null,
+      setItem: (k: string, v: string) => { if (k === 'music-theory-progress') throw quota(); mem.set(k, v); },
+      removeItem: (k: string) => { mem.delete(k); },
+    };
+    const backup = { format: 'fermata-backup', version: 1, exportedAt: 'x', data: { 'music-theory-app': { a: 1 }, 'music-theory-progress': { b: 2 }, 'fermata-drill-v1': { c: 3 } } } as unknown as FermataBackup;
+    expect(applyBackup(backup, storage)).toEqual({ ok: false, restored: true, notRestored: [] });
+    expect(Object.fromEntries(mem)).toEqual({ 'music-theory-app': 'OLD-APP', 'music-theory-progress': 'OLD-PROGRESS', 'fermata-drill-v1': 'OLD-DRILL' });
+  });
 });
 
 describe('Settings → Your data → Import, storage full half-way', () => {

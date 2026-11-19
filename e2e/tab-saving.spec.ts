@@ -16,7 +16,10 @@ import { test, expect, type BrowserContext, type Page } from '@playwright/test';
  *    Drill's spaced-repetition memory, the fingerings, Learn's open lesson.
  *  - Nothing back from the dead: after "Reset app data", a backup imported,
  *    or a newer version's save in one tab, the other tab's old memory is
- *    never written back.
+ *    never written back. And the other way (second fix pass): Drill's "Reset
+ *    progress" in a tab that never heard the other's answers brings none of
+ *    them back; a check ended in one tab never erases another tab's; a save
+ *    another tab left that cannot be read never empties this tab.
  * The store-level steps use the dev server's /src modules (the app's own
  * store instances); they skip, with a note, on the production build.
  */
@@ -148,6 +151,21 @@ test.describe('nothing comes back from the dead (A1)', () => {
     await context.close();
   });
 
+  test('another tab leaves a save that cannot be read, in an older version: this tab keeps what it shows, and its next tick saves it whole (second fix pass)', async ({ browser }) => {
+    const context = await browser.newContext();
+    const [a, b] = await twoTabs(context);
+    await tasks(a).nth(0).click();
+    await expect(tasks(b).nth(0)).toHaveAttribute('aria-pressed', 'true');
+    // B hears of it (a storage event). Its store's migration would answer it with empty progress.
+    await a.evaluate((k) => localStorage.setItem(k, '{"state":{"progress":"oops"},"version":3}'), PROGRESS);
+    await b.waitForTimeout(500);
+    await expect(counter(b)).toHaveText('1/2');
+    await expect(tasks(b).nth(0)).toHaveAttribute('aria-pressed', 'true');
+    await tasks(b).nth(1).click();
+    await expect.poll(async () => (await read(b, PROGRESS))?.state?.progress?.moduleProgress, { timeout: 5000 }).toEqual({ l1u34m1: ['l1u34m1t1', 'l1u34m1t2'] });
+    await context.close();
+  });
+
   test('a newer Fermatina migrated the save in another tab: this tab never writes its older progress over it', async ({ browser }) => {
     const context = await browser.newContext();
     const [a, b] = await twoTabs(context);
@@ -213,6 +231,52 @@ test.describe('every other saved store (A1)', () => {
     expect(Object.keys(s.items).sort()).toEqual(['f1', 'f2', 'f3', 'f4']);
     expect(s.items.f2.history).toHaveLength(2);
     expect(s.lifetime).toEqual({ answered: 5, correct: 5 });
+    await context.close();
+  });
+
+  test('Drill\'s "Reset progress" in tab A, which never heard tab B\'s answer: nothing answered before the reset comes back (second fix pass)', async ({ browser }) => {
+    const context = await browser.newContext();
+    const a = await context.newPage();
+    const b = await context.newPage();
+    await a.addInitScript(() => window.addEventListener('storage', (e) => e.stopImmediatePropagation(), true)); // A never hears B
+    await a.goto('/');
+    await devOnly(a);
+    await b.goto('/');
+    const drill = (page: Page, body: string) => page.evaluate(`(async () => {
+      const m = await import('/src/state/drillStore.ts');
+      const s = () => m.useDrillStore.getState();
+      const item = (id) => ({ id, family: 'interval', promptKey: 'p', promptParams: {}, input: { format: 'choice', choices: ['A', 'B'] }, answer: { kind: 'choice', correct: 'A' }, whyKey: 'w', whyParams: {}, rank: 0 });
+      ${body}
+    })()`);
+    const T0 = 1_800_000_000_000;
+    await drill(a, `s().startSession([item('f1')], ${T0}); for (let i = 0; i < 4; i++) s().recordAnswer(item('f1'), true, 800, ${T0} + 86400000 * i);`);
+    await drill(b, `s().startSession([item('f1')], ${T0 + 1000}); s().recordAnswer(item('f1'), false, 900, ${T0 + 5 * 86400000});`);
+    await expect.poll(async () => (await read(a, 'fermata-drill-v1'))?.state.items.f1?.history.length, { timeout: 5000 }).toBe(5);
+    await drill(a, 's().resetDrillProgress();');
+    const reset = (await read(a, 'fermata-drill-v1')).state;
+    expect([reset.items, reset.sprintBests, reset.lifetime, reset.activeSession]).toEqual([{}, {}, { answered: 0, correct: 0 }, null]);
+    await drill(a, `s().startSession([item('f1')], ${T0 + 6 * 86400000}); s().recordAnswer(item('f1'), true, 800, ${T0 + 6 * 86400000 + 5});`);
+    const after = (await read(a, 'fermata-drill-v1')).state;
+    expect(after.items.f1.history).toHaveLength(1);
+    expect(after.lifetime).toEqual({ answered: 1, correct: 1 });
+    await context.close();
+  });
+
+  test('Learn: tab B ends its own older check while tab A\'s check, in another lesson, is saved: A\'s check and place stay (second fix pass)', async ({ browser }) => {
+    const context = await browser.newContext();
+    const a = await context.newPage();
+    const b = await context.newPage();
+    await a.goto('/');
+    await devOnly(a);
+    await b.goto('/');
+    const learn = (page: Page, call: string) => page.evaluate(`import('/src/state/learnSessionStore.ts').then((m) => { const s = m.useLearnSessionStore.getState(); ${call} })`);
+    const check = (moduleId: string) => `{ moduleId: '${moduleId}', kind: 'check', lang: 'en', fingerprints: { ${moduleId}e1: 'f' }, run: { order: ['${moduleId}e1'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() }`;
+    await learn(b, `s.setScreen({ type: 'module', levelId: 'l1', unitId: 'u1', moduleId: 'l1u1m1', section: null, at: Date.now() }); s.setCheck(${check('l1u1m1')});`);
+    await learn(a, `s.setScreen({ type: 'module', levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1', section: null, at: Date.now() }); s.setCheck(${check('l1u34m1')});`);
+    await expect.poll(async () => (await read(a, 'fermata-learn-session-v1'))?.state.check?.moduleId, { timeout: 5000 }).toBe('l1u34m1');
+    await learn(b, 's.setCheck(null);');
+    const saved = (await read(a, 'fermata-learn-session-v1')).state;
+    expect([saved.screen.moduleId, saved.check?.moduleId]).toEqual(['l1u34m1', 'l1u34m1']);
     await context.close();
   });
 

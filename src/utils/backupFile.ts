@@ -82,13 +82,17 @@ export function exportWarnings({ missing, partly, newer = [] }: Pick<ExportRepor
 }
 
 /** One sentence the export has for the learner, and how it reads. */
-export interface ExportNote { text: string; tone: 'warning' | 'error' }
+export interface ExportNote { text: string; tone: 'success' | 'warning' | 'error' }
+
+/** The colour each tone's sentence is written in (its token). */
+export const NOTE_INK: Record<ExportNote['tone'], string> = { success: 'var(--success-text)', warning: 'var(--warning-text)', error: 'var(--danger-text)' };
 
 /**
  * Export, then say what happened: "Backup downloaded" only when every part
  * went in whole; otherwise the warnings above; and if no file could be made,
- * that. Returns the sentences (none when whole), for a sheet to show them in
- * place (a toast is drawn under an open sheet).
+ * that. Returns the sentences — "Backup downloaded" too (second fix pass,
+ * 2026-11-19: a whole export said nothing where the learner was looking) —
+ * for a sheet to show them in place (a toast is drawn under an open sheet).
  */
 export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportNote[]> {
   let warnings: string[];
@@ -99,7 +103,11 @@ export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localSto
     toast(text, 'error', LONG_TOAST_MS);
     return [{ text, tone: 'error' }];
   }
-  if (warnings.length === 0) toast(i18n.t('backup.exported'), 'success');
+  if (warnings.length === 0) {
+    const text = i18n.t('backup.exported');
+    toast(text, 'success');
+    return [{ text, tone: 'success' }];
+  }
   for (const line of warnings) toast(line, 'warning', LONG_TOAST_MS);
   return warnings.map((text) => ({ text, tone: 'warning' }));
 }

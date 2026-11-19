@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Sheet } from '../ui/Sheet.tsx';
 import { Button } from '../ui/Button.tsx';
-import { exportAndTell, type ExportNote } from '../../utils/backupFile.ts';
+import { exportAndTell, NOTE_INK, type ExportNote } from '../../utils/backupFile.ts';
 import { noteMovedExport, stopMovedReminder } from '../../services/movedNotice.ts';
 import { AddressLink } from './AddressLink.tsx';
 // The panel's words load with it (the `moved` namespace), not with the entry.
@@ -23,8 +23,8 @@ const moreButton = () => document.querySelector<HTMLElement>('[data-testid="app-
 export default function MovedPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   // The same export as Settings (A16: checked first, a damaged part named), and its sentences here
-  // too: an open sheet covers the toasts. The export counts (the reminder stops for this visit)
-  // only when the file is whole (fix pass, 2026-11-19).
+  // too: an open sheet covers the toasts ("Backup downloaded" as well). The export counts (the
+  // reminder stops for this visit) only when the file is whole (fix passes, 2026-11-19).
   const [notes, setNotes] = useState<ExportNote[]>([]);
   const notesRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function MovedPanel({ open, onClose }: { open: boolean; onClose: 
     setNotes([]);
     void exportAndTell(localStorage).then((result) => {
       setNotes(result);
-      if (result.length === 0) noteMovedExport();
+      if (result.every((note) => note.tone === 'success')) noteMovedExport();
     });
   };
   // "Don't remind me again": the panel closes (synchronously, so the sheet has
@@ -55,7 +55,7 @@ export default function MovedPanel({ open, onClose }: { open: boolean; onClose: 
             {notes.length > 0 && (
               <div ref={notesRef} className="flex flex-col gap-1.5">
                 {notes.map((note) => (
-                  <p key={note.text} role="alert" className="text-ui" style={{ color: note.tone === 'error' ? 'var(--danger-text)' : 'var(--warning-text)' }} data-testid="moved-note">
+                  <p key={note.text} role="alert" className="text-ui" style={{ color: NOTE_INK[note.tone] }} data-tone={note.tone} data-testid="moved-note">
                     {note.text}
                   </p>
                 ))}

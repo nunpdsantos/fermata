@@ -15,9 +15,13 @@
  *    byte for byte (the frozen-save tests prove it).
  *  - When the save changed underneath (another tab, or a direct write in
  *    this one: an import, a reset), the write goes to `state/tabMerge.ts`,
- *    which writes only THIS tab's changes on top of what is saved now (see
- *    there). Both modules are in the entry bundle: writing never waits for,
- *    or depends on, a second download.
+ *    which writes only THIS tab's changes on top of what is saved now, by
+ *    the one rule stated there (both ways: nothing removed comes back,
+ *    nothing this tab removes survives). Both modules are in the entry
+ *    bundle: writing never waits for, or depends on, a second download.
+ *  - A store says what it can read (`valid`, asked of a save as saved, in
+ *    its version) and marks a reset done in place (`replace`, Drill's "Reset
+ *    progress": the next write writes what it reset whole).
  *  - Following other tabs in memory (Learn progress, Drill, fingerings) is
  *    `state/tabSync.ts`, lazy, which each of those stores loads itself
  *    (`followOtherTabsLater` there): a nicety, not needed to save. A failed
@@ -53,8 +57,10 @@ export interface TabLine {
   behind?: boolean;
   /** The store's own merge rules (absent: every record field by field). */
   merge?: Rule;
-  /** The store's guard: false for a save it would throw away whole (absent: any object). */
-  valid?: (state: unknown) => boolean;
+  /** The store can read this save, as saved in `version` (before any migration), as real data (absent: any object). */
+  valid?: (state: unknown, version: number) => boolean;
+  /** This tab's next write is a reset of these fields: they are written as this tab has them (tabMerge). */
+  replace?: string[];
   /** The store (a getter: the storage exists before the store does). */
   store?: () => TabStore;
   /** Set by state/tabSync.ts for stores whose memory follows the save. */
@@ -67,7 +73,7 @@ const lines = new Map<string, TabLine>();
 export const tabLine = (name: string) => lines.get(name);
 
 /** The storage a persisted store writes through (see above). One per key. */
-export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule, valid?: (state: unknown) => boolean): StateStorage {
+export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule, valid?: TabLine['valid']): StateStorage {
   const line: TabLine = { store, merge, valid };
   lines.set(name, line);
   return {
@@ -84,6 +90,7 @@ export function tabSafeStorage(name: string, store: () => TabStore, merge?: Rule
         line.seen = raw;
         line.base = undefined;
         line.fresh = false;
+        line.replace = undefined;
       } else mergeWrite(key, line, raw);
     },
     removeItem: (key) => {

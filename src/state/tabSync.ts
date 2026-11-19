@@ -8,8 +8,10 @@
  *
  * When another tab writes the key (a `storage` event), or this tab comes
  * back to the screen or out of the back/forward cache (an event missed while
- * frozen), the store reads the save again through its OWN migration and
- * guard, without writing, so what the learner sees here is what is saved.
+ * frozen), or once when this module arrives (an event missed while it
+ * downloaded), the store reads the save again through its OWN migration and
+ * guard, without writing, so what the learner sees here is what is saved. A
+ * save the store cannot read as real data (`valid`) is never read.
  * Fields named `keep` stay this tab's (Drill's session and Sprint under way:
  * another tab's never replace the one on screen here, as drillWork
  * promises). A save in a newer version than this code knows is not read.
@@ -49,11 +51,11 @@ export function followOtherTabs<S extends object>(name: string, store: Followed<
     if (current !== null) {
       const version = saved?.version;
       if (typeof version === 'number' && version > (opts.version ?? 0)) return; // a newer Fermatina's save
-      // Only a save the store's own guard accepts replaces this tab's memory (fix pass,
-      // 2026-11-19: a broken one turned memory into the defaults). Otherwise memory stays,
-      // as before the fix, and this tab's next write heals the save.
-      const state = typeof version === 'number' && version < (opts.version ?? 0) && opts.migrate ? opts.migrate(saved?.state, version) : saved?.state;
-      if (typeof version !== 'number' || !(line.valid ?? isObj)(state)) {
+      // Only a save the store can read as real data replaces this tab's memory — asked of the
+      // save as it is, in its own version, BEFORE any migration (second fix pass, 2026-11-19:
+      // a migration answers garbage with the defaults, which every guard accepts, and an older
+      // broken save emptied memory). Otherwise memory stays, and this tab's next write heals it.
+      if (typeof version !== 'number' || !(line.valid ?? isObj)(saved?.state, version)) {
         line.behind = true;
         return;
       }
@@ -93,5 +95,8 @@ export function followOtherTabs<S extends object>(name: string, store: Followed<
     if (line.adopt === adopt) line.adopt = undefined;
   };
   line.stop = stop;
+  // What another tab saved while this module was downloading (its event came before
+  // anyone listened): read it now. Nothing to do when the save is what this tab saw.
+  adopt();
   return stop;
 }

@@ -15,7 +15,10 @@
  *    each save re-reads what is saved and writes only that one answer on top
  *    (audit A5, 2026-11-18: two sheets open in two tabs used to write each
  *    tab's whole memory over the other's), and a tab left open takes the
- *    other tabs' answers into its controls as they are saved;
+ *    other tabs' answers into its controls as they are saved — into its own,
+ *    never over them: for a visit the page's answers are the truth, so a key
+ *    cleared underneath or a write the browser ignored never empties Send or
+ *    Copy, and the page's own answers are saved again (second fix pass);
  *  - "Send my answers" with nothing answered (no result, note or closing
  *    answer on this sheet) opens nothing and says so (audit A20);
  *  - "Send my answers" opens the test form in a new tab FROM THE TAP, its
@@ -61,42 +64,68 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
   };
   const S = stored() ?? readState(null);
   S.lang = chooseLanguage(win.location.search, S.lang, win.navigator.languages?.length ? win.navigator.languages : [win.navigator.language ?? '']);
+  const blank = () => ({ r: '' as const, note: '', hint: false });
   /**
-   * A write was refused (storage full, or a browser that reads but will not
-   * save): this visit's answers are then only in this page's memory, which
-   * stays the truth for the visit — Copy and Send use it (fix pass,
-   * 2026-11-19: the page showed answers while Send said there were none).
+   * For a visit, the page's answers (S, what is on screen) are the truth
+   * (second fix pass, 2026-11-19: a key emptied underneath, or a write the
+   * browser ignored without a word, read as "nothing answered" while the
+   * radios showed answers). What is stored is merged INTO them, answer by
+   * answer (a task's result, note and hint, a closing answer), and never over
+   * them: an answer given in this page this visit (`own`) stays this page's;
+   * another tab's answers fill the rest as they are saved; nothing on screen
+   * is taken away because the store lacks it.
    */
-  let unsaved = false;
-  /** Take the answers saved by any tab (this page keeps its language), unless this visit's could not be saved. */
+  const own = new Set<string>();
+  const FIELDS = ['r', 'note', 'hint'] as const;
+  type Field = (typeof FIELDS)[number];
+  /** An answer's key: `a <task> <field>` or `q <closing key>`. */
+  const part = (k: string) => k.split(' ') as ['a' | 'q', string, Field];
+  const has = (s: typeof S, k: string) => { const [kind, id] = part(k); return kind === 'q' ? id in s.q : !!s.a[id]; };
+  const copy = (from: typeof S, to: typeof S, k: string) => {
+    const [kind, id, f] = part(k);
+    if (kind === 'q') to.q[id] = from.q[id];
+    else ((to.a[id] ??= blank())[f] as unknown) = from.a[id][f];
+  };
+  /** Another tab's answers into this page's, except this page's own and the tasks in `skip`. */
+  const into = (now: typeof S, skip: Set<string> = new Set()) => {
+    for (const [id, x] of Object.entries(now.a)) {
+      if (skip.has(id)) continue;
+      const mine = (S.a[id] ??= blank());
+      for (const f of FIELDS) if (!own.has(`a ${id} ${f}`)) (mine[f] as unknown) = x[f];
+    }
+    for (const [k, v] of Object.entries(now.q)) if (!own.has(`q ${k}`)) S.q[k] = v;
+  };
+  /** Take the answers saved by any tab into this page's (it keeps its language and its own answers). */
   const refresh = () => {
-    const now = unsaved ? null : stored();
-    if (now) Object.assign(S, { a: now.a, q: now.q });
+    const now = stored();
+    if (now) into(now);
   };
   /**
-   * One change: made in this page's memory and, on what is saved NOW, written
-   * back with this page's language — never this page's other answers, which
-   * may be older than another tab's (after a refused write: all of them, as
-   * the visit's memory is then the only copy).
+   * One change (`keys`: the answers it makes this page's own): made in this
+   * page's memory and, on what is saved NOW, written back with this page's
+   * language — never this page's other answers over another tab's, but each
+   * answer of this page's own that the store has lost (cleared underneath, a
+   * write refused or ignored) is written again.
    */
-  const commit = (change: (s: typeof S) => void) => {
+  const commit = (keys: string[], change: (s: typeof S) => void) => {
     change(S);
+    for (const k of keys) own.add(k);
     const now = stored();
-    if (now && unsaved) Object.assign(now, { a: { ...now.a, ...S.a }, q: { ...now.q, ...S.q } });
-    if (now) change(now);
+    if (now) {
+      const lost = [...own].filter((k) => has(S, k) && !has(now, k));
+      change(now);
+      for (const k of lost) copy(S, now, k);
+      into(now, new Set(lost.map((k) => part(k)[1])));
+    }
     const next = now ?? S;
     next.lang = S.lang;
     try {
       storage?.setItem(SHEET_STORAGE_KEY, JSON.stringify(next));
     } catch {
       // storage full or blocked: the sheet still works for this visit, from its memory
-      unsaved = true;
-      return;
     }
-    unsaved = false;
-    if (now) Object.assign(S, { a: now.a, q: now.q });
   };
-  const blank = () => ({ r: '' as const, note: '', hint: false });
+  const taskKeys = (id: string) => FIELDS.map((f) => `a ${id} ${f}`);
   const content = () => DATA[S.lang!];
   /** The sheet on screen puts saved answers into its controls in place (set by renderSheet). */
   let showSaved: (() => void) | null = null;
@@ -168,7 +197,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       for (const r of RESULTS) {
         const input = h('input', {
           type: 'radio', name: `r-${task.id}`, id: `r-${task.id}-${r}`, value: r,
-          on: { change: () => { commit((s) => { (s.a[task.id] ??= blank()).r = r; }); setProgress(); } },
+          on: { change: () => { commit([`a ${task.id} r`], (s) => { (s.a[task.id] ??= blank()).r = r; }); setProgress(); } },
         }) as HTMLInputElement;
         if (a.r === r) input.checked = true;
         fs.appendChild(h('label', { class: `pill ${r}`, for: `r-${task.id}-${r}` }, input, h('span', { text: labels[r] })));
@@ -176,7 +205,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       box.appendChild(fs);
       const note = h('textarea', {
         id: `note-${task.id}`, rows: '2', placeholder: ui.notes, 'aria-label': `${ui.notes} ${i + 1}`,
-        on: { input: (e) => { const v = (e.target as HTMLTextAreaElement).value; commit((s) => { (s.a[task.id] ??= blank()).note = v; }); } },
+        on: { input: (e) => { const v = (e.target as HTMLTextAreaElement).value; commit([`a ${task.id} note`], (s) => { (s.a[task.id] ??= blank()).note = v; }); } },
       }) as HTMLTextAreaElement;
       note.value = a.note;
       box.appendChild(note);
@@ -184,7 +213,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
         if (task.hint) {
           box.appendChild(h('details', {
             class: 'hint', id: `hint-${task.id}`,
-            on: { toggle: (e) => { if ((e.target as HTMLDetailsElement).open) commit((s) => { (s.a[task.id] ??= blank()).hint = true; }); } },
+            on: { toggle: (e) => { if ((e.target as HTMLDetailsElement).open) commit([`a ${task.id} hint`], (s) => { (s.a[task.id] ??= blank()).hint = true; }); } },
           }, h('summary', { text: ui.hint }), h('p', { text: task.hint })));
         } else {
           box.appendChild(h('p', { class: 'nohint small', text: ui.nohint }));
@@ -198,7 +227,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       const qid = closingKey(id, q);
       const field = (SHORT_CLOSING.includes(q) ? h('input', { type: 'text', id: qid }) : h('textarea', { id: qid, rows: '2' })) as HTMLInputElement | HTMLTextAreaElement;
       field.value = S.q[qid] ?? '';
-      field.addEventListener('input', () => { const v = field.value; commit((s) => { s.q[qid] = v; }); });
+      field.addEventListener('input', () => { const v = field.value; commit([`q ${qid}`], (s) => { s.q[qid] = v; }); });
       closing.appendChild(h('div', { class: 'field' }, h('label', { for: qid, text: ui.q[q] }), field));
     }
 
@@ -281,7 +310,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
             return;
           }
           // This sheet's answers only: the other sheets', the language, and every other key stay.
-          commit((s) => {
+          commit([...sheet.tasks.flatMap((task) => taskKeys(task.id)), ...sheet.closing.map((q) => `q ${closingKey(id, q)}`)], (s) => {
             for (const task of sheet.tasks) delete s.a[task.id];
             for (const q of sheet.closing) delete s.q[closingKey(id, q)];
           });
@@ -331,7 +360,7 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
       const l = b.dataset.lang;
       if (!isSheetLang(l) || l === S.lang) return;
       S.lang = l;
-      commit(() => {});
+      commit([], () => {});
       // The choice now wins over a `?lang=` in the address: take it out, so a reload keeps the choice.
       if (new URLSearchParams(win.location.search).has('lang')) {
         try {

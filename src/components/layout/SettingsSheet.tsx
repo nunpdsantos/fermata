@@ -5,7 +5,7 @@ import { useAppStore, type ThemeMode, type NeckNutSide, type NeckTopString } fro
 import { SUPPORTED_LANGUAGES } from '../../i18n/index.ts';
 import { toast } from '../../state/toastStore.ts';
 import { applyBackup, backupSections } from '../../utils/backupHelpers.ts';
-import { exportAndTell, importFailedText, readBackupFile, toastImportFailed } from '../../utils/backupFile.ts';
+import { exportAndTell, importFailedText, NOTE_INK, readBackupFile, toastImportFailed, type ExportNote } from '../../utils/backupFile.ts';
 import { reloadPage } from '../../utils/pageReload.ts';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
@@ -83,8 +83,8 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const fileInputRef = useRef<HTMLInputElement>(null);
   const offline = useServiceWorkerActive();
 
-  // What an export or import has to say beyond success, shown here too: an open sheet covers the toasts (A15 / A16).
-  const [dataNotes, setDataNotes] = useState<{ text: string; tone: 'warning' | 'error' }[]>([]);
+  // What an export or import has to say, shown here too: an open sheet covers the toasts (A15 / A16; a whole export too, second fix pass).
+  const [dataNotes, setDataNotes] = useState<ExportNote[]>([]);
   const notesRef = useRef<HTMLDivElement>(null);
   // The learner asked (Export / Import): the answer comes into view in the sheet.
   useEffect(() => {
@@ -207,7 +207,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
         {dataNotes.length > 0 && (
           <div ref={notesRef} className="flex flex-col gap-1.5">
             {dataNotes.map((note) => (
-              <p key={note.text} role="alert" className="text-ui" style={{ color: note.tone === 'error' ? 'var(--danger-text)' : 'var(--warning-text)' }} data-testid="data-note">
+              <p key={note.text} role="alert" className="text-ui" style={{ color: NOTE_INK[note.tone] }} data-tone={note.tone} data-testid="data-note">
                 {note.text}
               </p>
             ))}

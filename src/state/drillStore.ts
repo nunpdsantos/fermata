@@ -16,9 +16,9 @@ import type {
   SerializedCard,
 } from '../core/types/drill';
 import { applyAnswer, migrateTierV1 } from '../services/drillScheduler';
-import { tabSafeStorage, type TabStore } from './tabSafe';
+import { tabLine, tabSafeStorage, type TabStore } from './tabSafe';
 import { followSoon } from './tabFollow';
-import type { Rule } from './tabMerge';
+import { mergeBy, type Rule } from './tabMerge';
 import {
   composeSession,
   requeueAfterMiss,
@@ -445,7 +445,7 @@ function migrateItemsFromV1(items: Record<string, ItemSrsState>): Record<string,
 }
 
 /**
- * A fact this tab answered while the save changed under it (A1; fix pass
+ * A fact this tab answered while the save changed under it (A1; fix passes
  * 2026-11-19). Only the answers this tab added since its base count: they
  * are replayed, in time order, through the scheduler onto the fact as saved
  * now — onto a new card when the save no longer has the fact (a reset, an
@@ -453,11 +453,12 @@ function migrateItemsFromV1(items: Record<string, ItemSrsState>): Record<string,
  * back. A fact answered in both tabs thus keeps both tabs' answers, and its
  * card is the saved card moved on by this tab's answers (an answer older
  * than the saved card's last review is recorded at that time: the scheduler
- * never goes backwards). A fact cleared here and answered there stays as
- * saved; one this tab only cleared is gone.
+ * never goes backwards). A fact cleared elsewhere and answered here holds
+ * only this tab's new answers; a fact this tab cleared (its reset, the latest
+ * action) is gone, with the answers any tab gave it before.
  */
 function mergeDrillItem(base: unknown, mine: unknown, theirs: unknown): unknown {
-  if (!isPlainObject(mine)) return theirs;
+  if (!isPlainObject(mine)) return undefined;
   const answers = (s: unknown) => (isPlainObject(s) && Array.isArray(s.history) ? s.history.filter(isValidAnswerRecord) : []);
   const key = (r: AnswerRecord) => `${r.ts}|${r.sessionId}|${r.ms}|${r.correct}`;
   const known = new Set(answers(base).map(key));
@@ -469,18 +470,59 @@ function mergeDrillItem(base: unknown, mine: unknown, theirs: unknown): unknown 
 }
 
 /**
- * Two tabs' Drill, written together (A1): facts one by one (above), a
- * Sprint best the higher, the lifetime counts both tabs' answers, the intro
- * passed stays passed; the session and Sprint under way are the latest
- * tab's (one saved slot, as before), settings field by field.
+ * One saved slot (the session, the Sprint under way): the latest tab's, as
+ * before — but a tab that CLOSES its own (null) never erases a different one
+ * (another id) that another tab saved since; closing the same one closes it.
  */
-export const DRILL_MERGE_RULE: Rule = {
+const slot = (id: string): Rule => (b, m, t) =>
+  m === null && isPlainObject(t) && (!isPlainObject(b) || b[id] !== t[id]) ? t : m;
+
+const DRILL_FIELDS: Rule = {
   items: { '*': mergeDrillItem },
   settings: { families: { '*': 'atomic' } },
   sprintBests: { '*': 'max' },
   lifetime: { answered: 'sum', correct: 'sum' },
+  activeSession: slot('id'),
+  sprint: slot('seed'),
   introDone: 'or',
 };
+
+/**
+ * Two tabs' Drill, written together (A1): facts one by one (above), a
+ * Sprint best the higher, the lifetime counts both tabs' answers, the intro
+ * passed stays passed; the session and Sprint under way by `slot`, settings
+ * field by field. "Reset progress" in a tab (the latest action) writes what
+ * it reset whole (`resetting`): no fact, best, count, session or Sprint any
+ * tab made before comes back. Then the store's own guard reads the result,
+ * and that is what is written (a record it would drop is not written), with
+ * the intro passed wherever a fact or a session is saved — the only saves
+ * the store itself makes.
+ */
+export const DRILL_MERGE_RULE: Rule = (b, m, t) => {
+  const out = validatePersistedShape(mergeBy(DRILL_FIELDS, b, m, t));
+  if (out && (out.activeSession || Object.keys(out.items).length > 0)) out.introDone = true;
+  return out ?? m;
+};
+
+/** What "Reset progress" clears, and what "Reset all Drill data" clears: written whole by the reset's own write. */
+const RESET_PROGRESS: (keyof DrillStoreState)[] = ['items', 'sprintBests', 'lifetime', 'activeSession', 'sprint'];
+const resetting = (fields: (keyof DrillStoreState)[]) => {
+  const line = tabLine(DRILL_STORE_KEY);
+  if (line) line.replace = fields;
+};
+
+/**
+ * Whether another tab's save is real Drill data, as saved (v1–v3 share the
+ * shape): an object whose facts are a record (one broken fact is dropped on
+ * its own, as on loading), whose counts and bests, when present, are records
+ * too. Anything else is broken: never followed, never merged into.
+ */
+export function isReadableDrillSave(state: unknown): boolean {
+  if (!isPlainObject(state) || !isPlainObject(state.items)) return false;
+  const lt = state.lifetime;
+  if (lt !== undefined && !(isPlainObject(lt) && isFiniteNumber(lt.answered) && isFiniteNumber(lt.correct))) return false;
+  return state.sprintBests === undefined || isPlainObject(state.sprintBests);
+}
 
 // ─── Derived helpers ──────────────────────────────────────────────────────────
 
@@ -648,7 +690,8 @@ export const useDrillStore = create<DrillStoreState>()(
           },
         })),
 
-      resetDrillData: () =>
+      resetDrillData: () => {
+        resetting([...RESET_PROGRESS, 'settings', 'introDone']);
         set({
           items: {},
           settings: DEFAULT_SETTINGS,
@@ -657,9 +700,11 @@ export const useDrillStore = create<DrillStoreState>()(
           activeSession: null,
           sprint: null,
           introDone: false,
-        }),
+        });
+      },
 
-      resetDrillProgress: () =>
+      resetDrillProgress: () => {
+        resetting(RESET_PROGRESS);
         set((prev) => ({
           items: {},
           sprintBests: {},
@@ -668,7 +713,8 @@ export const useDrillStore = create<DrillStoreState>()(
           sprint: null,
           // Preserve the user's settings intact.
           settings: prev.settings,
-        })),
+        }));
+      },
     }),
     {
       name: DRILL_STORE_KEY,
@@ -678,7 +724,7 @@ export const useDrillStore = create<DrillStoreState>()(
       // way is saved (`sprint`). Older saves load as they are: no verdict
       // showing, an empty tally, no Sprint open.
       version: 3,
-      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, (): TabStore => useDrillStore, DRILL_MERGE_RULE, (s) => validatePersistedShape(s) !== null)),
+      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, (): TabStore => useDrillStore, DRILL_MERGE_RULE, isReadableDrillSave)),
       // Persist every store change. SprintRunner also saves on pagehide /
       // hidden; a visible crash resumes its last save (up to 5 s earlier).
       partialize: (state) => ({

@@ -173,7 +173,7 @@ export async function validateBackup(raw: unknown): Promise<BackupValidation> {
 
 export type ApplyResult =
   | { ok: true }
-  /** Nothing written stays, unless putting it back failed too: `notRestored` then holds the backup's version. */
+  /** Nothing written stays, unless putting it back failed too: `notRestored` then names each key read back without its old data. */
   | { ok: false; restored: boolean; notRestored: BackupKey[] };
 
 /**
@@ -205,10 +205,18 @@ export function applyBackup(backup: FermataBackup, storage: WritableStorage): Ap
       try {
         if (old !== null) storage.setItem(key, old);
         else storage.removeItem?.(key);
-        if (storage.getItem(key) !== old) notRestored.push(key);
       } catch {
-        notRestored.push(key);
+        // Refused: what the key holds now is read below (it may never have taken the backup's).
       }
+      // Read back before saying anything (second fix pass, 2026-11-19): a key that refused both
+      // the backup's write and the putting back still holds its old data, and is not reported.
+      let now: string | null | undefined;
+      try {
+        now = storage.getItem(key);
+      } catch {
+        now = undefined;
+      }
+      if (now !== old) notRestored.push(key);
     }
     return { ok: false, restored: notRestored.length === 0, notRestored };
   }

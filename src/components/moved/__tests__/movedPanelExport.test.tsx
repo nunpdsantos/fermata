@@ -37,12 +37,13 @@ afterEach(() => {
 const exportNow = () => fireEvent.click(screen.getByRole('button', { name: movedEn.export }));
 
 describe('the moving panel\'s export', () => {
-  it('a whole file: no sentence in the panel, and the export counts for the visit', async () => {
+  it('a whole file: "Backup downloaded" in the panel (the toast is under the sheet), and the export counts for the visit', async () => {
     render(<MovedPanel open onClose={() => {}} />);
     exportNow();
     await waitFor(() => expect(noteMovedExport).toHaveBeenCalledTimes(1));
     expect(files).toHaveLength(1);
-    expect(screen.queryByTestId('moved-note')).toBeNull();
+    const notes = await screen.findAllByTestId('moved-note');
+    expect(notes.map((n) => [n.textContent, n.getAttribute('role'), n.getAttribute('data-tone')])).toEqual([[i18n.t('backup.exported'), 'alert', 'success']]);
   });
 
   it('a damaged part: the sentence in the panel (it names the part), and the export does not count — the reminder stays', async () => {
