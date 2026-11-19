@@ -47,6 +47,21 @@ async function open(browser: Browser, baseURL: string, opts: { w: number; h: num
   return { context, page };
 }
 
+// On a dev server just started, the first import of core audio through its
+// own /src address can make Vite optimise a dependency it had not met and
+// reload every page (seen once in a full run: the share link's chord gone
+// after the reload). Import it once, on a page of its own, before any test.
+test.beforeAll(async ({ browser, baseURL }) => {
+  const page = await browser.newPage();
+  const res = await page.request.get(`${baseURL}/src/core/services/audio.ts`);
+  if (res.ok() && (res.headers()['content-type'] ?? '').includes('javascript')) {
+    await page.goto(`${baseURL}/`);
+    await page.evaluate("import('/src/core/services/audio.ts')");
+    await page.waitForTimeout(1500);
+  }
+  await page.close();
+});
+
 let devModules: boolean | undefined;
 async function hasDevModules(page: Page) {
   if (devModules === undefined) {
