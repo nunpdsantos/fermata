@@ -26,7 +26,7 @@ import { trackOfModule } from '../../tracks';
 
 /** [term, pattern in exercises, pattern in lesson text (default: the same)] */
 const TERMS: [string, RegExp, RegExp?][] = [
-  ['compound meter / 6/8', /\bcompound meter\b|\b6\/8\b|\b9\/8\b|\b12\/8\b/i],
+  ['compound meter / 6/8', /\bcompound metre\b|\b6\/8\b|\b9\/8\b|\b12\/8\b/i],
   ['common time (C)', /common time/i],
   ['cut time / alla breve / 2/2', /cut time|alla breve|\b2\/2\b/i],
   ['hemiola', /hemiola/i],

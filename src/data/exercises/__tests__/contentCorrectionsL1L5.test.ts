@@ -440,7 +440,7 @@ describe('secondary dominants can be triads or sevenths (W5-38, l5u15m2)', () =>
     expect(t.hintTemplate).toMatch(/triad/);
     // l5u15m1 (the module before) teaches V/V as a plain D major triad
     expect(mod('l5u15m1').concepts[0].tryThisQuery).toBe('D major chord');
-    const m = /([A-G][#b]?)7 \(([A-G][#b]?(?:-[A-G][#b]?)+)\)[^.]*tonicizing ([A-G][#b]?) minor/.exec(t.hintTemplate);
+    const m = /([A-G][#b]?)7 \(([A-G][#b]?(?:-[A-G][#b]?)+)\)[^.]*tonicising ([A-G][#b]?) minor/.exec(t.hintTemplate);
     expect(m, t.hintTemplate).not.toBeNull();
     const [, root, spelled, target] = m!;
     expect(spelled.split('-').map(pc)).toEqual(chordPcs(root, 'dominant7'));

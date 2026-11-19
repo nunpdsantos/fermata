@@ -97,8 +97,9 @@ describe('clauses: the text of every token, in all three languages', () => {
   it('the English clauses are the texts 6de6c0e put in whyParams, character for character', () => {
     const en = i18n.getFixedT('en');
     expect(en(clauseKey('drill.why.functionPull', 'direction', 'tonic'))).toBe('home — creates rest');
-    expect(en(clauseKey('drill.why.functionPull', 'direction', 'subdominant'))).toBe('away from tonic — builds tension toward V');
-    expect(en(clauseKey('drill.why.functionPull', 'direction', 'dominant'))).toBe('toward tonic — creates strong pull to resolve');
+    // "towards" since the British spelling pass (19 November 2026); every other character as 6de6c0e.
+    expect(en(clauseKey('drill.why.functionPull', 'direction', 'subdominant'))).toBe('away from tonic — builds tension towards V');
+    expect(en(clauseKey('drill.why.functionPull', 'direction', 'dominant'))).toBe('towards tonic — creates strong pull to resolve');
     expect(en(clauseKey('drill.why.seventhLadder', 'step', 'major7'))).toBe('the reference stack (M3+m3+M3)');
     expect(en(clauseKey('drill.why.seventhLadder', 'step', 'dominant7'))).toBe('maj7 with the 7th lowered a half step');
     expect(en(clauseKey('drill.why.seventhLadder', 'step', 'minor7'))).toBe('dominant 7 with the 3rd also lowered');
