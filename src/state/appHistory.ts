@@ -162,13 +162,20 @@ const known = new Map<number, { v: ViewMode; s?: string }>();
 const KNOWN_KEY = HISTORY_RECORD_KEY;
 const KNOWN_KEEP = 50;
 function saveKnown(): void {
-  // A reset or an import forgot it, and the page is reloading (its pagehide is what calls this): leave it gone.
+  // An import forgot it, and the page is reloading (its pagehide is what calls this): leave it gone.
   if (recordForgotten()) return;
   try {
     const rows = [...known].filter(([k]) => Math.abs(k - cur.i) < KNOWN_KEEP).map(([k, p]) => (p.s === undefined ? [k, p.v] : [k, p.v, p.s]));
     sessionStorage.setItem(KNOWN_KEY, JSON.stringify(rows));
   } catch {
     // Storage refused (a private window, the quota): after a reload the ← arrows rewrite the entry, as before.
+  }
+}
+function dropKnown(): void {
+  try {
+    sessionStorage.removeItem(KNOWN_KEY);
+  } catch {
+    // Storage refused: nothing was read from it either.
   }
 }
 function loadKnown(at: HistoryEntry): void {
@@ -741,8 +748,10 @@ export function installAppHistory(): void {
   // A reload (or a return to an entry of this tab): the boot view came from
   // it (pickBootView); the view opens the screen it names as it mounts.
   const s = kept && kept.v === view ? kept.s : undefined;
-  // The entries this tab knew before the reload (the app's own ← goes Back to them).
+  // The entries this tab knew before the reload (the app's own ← goes Back to them); with no entry of
+  // ours (a first load, the error screen's resets), whatever record is left is not this place's: dropped.
   if (kept) loadKnown(kept);
+  else dropKnown();
   write({ fm: 1, i: kept?.i ?? 0, v: view, s, l: 0 }, false);
   if (s !== undefined) opensAt = cur.i;
   window.addEventListener('popstate', onPopState);

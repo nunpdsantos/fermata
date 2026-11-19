@@ -4,7 +4,6 @@ import i18n from '../i18n';
 import { Button } from './ui/Button';
 import { useAppStore, type AppState } from '../state/store';
 import { reloadPage } from '../utils/pageReload';
-import { forgetPlace } from '../state/savedPlace';
 import { requestMetronomeStop } from '../services/metronome/stopRequest';
 
 /**
@@ -77,10 +76,21 @@ interface State {
   error: Error | null;
 }
 
-// A recovery's reload: this tab's history entry (and its record of entries)
-// forgets its place first (state/savedPlace.ts), so the app comes back where a
-// fresh start puts it, not on the screen that may have crashed (second audit
-// round, review A7).
+/**
+ * A recovery's reload: this tab's history entry forgets its place first
+ * (state/appHistory.ts keeps it across a reload), so the app comes back where
+ * a fresh start puts it, not on the screen that may have crashed (second
+ * audit round, review A7). With no entry of its own, the history module also
+ * drops this tab's record of entries as it starts (kept out of this file,
+ * which is in the entry bundle).
+ */
+function forgetPlace(): void {
+  try {
+    window.history.replaceState(null, '');
+  } catch {
+    // Nothing to forget.
+  }
+}
 
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false, error: null };

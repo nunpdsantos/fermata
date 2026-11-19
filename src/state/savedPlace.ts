@@ -1,6 +1,6 @@
 /**
- * Where the app comes back after a reload that REPLACES or RESETS the
- * learner's save. Back and Forward keep this tab's place in its history
+ * Where the app comes back after a reload that REPLACES the learner's save
+ * (an import; a reset is the error screen's, components/ErrorBoundary.tsx). Back and Forward keep this tab's place in its history
  * entry, across a reload (state/appHistory.ts), and the boot view prefers that
  * entry to the saved last view (state/bootView.ts) — right for a plain reload
  * or an update's, which must land where the learner was; wrong when the save
@@ -9,11 +9,13 @@
  * the start screen opened Explore, the start screen's entry, not the
  * learner's Learn), and a reset where a fresh start puts it.
  *
- * Both also forget this tab's record of its entries (sessionStorage
+ * It also forgets this tab's record of its entries (sessionStorage
  * `fermatina-history-v1`), so no entry written before can come back through
- * it as a place the app's own ← goes Back to.
+ * it as a place the app's own ← goes Back to; a reset's record is dropped by
+ * the history module as it starts with no entry of its own.
  *
- * Imports nothing: the error screen is in the entry bundle.
+ * Imports nothing; only lazy chunks import it (the start screen's import,
+ * Settings, the history module), so none of it is in the entry bundle.
  */
 
 /** This tab's record of its entries (written and read by state/appHistory.ts). */
@@ -33,16 +35,6 @@ function forgetRecord(): void {
   } catch {
     // Storage refused: the record is checked against the entry before it is used.
   }
-}
-
-/** A reset: the entry names no place at all, so the app opens where a fresh start does. */
-export function forgetPlace(): void {
-  try {
-    window.history.replaceState(null, '');
-  } catch {
-    // Nothing to forget.
-  }
-  forgetRecord();
 }
 
 const VIEWS = ['explore', 'learn', 'drill'];

@@ -1,11 +1,12 @@
 /**
- * After a reload that replaces or resets the save, where the app comes back
+ * After a reload that replaces the save, where the app comes back
  * (state/savedPlace.ts): an import opens the imported save's view at the same
- * position; a reset names no place; both forget this tab's record of entries.
- * A plain reload (and an update's) touches neither: nothing here runs then.
+ * position and forgets this tab's record of entries. A plain reload (and an
+ * update's) touches neither: nothing here runs then. (A reset: the error
+ * screen's tests and appHistoryInstall.test.ts.)
  */
 import { afterEach, describe, expect, it } from 'vitest';
-import { forgetPlace, placeFromSave, HISTORY_RECORD_KEY } from '../savedPlace';
+import { placeFromSave, HISTORY_RECORD_KEY } from '../savedPlace';
 import { pickBootView } from '../bootView';
 
 const save = (lastView: unknown) => ({ getItem: (k: string) => (k === 'music-theory-app' ? JSON.stringify({ state: { lastView }, version: 6 }) : null) });
@@ -35,15 +36,5 @@ describe('placeFromSave (an import)', () => {
     placeFromSave(save('drill'));
     expect(window.history.state).toBeNull();
     expect(pickBootView('', 'drill', window.history.state)).toBe('drill');
-  });
-});
-
-describe('forgetPlace (a reset)', () => {
-  it('the entry names no place and the record goes', () => {
-    window.history.replaceState({ fm: 1, i: 2, v: 'learn', s: 'level/l1', l: 0 }, '');
-    sessionStorage.setItem(HISTORY_RECORD_KEY, '[[2,"learn","level/l1"]]');
-    forgetPlace();
-    expect(window.history.state).toBeNull();
-    expect(sessionStorage.getItem(HISTORY_RECORD_KEY)).toBeNull();
   });
 });
