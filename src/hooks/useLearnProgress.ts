@@ -17,6 +17,28 @@ import {
   getDueReviewCount,
 } from '../services/spacedRepetition';
 
+/**
+ * The points a module's saved result holds for its OWN exercises (second audit
+ * round, 2026-11-19): only scores saved under the id of an exercise the module
+ * serves now count. Any other score stays in the save, untouched (nothing is
+ * deleted on reading), and counts for nothing here: the scores of 31 generated
+ * questions of other topics that releases of February to June 2026 served in
+ * nine modules (templates keyed to the wrong module: l4u14m2–m5, l5u16m5,
+ * l5u17m1, m3, m4, l9u32m5), removed on 17 April and 9 June 2026, before
+ * retiring scores existed, so no migration drops them; or a score another
+ * tab's write left under the wrong lesson before the merge fix of the same
+ * round (state/tabMerge.ts). An exercise id names its module and has never
+ * moved between modules, so a score saved for a module's exercise always
+ * counts.
+ */
+export function ownEarned(result: ModuleExerciseResult | undefined, exerciseIds: readonly string[]): number {
+  if (!result) return 0;
+  const own = new Set(exerciseIds);
+  let earned = 0;
+  for (const [id, score] of Object.entries(result.scores)) if (own.has(id)) earned += score;
+  return earned;
+}
+
 export function useLearnProgress() {
   const progress = useProgressStore((s) => s.progress);
   const toggleTask = useProgressStore((s) => s.toggleTask);
@@ -71,24 +93,21 @@ export function useLearnProgress() {
     [progress.exerciseResults],
   );
 
+  /** A module's saved score out of its exercises (`exerciseIds`: the ids it serves now), counted by `ownEarned`. */
   const getModuleExerciseScore = useCallback(
-    (moduleId: string, totalExercises: number): { earned: number; total: number } => {
-      const result = (progress.exerciseResults ?? {})[moduleId];
-      if (!result) return { earned: 0, total: totalExercises };
-      const earned = Object.values(result.scores).reduce<number>((sum, s) => sum + s, 0);
-      return { earned, total: totalExercises };
-    },
+    (moduleId: string, exerciseIds: readonly string[]): { earned: number; total: number } =>
+      ({ earned: ownEarned((progress.exerciseResults ?? {})[moduleId], exerciseIds), total: exerciseIds.length }),
     [progress.exerciseResults],
   );
 
+  /** The module's check passed: by a passing run, or with 80 % of its exercises' points saved (`ownEarned`). */
   const isModuleExercisesPassed = useCallback(
-    (moduleId: string, totalExercises: number): boolean => {
-      if (totalExercises === 0) return true;
+    (moduleId: string, exerciseIds: readonly string[]): boolean => {
+      if (exerciseIds.length === 0) return true;
       const result = (progress.exerciseResults ?? {})[moduleId];
       if (!result) return false;
       if (result.passed) return true;
-      const earned = Object.values(result.scores).reduce<number>((sum, s) => sum + s, 0);
-      return earned >= totalExercises * 0.8;
+      return ownEarned(result, exerciseIds) >= exerciseIds.length * 0.8;
     },
     [progress.exerciseResults],
   );

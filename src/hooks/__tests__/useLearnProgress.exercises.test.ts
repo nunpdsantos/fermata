@@ -51,7 +51,7 @@ describe('useLearnProgress — exercise tracking', () => {
       result.current.recordExerciseResult('l1u1m1', 'l1u1m1e2', 0.5);
     });
 
-    const score = result.current.getModuleExerciseScore('l1u1m1', 4);
+    const score = result.current.getModuleExerciseScore('l1u1m1', ['l1u1m1e1', 'l1u1m1e2', 'l1u1m1e3', 'l1u1m1e4']);
     expect(score.earned).toBe(1.5);
     expect(score.total).toBe(4);
   });
@@ -68,7 +68,7 @@ describe('useLearnProgress — exercise tracking', () => {
       result.current.recordExerciseResult('l1u1m1', 'e5', 0);
     });
 
-    expect(result.current.isModuleExercisesPassed('l1u1m1', 5)).toBe(true);
+    expect(result.current.isModuleExercisesPassed('l1u1m1', ['e1', 'e2', 'e3', 'e4', 'e5'])).toBe(true);
   });
 
   it('isModuleExercisesPassed returns false below 80%', () => {
@@ -83,12 +83,12 @@ describe('useLearnProgress — exercise tracking', () => {
       result.current.recordExerciseResult('l1u1m1', 'e5', 0);
     });
 
-    expect(result.current.isModuleExercisesPassed('l1u1m1', 5)).toBe(false);
+    expect(result.current.isModuleExercisesPassed('l1u1m1', ['e1', 'e2', 'e3', 'e4', 'e5'])).toBe(false);
   });
 
   it('isModuleExercisesPassed returns true for modules with no exercises', () => {
     const { result } = renderHook(() => useLearnProgress());
-    expect(result.current.isModuleExercisesPassed('l1u1m1', 0)).toBe(true);
+    expect(result.current.isModuleExercisesPassed('l1u1m1', [])).toBe(true);
   });
 
   it('markExercisesPassed sets the passed flag', () => {
@@ -104,7 +104,7 @@ describe('useLearnProgress — exercise tracking', () => {
     const exerciseResult = result.current.getModuleExerciseResult('l1u1m1');
     expect(exerciseResult!.passed).toBe(true);
     // Should also return true from isModuleExercisesPassed regardless of score
-    expect(result.current.isModuleExercisesPassed('l1u1m1', 100)).toBe(true);
+    expect(result.current.isModuleExercisesPassed('l1u1m1', Array.from({ length: 100 }, (_, i) => `e${i + 1}`))).toBe(true);
   });
 
   it('getModuleExerciseResult returns undefined for unknown module', () => {
