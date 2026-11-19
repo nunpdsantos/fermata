@@ -131,6 +131,103 @@ test('a Drill session under way: the offer waits, and shows once the session is 
   await context.close();
 });
 
+const LATER = {
+  en: 'The language will switch to English when you finish what you are doing.',
+  pt: 'O idioma muda para português quando acabares o que estás a fazer.',
+  es: 'El idioma cambiará a español cuando termines lo que estás haciendo.',
+} as const;
+
+/** A saved Drill session with one answer: work in progress once the Drill view shows it. */
+function sessionSave() {
+  const item = 'degree:num-to-name:1';
+  const now = Date.now();
+  return JSON.stringify({
+    state: {
+      items: { [item]: { card: { due: now + 6e5, stability: 2.3, difficulty: 2.1, elapsed_days: 0, scheduled_days: 0, reps: 1, lapses: 0, state: 1, learning_steps: 1, last_review: now - 1000 }, history: [{ ts: now - 1000, correct: true, ms: 1500, sessionId: `s${now - 5000}` }], tier: 'learning', introSessionId: `s${now - 5000}`, introCorrectCount: 1 } },
+      settings: { length: 24, newPerSession: 4, families: { keysig: true, circle: true, scale: true, degree: true, interval: true, triad: true, seventh: true, roman: true, function: true, read: false }, sound: false, showTimer: false },
+      sprintBests: {}, lifetime: { answered: 1, correct: 1 },
+      activeSession: { id: `s${now - 5000}`, queue: [item, 'degree:num-to-name:2', 'degree:num-to-name:3', item], index: 1, asked: 1, correct: 1, startedAt: now - 5000, seed: 7, missRequeues: {} },
+      sprint: null, introDone: true,
+    },
+    version: 3,
+  });
+}
+
+/** The offer shown in Explore (the saved session is not under way there), then the session resumed in Drill and Switch tapped. */
+async function tapDuringSession(page: Page, lang: Lang, saved: Lang) {
+  await page.goto(`/?lang=${lang}`);
+  await expect(toast(page, lang)).toBeVisible({ timeout: 15_000 });
+  await page.getByRole('tab', { name: DRILL_TAB[saved] }).click();
+  const panel = page.locator('#drill-panel');
+  await expect(panel.getByRole('button', { name: END[saved] })).toBeVisible({ timeout: 15_000 });
+  await toast(page, lang).getByRole('button', { name: ACTION[lang], exact: true }).click();
+  // The offer itself is gone: one line, not two.
+  await expect(toast(page, lang)).toHaveCount(0);
+  await expect(page.getByTestId('toast-region').getByRole('status')).toHaveCount(1);
+  return { panel, later: page.getByTestId('toast-region').getByText(LATER[lang]) };
+}
+const NOW = { en: 'Now in English.', pt: 'Agora em português.', es: 'Ahora en español.' } as const;
+const DRILL_TAB = { en: 'Drill', pt: 'Treino', es: 'Práctica' } as const;
+const END = { en: 'End session', pt: 'Terminar sessão', es: 'Terminar sesión' } as const;
+
+test('Switch tapped during a Drill session: told at once why nothing changed; switched when the session is over, no second tap', async ({ browser }) => {
+  const { context, page } = await withStorage(browser, returning('en', { 'fermata-drill-v1': sessionSave() }));
+  const { panel, later } = await tapDuringSession(page, 'pt', 'en');
+  await expect(later).toBeVisible();
+  await expect(later).toHaveAttribute('lang', 'pt-PT');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.waitForTimeout(2000);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(later).toBeVisible();
+  await panel.getByRole('button', { name: END.en }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'pt-PT', { timeout: 4000 });
+  await expect(page.getByRole('tab', { name: 'Treino' })).toBeVisible();
+  // Told at that moment, in its language; nothing else left in the region.
+  const now = page.getByTestId('toast-region').getByText(NOW.pt);
+  await expect(now).toBeVisible();
+  await expect(now).toHaveAttribute('lang', 'pt-PT');
+  await expect(page.getByTestId('toast-region').getByRole('status')).toHaveCount(1);
+  await expect.poll(() => savedLanguage(page)).toBe('pt');
+  await context.close();
+});
+
+// The new line in PT and ES at 320 and 390 px (the brief), EN at 390, day and night, over a Drill session.
+for (const [lang, width, saved] of [['pt', 320, 'en'], ['pt', 390, 'es'], ['es', 320, 'pt'], ['es', 390, 'en'], ['en', 390, 'pt']] as const) {
+  test(`the "when you finish" line in ${lang}, ${width} px, day and night: whole, on screen, readable`, async ({ browser }) => {
+    for (const themeMode of ['fermata', 'fermata-night']) {
+      const { context, page } = await withStorage(browser, returning(saved, { 'fermata-drill-v1': sessionSave() }, themeMode), { width, height: 740 }, true);
+      const { panel, later } = await tapDuringSession(page, lang, saved);
+      await expect(later).toBeVisible();
+      const check = async (text: string, name: string) => {
+        await page.waitForTimeout(400);
+        const card = page.getByTestId('toast-region').getByRole('status').filter({ hasText: text });
+        const box = (await card.boundingBox())!;
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(width + 0.5);
+        expect(box.y + box.height).toBeLessThanOrEqual(740);
+        const r = await auditPage(page, { minFontPx: 12, minTapPx: 44 });
+        const where = `${lang} ${width} ${themeMode} ${name}`;
+        const fmt = (xs: unknown[]) => JSON.stringify(xs.slice(0, 4));
+        expect.soft(r.fontViolations, `${where}: small text ${fmt(r.fontViolations)}`).toEqual([]);
+        expect.soft(r.contrastViolations, `${where}: contrast ${fmt(r.contrastViolations)}`).toEqual([]);
+        expect.soft(r.clipViolations, `${where}: cut off ${fmt(r.clipViolations)}`).toEqual([]);
+        expect.soft(r.tapViolations, `${where}: targets ${fmt(r.tapViolations)}`).toEqual([]);
+        expect.soft(r.hScroll.scrollWidth, `${where}: sideways scroll`).toBeLessThanOrEqual(r.hScroll.clientWidth + 1);
+        if (SHOTS) {
+          mkdirSync(SHOTS, { recursive: true });
+          await page.screenshot({ path: `${SHOTS}/language-offer-${name}-${lang}-${width}-${themeMode}.png` });
+        }
+      };
+      await check(LATER[lang], 'later');
+      // End the session (on a phone the line lies over the header for its 8 s: the button is pressed as a keyboard would).
+      await panel.getByRole('button', { name: END[saved] }).dispatchEvent('click');
+      await expect(page.getByTestId('toast-region').getByText(NOW[lang])).toBeVisible({ timeout: 4000 });
+      await check(NOW[lang], 'now');
+      await context.close();
+    }
+  });
+}
+
 test('the tester\'s sheet\'s "Open Fermatina" (build only): the learner\'s English stays, the sheet\'s language is offered', async ({ browser }) => {
   const { context, page } = await withStorage(browser, returning('en'));
   const res = await page.goto('/test/?lang=es');

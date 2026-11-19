@@ -98,19 +98,31 @@ describe('a returning visit: the saved language wins, the link\'s is offered onc
     expect(offerCard()).toBeNull();
   });
 
-  it('saved EN, ?lang=pt, ✕: stays English, and the shell mounting again offers nothing (once per visit)', async () => {
+  it('saved EN, ?lang=pt, ✕: stays English, and the shell mounting again, and again, offers nothing (once per visit)', async () => {
     const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=pt' });
     app.mount();
     await settle();
+    // It lasts: a toast with no time limit (review of bd14071).
+    expect(app.useToastStore.getState().toasts.map((t) => t.duration)).toEqual([0]);
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Dismiss' })));
     expect(offerCard()).toBeNull();
-    cleanup();
-    app.mount();
-    await settle();
-    expect(offerCard()).toBeNull();
+    for (let mount = 2; mount <= 4; mount++) {
+      cleanup();
+      app.mount();
+      await settle();
+      expect(offerCard(), `mount ${mount}`).toBeNull();
+    }
     expect(app.useAppStore.getState().language).toBe('en');
     expect(savedLanguage()).toBe('en');
   });
+
+  it('the offer does not time out: still there after 5 s', async () => {
+    const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=pt' });
+    app.mount();
+    await settle();
+    await act(() => new Promise((r) => setTimeout(r, 5200)));
+    expect(screen.getByText('Mudar para português?')).toBeDefined();
+  }, 15_000);
 
   it('saved PT, ?lang=pt: they agree — nothing', async () => {
     const app = await boot({ storage: { [APP]: saveIn('pt') }, search: '?lang=pt' });
@@ -186,7 +198,7 @@ describe('never over work in progress or the tour; the learner\'s own choice set
     expect(screen.getByText('Mudar para português?')).toBeDefined();
   });
 
-  it('a tap after work started again changes nothing; it is offered again once the work is over', async () => {
+  it('a tap while work is under way: told at once why nothing changed yet; switched, without a second tap, once the work is over', async () => {
     const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=pt' });
     let busy = false;
     const unregister = app.registerWorkInProgress('learn', () => busy);
@@ -194,12 +206,79 @@ describe('never over work in progress or the tour; the learner\'s own choice set
     await settle();
     busy = true;
     act(() => fireEvent.click(screen.getByRole('button', { name: 'Mudar' })));
+    // Nothing changed, and the learner is told why, in the link's language — no button to find again.
     expect(app.useAppStore.getState().language).toBe('en');
-    expect(offerCard()).toBeNull();
+    const later = screen.getByText('O idioma muda para português quando acabares o que estás a fazer.');
+    expect(later.getAttribute('lang')).toBe('pt-PT');
+    expect(screen.queryByRole('button', { name: 'Mudar' })).toBeNull();
+    expect(app.useToastStore.getState().toasts).toHaveLength(1);
+    await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_OFFER_POLL_MS + 100)));
+    expect(app.useAppStore.getState().language).toBe('en');
     busy = false;
     await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_OFFER_POLL_MS + 100)));
-    act(() => fireEvent.click(screen.getByRole('button', { name: 'Mudar' })));
     expect(app.useAppStore.getState().language).toBe('pt');
+    expect(savedLanguage()).toBe('pt');
+    // Told at that moment too, in its language; the offer and the line are gone.
+    expect(screen.queryByText(/quando acabares/)).toBeNull();
+    const now = screen.getByText('Agora em português.');
+    expect(now.getAttribute('lang')).toBe('pt-PT');
+    expect(app.useToastStore.getState().toasts.map((t) => [t.message, t.duration])).toEqual([['Agora em português.', app.offer.LANGUAGE_NOW_MS]]);
+    unregister();
+  });
+
+  it('the "when you finish" line leaves by itself after 8 s (it would cover a phone\'s Drill header); the tap still stands', async () => {
+    const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=pt' });
+    let busy = false;
+    const unregister = app.registerWorkInProgress('drill', () => busy);
+    app.mount();
+    await settle();
+    busy = true;
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Mudar' })));
+    expect(screen.getByText(/quando acabares/)).toBeDefined();
+    await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_LATER_MS + 300)));
+    expect(screen.queryByText(/quando acabares/)).toBeNull();
+    expect(app.useAppStore.getState().language).toBe('en');
+    busy = false;
+    await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_OFFER_POLL_MS + 100)));
+    expect(app.useAppStore.getState().language).toBe('pt');
+    expect(screen.getByText('Agora em português.')).toBeDefined();
+    unregister();
+  }, 20_000);
+
+  it('a tap while work is under way, then the shell mounting again: no second offer, the switch still comes', async () => {
+    const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=pt' });
+    let busy = false;
+    const unregister = app.registerWorkInProgress('drill', () => busy);
+    app.mount();
+    await settle();
+    busy = true;
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Mudar' })));
+    cleanup();
+    app.mount();
+    await settle();
+    expect(screen.queryByRole('button', { name: 'Mudar' })).toBeNull();
+    expect(app.useToastStore.getState().toasts).toHaveLength(1);
+    busy = false;
+    await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_OFFER_POLL_MS + 100)));
+    expect(app.useAppStore.getState().language).toBe('pt');
+    unregister();
+  });
+
+  it('a tap while work is under way, then ✕ on that line: it is cancelled — the language stays, nothing comes back', async () => {
+    const app = await boot({ storage: { [APP]: saveIn('en') }, search: '?lang=es' });
+    let busy = false;
+    const unregister = app.registerWorkInProgress('drill', () => busy);
+    app.mount();
+    await settle();
+    busy = true;
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Cambiar' })));
+    expect(screen.getByText('El idioma cambiará a español cuando termines lo que estás haciendo.')).toBeDefined();
+    act(() => fireEvent.click(screen.getByRole('button', { name: 'Dismiss' })));
+    busy = false;
+    await act(() => new Promise((r) => setTimeout(r, app.offer.LANGUAGE_OFFER_POLL_MS * 2 + 100)));
+    expect(app.useAppStore.getState().language).toBe('en');
+    expect(offerCard()).toBeNull();
+    expect(app.useToastStore.getState().toasts).toEqual([]);
     unregister();
   });
 

@@ -1,4 +1,6 @@
 {
   "ask": "Mudar para português?",
-  "switch": "Mudar"
+  "switch": "Mudar",
+  "later": "O idioma muda para português quando acabares o que estás a fazer.",
+  "now": "Agora em português."
 }

@@ -13,8 +13,14 @@
  *  - Never over work in progress (a check, a Drill session with answers, a
  *    Sprint — services/workInProgress.ts) or the tour: it waits, looking
  *    every 1.5 s, as a shared link's offer does. A tap on it while work has
- *    started again changes nothing yet and offers it again once the work is
- *    over (as a shared link's Open).
+ *    started again (review of bd14071) changes nothing yet: the tap is
+ *    remembered, and one line in the link's language says so at once ("O
+ *    idioma muda para português quando acabares o que estás a fazer."), for
+ *    8 s as a shared link's waiting line (a lasting one would cover a phone's
+ *    Drill header — End session included — for as long as the work lasts);
+ *    ✕ on it cancels the switch. When the work is over the language
+ *    switches, with no second tap, and a short line says so ("Agora em
+ *    português.").
  *  - Once per visit: shown, then taken or put away, it does not come back
  *    (the address bar has lost `?lang=`, so a reload owes nothing either).
  *  - The learner's own language choice in this visit (Settings, the start
@@ -30,12 +36,19 @@ import { hasWorkInProgress } from '../../services/workInProgress.ts';
 
 /** How often a waiting offer looks whether the work (or the tour) is over. */
 export const LANGUAGE_OFFER_POLL_MS = 1500;
+/** How long "…when you finish what you are doing" shows (a shared link's waiting line, shareLinkOpen.ts). */
+export const LANGUAGE_LATER_MS = 8000;
+/** How long "Now in Portuguese." shows once the remembered tap is applied. */
+export const LANGUAGE_NOW_MS = 4000;
 
-type State = 'idle' | 'waiting' | 'shown' | 'done';
+type State = 'idle' | 'waiting' | 'shown' | 'pending' | 'done';
 let state: State = 'idle';
 let toastId: string | null = null;
 let poll: ReturnType<typeof setInterval> | null = null;
 let unsubscribe: (() => void) | null = null;
+let laterTimer: ReturnType<typeof setTimeout> | null = null;
+/** The "when you finish" line left by itself (its 8 s), not by ✕: the tap still stands. */
+let laterExpired = false;
 
 /** Nothing the toast could get in the way of. */
 const free = () => !hasWorkInProgress() && getDemoRequest() === null;
@@ -49,6 +62,8 @@ function stopWaiting(): void {
 function settle(): void {
   state = 'done';
   stopWaiting();
+  if (laterTimer !== null) clearTimeout(laterTimer);
+  laterTimer = null;
   unsubscribe?.();
   unsubscribe = null;
   if (toastId !== null) useToastStore.getState().removeToast(toastId);
@@ -82,15 +97,43 @@ function wait(lang: AppLanguage): void {
   }, LANGUAGE_OFFER_POLL_MS);
 }
 
-/** The toast's action: switch now — unless work started meanwhile, then offer it again once that is over. */
+/** The toast's action: switch now — unless work started meanwhile: then say so, and switch once it is over. */
 function take(lang: AppLanguage): void {
   toastId = null; // the toast closes itself
-  if (!free()) {
-    wait(lang);
+  if (free()) {
+    settle();
+    useAppStore.getState().setLanguage(lang);
     return;
   }
-  settle();
-  useAppStore.getState().setLanguage(lang);
+  const t = i18n.getFixedT(lang);
+  state = 'pending';
+  laterExpired = false;
+  toastId = useToastStore.getState().addToast({
+    type: 'info',
+    message: t('languageOffer.later'),
+    lang: htmlLangFor(lang),
+    // Removed by its own timer below, so that ✕ (the store removing it sooner) can be told apart.
+    duration: 0,
+  });
+  laterTimer = setTimeout(() => {
+    laterTimer = null;
+    laterExpired = true;
+    if (toastId !== null) useToastStore.getState().removeToast(toastId);
+    toastId = null;
+  }, LANGUAGE_LATER_MS);
+  stopWaiting();
+  poll = setInterval(() => {
+    if (state !== 'pending') return;
+    // ✕ on the line before it left by itself: cancelled, nothing changes.
+    if (!laterExpired && (toastId === null || !useToastStore.getState().toasts.some((x) => x.id === toastId))) {
+      settle();
+      return;
+    }
+    if (!free()) return;
+    settle();
+    useAppStore.getState().setLanguage(lang);
+    useToastStore.getState().addToast({ type: 'info', message: t('languageOffer.now'), lang: htmlLangFor(lang), duration: LANGUAGE_NOW_MS });
+  }, LANGUAGE_OFFER_POLL_MS);
 }
 
 /**
@@ -102,7 +145,8 @@ function take(lang: AppLanguage): void {
  * with it), a toast still up stays, one put away (✕) ends the offer.
  */
 export function offerLanguage(lang: AppLanguage, bootLanguage: string): void {
-  if (state === 'done') return;
+  // Over, or a tap is waiting for the work to end (its own watch goes on).
+  if (state === 'done' || state === 'pending') return;
   if (state === 'idle') {
     if (lang === bootLanguage || useAppStore.getState().language !== bootLanguage) {
       state = 'done';
@@ -130,6 +174,9 @@ export function languageOfferState(): State {
 /** Test seam: a fresh visit. */
 export function resetLanguageOffer(): void {
   stopWaiting();
+  if (laterTimer !== null) clearTimeout(laterTimer);
+  laterTimer = null;
+  laterExpired = false;
   unsubscribe?.();
   unsubscribe = null;
   state = 'idle';
