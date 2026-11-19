@@ -21,7 +21,7 @@ const overlay: ExerciseLevelOverlay = {
     prompt: 'O que indica ③ junto de uma nota de guitarra?',
     choices: [
       'Dedo 3',
-      'Trasto 3',
+      'Traste 3',
       'Corda 3',
       'Posição III'
     ],
@@ -78,34 +78,34 @@ const overlay: ExerciseLevelOverlay = {
     hint: 'Lê as letras por ordem: p é polegar, a é anelar, m é médio e i é indicador.'
   },
   l1u33m3e1: {
-    prompt: 'Na posição V, que trasto serve normalmente de base ao indicador?',
+    prompt: 'Na posição V, que traste serve normalmente de base ao indicador?',
     choices: [
-      'Trasto 4',
-      'Trasto 5',
-      'Trasto 6',
-      'Trasto 7'
+      'Traste 4',
+      'Traste 5',
+      'Traste 6',
+      'Traste 7'
     ],
-    hint: 'V significa quinta posição: o indicador tem como base o trasto 5.'
+    hint: 'V significa quinta posição: o indicador tem como base o traste 5.'
   },
   l1u33m3e2: {
     prompt: 'Que instrução dá CV na notação de guitarra?',
     choices: [
-      'Pestana parcial no trasto 5',
-      'Pestana completa no trasto 4',
-      'Pestana parcial no trasto 4',
-      'Pestana completa no trasto 5'
+      'Pestana parcial no traste 5',
+      'Pestana completa no traste 4',
+      'Pestana parcial no traste 4',
+      'Pestana completa no traste 5'
     ],
-    hint: 'C indica uma pestana completa e V localiza-a no trasto 5. V sozinho indica a posição sem exigir uma pestana.'
+    hint: 'C indica uma pestana completa e V localiza-a no traste 5. V sozinho indica a posição sem exigir uma pestana.'
   },
   l1u33m3e3: {
-    prompt: 'Que indicação pede uma pestana parcial no trasto 5?',
+    prompt: 'Que indicação pede uma pestana parcial no traste 5?',
     choices: [
       '½CV',
       'CV',
       'V',
       '⑤'
     ],
-    hint: '½C pede uma pestana parcial; V indica o trasto. A partitura ou a dedilhação diz que cordas deves abranger.'
+    hint: '½C pede uma pestana parcial; V indica o traste. A partitura ou a dedilhação diz que cordas deves abranger.'
   }
 ,
   // =========================================================================
@@ -685,8 +685,8 @@ const overlay: ExerciseLevelOverlay = {
   },
   l1u35m5e4: {
     prompt: 'Na guitarra, como transformas a forma aberta de A em Am?',
-    choices: ['Passas a nota da corda B um trasto abaixo', 'Passas a nota da corda B um trasto acima', 'Passas a nota da corda G um trasto abaixo', 'Passas a nota da corda D um trasto abaixo'],
-    hint: 'A corda B toca a nota do meio, C♯, no trasto 2; um trasto abaixo, no trasto 1, é C, e o acorde é Am.',
+    choices: ['Passas a nota da corda B um traste abaixo', 'Passas a nota da corda B um traste acima', 'Passas a nota da corda G um traste abaixo', 'Passas a nota da corda D um traste abaixo'],
+    hint: 'A corda B toca a nota do meio, C♯, no traste 2; um traste abaixo, no traste 1, é C, e o acorde é Am.',
     nudge: 'Descobre que corda toca a nota do meio de A maior e depois decide para que lado fica meio-tom abaixo.',
   },
   l1u35m5e5: {
@@ -776,16 +776,16 @@ const overlay: ExerciseLevelOverlay = {
     nudge: 'De G para A é um tom. Sobe cada um dos outros acordes a mesma distância.',
   },
   l1u35m8e3: {
-    prompt: 'Tocas formas de G com um capo no trasto 2. Em que tonalidade soa?',
+    prompt: 'Tocas formas de G com um capo no traste 2. Em que tonalidade soa?',
     choices: ['Na tonalidade de A', 'Na tonalidade de G', 'Na tonalidade de B', 'Na tonalidade de E'],
-    hint: 'Na tonalidade de A: dois trastos são dois meios-tons, um tom acima de G.',
-    nudge: 'Cada trasto é meio-tom mais agudo. Conta dois meios-tons a subir a partir de G.',
+    hint: 'Na tonalidade de A: dois trastes são dois meios-tons, um tom acima de G.',
+    nudge: 'Cada traste é meio-tom mais agudo. Conta dois meios-tons a subir a partir de G.',
   },
   l1u35m8e4: {
-    prompt: 'Tocas formas de C com o capo no trasto 4. Em que tonalidade soa?',
+    prompt: 'Tocas formas de C com o capo no traste 4. Em que tonalidade soa?',
     choices: ['Na tonalidade de E', 'Na tonalidade de D', 'Na tonalidade de F', 'Na tonalidade de C'],
     hint: 'Na tonalidade de E: quatro meios-tons acima de C, C♯, D, D♯ e E.',
-    nudge: 'Conta quatro meios-tons a subir a partir de C, um trasto por cada um.',
+    nudge: 'Conta quatro meios-tons a subir a partir de C, um traste por cada um.',
   },
   l1u35m8e5: {
     prompt: 'Primeiro o acorde de casa, depois uma sequência de quatro acordes numa nova tonalidade. Que números são?',

@@ -159,7 +159,7 @@ const PIANO: Record<Lang, RegExp> = {
 };
 const GUITAR: Record<Lang, RegExp> = {
   en: /\b(?:guitar|frets?|fretboard|strings?|strum|strums|strumming|capo|barre)\b/iu,
-  pt: /(?<!\p{L})(?:guitarra|trastos?|cordas?|capo|pestana|braço)(?!\p{L})/iu,
+  pt: /(?<!\p{L})(?:guitarra|trastes?|cordas?|capo|pestana|braço)(?!\p{L})/iu,
   es: /(?<!\p{L})(?:guitarra|trastes?|cuerdas?|capo|cejilla|mástil|rasgueos?)(?!\p{L})/iu,
 };
 const ON_THE_APP: Record<Lang, RegExp> = {
@@ -414,11 +414,11 @@ const FACT_EXCEPTIONS: Readonly<Record<string, string>> = {
 describe('practice tasks: PT and ES state the numbers, notes and intervals the English states (fix pass)', () => {
   it('the reader fires on a changed fret, a changed interval and notes out of order, and passes the house forms', () => {
     const en = 'Find C — on the guitar, C is fret 3 of the A string. Play C and G (P5), C and E (M3).';
-    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no trasto 3 da corda A. Toca C e G (5P), C e E (3M).', 'pt')).toEqual([]);
+    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no traste 3 da corda A. Toca C e G (5P), C e E (3M).', 'pt')).toEqual([]);
     expect(factDifferences(en, 'Encuentra C — en la guitarra, C está en el traste 3 de la cuerda A. Toca C y G (5J), C y E (3M).', 'es')).toEqual([]);
-    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no trasto 5 da corda A. Toca C e G (5P), C e E (3M).', 'pt')).toEqual(['numbers']);
+    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no traste 5 da corda A. Toca C e G (5P), C e E (3M).', 'pt')).toEqual(['numbers']);
     expect(factDifferences(en, 'Encuentra C — en la guitarra, C está en el traste 3 de la cuerda A. Toca C y G (4J), C y E (3M).', 'es')).toEqual(['numbers', 'intervals']);
-    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no trasto 3 da corda A. Toca C e E (5P), C e G (3M).', 'pt')).toEqual(['notes']);
+    expect(factDifferences(en, 'Encontra C — na guitarra, o C está no traste 3 da corda A. Toca C e E (5P), C e G (3M).', 'pt')).toEqual(['notes']);
     expect(factDifferences('Play the 5th and both 3rds.', 'Toca a quinta e ambas as terças.', 'pt')).toEqual([]);
     expect(factDifferences('A single chord holds A, C and E.', 'Um único acorde tem A, C e E.', 'pt')).toEqual([]);
     expect(factDifferences('A single chord holds A, C and E.', 'Um único acorde tem C e E.', 'pt')).toEqual(['notes']);

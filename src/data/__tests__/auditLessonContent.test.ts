@@ -116,7 +116,7 @@ describe('a task speaks to the learner\'s own instrument (the seat\'s note of 18
     const b = TUNING_STANDARD.strings[4]; // [6th … 1st]: the 2nd string, the second thinnest
     expect(`${b.natural}${b.accidental}`).toBe('B');
     expect(12 * (b.octave + 1) + getPitchClass(b) + 1).toBe(60); // fret 1 = C4, middle C
-    const WHERE: Record<AnyLang, RegExp> = { en: /fret 1 of the B string/, pt: /trasto 1 da corda B/, es: /traste 1 de la cuerda B/ };
+    const WHERE: Record<AnyLang, RegExp> = { en: /fret 1 of the B string/, pt: /traste 1 da corda B/, es: /traste 1 de la cuerda B/ };
     for (const lang of LANGS) {
       const t = moduleIn(lang, 'l1u1m2').tasks[0];
       expect(t, lang).toMatch(ON_PIANO[lang]);
