@@ -315,7 +315,7 @@ const l4u13m1: CurriculumModule = {
     },
     {
       id: 'l4u13m1t3',
-      instruction: "Tap 'Dm7' and notice the common tone with G7: the note D. The 7th of Dm7 (C) resolves by step to B (the 3rd of G7). This seamless voice-leading connection is why ii7-V7 is so strong",
+      instruction: "Tap 'Dm7' and notice the common tones with G7: the notes D and F. The 7th of Dm7 (C) resolves by step to B (the 3rd of G7). This seamless voice-leading connection is why ii7-V7 is so strong",
       query: 'Dm7',
     },
   ],

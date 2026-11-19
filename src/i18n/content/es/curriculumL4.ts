@@ -323,7 +323,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Pulsa "Dm7" y observa la nota común con G7: la nota D. La 7.ª de Dm7 (C) resuelve por grado conjunto a B (la 3.ª de G7). Este enlace suave en la conducción de voces es la razón por la que ii7-V7 es tan fuerte',
+            'Pulsa "Dm7" y observa las notas comunes con G7: las notas D y F. La 7.ª de Dm7 (C) resuelve por grado conjunto a B (la 3.ª de G7). Este enlace suave en la conducción de voces es la razón por la que ii7-V7 es tan fuerte',
         },
       ],
     },

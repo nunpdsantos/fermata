@@ -145,7 +145,7 @@ const l1u1m4: CurriculumModule = {
   ],
   tasks: [
     { id: 'l1u1m4t1', instruction: "Tap 'C chromatic scale' and count all 12 notes before the pattern repeats" },
-    { id: 'l1u1m4t2', instruction: 'Find C on your instrument — on the piano, it is always the white key just below a group of 2 black keys; on the guitar, C is fret 3 of the A string, the second thickest' },
+    { id: 'l1u1m4t2', instruction: 'Find C on your instrument — on the piano, it is always the white key just left of a group of 2 black keys; on the guitar, C is fret 3 of the A string, the second thickest' },
   ],
   prerequisites: ['l1u1m3'],
 };
@@ -451,7 +451,7 @@ const guitarNotation: CurriculumUnit = {
         },
         {
           id: 'l1u33m1t2',
-          instruction: 'On your guitar or the app fretboard, point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
+          instruction: 'On your guitar or the app fretboard (select Guitar in Explore), point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
         }
       ],
       id: 'l1u33m1',
@@ -521,7 +521,7 @@ const guitarNotation: CurriculumUnit = {
       tasks: [
         {
           id: 'l1u33m3t1',
-          instruction: 'Choose position V on the app fretboard. Locate fret 5 and compare that position number with the finger numbers on the dots.'
+          instruction: 'Select Guitar in Explore and choose position V on the app fretboard. Locate fret 5 and compare that position number with the finger numbers on the dots.'
         },
         {
           id: 'l1u33m3t2',
@@ -1124,7 +1124,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m8t1', instruction: 'Play G, D, Em and C, then the same loop in A: A, E, F♯m and D. On the guitar, F♯m can be a barre at fret 2.' },
-        { id: 'l1u35m8t2', instruction: 'Put a capo at fret 2 and play your G, D, Em and C shapes. They sound A, E, F♯m and D: compare them with the loop in A you played without it.' },
+        { id: 'l1u35m8t2', instruction: 'On the guitar, put a capo at fret 2 and play your G, D, Em and C shapes: they sound A, E, F♯m and D. On the piano, play G, D, Em and C, then each chord two half steps higher, A, E, F♯m and D: that is what the capo does. Compare them with the loop in A you played before.' },
       ],
       prerequisites: [],
     },

@@ -95,7 +95,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction: 'Selecciona Guitarra en Explorar. Encuentra el pequeño 8 debajo de la clave de sol y explica la diferencia entre el E4 escrito y el E3 que suena.'
         },
         {
-          instruction: 'En tu guitarra o en el mástil de la aplicación, señala ① y ⑥. Di sus alturas sonoras en la afinación estándar y después encuentra ③.'
+          instruction: 'En tu guitarra o en el mástil de la aplicación (selecciona Guitarra en Explorar), señala ① y ⑥. Di sus alturas sonoras en la afinación estándar y después encuentra ③.'
         }
       ]
     },
@@ -148,7 +148,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         {
-          instruction: 'Elige la posición V en el mástil de la aplicación. Localiza el traste 5 y compara el número de posición con los números de los dedos en los puntos.'
+          instruction: 'Selecciona Guitarra en Explorar y elige la posición V en el mástil de la aplicación. Localiza el traste 5 y compara el número de posición con los números de los dedos en los puntos.'
         },
         {
           instruction: 'Lee V, CV y ½CV en voz alta. Explica qué indicación solo sitúa la mano, cuál pide una cejilla completa y cuál pide una cejilla parcial.'
@@ -303,7 +303,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Encuentra C en tu instrumento — en el piano, es siempre la tecla blanca justo por debajo de un grupo de 2 teclas negras; en la guitarra, C está en el traste 3 de la cuerda A, la segunda más gruesa',
+            'Encuentra C en tu instrumento — en el piano, es siempre la tecla blanca justo a la izquierda de un grupo de 2 teclas negras; en la guitarra, C está en el traste 3 de la cuerda A, la segunda más gruesa',
         },
       ],
     },
@@ -1017,7 +1017,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G, D, Em y C y después la misma secuencia en A: A, E, F♯m y D. En la guitarra, F♯m puede ser una cejilla en el traste 2.' },
-        { instruction: 'Pon un capo en el traste 2 y toca tus formas de G, D, Em y C. Suenan A, E, F♯m y D: compáralas con la secuencia en A que tocaste sin capo.' },
+        { instruction: 'En la guitarra, pon un capo en el traste 2 y toca tus formas de G, D, Em y C: suenan A, E, F♯m y D. En el piano, toca G, D, Em y C y después cada acorde dos semitonos más arriba, A, E, F♯m y D: eso es lo que hace el capo. Compáralos con la secuencia en A que tocaste antes.' },
       ],
     },
     l1u35m9: {

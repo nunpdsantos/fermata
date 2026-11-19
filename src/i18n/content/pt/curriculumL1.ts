@@ -95,7 +95,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction: 'Seleciona Guitarra em Explorar. Encontra o pequeno 8 debaixo da clave de sol e explica a diferença entre o E4 escrito e o E3 que soa.'
         },
         {
-          instruction: 'Na tua guitarra ou no braço da guitarra da aplicação, aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
+          instruction: 'Na tua guitarra ou no braço da guitarra da aplicação (seleciona Guitarra em Explorar), aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
         }
       ]
     },
@@ -148,7 +148,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         {
-          instruction: 'Escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
+          instruction: 'Seleciona Guitarra em Explorar e escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
         },
         {
           instruction: 'Lê V, CV e ½CV em voz alta. Explica qual das indicações apenas localiza a mão, qual pede uma pestana completa e qual pede uma pestana parcial.'
@@ -303,7 +303,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Encontra C no teu instrumento — no piano, é sempre a tecla branca logo abaixo de um grupo de 2 teclas pretas; na guitarra, o C está no trasto 3 da corda A, a segunda mais grossa',
+            'Encontra C no teu instrumento — no piano, é sempre a tecla branca imediatamente à esquerda de um grupo de 2 teclas pretas; na guitarra, o C está no trasto 3 da corda A, a segunda mais grossa',
         },
       ],
     },
@@ -1017,7 +1017,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G, D, Em e C e depois a mesma sequência em A: A, E, F♯m e D. Na guitarra, F♯m pode ser uma pestana no trasto 2.' },
-        { instruction: 'Põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C. Soam A, E, F♯m e D: compara-as com a sequência em A que tocaste sem capo.' },
+        { instruction: 'Na guitarra, põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C: soam A, E, F♯m e D. No piano, toca G, D, Em e C e depois cada acorde dois meios-tons acima, A, E, F♯m e D: é isso que o capo faz. Compara-os com a sequência em A que tocaste antes.' },
       ],
     },
     l1u35m9: {

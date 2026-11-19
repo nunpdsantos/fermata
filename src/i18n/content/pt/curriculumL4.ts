@@ -323,7 +323,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Carrega em "Dm7" e repara na nota comum com G7: a nota D. A 7.ª de Dm7 (C) resolve por grau conjunto para B (a 3.ª de G7). Esta ligação suave na condução de vozes é a razão pela qual ii7-V7 é tão forte',
+            'Carrega em "Dm7" e repara nas notas comuns com G7: as notas D e F. A 7.ª de Dm7 (C) resolve por grau conjunto para B (a 3.ª de G7). Esta ligação suave na condução de vozes é a razão pela qual ii7-V7 é tão forte',
         },
       ],
     },
