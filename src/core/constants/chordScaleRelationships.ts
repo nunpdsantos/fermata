@@ -181,7 +181,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'Half-whole pattern fits all chord tones including b9',
     },
-    { scale: 'phrygian_dominant', fit: 'secondary', context: 'Spanish/Flamenco flavor with b2' },
+    { scale: 'phrygian_dominant', fit: 'secondary', context: 'Spanish/Flamenco flavour with b2' },
     { scale: 'altered', fit: 'color', context: 'Maximum tension for resolving to minor' },
   ],
   dominant7sharp9: [

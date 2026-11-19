@@ -25,7 +25,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   // L1U1: Notation and Pitch
   'l1u1m1': [
     { song: 'Für Elise', artist: 'Ludwig van Beethoven', context: 'Written primarily in the treble clef, making it a classic first piece for reading staff notation.' },
-    { song: 'Ode to Joy', artist: 'Ludwig van Beethoven', context: 'Uses stepwise motion in a narrow range — ideal for practicing note reading on the treble staff.' },
+    { song: 'Ode to Joy', artist: 'Ludwig van Beethoven', context: 'Uses stepwise motion in a narrow range — ideal for practising note reading on the treble staff.' },
   ],
   'l1u1m2': [
     { song: 'Clair de Lune', artist: 'Claude Debussy', context: 'The left hand frequently ventures into ledger lines below the bass clef, demonstrating extended range across the grand staff.' },
@@ -37,7 +37,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   ],
   'l1u1m4': [
     { song: 'Chromatic Fantasy and Fugue', artist: 'J.S. Bach', context: 'One of the earliest masterworks built around extensive chromatic scale passages.' },
-    { song: 'Misty', artist: 'Erroll Garner', context: 'The melody incorporates chromatic neighbor tones that color the major tonality.' },
+    { song: 'Misty', artist: 'Erroll Garner', context: 'The melody incorporates chromatic neighbour tones that colour the major tonality.' },
   ],
 
   // L1U2: Rhythm and Meter
@@ -46,8 +46,8 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
     { song: 'Billie Jean', artist: 'Michael Jackson', context: 'The bass line demonstrates steady quarter-note pulse with eighth-note subdivisions.' },
   ],
   'l1u2m2': [
-    { song: 'The Blue Danube', artist: 'Johann Strauss II', context: 'The archetypal waltz — count ONE-two-three throughout and the 3/4 meter reveals itself instantly.' },
-    { song: 'Yankee Doodle', artist: 'Traditional', context: 'A brisk 2/4 march — two beats per bar, with the strong-weak pattern that defines duple meter.' },
+    { song: 'The Blue Danube', artist: 'Johann Strauss II', context: 'The archetypal waltz — count ONE-two-three throughout and the 3/4 metre reveals itself instantly.' },
+    { song: 'Yankee Doodle', artist: 'Traditional', context: 'A brisk 2/4 march — two beats per bar, with the strong-weak pattern that defines duple metre.' },
   ],
 
   // L1U3: Scales, Intervals, and First Chords
@@ -60,7 +60,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
     { song: 'Hey Jude', artist: 'The Beatles', context: 'In the key of F major (one flat), a good entry point for reading key signatures beyond C major.' },
   ],
   'l1u3m3': [
-    { song: 'Here Comes the Bride', artist: 'Richard Wagner', context: 'Opens with a perfect fourth — one of the most recognizable intervals in Western music.' },
+    { song: 'Here Comes the Bride', artist: 'Richard Wagner', context: 'Opens with a perfect fourth — one of the most recognisable intervals in Western music.' },
     { song: 'Somewhere Over the Rainbow', artist: 'Harold Arlen', context: 'The opening leap is an octave, the largest basic interval. A classic interval-recognition reference.' },
     { song: 'Star Wars Main Theme', artist: 'John Williams', context: 'Opens with a perfect fifth, a foundational interval for ear training.' },
   ],
@@ -84,7 +84,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   // L2U5: Minor Scales and Key Relationships
   'l2u5m1': [
     { song: 'Losing My Religion', artist: 'R.E.M.', context: 'Built on the natural minor (Aeolian) scale in A minor, with the characteristic flat seventh.' },
-    { song: 'Eleanor Rigby', artist: 'The Beatles', context: 'Built on Em and C chords with a modal flavor that mixes Aeolian and Dorian — the melody raises the 6th (C♯) in places, giving it a modal rather than purely diatonic minor quality.' },
+    { song: 'Eleanor Rigby', artist: 'The Beatles', context: 'Built on Em and C chords with a modal flavour that mixes Aeolian and Dorian — the melody raises the 6th (C♯) in places, giving it a modal rather than purely diatonic minor quality.' },
     // Verified classical reference ledger, row 5.
     { song: 'Bourrée from the Lute Suite in E minor, BWV 996', artist: 'J. S. Bach', context: 'This bourrée is in E minor. The suite was written for a lute-type instrument and is widely played on guitar. Use E as your reference tonic when listening.' },
   ],
@@ -103,8 +103,8 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
 
   // L2U6: Compound Meter and Syncopation
   'l2u6m1': [
-    { song: 'House of the Rising Sun', artist: 'Traditional (The Animals)', context: 'The arpeggiated accompaniment in 6/8 time demonstrates compound-duple meter: two main beats to the bar, each subdividing into a group of three eighth notes. A bar of 12/8 would count four such beats; in both, every beat divides into three.' },
-    { song: 'America', artist: 'Leonard Bernstein (West Side Story)', context: 'Alternates between 6/8 and 3/4 meter — the same six eighth notes regrouped, the classic compound-vs-simple hemiola.' },
+    { song: 'House of the Rising Sun', artist: 'Traditional (The Animals)', context: 'The arpeggiated accompaniment in 6/8 time demonstrates compound-duple metre: two main beats to the bar, each subdividing into a group of three eighth notes. A bar of 12/8 would count four such beats; in both, every beat divides into three.' },
+    { song: 'America', artist: 'Leonard Bernstein (West Side Story)', context: 'Alternates between 6/8 and 3/4 metre — the same six eighth notes regrouped, the classic compound-vs-simple hemiola.' },
   ],
   'l2u6m2': [
     { song: 'Maple Leaf Rag', artist: 'Scott Joplin', context: 'A defining example of syncopation in ragtime — accents consistently fall between beats.' },
@@ -122,7 +122,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   ],
   'l2u7m3': [
     { song: 'Oh! Darling', artist: 'The Beatles', context: 'Features major, minor, and augmented triads — the E augmented chord creates tension before resolving, demonstrating how different triad qualities serve different harmonic functions.' },
-    { song: 'Creep', artist: 'Radiohead', context: 'The I–III–IV–iv progression (G–B–C–Cm) features a chromatic major chord (III) borrowed from outside the key and a borrowed minor subdominant (iv), showing how triad quality creates emotional color.' },
+    { song: 'Creep', artist: 'Radiohead', context: 'The I–III–IV–iv progression (G–B–C–Cm) features a chromatic major chord (III) borrowed from outside the key and a borrowed minor subdominant (iv), showing how triad quality creates emotional colour.' },
   ],
   'l2u7m4': [
     { song: 'Canon in D', artist: 'Johann Pachelbel', context: 'The bass line moves through root position and first inversion triads — a textbook example of figured bass voice leading.' },
@@ -156,13 +156,13 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   // L3U10: Voice Leading and Part Writing
   'l3u10m1': [
     { song: 'Jesu, Joy of Man\'s Desiring', artist: 'J.S. Bach', context: 'The chorale sections are model SATB writing — each voice moves smoothly within its range.' },
-    { song: 'A Mighty Fortress Is Our God', artist: 'Martin Luther / J.S. Bach', context: 'Bach\'s harmonization is a textbook example of four-part SATB chorale writing.' },
+    { song: 'A Mighty Fortress Is Our God', artist: 'Martin Luther / J.S. Bach', context: 'Bach\'s harmonisation is a textbook example of four-part SATB chorale writing.' },
   ],
   'l3u10m2': [
     { song: 'Prelude in C Major (BWV 846)', artist: 'J.S. Bach', context: 'Despite being arpeggiated, the underlying voice leading avoids parallel fifths and octaves throughout.' },
   ],
   'l3u10m3': [
-    { song: 'Amazing Grace', artist: 'Traditional (hymn arrangements)', context: 'Standard hymn harmonizations use root-position triads connected by proper voice leading — a part-writing exercise staple.' },
+    { song: 'Amazing Grace', artist: 'Traditional (hymn arrangements)', context: 'Standard hymn harmonisations use root-position triads connected by proper voice leading — a part-writing exercise staple.' },
   ],
   'l3u10m4': [
     { song: 'Ave Maria', artist: 'Charles Gounod (over Bach\'s Prelude)', context: 'The accompaniment features triads in inversion moving by step, creating smooth bass lines under the melody.' },
@@ -179,10 +179,10 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
   ],
   'l3u11m3': [
     { song: 'Bohemian Rhapsody', artist: 'Queen', context: 'Uses dramatically varied harmonic rhythm — from slow ballad chords to rapid-fire operatic changes.' },
-    { song: 'Let It Be', artist: 'The Beatles', context: 'Maintains steady harmonic rhythm with one chord per bar, making the harmonic pace easy to feel and analyze.' },
+    { song: 'Let It Be', artist: 'The Beatles', context: 'Maintains steady harmonic rhythm with one chord per bar, making the harmonic pace easy to feel and analyse.' },
   ],
   'l3u11m4': [
-    { song: 'Moonlight Sonata', artist: 'Ludwig van Beethoven', context: 'The arpeggiated accompaniment features passing tones and neighbor tones between chord tones.' },
+    { song: 'Moonlight Sonata', artist: 'Ludwig van Beethoven', context: 'The arpeggiated accompaniment features passing tones and neighbour tones between chord tones.' },
     { song: 'Clair de Lune', artist: 'Claude Debussy', context: 'Rich in non-chord tones — suspensions, appoggiaturas, and passing tones create its dreamy quality.' },
   ],
   'l3u11m5': [
@@ -197,8 +197,8 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
 
   // L4U14: Asymmetric and Mixed Meters
   'l4u14m2': [
-    { song: 'Take Five', artist: 'Dave Brubeck', context: 'Written in 5/4 time (3+2), demonstrating how asymmetric meters create distinctive rhythmic character.' },
-    { song: 'Money', artist: 'Pink Floyd', context: 'The famous bass riff is in 7/4 — count the loop and feel the extra beat that simple meter would not allow.' },
+    { song: 'Take Five', artist: 'Dave Brubeck', context: 'Written in 5/4 time (3+2), demonstrating how asymmetric metres create distinctive rhythmic character.' },
+    { song: 'Money', artist: 'Pink Floyd', context: 'The famous bass riff is in 7/4 — count the loop and feel the extra beat that simple metre would not allow.' },
   ],
 };
 
