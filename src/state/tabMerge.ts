@@ -29,7 +29,8 @@
  *    whole over it. What an action does on purpose (`marks`: a reset, the
  *    keys "Reset to suggested" clears, the score an answer just recorded, a
  *    Sprint's best) is written so whatever the save holds; the marks belong
- *    to one write, saved or refused.
+ *    to one write, saved or refused, and are written into that write's own
+ *    copy of the merged state, never into an object it shares.
  *
  * 2. The rules (`mergeBy`, a store's `Rule`): a node this tab did not change
  *    keeps the saved value; a node only this tab changed takes this tab's;
@@ -159,8 +160,12 @@ export function mergeWrite(name: string, line: TabLine, raw: string): void {
   } // else: a save the store cannot read is no one's work — this tab's memory heals it
   let out = raw;
   if (isObj(theirs)) {
-    const state = mergeBy(line.merge ?? 'fields', base, mine.state, theirs);
-    // What this action does on purpose, whatever the save held (a record the merge left out stays out).
+    const merged = mergeBy(line.merge ?? 'fields', base, mine.state, theirs);
+    // What this action does on purpose, whatever the save held (a record the merge left out stays out) —
+    // written into a copy: the merge returns objects of the save it read, of this tab's memory (its base after
+    // this write) and of a rule's empty form (`onEmpty`, one object for the tab's life), and a mark written into
+    // one stayed there (second audit round: a score marked into progress's empty result came back, moved, erased).
+    const state = marks && merged !== undefined ? JSON.parse(JSON.stringify(merged)) : merged;
     for (const [path, to] of marks ?? []) {
       let o = state;
       for (const k of path.slice(0, -1)) o = isObj(o) ? o[k] : undefined;

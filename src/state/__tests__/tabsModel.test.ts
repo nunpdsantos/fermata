@@ -24,8 +24,17 @@
  * stale tab already shows is no change), and a metronome or progression a tab
  * did not have as its defaults; a progression with no chords is none.
  *
- * Fast by default (CI): TABS_MODEL_SEEDS=300 TABS_MODEL_STEPS=200
- * TABS_MODEL_TABS=4 for the long run (TABS_MODEL_FIRST: the first seed).
+ * Fast by default (CI: 12 seeds × 120 steps × 3 tabs). THE LONG RUN, last
+ * clean on 19 November 2026 (second audit round) on seeds 1–6000 at 200 steps
+ * × 4 tabs and on seeds 1–1000 at 200 steps × 3 and × 5 tabs:
+ *   TABS_MODEL_FIRST=1 TABS_MODEL_SEEDS=6000 TABS_MODEL_STEPS=200 TABS_MODEL_TABS=4 \
+ *     npx vitest run src/state/__tests__/tabsModel.test.ts --maxWorkers=1
+ *   (then TABS_MODEL_SEEDS=1000 with TABS_MODEL_TABS=3, and with 5.)
+ * 300 seeds was not enough: release 16 passed seeds 1–300 and failed 2213 and
+ * 2215, and with the round's three Drill actions the same fault failed seed
+ * 228 — a mark written into a rule's empty form (twoTabsMarks.test.ts): 14
+ * of seeds 1–6000 failed at 4 tabs, about one in 430. A new action shifts
+ * every seed's sequence: run the long run again after adding one.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_METRONOME } from '../metronomeSave';
@@ -492,5 +501,5 @@ describe('several tabs at random, against one learner\'s actions in time order',
     const summary = Object.entries(V).map(([c, l]) => `${c}: ${l.length} (first: seed ${l[0].seed} step ${l[0].step}: ${l[0].detail.slice(0, 400)})`);
     process.stdout.write(`TABS MODEL seeds ${FIRST}..${FIRST + SEEDS - 1}, steps ${STEPS}, tabs ${NTABS}: ${summary.length ? `\n${summary.join('\n')}` : 'no divergence'}\n`);
     expect(summary).toEqual([]);
-  }, 900_000);
+  }, Math.max(900_000, SEEDS * STEPS * NTABS * 2)); // the long run (6000 × 200 × 4) needs more than 15 minutes on a loaded machine
 });
