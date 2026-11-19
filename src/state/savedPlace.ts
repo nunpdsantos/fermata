@@ -19,7 +19,15 @@
 /** This tab's record of its entries (written and read by state/appHistory.ts). */
 export const HISTORY_RECORD_KEY = 'fermatina-history-v1';
 
+let forgotten = false;
+
+/** The record has been forgotten in this document: nothing writes it again before the reload (the page's own pagehide would). */
+export function recordForgotten(): boolean {
+  return forgotten;
+}
+
 function forgetRecord(): void {
+  forgotten = true;
   try {
     sessionStorage.removeItem(HISTORY_RECORD_KEY);
   } catch {

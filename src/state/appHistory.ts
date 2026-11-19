@@ -89,7 +89,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useAppStore } from './store';
 import type { AppState, ViewMode } from './storeTypes';
 import type { Note } from '../core/types/music';
-import { HISTORY_RECORD_KEY } from './savedPlace';
+import { HISTORY_RECORD_KEY, recordForgotten } from './savedPlace';
 import { useWelcomeStore } from './welcomeGate';
 import { getDemoRequest } from './demoRequest';
 import { useToastStore } from './toastStore';
@@ -162,6 +162,8 @@ const known = new Map<number, { v: ViewMode; s?: string }>();
 const KNOWN_KEY = HISTORY_RECORD_KEY;
 const KNOWN_KEEP = 50;
 function saveKnown(): void {
+  // A reset or an import forgot it, and the page is reloading (its pagehide is what calls this): leave it gone.
+  if (recordForgotten()) return;
   try {
     const rows = [...known].filter(([k]) => Math.abs(k - cur.i) < KNOWN_KEEP).map(([k, p]) => (p.s === undefined ? [k, p.v] : [k, p.v, p.s]));
     sessionStorage.setItem(KNOWN_KEY, JSON.stringify(rows));

@@ -92,4 +92,5 @@ describe('installAppHistory', () => {
     h.backTo('learn', 'unit/l1/u34');
     expect(go).not.toHaveBeenCalled();
   });
+
 });
