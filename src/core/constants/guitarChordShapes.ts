@@ -3908,6 +3908,14 @@ function shapesAt(chord: Chord, inversion: number, maxFret: number): { shapes: P
 }
 
 /**
+ * At most this many grips on the board, the first of its order: every way of
+ * giving a bass, the generator's included, gave a slash chord up to 17 chips
+ * (C/E) and the teacher tens of thousands of grips to review; a chord's
+ * hand-made grips are six at most, so no list of them is cut.
+ */
+const BOARD_GRIPS = 8;
+
+/**
  * `shapesAt` is pure, and the generator behind it costs milliseconds; a capo
  * asks again for the same chord below it, so the answers are kept (the
  * oldest dropped past SHAPES_AT_MAX). A caller gets its own array.
@@ -3926,14 +3934,14 @@ function shapesAtUncached(chord: Chord, inversion: number, maxFret: number): { s
   };
   const bassAsked = asked.label !== '';
   const strict = offer(true);
-  if (strict.matching.length > 0) return { shapes: boardOrder(onePerGrip(strict.matching), bassAsked), bassMatched: true };
+  if (strict.matching.length > 0) return { shapes: boardOrder(onePerGrip(strict.matching), bassAsked).slice(0, BOARD_GRIPS), bassMatched: true };
   const relaxed = offer(false);
   if (relaxed.matching.length > 0) {
     const grips = onePerGrip(relaxed.matching);
     const whole = grips.filter((e) => gripLeavesOut(e, chord).length === 0);
-    return { shapes: [...boardOrder(whole, bassAsked), ...boardOrder(grips.filter((e) => !whole.includes(e)), bassAsked)], bassMatched: true };
+    return { shapes: [...boardOrder(whole, bassAsked), ...boardOrder(grips.filter((e) => !whole.includes(e)), bassAsked)].slice(0, BOARD_GRIPS), bassMatched: true };
   }
-  return { shapes: boardOrder(onePerGrip(strict.all), bassAsked), bassMatched: false };
+  return { shapes: boardOrder(onePerGrip(strict.all), bassAsked).slice(0, BOARD_GRIPS), bassMatched: false };
 }
 
 /**

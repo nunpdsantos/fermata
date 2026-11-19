@@ -326,9 +326,10 @@ describe('muting strings below the bass checks the PITCH left lowest (review of 
 describe('every grip the board can offer (Q1, the whole class; the review of a611beb)', () => {
   it('walks every request: 21 spellings x every quality x every inversion, slash chords, capo 0-9', () => {
     expect(walk.requests).toBeGreaterThan(50_000);
-    // 354,248 after the review of builder K (every way of giving the asked
-    // bass, and the neck searched); 120,866 at its head, 217,659 at 153caab.
-    expect(walk.grips).toBeGreaterThan(350_000);
+    // 333,988 after the review of builder K (every way of giving the asked
+    // bass, the neck searched, eight grips at most); 120,866 at its head,
+    // 217,659 at 153caab.
+    expect(walk.grips).toBeGreaterThan(330_000);
   });
   it('can be played', () => {
     expect([...new Set(walk.fingering)]).toEqual([]);

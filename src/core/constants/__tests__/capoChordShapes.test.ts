@@ -212,7 +212,8 @@ describe('no capo: exactly the pipeline the board uses', () => {
         const seen = new Set<string>();
         const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass) && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
         const rank = (e: (typeof offered)[number]) => [/^(C|G)-shape Barre$/.test(e.shape.name) ? 1 : 0, sounding(e) <= 3 ? 1 : 0, lowestFretted(e) === Infinity ? 0 : lowestFretted(e), inversion > 0 ? -sounding(e) : 0];
-        const expected = offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.r[3] - b.r[3] || a.i - b.i).map((x) => x.e);
+        // … and eight grips at most, the first of that order.
+        const expected = offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.r[3] - b.r[3] || a.i - b.i).map((x) => x.e).slice(0, 8);
         const got = chordShapesForCapo(chord, inversion, 0);
         expect(got.shapes.map(fretsOf), `${chord.root.natural}${chord.root.accidental} ${chord.quality} inv ${inversion}`).toEqual(expected.map(fretsOf));
         expect(got.bassMatched).toBe(true);
