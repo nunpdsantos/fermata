@@ -416,7 +416,9 @@ describe('resetDrillProgress', () => {
 
     useDrillStore.getState().resetDrillProgress();
 
-    expect(useDrillStore.getState().settings).toEqual(settingsBefore);
+    // The first session recorded reading's value in force (audit 2, P4; on
+    // here: no view said otherwise); the reset touched nothing.
+    expect(useDrillStore.getState().settings).toEqual({ ...settingsBefore, families: { ...settingsBefore.families, read: true } });
   });
 
   it('persists correctly after reset (no stale progress survives rehydration)', async () => {

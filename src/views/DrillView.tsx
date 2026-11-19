@@ -32,8 +32,18 @@ import {
   openFamilies,
   unlockedFor,
 } from '../data/drillUnlocks';
-import { followExcluded, followFamilies, followHasNothing, followInForce, readCompletedLessons } from '../services/drillFollow';
+import {
+  familiesInForce,
+  followExcluded,
+  followFamilies,
+  followHasNothing,
+  followInForce,
+  readCompletedLessons,
+  readingInForce,
+} from '../services/drillFollow';
+import { sessionHasNothing } from '../services/drillSession';
 import type { FollowInfo } from '../components/drill/FollowLessons';
+import type { NothingReason } from '../components/drill/DrillIntro';
 
 // Memoize the bank once for the view (the runner memoizes its own; this is the
 // copy fed to the Mastery map + Sprint, which read tier counts off it).
@@ -84,12 +94,23 @@ export function DrillView() {
     () => (follow ? (item: DrillItem) => isItemUnlocked(unlock, item) : null),
     [follow, unlock],
   );
-  // Following, with nothing the lessons open and no fact already met: no
-  // session may start (the intro says which lesson opens the first questions).
-  const nothingToAsk = useMemo(
-    () => follow && followHasNothing(viewBank(), unlock, stateItems),
-    [follow, unlock, stateItems],
-  );
+  // Guitar reading in force (audit 2, P4): the saved choice, else on with
+  // Drill history, else only on the guitar — live, so it follows the
+  // instrument until the learner chooses or a session starts.
+  const savedFamilies = useDrillStore((s) => s.settings.families);
+  const reading = readingInForce(savedFamilies.read, instrument, introDone);
+  const families = useMemo(() => familiesInForce(savedFamilies, reading), [savedFamilies, reading]);
+  // Nothing to ask (audit 2, P6 — one rule with following's, the store's own:
+  // services/drillSession.ts sessionHasNothing): no session may start, and
+  // the intro says why — following, which lesson opens the first questions.
+  const lengthSetting = useDrillStore((s) => s.settings.length);
+  const newPerSession = useDrillStore((s) => s.settings.newPerSession);
+  const nothing = useMemo<NothingReason | null>(() => {
+    if (!sessionHasNothing(viewBank(), stateItems, { length: lengthSetting, newPerSession, families }, unlocked)) return null;
+    if (follow) return followHasNothing(viewBank(), unlock, stateItems) ? 'lessons' : 'newFacts';
+    return Object.values(families).some(Boolean) ? 'newFacts' : 'topics';
+  }, [stateItems, lengthSetting, newPerSession, families, unlocked, follow, unlock]);
+  const nothingToAsk = nothing !== null;
   const followInfo = useMemo<FollowInfo | null>(() => {
     if (!follow) return null;
     const track = trackForProfile(profile);
@@ -111,7 +132,7 @@ export function DrillView() {
 
   const runner = useDrillRunner({
     autoStart: introDone && !nothingToAsk,
-    sessionOptions: { followLessons: follow, unlocked },
+    sessionOptions: { followLessons: follow, unlocked, reading },
   });
   // A Sprint left open (a reload, or back from another view) comes back on
   // screen where it was (W9b).
@@ -133,8 +154,8 @@ export function DrillView() {
   const bank = viewBank();
   // While following, Sprint's topic set is what the session pool reaches.
   const sprintFamilies = useMemo(
-    () => (follow ? followFamilies(bank, unlock, items) : settings.families),
-    [follow, bank, unlock, items, settings.families],
+    () => (follow ? followFamilies(bank, unlock, items) : families),
+    [follow, bank, unlock, items, families],
   );
 
   // Open mastery + freeze "now" for its due-today count in one event-time step.
@@ -151,6 +172,7 @@ export function DrillView() {
         {subScreen === 'settings' ? (
           <DrillSettings
             settings={settings}
+            inForce={families}
             follow={follow}
             followInfo={followInfo}
             onUpdate={updateSettings}
@@ -169,7 +191,7 @@ export function DrillView() {
           <MasteryMap
             bank={bank}
             items={items}
-            families={settings.families}
+            families={families}
             follow={followInfo}
             now={masteryNow}
             onToggleFamily={(family, enabled) =>
@@ -189,11 +211,12 @@ export function DrillView() {
         ) : !activeSession && !sessionComplete && (!introDone || openedWithNothing || nothingToAsk) ? (
           <DrillIntro
             settings={settings}
+            families={families}
             onStart={runner.startNewSession}
             onOpenSettings={() => setSubScreen('settings')}
             follow={follow}
             followInfo={followInfo}
-            nothingToAsk={nothingToAsk}
+            nothing={nothing}
             onSetFollow={(on) => updateSettings({ followLessons: on })}
           />
         ) : sessionComplete ? (

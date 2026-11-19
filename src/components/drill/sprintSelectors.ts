@@ -18,7 +18,7 @@ export const MIN_SPRINT_ITEMS = 5;
 export function eligibleSprintItems(
   bank: DrillItem[],
   items: Record<string, ItemSrsState>,
-  families: Record<DrillFamily, boolean>,
+  families: Partial<Record<DrillFamily, boolean>>,
 ): DrillItem[] {
   return bank.filter((item) => {
     // Neck navigation should not count against the timed recall score.
@@ -34,7 +34,7 @@ export function eligibleSprintItems(
  * joined with ','. Stable regardless of toggle order. Empty string if none
  * enabled (a sprint can't start in that case anyway).
  */
-export function sprintFamiliesKey(families: Record<DrillFamily, boolean>): string {
+export function sprintFamiliesKey(families: Partial<Record<DrillFamily, boolean>>): string {
   return Object.keys(families)
     .filter((f) => f !== 'read' && families[f as DrillFamily])
     .sort()

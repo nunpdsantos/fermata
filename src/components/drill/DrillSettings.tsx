@@ -37,6 +37,13 @@ const MAX_NEW = 8;
 
 interface DrillSettingsProps {
   settings: DrillSettingsState;
+  /**
+   * The topics in force (audit 2, P4: guitar reading derived while never
+   * set), drawn on the chips. A chip writes the SAVED topics with only its
+   * own changed, so touching another topic records nothing about reading.
+   * Absent = as saved.
+   */
+  inForce?: Record<DrillFamily, boolean>;
   onUpdate: (patch: Partial<DrillSettingsState>) => void;
   onBack: () => void;
   onMasteryMap: () => void;
@@ -54,8 +61,9 @@ const BACK_ICON = (
   </svg>
 );
 
-export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onResetProgress, follow, followInfo }: DrillSettingsProps) {
+export function DrillSettings({ settings, inForce, onUpdate, onBack, onMasteryMap, onResetProgress, follow, followInfo }: DrillSettingsProps) {
   const { t } = useTranslation();
+  const on = (family: DrillFamily) => (inForce ? inForce[family] : settings.families[family as keyof typeof settings.families]) === true;
   const [confirmingReset, setConfirmingReset] = useState(false);
   // "Choose topics myself" goes away with the summary: focus to the switch.
   const { focusRef, markFocus } = useFollowFocus<HTMLDivElement>(follow);
@@ -124,8 +132,8 @@ export function DrillSettings({ settings, onUpdate, onBack, onMasteryMap, onRese
           {DRILL_FAMILIES.map((family: DrillFamily) => (
             <ChoiceChip
               key={family}
-              pressed={settings.families[family]}
-              onClick={() => onUpdate({ families: { ...settings.families, [family]: !settings.families[family] } })}
+              pressed={on(family)}
+              onClick={() => onUpdate({ families: { ...settings.families, [family]: !on(family) } })}
             >
               {t(`drill.families.${family}`)}
             </ChoiceChip>

@@ -23,6 +23,16 @@ import {
   type SiteLang, type SiteLesson,
 } from './content';
 import { esc, instructionHtml, jsonLdHtml, proseHtml } from './html';
+import { queryLabel } from '../utils/queryLabel';
+
+/** Task phrases' words, once per language and phrase (the same ~150 phrases recur across 408 lesson pages). */
+const PHRASE_LABELS = new Map<string, string>();
+function phraseLabel(lang: SiteLang, query: string, t: (key: string) => string): string {
+  const key = `${lang} ${query}`;
+  let label = PHRASE_LABELS.get(key);
+  if (label === undefined) PHRASE_LABELS.set(key, (label = queryLabel(query, { lang, t })));
+  return label;
+}
 import { LANGUAGE_NAMES, newText } from './strings';
 import { registryProblems, type SlugRegistry } from './slugs';
 
@@ -485,11 +495,13 @@ ${songs.map((s) => `<li><span class="song">${esc(s.song)}</span> <span class="ar
 </ul>
 </section>`
     : '';
+  // A task phrase's words as the app prints them (utils/queryLabel.ts; no Dó-Ré-Mi: a page has no settings).
+  const phrase = (query: string) => phraseLabel(lang, query, t);
   const tasks = module.tasks.length
     ? `<section>
 <h2 class="label">${esc(newText(lang, 'onInstrument'))}</h2>
 <ul class="tasks">
-${module.tasks.map((task) => `<li>${instructionHtml(task.instruction, open)}</li>`).join('\n')}
+${module.tasks.map((task) => `<li>${instructionHtml(task.instruction, open, phrase)}</li>`).join('\n')}
 </ul>
 </section>`
     : '';

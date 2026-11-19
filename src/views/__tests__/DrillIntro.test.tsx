@@ -27,10 +27,13 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
     render(<DrillView />);
     expect(intro()).not.toBeNull();
     expect(screen.getByRole('heading', { name: 'Quick questions on music facts' })).toBeDefined();
-    // The real topics, from the settings (all on by default).
-    for (const topic of ['Key signatures', 'Intervals', 'Triads', 'Seventh chords', 'Roman numerals', 'Reading (guitar)']) {
+    // The real topics, from the settings (all on by default, but guitar
+    // reading only on the guitar until chosen — audit 2, P4; this learner's
+    // instrument is the piano).
+    for (const topic of ['Key signatures', 'Intervals', 'Triads', 'Seventh chords', 'Roman numerals']) {
       expect(screen.getByText(topic)).toBeDefined();
     }
+    expect(screen.queryByText('Reading (guitar)')).toBeNull();
     expect(screen.getByText('A session is up to 24 questions. Your first one is shorter: just the new facts.')).toBeDefined();
     expect(screen.getByText('Each session brings in 4 new facts; the rest are facts you have already met.')).toBeDefined();
     expect(screen.getByText(/comes back later in the session, labelled Again/)).toBeDefined();
@@ -91,6 +94,13 @@ describe('Drill first-visit intro (brief 2026-11-09)', () => {
   });
 
   it('with 0 new facts per session there is no new-facts line, and the length line does not promise new facts', () => {
+    // One fact already met, so there is something to ask (with none, the
+    // intro says there is nothing: audit 2, P6, DrillAudit2.test.tsx).
+    const met = generateDrillBank()[0];
+    useDrillStore.getState().startSession([met], 1_000);
+    useDrillStore.getState().recordAnswer(met, false, 900, 2_000);
+    useDrillStore.getState().endSession();
+    useDrillStore.setState({ introDone: false });
     useDrillStore.getState().updateSettings({ newPerSession: 0 });
     render(<DrillView />);
     expect(screen.queryByText(/new facts?;/)).toBeNull();

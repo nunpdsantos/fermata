@@ -31,14 +31,17 @@ export function proseHtml(text: string): string {
  * off, and opens the app on that lesson, where the same words are the
  * button. Whatever the verb before it ("Type", "Tap", «Carrega em»,
  * «Pulsa»). Quoted prose that is not a query ("the 'and' between beats")
- * stays as written, as in the app.
+ * stays as written, as in the app. Since 19 November 2026 the words in the
+ * quotes are the app's too (`label`: utils/queryLabel.ts, the name of what
+ * the token opens, in the page's language; English, symbols and anything
+ * without a name keep the token's text).
  */
-export function instructionHtml(text: string, href: string): string {
+export function instructionHtml(text: string, href: string, label: (query: string) => string = (query) => query): string {
   let out = '';
   let last = 0;
   for (const { index, length, query } of findQuotedQueries(text)) {
     out += esc(text.slice(last, index));
-    out += `<a class="query" href="${esc(href)}">‘${esc(query)}’</a>`;
+    out += `<a class="query" href="${esc(href)}">‘${esc(label(query))}’</a>`;
     last = index + length;
   }
   return out + esc(text.slice(last));

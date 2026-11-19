@@ -9,6 +9,8 @@ export interface Toast {
   duration: number;
   /** One button beside the message (e.g. a shared link's "Open"): it runs, then the toast closes. */
   action?: { label: string; onSelect: () => void };
+  /** The language of the message and action when it is not the app's (audit 2, P9: a link's language offer). */
+  lang?: string;
 }
 
 interface ToastState {

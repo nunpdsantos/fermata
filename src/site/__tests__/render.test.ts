@@ -3,6 +3,8 @@ import registry from '../../../scripts/pages/slugs.json';
 import indexHtml from '../../../index.html?raw';
 import { getNextModuleInLevel, getPreviousModuleInLevel, loadLevel } from '../../data/curriculumLoader';
 import { findQuotedQueries } from '../../utils/theoryQuery';
+import { queryLabel } from '../../utils/queryLabel';
+import i18n from '../../i18n';
 import type { CurriculumLevel, CurriculumModule } from '../../core/types/curriculum';
 import { siteLessons, SITE_LANGS, type SiteLang } from '../content';
 import { buildSite, ORIGIN, sitePath, STYLESHEET, appUrl, lessonTitle, TITLE_WITH_NAME_MAX, type Site, type SitePage } from '../render';
@@ -70,6 +72,15 @@ describe('a lesson page carries the lesson, as the app\'s loader returns it', ()
     }
   });
 
+  it('a task\'s phrase on the page, written out (review of bd14071): "The Major Scale" in EN / PT / ES', () => {
+    const tasksOf = (lang: SiteLang) => [...doc(sitePath.lesson(lang, SLUGS.l1u3m1[lang])).querySelectorAll('.tasks li')].map(text);
+    expect(tasksOf('en')[0]).toBe('Tap ‘C major scale’ and trace the W-W-H-W-W-W-H pattern on your instrument');
+    expect(tasksOf('pt')[0]).toBe('Carrega em ‘C maior’ e traça o padrão T-T-mT-T-T-T-mT no teu instrumento');
+    expect(tasksOf('es')[0]).toBe('Pulsa ‘C mayor’ y traza el patrón T-T-S-T-T-T-S en tu instrumento');
+    expect(tasksOf('pt')[1]).toMatch(/^Carrega em ‘G maior’ — /);
+    expect(tasksOf('es')[2]).toMatch(/^Pulsa ‘F mayor’ — /);
+  });
+
   it.each(SITE_LANGS)('%s: title, subtitle, objectives, concepts, tasks, the open button', (lang) => {
     for (const id of SAMPLE) {
       const { module } = levels[lang].get(id)!;
@@ -80,12 +91,15 @@ describe('a lesson page carries the lesson, as the app\'s loader returns it', ()
       const concepts = [...d.querySelectorAll('section.concept')];
       expect(concepts.map((s) => text(s.querySelector('h2')))).toEqual(module.concepts.map((c) => c.title));
       expect(concepts.map((s) => text(s.querySelector('.prose')))).toEqual(module.concepts.map((c) => c.explanation.replace(/\s+/g, ' ').trim()));
-      // A task reads as the app shows it: every quoted query as ‘query’.
+      // A task reads as the app shows it: every quoted query as ‘its words’ —
+      // the token in English, the name of what it opens in PT / ES, as the
+      // app's own i18n names it (19 November 2026; Dó-Ré-Mi off, its default).
+      const words = (query: string) => queryLabel(query, { lang, t: (k) => i18n.getFixedT(lang)(k) as string });
       const shown = (instruction: string) => {
         let out = '';
         let last = 0;
         for (const q of findQuotedQueries(instruction)) {
-          out += `${instruction.slice(last, q.index)}‘${q.query}’`;
+          out += `${instruction.slice(last, q.index)}‘${words(q.query)}’`;
           last = q.index + q.length;
         }
         return (out + instruction.slice(last)).replace(/\s+/g, ' ').trim();
