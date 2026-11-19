@@ -139,12 +139,15 @@ test('laptop: Copy link puts the expected address on the clipboard (Explore and 
   await expect(page.getByTestId('toast-region')).toContainText('Link copied');
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(`${baseURL}/?key=D&scale=major&chord=A&inst=guitar`);
 
-  // A sharp key and a slash chord, chosen in the app.
+  // A sharp key and a slash chord, chosen in the app. Its bass F♯ is the
+  // chord's 3rd, so D/F♯ opens as D major in first inversion and the link
+  // carries it so (review of b94d761, item 7).
   await page.goto('/?key=F%23&scale=natural_minor&chord=D%2FF%23&inst=piano');
   await expect(page.getByTestId('key-summary')).toContainText('F♯ Natural Minor');
+  await expect(page.getByRole('radio', { name: '1st Inv' })).toHaveAttribute('aria-checked', 'true');
   await page.getByTestId('explore-menu').getByRole('button').first().click();
   await page.getByRole('menuitem', { name: 'Copy link' }).click();
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(`${baseURL}/?key=F%23&scale=natural_minor&chord=D%2FF%23&inst=piano`);
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(`${baseURL}/?key=F%23&scale=natural_minor&chord=D&inst=piano&inv=1`);
 
   await page.goto('/?lesson=l2u5m3');
   await expect(page.getByRole('heading', { level: 1, name: 'Relative and Parallel Keys' })).toBeVisible({ timeout: 15_000 });
