@@ -77,7 +77,7 @@
  * entry bundle only imports it lazily (App.tsx, after the boot view is set)
  * and reads the entry's view (bootView.ts).
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useAppStore } from './store';
 import type { AppState, ViewMode } from './storeTypes';
 import { useWelcomeStore } from './welcomeGate';
@@ -271,16 +271,21 @@ export function placeToOpen(v: ViewMode): string | undefined {
 
 /**
  * A view shows the screens Back / Forward (and its active tab) ask for while
- * it is mounted; `undefined` = as its tab would show it.
+ * it is mounted; `undefined` = as its tab would show it. It registers before
+ * the page paints, and then shows the screen the entry names if that changed
+ * after the view chose its first screen (a Forward pressed right after a
+ * reload can land between a view's first render and its effects). `show`
+ * must leave an unchanged screen as it is.
  */
 export function useShowPlace(v: ViewMode, show: (s: string | undefined, dir: Dir) => void): void {
   const ref = useRef(show);
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current = show;
   });
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fn = (s: string | undefined, dir: Dir) => ref.current(s, dir);
     shows.set(v, fn);
+    if (opensAt === cur.i && cur.v === v) fn(cur.s, 1);
     return () => {
       if (shows.get(v) === fn) shows.delete(v);
     };

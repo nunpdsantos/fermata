@@ -107,7 +107,7 @@ export function LearnView() {
   useShowPlace('learn', (place, dir) => {
     // An entry with no screen named: what the tab opens.
     const next = place === undefined ? tabScreen() : learnScreenOf(place);
-    if (!next) return;
+    if (!next || learnPlace(next) === learnPlace(screen)) return;
     setDirection(dir < 0 ? 'back' : 'forward');
     setScreen(withSavedSection(next));
   });

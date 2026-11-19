@@ -161,6 +161,18 @@ describe('Back and Forward', () => {
     expect(go).toHaveBeenCalledWith(-1);
   });
 
+  it('a landing that comes before the view has registered (a Forward right after a reload) is shown as the view registers', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    goTo('learn', 'level/l1');
+    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }); // nobody listening yet: nothing shown
+    pop({ fm: 1, i: 2, v: 'learn', s: 'level/l1', l: 0 });
+    const seen: string[] = [];
+    render(<ShowLearn seen={seen} />);
+    expect(seen).toEqual(['level/l1']);
+  });
+
   it('an entry with no screen named is no screen of the view shown (review A10): it is shown as the tab would, not passed over', () => {
     const seen: string[] = [];
     render(<ShowLearn seen={seen} />);
