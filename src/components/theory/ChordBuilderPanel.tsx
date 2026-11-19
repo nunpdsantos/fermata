@@ -17,9 +17,9 @@ import {
   degreeColorSlot,
 } from '../../core/utils/degreeSpelling.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { exploreRegister } from '../explore/exploreRegister';
+import { exploreChordVoicing, exploreRegister } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
-import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
+import { resumeAudio, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 import { builderRole, matchText, otherReadings } from './builderRole.ts';
@@ -162,12 +162,12 @@ export function ChordBuilderPanel() {
     // selected chord's voicing); an unrecognised set plays as built.
     const recognised = top && top.confidence === 'exact' ? top.chord : null;
     cancelScheduledAudio(); // replaces whatever was sounding (W8-01)
-    if (instrument === 'guitar') {
-      const notes = recognised ? (invertedNotes.length ? invertedNotes : recognised.notes) : inputNotes;
-      playPitchedNotes(exploreRegister(instrument).chordPitches(notes, recognised?.bassNote), 1.2, getSynthConfig(synthPreset));
-      return;
-    }
-    playChordVoiced(recognised ? recognised.notes : inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset), recognised?.bassNote);
+    // A recognised chord is the selected one: the detail's own voicing, in
+    // its inversion, at the piano's octave (audit M58 — on the piano this
+    // played root position while the keys and ▶ Chord had the inversion).
+    playPitchedNotes(recognised
+      ? exploreChordVoicing(instrument, baseOctave, recognised, invertedNotes)
+      : exploreRegister(instrument, baseOctave).chordPitches(inputNotes), 1.2, getSynthConfig(synthPreset));
   }, [active.size, inputNotes, baseOctave, synthPreset, top, instrument, invertedNotes]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);

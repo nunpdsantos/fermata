@@ -63,6 +63,9 @@ export function ScaleStrip() {
   const displayType = scale.type;
   const selectedChord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
+  // The piano's octave (audit M59): the strip draws and sounds where ▶ Play
+  // scale and the piano's keys are — C3 gives C3–C4 (bass clef), not C4–C5.
+  const baseOctave = useAppStore((s) => s.baseOctave);
   const { noteOn, noteOff } = useAudio();
   const coarse = useMediaQuery('(pointer: coarse)');
   const wide = useMediaQuery('(min-width: 640px)');
@@ -77,9 +80,9 @@ export function ScaleStrip() {
   // coloured and labelled by its FUNCTION read from the spelled letter (a
   // pentatonic's G is the dominant — audit W1-06, W1-18).
   const notes: PitchedNote[] = useMemo(() => {
-    const up = getScaleNotesWithOctaves(scale.notes, exploreRegister(instrument).octave);
+    const up = getScaleNotesWithOctaves(scale.notes, exploreRegister(instrument, baseOctave).octave);
     return descending ? up.reverse() : up;
-  }, [scale, descending, instrument]);
+  }, [scale, descending, instrument, baseOctave]);
   const midis = useMemo(() => notes.map((n) => getMidiNumber(n, n.octave)), [notes]);
   const degrees = useMemo(() => notes.map((n) => degreeOf(scale.root, n)), [notes, scale.root]);
   // Noteheads in their degree's INK shade (800 by day, 400 at night): the

@@ -181,13 +181,21 @@ describe('Explore scale register, through the real staff and audio scheduler', (
     expect(heard[0]).toBe(57);
   });
 
-  it('piano keeps its existing preference for playback and fixed staff register', async () => {
+  // Audit M59 (19 November 2026): until then the strip stayed at A4–A5 while
+  // the piano's octave chip moved Play scale (and the piano) to A2–A3.
+  it('piano: the strip draws and sounds at the piano\'s octave, as Play scale does (bass clef there)', async () => {
     useAppStore.setState({ baseOctave: 2 });
     render(<><ScaleStrip /><ExploreHeader /></>);
     await drawn(8);
+    expect(keys.slice(-8)).toEqual([['a/2'], ['b/2'], ['c/3'], ['d/3'], ['e/3'], ['f/3'], ['g/3'], ['a/3']]);
+    expect(document.querySelector('.strip-staff g.vf-clef text')?.textContent).toBe('\uE062');
     await click(screen.getByRole('button', { name: 'Play scale ascending' }));
-    expect(stripMidi()).toEqual([69, 71, 72, 74, 76, 77, 79, 81]);
+    expect(stripMidi()).toEqual([45, 47, 48, 50, 52, 53, 55, 57]);
     expect(heard).toEqual([45, 47, 48, 50, 52, 53, 55, 57]);
+    heard.length = 0;
+    await click(columns()[0]);
+    await click(columns()[7]);
+    expect(noteOn.mock.calls.map(([n, octave]) => `${n.natural}${n.accidental}${octave}`)).toEqual(['A2', 'A3']);
   });
 
   it('instrument switching updates the strip and callback; A3 lights string 3 fret 2, A4 falls back to A pitch class', async () => {
@@ -246,7 +254,8 @@ describe('other Explore guitar sounds', () => {
     useAppStore.setState({ instrument, baseOctave: 2 });
     const { container } = render(<CircleOfFifths />);
     await click(container.querySelector('[data-key="C major"]')!);
-    expect(heard).toEqual([instrument === 'guitar' ? 48 : 60]);
+    // The piano at its octave (C2 here; it played C4 whatever the octave until audit M59).
+    expect(heard).toEqual([instrument === 'guitar' ? 48 : 36]);
   });
 
   it('builder plays its recognised chord in the staff register, including the selected inversion', async () => {

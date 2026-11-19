@@ -6,7 +6,7 @@ import { ChordBuilderPanel } from '../theory/ChordBuilderPanel.tsx';
 import { CurrentChordPanel } from '../panels/CurrentChordPanel.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { exploreRegister } from './exploreRegister';
+import { exploreChordVoicing } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { keyName } from './focusReadout.ts';
 import { staffTrim } from './staffTrim.ts';
@@ -25,16 +25,18 @@ const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
 );
 
-/** The selected chord on a small staff, in its inversion (what the instrument plays). */
+/** The selected chord on a small staff, in its inversion: exactly what ▶ Chord
+ *  plays, slash bass and the piano's octave included (`exploreChordVoicing`). */
 const CHORD_STAFF_HEIGHT = 80;
 
 function ChordStaff() {
   const { invertedNotes } = useKeyContext();
   const chord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
+  const baseOctave = useAppStore((s) => s.baseOctave);
   const notes = useMemo(
-    () => (chord ? exploreRegister(instrument).chordPitches(invertedNotes.length > 0 ? invertedNotes : chord.notes, instrument === 'guitar' ? chord.bassNote : undefined) : []),
-    [chord, invertedNotes, instrument],
+    () => (chord ? exploreChordVoicing(instrument, baseOctave, chord, invertedNotes) : []),
+    [chord, invertedNotes, instrument, baseOctave],
   );
   const trim = useMemo(() => staffTrim(notes, instrument, CHORD_STAFF_HEIGHT), [notes, instrument]);
   if (!chord) return null;
