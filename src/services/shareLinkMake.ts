@@ -80,6 +80,8 @@ export function exploreLinkValues(state: {
   selectedScale: ScaleType;
   selectedChord: Chord | null;
   instrument: InstrumentType;
+  /** The chord detail's inversion (0 = root position); carried with the chord (audit A6). */
+  chordInversion?: number;
 }, panel?: { progression: SavedProgression | undefined; capo: number } | null): ShareLinkValues {
   const values: ShareLinkValues = {
     key: noteToString(state.selectedKey),
@@ -91,14 +93,19 @@ export function exploreLinkValues(state: {
     values.prog = prog.chords.join(',');
     values.bpm = String(prog.bpm);
   } else {
-    const chord = state.selectedChord ? chordLinkSymbol(state.selectedChord) : null;
-    if (chord) values.chord = chord;
+    const selected = state.selectedChord;
+    const chord = selected ? chordLinkSymbol(selected) : null;
+    if (selected && chord) {
+      values.chord = chord;
+      const inv = state.chordInversion ?? 0;
+      if (Number.isInteger(inv) && inv > 0 && inv < selected.notes.length) values.inv = String(inv);
+    }
   }
   if (panel && panel.capo > 0) values.capo = String(panel.capo);
   return values;
 }
 
-/** The link for what Explore shows now (key, scale, chord if one is open, instrument; the progression while its panel is open). */
+/** The link for what Explore shows now (key, scale, chord if one is open with its inversion, instrument; the progression while its panel is open). */
 export function exploreLinkUrl(origin = window.location.origin): string {
   const s = useAppStore.getState();
   const panel = isProgressionPanelOpen() ? { progression: s.progression, capo: getCapoFret() } : null;

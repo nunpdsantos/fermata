@@ -38,7 +38,7 @@ const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = 
   },
   {
     labelKey: 'chordCategory.ninths',
-    qualities: ['major9', 'minor9', 'dominant9', 'add9'],
+    qualities: ['major9', 'minor9', 'dominant9', 'add9', 'minor_add9'],
   },
   {
     labelKey: 'chordCategory.altDom',

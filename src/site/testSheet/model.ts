@@ -68,6 +68,8 @@ export interface SheetUi {
   sendNote: string;
   tooLong: string;
   offline: string;
+  /** "Send my answers" with nothing answered on this sheet (A20). */
+  empty: string;
   copy: string;
   copied: string;
   copyfail: string;

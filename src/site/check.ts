@@ -8,8 +8,11 @@
  */
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
-import { SITE_LANGS, appText, type SiteLang } from './content';
-import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, type PageKind } from './render';
+import { SITE_LANGS, appText, siteLessons, type SiteLang } from './content';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, appDoorUrl, appUrl, sitePath, type PageKind } from './render';
+import type { SlugRegistry } from './slugs';
+import { esc } from './html';
+import { LANGUAGE_NAMES, newText } from './strings';
 
 export interface SiteFiles {
   /** Every generated page: its path ('/en/lessons/the-major-scale/') → its HTML. */
@@ -24,6 +27,8 @@ export interface SiteFiles {
 export interface CheckExpect {
   /** Lessons per language. */
   lessons: number;
+  /** The frozen slug registry (scripts/pages/slugs.json): which lesson each lesson page's address belongs to. */
+  slugs: SlugRegistry;
   /** Per page path, raw strings that must not appear in its text (a task's quoted-query tokens). */
   forbidden?: ReadonlyMap<string, readonly string[]>;
 }
@@ -179,6 +184,227 @@ function sitemapEntries(xml: string): Map<string, Map<string, string>> {
 const sameMap = (a: Map<string, string>, b: Map<string, string>) => a.size === b.size && [...a].every(([k, v]) => b.get(k) === v);
 const show = (m: Map<string, string>) => [...m].map(([k, v]) => `${k}=${v}`).join(', ');
 
+// ─── The home's way on without its script (2026-11-18, audit A18) ─────────
+
+/**
+ * index.html's `#boot-links`, right after an empty #root, shown until the
+ * app draws: per language its home and its lesson catalogue, named as the
+ * pages name them (the language names of the pages' language links, the top
+ * bar's "Lessons"), so a renamed label fails the build instead of leaving
+ * the home behind.
+ */
+export function homeFallbackLinks(): { lang: SiteLang; href: string; text: string }[] {
+  return SITE_LANGS.flatMap((lang) => [
+    { lang, href: `/${lang}/`, text: LANGUAGE_NAMES[lang] },
+    { lang, href: `/${lang}/${PATH_WORDS[lang].lessons}/`, text: appText(lang, 'tracks.lessonsLabel') },
+  ]);
+}
+
+/**
+ * When the home's way on shows with scripts on (2026-11-19, review of A18;
+ * measured on the build, served compressed, 390 px): `HOME_FALLBACK_DELAY`
+ * after the page's FIRST FRAME — a CSS animation's clock starts when the
+ * browser first draws, which waits for the app's stylesheet, not when the
+ * address is opened — then a fade of `HOME_FALLBACK_FADE`, slow at first
+ * (CSS's own slow-start curve, written as its cubic-bezier: Tailwind's
+ * class-name scanner reads every file, and the curve's keyword made it add
+ * an unused utility to the app's stylesheet; the fade is instant under
+ * reduced motion: src/index.css shortens every animation). The app
+ * drew 1.3 s after the first frame at 1.6 Mb/s with the CPU 4× or 6× slower,
+ * 2.2 s at 1.0 Mb/s, 4.3 s at 500 kb/s (slow 3G), 8.4 s at 250 kb/s: so a
+ * start on the first two never shows it, and slow 3G shows the line for
+ * about 1.2 s before the app. The values as index.html writes them.
+ */
+export const HOME_FALLBACK_DELAY = '2.5s';
+export const HOME_FALLBACK_FADE = '.6s';
+/** The style that keeps the way on hidden until the delay, then fades it in. */
+export const HOME_FALLBACK_ANIMATION = `animation:boot-links ${HOME_FALLBACK_FADE} cubic-bezier(.42,0,1,1) ${HOME_FALLBACK_DELAY} both`;
+export const HOME_FALLBACK_KEYFRAMES = '@keyframes boot-links{from{visibility:hidden;opacity:0}}';
+/** With scripts off: the links at once, without the "taking a while" lines (nothing is loading). */
+export const HOME_FALLBACK_NOSCRIPT = '<noscript><style>#boot-links{animation:none}#boot-links p{display:none}</style></noscript>';
+/**
+ * The whole style of the home's way on, exactly as index.html's head writes
+ * it (2026-11-19, review: checked whole, not by parts — a second rule, a
+ * second <style> or an `!important` undid the delay unseen). Upright text
+ * throughout: the italic face is another file (src/index.css: the upright
+ * `Source Serif 4` is one variable file per character range for every weight
+ * from 300 to 700, the italic separate files), which index.html does not
+ * preload; asked for while the app loads, it delayed the app's first drawing
+ * by about 600 ms on a slow connection (measured 2026-11-18). The `h1` is
+ * kept upright and regular by name, whatever the app's stylesheet does.
+ */
+export const HOME_FALLBACK_STYLE = `<style>#boot-links{box-sizing:border-box;max-width:32rem;margin:0 auto;padding:48px 16px;font-size:16px;line-height:1.5;${HOME_FALLBACK_ANIMATION}}#root:not(:empty)+#boot-links{display:none}#boot-links h1{margin:0 0 16px;font-size:28px;font-style:normal;font-weight:400}#boot-links ul{margin:0;padding:0;list-style:none}#boot-links li{display:flex;flex-wrap:wrap;column-gap:24px}#boot-links p{flex-basis:100%;margin:16px 0 0}#boot-links a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent-text,#8f4a1e);text-decoration:underline;text-underline-offset:3px}${HOME_FALLBACK_KEYFRAMES}</style>`;
+
+/**
+ * The block's markup, generated from its links (`homeFallbackLinks`) and
+ * lines (`bootSlow`): index.html must carry exactly this right after #root,
+ * whitespace between tags aside — tag for tag, attribute for attribute.
+ * `data-nosnippet`: the block is in the home page's raw text, lines
+ * included, and Google reads the attribute on a div, span or section
+ * (developers.google.com/search/docs/crawling-indexing/robots-meta-tag, read
+ * 19 November 2026), so "Fermatina is taking a while to start" is never shown
+ * as the site's snippet in search results.
+ */
+export function homeFallbackMarkup(): string {
+  const links = homeFallbackLinks();
+  const items = SITE_LANGS.map((lang) => {
+    const own = links.filter((l) => l.lang === lang).map((l) => `<a href="${esc(l.href)}">${esc(l.text)}</a>`).join('');
+    return `<li lang="${htmlLangFor(lang)}"><p>${esc(newText(lang, 'bootSlow'))}</p>${own}</li>`;
+  }).join('');
+  return `<div id="boot-links" data-nosnippet><h1>${esc(appText('en', 'nav.musicTheory'))}</h1><ul>${items}</ul></div>`;
+}
+
+/** Markup with the whitespace between tags taken out. */
+const tight = (html: string) => html.replace(/>\s+</g, '><').trim();
+/** Where two texts first differ, shown with a little of each around it. */
+function differsAt(found: string, want: string): string {
+  let i = 0;
+  while (i < found.length && i < want.length && found[i] === want[i]) i++;
+  const at = (s: string) => JSON.stringify(s.slice(Math.max(0, i - 24), i + 48));
+  return `at character ${i}, found ${at(found)}, expected ${at(want)}`;
+}
+
+/**
+ * What is wrong with the home's way on: #root empty and the block its next
+ * element (index.html's entry script may follow it; the build moves it to the
+ * head); then its parts (data-nosnippet, no script, the name, the links,
+ * their words and languages, each language's line first in its item; the
+ * rule hiding it once #root has content, the no-script style, the delay and
+ * fade, upright text), each with its own message; and when no part explains
+ * a difference, the whole: the markup equal to `homeFallbackMarkup()`, the
+ * document's style that names `boot-links` exactly `HOME_FALLBACK_STYLE` and
+ * the no-script style, and no style attribute anywhere naming it.
+ */
+export function homeFallbackProblems(home: string): string[] {
+  const problems: string[] = [];
+  const root = home.match(/<div id="root">([\s\S]*?)<\/div>/);
+  if (!root) return ['no <div id="root">'];
+  if (root[1] !== '') problems.push('#root is not empty in the initial HTML: the app\'s tests and the rule that hides the links read an empty #root');
+  const box = home.slice((root.index ?? 0) + root[0].length).match(/^\s*<div id="boot-links"([^>]*)>([\s\S]*)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
+  if (!box) return [...problems, 'no <div id="boot-links"> right after #root, the last thing in the body: no way on when the app does not start (audit A18)'];
+  const [, tagAttrs, links] = box;
+
+  // The markup, by its parts.
+  const markupFrom = problems.length;
+  // The block is in the home page's raw text, lines included: without `data-nosnippet` (which Google reads on a
+  // div, span or section: developers.google.com/search/docs/crawling-indexing/robots-meta-tag, read 19 November
+  // 2026) "Fermatina is taking a while to start" could be shown as the site's snippet in search results.
+  if (!/(?:^|\s)data-nosnippet(?=[\s=]|$)/.test(tagAttrs)) problems.push('#boot-links is not marked data-nosnippet: its "taking a while to start" lines could become the home page\'s snippet in search results');
+  if (/<script\b/i.test(links)) problems.push('#boot-links holds a script');
+  const name = appText('en', 'nav.musicTheory');
+  if (textOf(links.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '') !== name) problems.push(`#boot-links is not headed by the name "${name}"`);
+  const found = [...links.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => ({ href: attrs(m[1]).href ?? '', text: textOf(m[2]) }));
+  const want = homeFallbackLinks();
+  const show = (xs: { href: string; text: string }[]) => xs.map((x) => `${x.href} "${x.text}"`).join(', ');
+  if (show(found) !== show(want)) problems.push(`#boot-links links ${show(found) || 'nothing'}: expected ${show(want)}`);
+  for (const lang of SITE_LANGS) {
+    const own = want.filter((l) => l.lang === lang);
+    const item = links.match(new RegExp(`<li lang="${htmlLangFor(lang)}">([\\s\\S]*?)</li>`))?.[1] ?? '';
+    if (!own.every((l) => item.includes(`href="${l.href}"`))) problems.push(`#boot-links: ${own.map((l) => l.href).join(' and ')} are not in one <li lang="${htmlLangFor(lang)}">`);
+    // Its line first, word for word, then its links.
+    const line = item.match(/^<p>([^<]*)<\/p><a\b/)?.[1];
+    if (line === undefined || decode(line) !== newText(lang, 'bootSlow')) problems.push(`#boot-links <li lang="${htmlLangFor(lang)}"> does not open on its line "${newText(lang, 'bootSlow')}"`);
+  }
+  if ((links.match(/<p\b/g) ?? []).length !== SITE_LANGS.length) problems.push(`#boot-links holds ${(links.match(/<p\b/g) ?? []).length} <p>: one line per language`);
+  const upright = '#boot-links is not upright text throughout: the italic face is another file, which index.html does not preload (asked for while the app loads, it delayed the app); every weight from 300 to 700 is the one upright file';
+  if (/<(?:em|i|cite|dfn|var|address)\b/i.test(links)) problems.push(upright);
+  // The markup, whole.
+  if (problems.length === markupFrom) {
+    const block = tight(`<div id="boot-links"${tagAttrs}>${links}</div>`);
+    if (block !== homeFallbackMarkup()) problems.push(`#boot-links is not the markup generated from its links and lines (homeFallbackMarkup): ${differsAt(block, homeFallbackMarkup())}`);
+  }
+
+  // The style, by its parts.
+  const styleFrom = problems.length;
+  if (!/#root:not\(:empty\)\+#boot-links\{display:none\}/.test(home)) problems.push('no style hiding #boot-links once the app has put anything into #root');
+  if (!home.includes(HOME_FALLBACK_NOSCRIPT)) problems.push(`no <noscript> style showing #boot-links at once, without its lines, when scripts are off: ${HOME_FALLBACK_NOSCRIPT}`);
+  const first = home.match(/<style>(#boot-links\{[\s\S]*?)<\/style>/)?.[1] ?? '';
+  const rule = first.match(/^#boot-links\{([^}]*)\}/)?.[1] ?? '';
+  if (!rule.split(';').includes(HOME_FALLBACK_ANIMATION) || (rule.match(/animation/g) ?? []).length !== 1) problems.push(`#boot-links does not wait ${HOME_FALLBACK_DELAY} and fade in over ${HOME_FALLBACK_FADE}: expected "${HOME_FALLBACK_ANIMATION}" in "#boot-links{${rule}}"`);
+  if (!first.includes(HOME_FALLBACK_KEYFRAMES)) problems.push(`no ${HOME_FALLBACK_KEYFRAMES}`);
+  if (/italic|oblique/i.test(first)) problems.push(upright);
+  // The style, whole: every <style> that names the block, in order, and nothing else.
+  if (problems.length === styleFrom) {
+    const styles = [...home.matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi)].map((m) => m[0]).filter((t) => t.includes('boot-links'));
+    const noscriptStyle = HOME_FALLBACK_NOSCRIPT.slice('<noscript>'.length, -'</noscript>'.length);
+    const expected = [HOME_FALLBACK_STYLE, noscriptStyle];
+    if (styles.join('\n') !== expected.join('\n') || home.split(HOME_FALLBACK_NOSCRIPT).length !== 2) {
+      problems.push(`the document's style for #boot-links is not exactly HOME_FALLBACK_STYLE and the no-script style (${styles.length} <style> name it): ${differsAt(styles.join('\n'), expected.join('\n'))}`);
+    }
+  }
+  for (const m of home.matchAll(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi)) {
+    if (m[1].includes('boot-links')) problems.push(`a style attribute names boot-links: ${m[0].trim()}`);
+  }
+  return problems;
+}
+
+// ─── The not-found page (2026-11-18, audits A21 / Q12) ─────────────────────
+
+export interface NotFoundFiles {
+  /** dist/404.html, or null when the build has none. */
+  html: string | null;
+  /** Every file of the build, as '/en/index.html', '/pages.css', '/icon.svg' … */
+  files: ReadonlySet<string>;
+  sitemap: string;
+}
+
+/**
+ * /404.html, the page the host answers any unknown address with (status 404,
+ * src/site/notFound.ts): there; noindex and the page of no address (no
+ * canonical, no alternates, no Open Graph); no script, no inline style or
+ * handler; the pages' icons; every address it uses absolute (it answers at
+ * any depth) and in the build; the name; per language its heading, its
+ * sentence and exactly its home and lesson catalogue, in the pages' words;
+ * the brand to the app's home; not in the sitemap. `[]` = good.
+ */
+export function checkNotFoundPage(site: NotFoundFiles): string[] {
+  const html = site.html;
+  if (html === null) return ['/404.html: not in the build — the host would answer unknown addresses with its own bare page (audit A21)'];
+  const problems: string[] = [];
+  const where = (msg: string) => problems.push(`/404.html: ${msg}`);
+  const p = parse(html);
+  if (!html.startsWith('<!doctype html>\n')) where('does not start with <!doctype html>');
+  if (p.lang !== htmlLangFor('en')) where(`<html lang="${p.lang}">, expected ${htmlLangFor('en')}`);
+  const robots = tagsOf(html, 'meta').filter((m) => m.name === 'robots').map((m) => m.content);
+  if (robots.join() !== 'noindex') where(`robots ${JSON.stringify(robots)}: expected exactly one "noindex"`);
+  if (!p.title) where('needs exactly one non-empty <title>');
+  if (p.canonical.length || p.alternateCount || p.ogUrl || p.images.length) where('claims an address (canonical, alternates or Open Graph): it is the page of none');
+  if (p.scripts) where(`${p.scripts} <script> element(s): it has none`);
+  if (/\sstyle="|<style\b|\son[a-z]+="/i.test(html)) where('inline style or event handler');
+  const stray = html.match(STRAY_LT);
+  if (stray) where(`an unexpected tag at …${html.slice(Math.max(0, (stray.index ?? 0) - 30), (stray.index ?? 0) + 30)}…`);
+  if (BAD_AMP.test(html)) where('unescaped "&"');
+  if (p.icons.join('\n') !== PAGE_ICONS.join('\n')) where(`icons ${JSON.stringify(p.icons)}: expected ${JSON.stringify(PAGE_ICONS)}`);
+  for (const url of p.loads) {
+    if (!url.startsWith('/') || url.startsWith('//')) where(`loads ${url}: not an absolute path of this site (the page answers at any depth)`);
+    else if (!site.files.has(url.split(/[?#]/)[0])) where(`loads ${url}, which is not in the build`);
+  }
+  const name = appText('en', 'nav.musicTheory');
+  if (p.h1 !== name) where(`h1 "${p.h1}", expected the name "${name}"`);
+  const text = textOf(html);
+  for (const marker of ['{{', '}}', 'undefined', '[object Object]', 'NaN']) if (text.includes(marker)) where(`text contains "${marker}"`);
+  // The links: the brand to the app's home, and per language its two pages, absolute, each a page of the build.
+  const want = ['/', ...SITE_LANGS.flatMap((l) => [`/${l}/`, `/${l}/${PATH_WORDS[l].lessons}/`])];
+  if ([...p.hrefs].sort().join(' ') !== [...want].sort().join(' ')) where(`links ${JSON.stringify(p.hrefs)}: expected ${JSON.stringify(want)}`);
+  for (const href of want) if (!site.files.has(`${href}index.html`)) where(`links to ${href}, which is not in the build`);
+  for (const lang of SITE_LANGS) {
+    const section = html.match(new RegExp(`<section lang="${htmlLangFor(lang)}"[^>]*>([\\s\\S]*?)</section>`))?.[1];
+    if (section === undefined) {
+      where(`no <section lang="${htmlLangFor(lang)}">`);
+      continue;
+    }
+    const h2 = textOf(section.match(/<h2\b[^>]*>([\s\S]*?)<\/h2>/)?.[1] ?? '');
+    if (h2 !== newText(lang, 'notFoundTitle')) where(`${lang}: heading "${h2}", expected "${newText(lang, 'notFoundTitle')}"`);
+    const line = textOf(section.match(/<p\b[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? '');
+    if (line !== newText(lang, 'notFoundLine')) where(`${lang}: sentence "${line}", expected "${newText(lang, 'notFoundLine')}"`);
+    const links = [...section.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => `${attrs(m[1]).href} ${textOf(m[2].match(/<span class="lt">([\s\S]*?)<\/span>/)?.[1] ?? m[2])}`);
+    const own = [`/${lang}/ ${LANGUAGE_NAMES[lang]}`, `/${lang}/${PATH_WORDS[lang].lessons}/ ${newText(lang, 'allLessons', { count: siteLessons(lang).length })}`];
+    if (links.join(' | ') !== own.join(' | ')) where(`${lang}: links ${JSON.stringify(links)}, expected ${JSON.stringify(own)}`);
+  }
+  if (/404/.test(site.sitemap)) where('is in the sitemap');
+  return problems;
+}
+
 /** Every check over every page. `problems` empty = good. */
 export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
   const problems: string[] = [];
@@ -189,6 +415,9 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
   let links = 0;
   const titles = new Map<string, string>();
   const descriptions = new Map<string, string>();
+  // Which lesson owns each lesson page's address: the registry, never the page itself.
+  const lessonAt = new Map<string, string>();
+  for (const [id, slug] of Object.entries(expect.slugs)) for (const lang of SITE_LANGS) if (slug[lang]) lessonAt.set(sitePath.lesson(lang, slug[lang]), id);
 
   for (const [path, html] of site.pages) {
     const where = (msg: string) => problems.push(`${path}: ${msg}`);
@@ -280,6 +509,47 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       if (!l.inFoot) where('feedback link is not in the <footer>');
     }
 
+    // The foot's way to the app (2026-11-19): its sentence tells the reader
+    // to open Fermatina, so those words are an ordinary link to the app's
+    // home in the page's language, on every page.
+    const foot = html.slice(Math.max(0, html.search(/<footer\b/)), Math.max(0, html.indexOf('</footer>')));
+    const openWords = newText(kind.lang, 'footerOpen');
+    const openLinks = [...foot.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].filter((m) => textOf(m[2]) === openWords).map((m) => attrs(m[1]));
+    if (openLinks.length !== 1 || Object.keys(openLinks[0]).join() !== 'href' || openLinks[0].href !== appUrl(kind.lang)) {
+      where(`the foot says "${openWords}" without one ordinary link to ${appUrl(kind.lang)} (${JSON.stringify(openLinks)})`);
+    }
+
+    // A lesson page opens the app on ITS lesson (2026-11-19): the lesson the
+    // slug registry gives this address, in the page's language, in both
+    // "Open this lesson in Fermatina" buttons and every other link into the
+    // app (Try This, the tasks' phrases); the foot's link to the app's home
+    // is the only other one. Checked against the registry, so a page that
+    // names another lesson everywhere alike is still caught.
+    // A task that says to tap ‘C major scale’ can be tapped on the page too:
+    // read structurally, in the task list every ‘…’ is the whole text of an
+    // <a class="query" href> and nothing else; no other mark of a phrase is left.
+    // A landing page's "I know some theory" door opens the app with that door
+    // chosen (audit A19): its plain entrance made the app ask again.
+    if (kind.kind === 'landing' && p.hrefs.filter((h) => h === appDoorUrl(kind.lang, 'theory')).length !== 1) {
+      where(`no "I know some theory" door with its door chosen (${appDoorUrl(kind.lang, 'theory')}): the app would ask again`);
+    }
+
+    if (kind.kind === 'lesson') {
+      const id = lessonAt.get(path);
+      const own = id ? appUrl(kind.lang, id) : null;
+      if (!own) where('no lesson of the slug registry has this address');
+      const buttons = [...html.matchAll(/<p class="open"><a class="button" href="([^"]*)"/g)].map((m) => decode(m[1]));
+      if (buttons.length !== 2) where(`${buttons.length} "Open this lesson" button(s): exactly two, at the top and at the foot of the lesson`);
+      const wrong = new Map<string, number>();
+      for (const href of p.hrefs) if (href.startsWith(`${ORIGIN}/?`) && href !== own && href !== appUrl(kind.lang)) wrong.set(href, (wrong.get(href) ?? 0) + 1);
+      for (const [href, n] of wrong) where(`${n} link(s) open the app on ${href}, not on this page's lesson ${own}`);
+      const tasks = html.match(/<ul class="tasks">([\s\S]*?)<\/ul>/)?.[1] ?? '';
+      const PHRASE = /<a class="query" href="[^"]*">‘[^‘’<]*’<\/a>/g;
+      const left = tasks.replace(PHRASE, '').match(/<[^>]*\bclass="query"[^>]*>[^<]*|‘[^’<]*’?/);
+      if (left) where(`a task's quoted phrase is not an ordinary link to this lesson in the app: ${left[0]}`);
+      if ((html.match(/class="query"/g) ?? []).length !== (tasks.match(/class="query"/g) ?? []).length) where('a quoted phrase\'s mark outside the task list');
+    }
+
     // Files the page loads: same origin, existing.
     for (const url of p.loads) {
       if (!url.startsWith('/') || url.startsWith('//')) where(`loads ${url} (not this site)`);
@@ -298,7 +568,12 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       if (href.startsWith(`${ORIGIN}/?`)) {
         const q = new URLSearchParams(href.slice(ORIGIN.length + 2));
         const keys = [...q.keys()].join(',');
-        if (!(keys === 'lang' || keys === 'lesson,lang') || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!))) where(`app link ${href}`);
+        // A door of the start screen (`start`): only "I know some theory", only on a
+        // landing page, in its language (the owner's ruling, 19 November 2026; the
+        // app takes `new` and `player` too, but the pages do not offer them).
+        const here = pageKindOf(path);
+        const theoryDoor = keys === 'start,lang' && here?.kind === 'landing' && href === appDoorUrl(here.lang, 'theory');
+        if (!(keys === 'lang' || keys === 'lesson,lang' || theoryDoor) || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!))) where(`app link ${href}`);
         continue;
       }
       if (href.startsWith(ORIGIN)) target = href.slice(ORIGIN.length);
@@ -356,6 +631,8 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
   if (!landingAlts || !sameMap(home.alternates, landingAlts)) problems.push(`index.html: alternates (${show(home.alternates)}) are not the landing pages' (${landingAlts ? show(landingAlts) : 'none'})`);
   if (home.canonical.length !== 1 || home.canonical[0] !== `${ORIGIN}/`) problems.push(`index.html: canonical ${JSON.stringify(home.canonical)}`);
   if (home.icons.join('\n') !== PAGE_ICONS.join('\n')) problems.push(`index.html: icons ${JSON.stringify(home.icons)}: expected ${JSON.stringify(PAGE_ICONS)} (the PNG first: Google's search results do not list SVG)`);
+  for (const p of homeFallbackProblems(site.home)) problems.push(`index.html: ${p}`);
+  for (const { href } of homeFallbackLinks()) if (!parsed.has(href)) problems.push(`index.html: its way on links to ${href}, which is no generated page`);
 
   // The sitemap: the home and every page, each with the page's own alternates.
   if (!site.sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">')) problems.push('sitemap.xml: not the expected header');

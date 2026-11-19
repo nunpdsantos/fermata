@@ -1,0 +1,18 @@
+{
+  "importFailed": "El backup no se ha importado: este navegador no ha permitido guardarlo (puede que el espacio esté lleno). No ha cambiado nada.",
+  "importFailedPartly_one": "El backup no se ha importado entero: este navegador no ha permitido guardarlo (puede que el espacio esté lleno). Esta parte viene ahora del backup: {{sections}}. Todo lo demás está como estaba.",
+  "importFailedPartly_other": "El backup no se ha importado entero: este navegador no ha permitido guardarlo (puede que el espacio esté lleno). Estas partes vienen ahora del backup: {{sections}}. Todo lo demás está como estaba.",
+  "importNotInFull": "El backup no se ha importado entero: este navegador no ha permitido guardarlo (puede que el espacio esté lleno).",
+  "importFromBackup_one": "Esta parte viene ahora del backup: {{sections}}.",
+  "importFromBackup_other": "Estas partes vienen ahora del backup: {{sections}}.",
+  "importUnknown_one": "Después no se ha podido volver a leer esta parte, así que no se sabe qué guarda ahora: {{sections}}.",
+  "importUnknown_other": "Después no se han podido volver a leer estas partes, así que no se sabe qué guardan ahora: {{sections}}.",
+  "importRestAsItWas": "Todo lo demás está como estaba.",
+  "exportedWithout_one": "Backup descargado, pero sin esta parte, que está dañada en este navegador y no se ha podido leer: {{sections}}.",
+  "exportedWithout_other": "Backup descargado, pero sin estas partes, que están dañadas en este navegador y no se han podido leer: {{sections}}.",
+  "exportedPartly_one": "Backup descargado. Esta parte estaba parcialmente dañada en este navegador; el archivo guarda lo que aún se ha podido leer: {{sections}}.",
+  "exportedPartly_other": "Backup descargado. Estas partes estaban parcialmente dañadas en este navegador; el archivo guarda lo que aún se ha podido leer: {{sections}}.",
+  "exportedNewer_one": "Backup descargado, pero sin esta parte, que guardó una versión más reciente de Fermatina y esta página no puede leer: {{sections}}.",
+  "exportedNewer_other": "Backup descargado, pero sin estas partes, que guardó una versión más reciente de Fermatina y esta página no puede leer: {{sections}}.",
+  "exportFailed": "No se ha podido crear el archivo de backup. Tus datos en este navegador no han cambiado."
+}

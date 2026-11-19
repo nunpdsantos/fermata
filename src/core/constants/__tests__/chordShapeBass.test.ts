@@ -83,14 +83,20 @@ describe('inversions: the requested bass is the lowest note of the default shape
     // grip with the third in the bass for most m7, maj7, dim and m7b5 first
     // inversions (and dim7 / m7b5 second inversions) that keeps root, third
     // and seventh. 61 of 276 cases; the fretboard says so with a notice.
+    // Re-measured 2026-11-18 (QA audit Q1), 63 of 276: once the D-shape dim7
+    // is fingered as a hand plays it (1 3 2 4), its bass extensions for the
+    // third inversion need a fifth finger (they were drawn with one finger on
+    // two strings across a lower one), so 10 dim7 third inversions now say so;
+    // a bass may now replace the same note higher up (the D-shape E7 → E7/G♯
+    // 4 x 2 4 3 x), which gives the eight maj7 first inversions a grip.
     const tally = misses.reduce<Record<string, number>>((acc, m) => ({ ...acc, [m]: (acc[m] ?? 0) + 1 }), {});
     expect(tally).toEqual({
       'minor7 inv 1': 10,
-      'major7 inv 1': 8,
       'diminished inv 1': 11,
       'half_diminished7 inv 1': 11,
       'half_diminished7 inv 2': 11,
       'diminished7 inv 2': 10,
+      'diminished7 inv 3': 10,
     });
   });
 });

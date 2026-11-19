@@ -66,6 +66,21 @@ export function appUrl(lang: SiteLang, lessonId?: string): string {
   return `${ORIGIN}/?${lessonId ? `lesson=${encodeURIComponent(lessonId)}&` : ''}lang=${lang}`;
 }
 
+/** The start screen's doors, as the app names them (state/startDoors.ts `START_DOORS`). */
+export const START_DOOR_IDS = ['new', 'player', 'theory'] as const;
+export type StartDoorId = (typeof START_DOOR_IDS)[number];
+
+/**
+ * The app, with a door of its start screen already chosen (`?start=…&lang=…`,
+ * state/startLink.ts — audit 2026-11-18, A19): on a first visit the app takes
+ * that door as a tap would, instead of asking again. The landing pages offer
+ * it for "I know some theory" only (the owner's ruling, 19 November 2026:
+ * the other two doors are reading pages, below); the app takes all three.
+ */
+export function appDoorUrl(lang: SiteLang, door: StartDoorId): string {
+  return `${ORIGIN}/?start=${door}&lang=${lang}`;
+}
+
 const OG_LOCALE: Record<SiteLang, string> = { en: 'en_GB', pt: 'pt_PT', es: 'es_ES' };
 /** Lists in the page's language ("2, 3, 4 or 6": British English, no serial comma). */
 const LIST_LOCALE: Record<SiteLang, string> = { en: 'en-GB', pt: 'pt-PT', es: 'es-ES' };
@@ -189,6 +204,24 @@ interface HeadInput {
   jsonLd: unknown;
 }
 
+/**
+ * The look of every page (and of the not-found page): night by the system
+ * setting, the icons, the text font, the stylesheet. Every address absolute,
+ * so the not-found page, which answers at any depth, loads them too.
+ */
+const LOOK = [
+  '<meta name="color-scheme" content="light dark">',
+  '<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">',
+  '<meta name="theme-color" content="#181208" media="(prefers-color-scheme: dark)">',
+  // The PNG first, as on the home page (2026-11-15): Google's search
+  // results list PNG, not SVG. checkSite pins the three on every page.
+  '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">',
+  '<link rel="icon" type="image/svg+xml" href="/icon.svg">',
+  '<link rel="apple-touch-icon" href="/icon-192.png">',
+  '<link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>',
+  `<link rel="stylesheet" href="${STYLESHEET}">`,
+].join('\n');
+
 function head(h: HeadInput): string {
   const canonical = `${ORIGIN}${h.path}`;
   const alt = (['en', 'pt', 'es', 'x-default'] as const)
@@ -206,16 +239,7 @@ function head(h: HeadInput): string {
     `<meta name="description" content="${esc(h.description)}">`,
     `<link rel="canonical" href="${esc(canonical)}">`,
     alt,
-    '<meta name="color-scheme" content="light dark">',
-    '<meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">',
-    '<meta name="theme-color" content="#181208" media="(prefers-color-scheme: dark)">',
-    // The PNG first, as on the home page (2026-11-15): Google's search
-    // results list PNG, not SVG. checkSite pins the three on every page.
-    '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">',
-    '<link rel="icon" type="image/svg+xml" href="/icon.svg">',
-    '<link rel="apple-touch-icon" href="/icon-192.png">',
-    '<link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>',
-    `<link rel="stylesheet" href="${STYLESHEET}">`,
+    LOOK,
     `<meta property="og:type" content="${h.ogType}">`,
     '<meta property="og:site_name" content="Fermatina">',
     `<meta property="og:title" content="${esc(h.title)}">`,
@@ -267,13 +291,29 @@ ${opts.main}
 </main>
 <footer class="foot">
 <div class="wrap">
-<p>${esc(appText(lang, 'start.footer'))}</p>
+<p>${footHtml(lang)}</p>
 <p class="feedback"><a href="${esc(pageFeedbackUrl(lang, h.path))}" target="_blank" rel="noopener noreferrer">${esc(appText(lang, 'report.menuItem'))}</a></p>
 </div>
 </footer>
 </body>
 </html>
 `;
+}
+
+/**
+ * The foot's sentence (2026-11-19, review): `footer`, with its words that
+ * open the app (`footerOpen`: "Open Fermatina", «Abre a Fermatina», «Abre
+ * Fermatina») an ordinary link to the app's home in this language. The one
+ * place every page's foot is written, so all 417 pages that tell the reader
+ * to open Fermatina also offer the way (the glossaries had no other link to
+ * it). checkSite checks the link on every page.
+ */
+export function footHtml(lang: SiteLang): string {
+  const text = newText(lang, 'footer');
+  const words = newText(lang, 'footerOpen');
+  const at = text.indexOf(words);
+  if (at < 0 || text.indexOf(words, at + 1) >= 0) throw new Error(`site: "${words}" is not in the ${lang} footer exactly once`);
+  return `${esc(text.slice(0, at))}<a href="${esc(appUrl(lang))}">${esc(words)}</a>${esc(text.slice(at + words.length))}`;
 }
 
 /** The two other languages of this page, as links (each in its own language). */
@@ -308,6 +348,9 @@ function lessonList(ctx: Ctx, modules: readonly CurriculumModule[]): string {
 function landingMain(ctx: Ctx): { main: string; title: string; description: string; jsonLd: unknown } {
   const { lang } = ctx;
   const t = (k: string, v?: Record<string, string | number>) => appText(lang, k, v);
+  // The two newcomers' doors are the first lesson PAGE of their track, read
+  // without the app (as before the audit; the owner's ruling, 19 November
+  // 2026); "I know some theory" opens the app with its door chosen (A19).
   const firstOf = (track: TrackId) => lessonHref(ctx, TRACKS[track].moduleIds[0]);
   const door = (profile: 'new' | 'player' | 'theory', href: string) =>
     `<li><a href="${esc(href)}"><span class="lt">${esc(t(`start.door.${profile}.title`))}</span><span class="ls">${esc(t(`start.door.${profile}.line`))}</span></a></li>`;
@@ -317,13 +360,13 @@ function landingMain(ctx: Ctx): { main: string; title: string; description: stri
   const main = `<h1 class="hero">${MARK.replace('width="22" height="22"', 'width="32" height="32"')}<span>${esc(t('nav.musicTheory'))}</span></h1>
 <p class="lead">${esc(tagline)}</p>
 ${button(appUrl(lang), newText(lang, 'openApp'))}
-<p>${esc(t('start.footer'))} ${esc(newText(lang, 'languages'))}</p>
+<p>${esc(newText(lang, 'footer'))} ${esc(newText(lang, 'languages'))}</p>
 <section aria-labelledby="doors">
 <h2 id="doors">${esc(t('start.doorsHeading'))}</h2>
 <ul class="lessons">
 ${door('new', firstOf('sound'))}
 ${door('player', firstOf('chords'))}
-${door('theory', appUrl(lang))}
+${door('theory', appDoorUrl(lang, 'theory'))}
 </ul>
 </section>
 <section aria-labelledby="inside">
@@ -343,7 +386,7 @@ ${labelled(t('metronomeToolEntry.menuItem'), newText(lang, 'metronome', { min: M
   return {
     main,
     title: newText(lang, 'landingTitle'),
-    description: wholeSentences([tagline, t('start.footer')]),
+    description: wholeSentences([tagline, newText(lang, 'footer')]),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -446,7 +489,7 @@ ${songs.map((s) => `<li><span class="song">${esc(s.song)}</span> <span class="ar
     ? `<section>
 <h2 class="label">${esc(newText(lang, 'onInstrument'))}</h2>
 <ul class="tasks">
-${module.tasks.map((task) => `<li>${instructionHtml(task.instruction)}</li>`).join('\n')}
+${module.tasks.map((task) => `<li>${instructionHtml(task.instruction, open)}</li>`).join('\n')}
 </ul>
 </section>`
     : '';
@@ -578,6 +621,54 @@ export function buildSite(slugs: SlugRegistry): Site {
     add('glossary', 'glossary', sitePath.glossary(lang), glossaryMain(ctx), 'glossary');
   }
   return { pages, sitemap: sitemapXml(pages) };
+}
+
+// ─── The not-found page (2026-11-18, audits A21 / Q12) ─────────────────────
+
+/**
+ * /404.html: what the host answers, with status 404, for any address that is
+ * no file of the build (src/site/notFound.ts) — at the root or deep under a
+ * language, so every address in it is absolute. One page for the three
+ * languages: it has no script and cannot know which one a mistyped address
+ * meant. The name, then per language a heading, one sentence, and that
+ * language's home and lesson catalogue in the landing page's own words.
+ * noindex; no description, canonical, alternates or Open Graph (it is the
+ * page of no address); not in the sitemap; never precached (vite.config.ts
+ * globIgnores, check:sw). Checked by check.ts `checkNotFoundPage`.
+ */
+export function notFoundPage(): string {
+  const name = appText('en', 'nav.musicTheory');
+  const section = (lang: SiteLang) => `<section lang="${htmlLangFor(lang)}" aria-labelledby="not-found-${lang}">
+<h2 id="not-found-${lang}">${esc(newText(lang, 'notFoundTitle'))}</h2>
+<p>${esc(newText(lang, 'notFoundLine'))}</p>
+<ul class="lessons more">
+<li><a href="${sitePath.landing(lang)}"><span class="lt">${esc(LANGUAGE_NAMES[lang])}</span><span class="ls">${esc(appText(lang, 'start.tagline'))}</span></a></li>
+<li><a href="${sitePath.index(lang)}"><span class="lt">${esc(newText(lang, 'allLessons', { count: siteLessons(lang).length }))}</span><span class="ls">${esc(appText(lang, 'learn.subtitle'))}</span></a></li>
+</ul>
+</section>`;
+  const title = [...SITE_LANGS.map((l) => newText(l, 'notFoundTitle')), name].join(' · ');
+  return `<!doctype html>
+<html lang="${htmlLangFor('en')}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>${esc(title)}</title>
+${LOOK}
+</head>
+<body>
+<header class="top">
+<div class="wrap">
+<a class="brand" href="/">${MARK}<span>${esc(name)}</span></a>
+</div>
+</header>
+<main id="main" class="wrap">
+<h1 class="hero">${MARK.replace('width="22" height="22"', 'width="32" height="32"')}<span>${esc(name)}</span></h1>
+${SITE_LANGS.map(section).join('\n')}
+</main>
+</body>
+</html>
+`;
 }
 
 /** sitemap.xml: the app's home, then every page, each with its language twins and x-default. */

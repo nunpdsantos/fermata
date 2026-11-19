@@ -4,6 +4,7 @@ import i18n from '../i18n';
 import { Button } from './ui/Button';
 import { useAppStore, type AppState } from '../state/store';
 import { reloadPage } from '../utils/pageReload';
+import { requestMetronomeStop } from '../services/metronome/stopRequest';
 
 /**
  * The view/selection part of the main store — what the learner is LOOKING AT,
@@ -84,6 +85,11 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('[ErrorBoundary]', error, info.componentStack);
+    // The full-page card replaces the whole screen, the metronome's bar with
+    // it: a running metronome would click on with nothing to stop it. (A
+    // view's own boundary — ViewSlot, with its fallback — keeps the shell and
+    // the bar on screen.) Eager and import-free: loads none of its code.
+    if (!this.props.fallback) requestMetronomeStop();
   }
 
   componentDidUpdate(prevProps: Props) {

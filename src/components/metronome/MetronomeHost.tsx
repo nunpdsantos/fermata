@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useAppStore } from '../../state/store.ts';
 import { useDemoRequest } from '../../state/demoRequest.ts';
 import { stopMetronome } from '../../services/metronome/metronome.ts';
 import { prepareClicks } from '../../services/metronome/clickVoice.ts';
+import { fullScreenCoverOpen, watchFullScreenCover } from '../../services/metronome/fullScreenCover.ts';
 import { MetronomeBar } from './MetronomeBar.tsx';
 import '../../i18n/metronomeTool/index.ts';
 import './metronome.css';
@@ -16,8 +17,10 @@ export interface MetronomeHostProps {
 /**
  * The metronome's lazy chunk (wave 3, stream M), mounted by the top bar the
  * first time "⋯" → "Metronome" is chosen and kept mounted after. It shows
- * the bar while it is open in Explore and Learn — not in Drill, and not
- * while the tour plays (the start screen has no top bar, so no metronome).
+ * the bar while it is open in Explore and Learn — not in Drill, not under
+ * the landscape full-neck view (it covers the whole app; the metronome stops
+ * as it opens: services/metronome/fullScreenCover.ts), and not while the tour
+ * plays (the start screen has no top bar, so no metronome).
  * Asking for the tour stops it here (synchronously, before the tour asks
  * whether work is in progress). Going into Drill is stopped by the service
  * (`metronome.ts`, a store subscription) and ✕ by the bar's close(): one
@@ -46,7 +49,9 @@ function useBarHome(): HTMLElement | null {
 export default function MetronomeHost({ open, onClose }: MetronomeHostProps) {
   const view = useAppStore((s) => s.view);
   const tour = useDemoRequest();
-  const shown = open && view !== 'drill' && tour === null;
+  // The full-neck view covers everything: the bar waits under it, stopped (the service stops it as it opens).
+  const covered = useSyncExternalStore(watchFullScreenCover, fullScreenCoverOpen, () => false);
+  const shown = open && view !== 'drill' && tour === null && !covered;
   const home = useBarHome();
   // ▶ takes focus when the bar is opened, not again when it only moves into
   // or out of a sheet (a remount: the sheet gives focus back itself).

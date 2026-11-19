@@ -13,7 +13,7 @@ const l1u1m1: CurriculumModule = {
   subtitle: 'The five-line grid that maps pitch to paper',
   objectives: [
     'Identify the five-line staff as the foundation of Western notation',
-    'Read treble and bass clef and know which pitches they center on',
+    'Read treble and bass clef and know which pitches they centre on',
     'Understand how position on the staff maps to pitch — higher = higher sound',
   ],
   concepts: [
@@ -27,15 +27,15 @@ const l1u1m1: CurriculumModule = {
     {
       title: 'Treble and Bass Clef',
       explanation:
-        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centers on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centers on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
+        "A clef sits at the beginning of a staff and tells you which pitches the lines and spaces represent. The treble clef (𝄞) centres on G above middle C — it's used for higher instruments and the right hand on piano. The bass clef (𝄢) centres on F below middle C — it's used for lower instruments and the left hand on piano. Without a clef, the staff is just lines — the clef gives them meaning. Guitar uses treble clef with a small 8 below: it sounds an octave lower than written. The optional Guitar Notation unit explains this convention.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'C to C in treble clef and in bass clef',
       clefs: true,
     },
   ],
   tasks: [
-    { id: 'l1u1m1t1', instruction: 'Look at the piano keyboard — notes go from low (left) to high (right), just like the staff goes from low (bottom) to high (top)' },
-    { id: 'l1u1m1t2', instruction: "Type 'C major scale' and notice how each note occupies a higher position as the pitch rises" },
+    { id: 'l1u1m1t1', instruction: 'Look at your instrument — notes go from low to high, just like the staff goes from low (bottom) to high (top): on the piano from left to right, on the guitar fret by fret towards the body' },
+    { id: 'l1u1m1t2', instruction: "Tap 'C major scale' and notice how each note occupies a higher position as the pitch rises" },
   ],
   prerequisites: [],
 };
@@ -49,7 +49,7 @@ const l1u1m2: CurriculumModule = {
   objectives: [
     'Understand ledger lines as extensions above or below the staff',
     'Know that the grand staff combines treble and bass clefs connected by a brace',
-    'Locate middle C as the ledger line between the two staves',
+    'Locate middle C between the two staves, on a ledger line below the treble staff or above the bass staff',
   ],
   concepts: [
     {
@@ -62,13 +62,13 @@ const l1u1m2: CurriculumModule = {
     {
       title: 'The Grand Staff',
       explanation:
-        "Piano music uses the grand staff — a treble staff on top and a bass staff on the bottom, joined by a brace and connected by a shared middle-C ledger line. The right hand typically reads treble clef; the left reads bass clef. Together they cover most of the piano's range. This is why pianists learn both clefs from the start.",
+        "Piano music uses the grand staff — a treble staff on top and a bass staff on the bottom, joined at the left by a brace and a line. Middle C sits between them, but no line is drawn there for good: it is written on a short ledger line of its own, either just below the treble staff or just above the bass staff, wherever the note is needed. The right hand typically reads treble clef; the left reads bass clef. Together they cover most of the piano's range. This is why pianists learn both clefs from the start.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'Explore C on the full keyboard',
     },
   ],
   tasks: [
-    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano — it sits between the two halves of the grand staff' },
+    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano, or on the guitar at fret 1 of the B string (the second thinnest) — it sits between the two halves of the grand staff' },
     { id: 'l1u1m2t2', instruction: 'Play notes below and above middle C to hear how the grand staff spans both registers' },
   ],
   prerequisites: ['l1u1m1'],
@@ -83,7 +83,7 @@ const l1u1m3: CurriculumModule = {
   objectives: [
     'Define half steps and whole steps as the building blocks of all scales',
     'Understand sharps, flats, and naturals as pitch modifiers',
-    'Recognize enharmonic equivalents — same sound, different name',
+    'Recognise enharmonic equivalents — same sound, different name',
   ],
   concepts: [
     {
@@ -109,9 +109,9 @@ const l1u1m3: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m3t1', instruction: "Play adjacent notes on the chromatic scale — each step is a half step. Type 'C chromatic scale' to see them all" },
-    { id: 'l1u1m3t2', instruction: 'Find E and F on the piano — notice there is no black key between them. This pair is a natural half step' },
-    { id: 'l1u1m3t3', instruction: "Type 'key of G' — which note needs a sharp? The F becomes F# to maintain the major scale pattern" },
+    { id: 'l1u1m3t1', instruction: "Play adjacent notes on the chromatic scale — each step is a half step. Tap 'C chromatic scale' to see them all" },
+    { id: 'l1u1m3t2', instruction: 'Find E and F — on the piano there is no black key between them; on the guitar they are one fret apart. This pair is a natural half step' },
+    { id: 'l1u1m3t3', instruction: "Tap 'key of G' — which note needs a sharp? The F becomes F# to maintain the major scale pattern" },
   ],
   prerequisites: ['l1u1m2'],
 };
@@ -144,8 +144,8 @@ const l1u1m4: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u1m4t1', instruction: "Type 'C chromatic scale' and count all 12 notes before the pattern repeats" },
-    { id: 'l1u1m4t2', instruction: 'On the piano, find the group of 2 black keys — the white key just below the group is always C' },
+    { id: 'l1u1m4t1', instruction: "Tap 'C chromatic scale' and count all 12 notes before the pattern repeats" },
+    { id: 'l1u1m4t2', instruction: 'Find C on your instrument — on the piano, it is always the white key just left of a group of 2 black keys; on the guitar, C is fret 3 of the A string, the second thickest' },
   ],
   prerequisites: ['l1u1m3'],
 };
@@ -167,13 +167,13 @@ const l1u2m1: CurriculumModule = {
   objectives: [
     'Know the standard note values: whole, half, quarter, eighth, sixteenth',
     'Understand the 2:1 ratio — each value is half the duration of the one above it',
-    'Recognize rests as measured silence with the same duration hierarchy',
+    'Recognise rests as measured silence with the same duration hierarchy',
   ],
   concepts: [
     {
       title: 'The Duration Hierarchy',
       explanation:
-        'Music organizes time through a hierarchy of note values. A whole note lasts the longest. A half note is half as long. A quarter note is half of that — and so on down to eighth and sixteenth notes. Each level divides by two: 1 whole = 2 halves = 4 quarters = 8 eighths = 16 sixteenths. This system lets musicians write any rhythm with precision.',
+        'Music organises time through a hierarchy of note values. A whole note lasts the longest. A half note is half as long. A quarter note is half of that — and so on down to eighth and sixteenth notes. Each level divides by two: 1 whole = 2 halves = 4 quarters = 8 eighths = 16 sixteenths. This system lets musicians write any rhythm with precision.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear one bar each of whole, half, quarter and eighth notes',
       rhythm: { time: '4/4', notes: 'w | h h | q q q q | 8 8 8 8 8 8 8 8' },
@@ -206,18 +206,18 @@ const l1u2m2: CurriculumModule = {
   id: 'l1u2m2',
   unitId: 'u2',
   levelId: 'l1',
-  title: 'Meter and Time Signatures',
+  title: 'Metre and Time Signatures',
   subtitle: 'How beats group into measures — 2/4, 3/4, and 4/4',
   objectives: [
-    'Understand meter as the recurring pattern of strong and weak beats',
+    'Understand metre as the recurring pattern of strong and weak beats',
     'Read simple time signatures: 2/4, 3/4, 4/4',
-    'Feel the difference between duple (2), triple (3), and quadruple (4) meter',
+    'Feel the difference between duple (2), triple (3), and quadruple (4) metre',
   ],
   concepts: [
     {
-      title: 'Pulse, Meter, and Measures',
+      title: 'Pulse, Metre, and Measures',
       explanation:
-        "Music has a steady pulse — the beat you tap your foot to. Meter organizes those beats into recurring groups of 2, 3, or 4, with the first beat of each group feeling stronger. A measure (or bar) is one complete group, separated by barlines. The time signature at the beginning tells you the grouping: 4/4 means four quarter-note beats per measure. 3/4 means three. 2/4 means two.",
+        "Music has a steady pulse — the beat you tap your foot to. Metre organises those beats into recurring groups of 2, 3, or 4, with the first beat of each group feeling stronger. A measure (or bar) is one complete group, separated by barlines. The time signature at the beginning tells you the grouping: 4/4 means four quarter-note beats per measure. 3/4 means three. 2/4 means two.",
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear 4/4: four beats to a bar, the first one stressed',
       rhythm: { time: '4/4', notes: '>q q q q | >q q q q' },
@@ -225,14 +225,14 @@ const l1u2m2: CurriculumModule = {
     {
       title: 'Simple Time Signatures',
       explanation:
-        "In simple meter, each beat divides naturally into two equal parts. 4/4 is the most common time signature — four quarter-note beats per measure, with beat 1 strongest and beat 3 having a secondary accent. 3/4 gives music a waltz feel — ONE-two-three, ONE-two-three. 2/4 creates a march-like feel — ONE-two, ONE-two. The top number is beats per measure; the bottom number is which note value gets one beat.",
+        "In simple metre, each beat divides naturally into two equal parts. 4/4 is the most common time signature — four quarter-note beats per measure, with beat 1 strongest and beat 3 having a secondary accent. 3/4 gives music a waltz feel — ONE-two-three, ONE-two-three. 2/4 creates a march-like feel — ONE-two, ONE-two. The top number is beats per measure; the bottom number is which note value gets one beat.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'Hear 3/4: ONE-two-three, ONE-two-three',
       rhythm: { time: '3/4', notes: '>q q q | >q q q | >h q | >h.' },
     },
   ],
   tasks: [
-    { id: 'l1u2m2t1', instruction: 'Tap a steady beat and emphasize every 4th tap — you are feeling 4/4 meter. Now try emphasizing every 3rd tap — that is 3/4' },
+    { id: 'l1u2m2t1', instruction: 'Tap a steady beat and emphasise every 4th tap — you are feeling 4/4 metre. Now try emphasising every 3rd tap — that is 3/4' },
     { id: 'l1u2m2t2', instruction: 'Listen to a song you know and count beats until the pattern repeats. Most pop songs are in 4/4. Waltzes are in 3/4' },
   ],
   prerequisites: ['l1u2m1'],
@@ -272,15 +272,15 @@ const l1u3m1: CurriculumModule = {
     {
       title: 'Same Pattern, Same Sound',
       explanation:
-        "Because every major scale uses the exact same step pattern, they all share the same bright, resolved quality — just at different pitch levels. This is why musicians play in different keys: to match a singer's range, suit an instrument, or change the color of a piece.",
+        "Because every major scale uses the exact same step pattern, they all share the same bright, resolved quality — just at different pitch levels. This is why musicians play in different keys: to match a singer's range, suit an instrument, or change the colour of a piece.",
       tryThisQuery: 'D major scale',
       tryThisLabel: 'Build D major — two sharps',
     },
   ],
   tasks: [
-    { id: 'l1u3m1t1', instruction: "Type 'C major scale' and trace the W-W-H-W-W-W-H pattern on the piano" },
-    { id: 'l1u3m1t2', instruction: "Type 'G major scale' — which note needs a sharp to maintain the pattern?" },
-    { id: 'l1u3m1t3', instruction: "Type 'F major scale' — this one needs a flat. Which note?" },
+    { id: 'l1u3m1t1', instruction: "Tap 'C major scale' and trace the W-W-H-W-W-W-H pattern on your instrument" },
+    { id: 'l1u3m1t2', instruction: "Tap 'G major scale' — which note needs a sharp to maintain the pattern?" },
+    { id: 'l1u3m1t3', instruction: "Tap 'F major scale' — this one needs a flat. Which note?" },
   ],
   prerequisites: ['l1u2m2'],
 };
@@ -300,7 +300,7 @@ const l1u3m2: CurriculumModule = {
     {
       title: 'What Is a Key Signature?',
       explanation:
-        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#. This saves clutter and tells you the key at a glance.",
+        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#, unless a natural sign (♮) written in front of an F cancels the sharp, from that note to the end of the measure. This saves clutter and shows at a glance which notes the key uses.",
       tryThisQuery: 'key of G',
       tryThisLabel: "See G's key signature — one sharp",
     },
@@ -314,15 +314,15 @@ const l1u3m2: CurriculumModule = {
     {
       title: 'Scale vs. Key',
       explanation:
-        "A scale is a pattern of notes in order. A key is the musical context that uses those notes, with one note as 'home.' When you are 'in the key of G major,' the G major scale provides your notes, G is home, and the key signature tells you F is always sharp.",
+        "A scale is a pattern of notes in order. A key is the musical context that uses those notes, with one note as 'home.' When you are 'in the key of G major,' the G major scale provides your notes, G is home, and the key signature tells you to play F as F# unless a natural sign (♮) says otherwise. The same one-sharp signature also belongs to E minor, a key with the same notes and E as home: the signature gives the notes, and the music tells you which one is home.",
       tryThisQuery: 'key of F',
       tryThisLabel: "See F's key signature — one flat",
     },
   ],
   tasks: [
-    { id: 'l1u3m2t1', instruction: "Type 'key of G' — how many sharps does the key signature show?" },
-    { id: 'l1u3m2t2', instruction: "Type 'key of D' — which new sharp was added beyond G major's F#?" },
-    { id: 'l1u3m2t3', instruction: "Type 'key of F' — this is the first flat key. Which note is flatted?" },
+    { id: 'l1u3m2t1', instruction: "Tap 'key of G' — how many sharps does the key signature show?" },
+    { id: 'l1u3m2t2', instruction: "Tap 'key of D' — which new sharp was added beyond G major's F#?" },
+    { id: 'l1u3m2t3', instruction: "Tap 'key of F' — this is the first flat key. Which note is flatted?" },
   ],
   prerequisites: ['l1u3m1'],
 };
@@ -332,7 +332,7 @@ const l1u3m3: CurriculumModule = {
   unitId: 'u3',
   levelId: 'l1',
   title: 'Intervals by Number',
-  subtitle: 'Measuring distance between notes — unison through octave',
+  subtitle: 'Measuring distance between notes — unison to octave',
   objectives: [
     'Name intervals from unison to octave by counting letter names',
     'Distinguish melodic intervals (notes in sequence) from harmonic intervals (notes together)',
@@ -362,8 +362,8 @@ const l1u3m3: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u3m3t1', instruction: "Type 'C major chord' — the interval from C to E is a 3rd, and C to G is a 5th. Count the letters to verify" },
-    { id: 'l1u3m3t2', instruction: "Type 'C major scale' — each adjacent pair is a 2nd (a step). Play non-adjacent notes to hear larger intervals" },
+    { id: 'l1u3m3t1', instruction: "Tap 'C major chord' — the interval from C to E is a 3rd, and C to G is a 5th. Count the letters to verify" },
+    { id: 'l1u3m3t2', instruction: "Tap 'C major scale' — each adjacent pair is a 2nd (a step). Play non-adjacent notes to hear larger intervals" },
     { id: 'l1u3m3t3', instruction: 'Open the Circle of Fifths — each step around the circle is a 5th interval. Count the letters to confirm', query: 'circle of fifths' },
   ],
   prerequisites: ['l1u3m2'],
@@ -404,8 +404,8 @@ const l1u3m4: CurriculumModule = {
     },
   ],
   tasks: [
-    { id: 'l1u3m4t1', instruction: "Type 'C major chord' and count the half steps: C to E = 4 (major 3rd), E to G = 3 (minor 3rd), C to G = 7 (perfect 5th)" },
-    { id: 'l1u3m4t2', instruction: "Type 'G major chord' — identify the root, 3rd, and 5th. Same interval pattern, different starting note" },
+    { id: 'l1u3m4t1', instruction: "Tap 'C major chord' and count the half steps: C to E = 4 (major 3rd), E to G = 3 (minor 3rd), C to G = 7 (perfect 5th)" },
+    { id: 'l1u3m4t2', instruction: "Tap 'G major chord' — identify the root, 3rd, and 5th. Same interval pattern, different starting note" },
     { id: 'l1u3m4t3', instruction: "Play 'C major chord', 'G major chord', 'D major chord', 'F major chord' — hear the same bright quality in every key" },
   ],
   prerequisites: ['l1u3m3'],
@@ -451,7 +451,7 @@ const guitarNotation: CurriculumUnit = {
         },
         {
           id: 'l1u33m1t2',
-          instruction: 'On your guitar, point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
+          instruction: 'On your guitar or the app fretboard (select Guitar in Explore), point to ① and ⑥. Say their sounding pitches in standard tuning, then find ③.'
         }
       ],
       id: 'l1u33m1',
@@ -521,7 +521,7 @@ const guitarNotation: CurriculumUnit = {
       tasks: [
         {
           id: 'l1u33m3t1',
-          instruction: 'Choose position V on the app fretboard. Locate fret 5 and compare that position number with the finger numbers on the dots.'
+          instruction: 'Select Guitar in Explore and choose position V on the app fretboard. Locate fret 5 and compare that position number with the finger numbers on the dots.'
         },
         {
           id: 'l1u33m3t2',
@@ -829,7 +829,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m1t1', instruction: 'Play G, C, D and Em in turn, and say the three notes of each one aloud: G B D, C E G, D F♯ A, E G B.' },
-        { id: 'l1u35m1t2', instruction: 'Play the G major scale from G up to G, then strum G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.' },
+        { id: 'l1u35m1t2', instruction: 'Play the G major scale from G up to G, then play the chords G, C and D. On the guitar, find the F♯ in your D chord: fret 2 of the thinnest string.' },
       ],
       prerequisites: [],
     },
@@ -1037,7 +1037,7 @@ const chordsTrack: CurriculumUnit = {
         },
       ],
       tasks: [
-        { id: 'l1u35m6t1', instruction: 'Play an open G chord one string at a time, from the thickest, and name each note: G, B, D, G, B, G.' },
+        { id: 'l1u35m6t1', instruction: 'Play a G chord one note at a time, from the lowest, and name each note. On the guitar, an open G chord gives G, B, D, G, B, G from the thickest string.' },
         { id: 'l1u35m6t2', instruction: 'Choose a major chord you know and say its root. Count every other note of the root\'s major scale to find its 3rd and 5th, and play the three notes one after the other.' },
       ],
       prerequisites: [],
@@ -1081,7 +1081,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m7t1', instruction: 'Play G7 and then C, then G and then C. Which of the two leans harder into C?' },
-        { id: 'l1u35m7t2', instruction: 'Play the twelve-bar blues in G, four strums to a bar: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7.' },
+        { id: 'l1u35m7t2', instruction: 'Play the twelve-bar blues in G, four beats to a bar: G7 for four bars, C7 for two, G7 for two, then D7, C7, G7 and D7.' },
       ],
       prerequisites: [],
     },
@@ -1124,7 +1124,7 @@ const chordsTrack: CurriculumUnit = {
       ],
       tasks: [
         { id: 'l1u35m8t1', instruction: 'Play G, D, Em and C, then the same loop in A: A, E, F♯m and D. On the guitar, F♯m can be a barre at fret 2.' },
-        { id: 'l1u35m8t2', instruction: 'Put a capo at fret 2 and play your G, D, Em and C shapes. They sound A, E, F♯m and D: compare them with the loop in A you played without it.' },
+        { id: 'l1u35m8t2', instruction: 'On the guitar, put a capo at fret 2 and play your G, D, Em and C shapes: they sound A, E, F♯m and D. On the piano, play G, D, Em and C, then each chord two half steps higher, A, E, F♯m and D: that is what the capo does. Compare them with the loop in A you played before.' },
       ],
       prerequisites: [],
     },
@@ -1166,7 +1166,7 @@ const chordsTrack: CurriculumUnit = {
         },
       ],
       tasks: [
-        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then strum G, C or D and answer each chord with one of the five notes, listening for any note that clashes.' },
+        { id: 'l1u35m9t1', instruction: 'Play the G major pentatonic up and down: G, A, B, D, E and G. Then play G, C or D and answer each chord with one of the five notes, listening for any note that clashes.' },
         { id: 'l1u35m9t2', instruction: 'Play the E minor pentatonic, E, G, A, B, D and E. On the guitar it lies on the open strings and frets 2 and 3: thickest string 0 and 3, then 0 and 2 on the next three strings, then 0 and 3 on the last two.' },
       ],
       prerequisites: [],
@@ -1233,7 +1233,7 @@ export const L1_UNITS: CurriculumUnit[] = [
         'Know all 12 chromatic pitches and see them on the keyboard',
       ],
       bridgeText:
-        "You know the 12 pitches and how distance works on the keyboard. Next you'll learn how time is organized in music — note values, rests, and meter.",
+        "You know the 12 pitches and how distance works on the keyboard. Next you'll learn how time is organised in music — note values, rests, and metre.",
       tryThisQuery: 'C chromatic scale',
       tryThisLabel: 'Play all 12 notes in order',
       tryThisPrompt: 'Can you name every note before hearing it?',
@@ -1242,7 +1242,7 @@ export const L1_UNITS: CurriculumUnit[] = [
   {
     id: 'u2',
     levelId: 'l1',
-    title: 'Rhythm and Meter',
+    title: 'Rhythm and Metre',
     description: 'Note values, rests, dots, ties, and simple time signatures',
     icon: 'scales',
     modules: [l1u2m1, l1u2m2],
@@ -1251,7 +1251,7 @@ export const L1_UNITS: CurriculumUnit[] = [
         'Know the note-value hierarchy from whole notes to sixteenth notes',
         'Understand dots and ties as duration modifiers',
         'Read simple time signatures: 2/4, 3/4, 4/4',
-        'Feel duple, triple, and quadruple meter',
+        'Feel duple, triple, and quadruple metre',
       ],
       bridgeText:
         "You understand both pitch and rhythm — the two dimensions of music notation. Now you'll combine them into scales, intervals, and your first chords.",
@@ -1284,7 +1284,7 @@ export const L1_UNITS: CurriculumUnit[] = [
       journeySummary: [
         'The staff, clefs, and how position maps to pitch',
         'Half steps, whole steps, sharps, flats, and all 12 chromatic notes',
-        'Note values, rests, and how beats group into meter',
+        'Note values, rests, and how beats group into metre',
         'The major scale pattern and your first four key signatures',
         'Intervals by number — the distance system of music',
         'Major triads — your first chords, bright and stable',

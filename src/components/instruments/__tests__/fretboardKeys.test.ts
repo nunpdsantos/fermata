@@ -11,8 +11,9 @@ import fretboardSrc from '../Fretboard.tsx?raw';
 import selectorSrc from '../FretboardPositionSelector.tsx?raw';
 import cellSrc from '../FretCell.tsx?raw';
 import stringSrc from '../FretboardString.tsx?raw';
+import chipSrc from '../chordChipLabel.ts?raw';
 
-const SOURCES = fretboardSrc + selectorSrc + cellSrc + stringSrc;
+const SOURCES = fretboardSrc + selectorSrc + cellSrc + stringSrc + chipSrc;
 
 describe('fretboard i18n keys', () => {
   it('every fretboard.* key is used by the fretboard code', () => {

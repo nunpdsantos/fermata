@@ -72,6 +72,7 @@ export const CHORD_FORMULAS: Record<ChordQuality, number[]> = {
   sus2: [0, 2, 7],
   sus4: [0, 5, 7],
   add9: [0, 4, 7, 14], // Root, major 3rd, perfect 5th, major 9th
+  minor_add9: [0, 3, 7, 14], // Root, minor 3rd, perfect 5th, major 9th — Cm(add9)
   // Additional chord types
   minor_major7: [0, 3, 7, 11], // mMaj7 - minor triad + major 7th
   power: [0, 7], // 5 - root + perfect 5th only
@@ -160,6 +161,7 @@ export const CHORD_LETTER_DISTANCES: Record<ChordQuality, number[]> = {
 
   // Add chords
   add9: [0, 2, 4, 1], // 9th wraps to letter distance 1 (same as 2nd)
+  minor_add9: [0, 2, 4, 1],
   add11: [0, 2, 4, 3], // 11th is letter distance 3 (same as 4th)
 
   // Power chord
@@ -226,6 +228,7 @@ export const CHORD_QUALITY_NAMES: Record<ChordQuality, string> = {
   sus2: 'Suspended 2nd',
   sus4: 'Suspended 4th',
   add9: 'Add 9',
+  minor_add9: 'Minor Add 9',
   // Additional chord types
   minor_major7: 'Minor-Major 7th',
   power: 'Power Chord',
@@ -289,6 +292,7 @@ export const CHORD_SYMBOLS: Record<ChordQuality, string> = {
   sus2: 'sus2',
   sus4: 'sus4',
   add9: 'add9',
+  minor_add9: 'm(add9)',
   // Additional chord types
   minor_major7: 'mMaj7',
   power: '5',

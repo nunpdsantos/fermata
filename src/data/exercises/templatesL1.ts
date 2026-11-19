@@ -19,7 +19,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'note_id',
         promptTemplate: 'Identify the note shown on or just around the treble staff.',
         hintTemplate: 'Use the treble clef line/space positions: lines are E-G-B-D-F, spaces are F-A-C-E.',
-        nudgeTemplate: 'Start from the line the treble clef curls around, which holds the note the clef centers on. Count up or down from there, one letter for each line or space, until you reach the note.',
+        nudgeTemplate: 'Start from the line the treble clef curls around, which holds the note the clef centres on. Count up or down from there, one letter for each line or space, until you reach the note.',
         params: {
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           accidentals: ['', '', '', '', '', '', ''],

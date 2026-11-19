@@ -639,7 +639,7 @@ const curriculumL3: CurriculumLevelOverlay = {
         {
           title: 'Dos métodos de transposición',
           explanation:
-            'El método del intervalo: determina el intervalo entre la tonalidad original y la tonalidad de destino, después desplaza cada nota por ese mismo intervalo. De C mayor a Eb mayor es una 3.ª menor ascendente, por lo tanto cada nota sube una 3.ª menor. El método de la armadura de clave: cambia la armadura de clave a la tonalidad de destino y ajusta cualquier alteración. Ambos producen el mismo resultado; el método del intervalo es más fiable para pasajes cortos.',
+            'El método del intervalo: determina el intervalo entre la tonalidad original y la tonalidad de destino, después desplaza cada nota por ese mismo intervalo. De C mayor a Eb mayor es una 3.ª menor ascendente, por lo tanto cada nota sube una 3.ª menor. El método de la armadura de clave: escribe la armadura de clave de la tonalidad de destino y después coloca cada nota en el mismo grado de la escala en la nueva tonalidad (el 1.er grado en el nuevo 1.º, el 2.º en el nuevo 2.º, y así sucesivamente). C–D–E en C mayor, grados 1–2–3, se convierte en G–A–B en G mayor. Una nota con alteración se desplaza de la misma forma y conserva su cambio: F# en C mayor, un 4.º grado elevado, se convierte en C# en G mayor. Ambos producen el mismo resultado; el método del intervalo es más fiable para pasajes cortos.',
           tryThisLabel: 'Observa Eb mayor — C mayor transpuesto una 3.ª menor arriba',
         },
         {

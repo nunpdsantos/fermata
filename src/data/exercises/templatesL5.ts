@@ -33,7 +33,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about V/V is true?',
-        hintTemplate: 'V/V tonicizes the dominant chord. It contains a chromatic alteration (raised 4th scale degree) and resolves to V.',
+        hintTemplate: 'V/V tonicises the dominant chord. It contains a chromatic alteration (raised 4th scale degree) and resolves to V.',
         params: {
           choiceSets: [
             [
@@ -62,7 +62,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'chord_build',
         promptTemplate: 'Build the {root} dominant 7th chord (a very common form of a secondary dominant).',
-        hintTemplate: 'A secondary dominant is a major triad or dominant 7th built a perfect 5th above the chord it tonicizes. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicizing D minor.',
+        hintTemplate: 'A secondary dominant is a major triad or dominant 7th built a perfect 5th above the chord it tonicises. Here just build {root}7: root + major 3rd + perfect 5th + minor 7th. For example, A7 (A-C#-E-G) is V7/ii in C major, tonicising D minor.',
         params: {
           roots: ['C', 'G', 'D', 'F', 'A'],
           accidentals: ['', '', '', '', ''],
@@ -142,18 +142,18 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about tonicization and modulation is true?',
-        hintTemplate: 'Tonicization is a usually brief emphasis on a non-tonic chord, often just a secondary dominant and its target. Modulation is a more lasting shift to a new key, confirmed by a cadence in that key.',
+        promptTemplate: 'Which statement about tonicisation and modulation is true?',
+        hintTemplate: 'Tonicisation is a usually brief emphasis on a non-tonic chord, often just a secondary dominant and its target. Modulation is a more lasting shift to a new key, confirmed by a cadence in that key.',
         params: {
           choiceSets: [
             [
-          { label: "Tonicization briefly stresses a chord; modulation confirms a new key with a cadence", correct: true },
-          { label: "Tonicization confirms a new key with a cadence; modulation briefly stresses a chord", correct: false },
-          { label: "Tonicization and modulation both confirm a new key with a cadence", correct: false },
-          { label: "Tonicization and modulation both briefly stress a chord without confirming a new key", correct: false },
+          { label: "Tonicisation briefly stresses a chord; modulation confirms a new key with a cadence", correct: true },
+          { label: "Tonicisation confirms a new key with a cadence; modulation briefly stresses a chord", correct: false },
+          { label: "Tonicisation and modulation both confirm a new key with a cadence", correct: false },
+          { label: "Tonicisation and modulation both briefly stress a chord without confirming a new key", correct: false },
         ],
             [
-          { label: "A single secondary dominant and its target is a tonicization", correct: true },
+          { label: "A single secondary dominant and its target is a tonicisation", correct: true },
           { label: 'A single secondary dominant and its target is a modulation', correct: false },
           { label: 'A single secondary dominant and its target is a deceptive cadence', correct: false },
           { label: 'A single secondary dominant and its target is a plagal cadence', correct: false },
@@ -162,7 +162,7 @@ const templates: ModuleTemplateConfig[] = [
           { label: "A modulation is confirmed when the music cadences in the new key", correct: true },
           { label: "A modulation is confirmed when the music cadences in the original key", correct: false },
           { label: 'A modulation is confirmed when the music returns to the original tonic without a cadence in the new key', correct: false },
-          { label: 'A modulation is confirmed when the music emphasizes a chord briefly without a cadence in the new key', correct: false },
+          { label: 'A modulation is confirmed when the music emphasises a chord briefly without a cadence in the new key', correct: false },
         ],
           ],
         },
@@ -178,7 +178,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about chains of secondary dominants is true?',
-        hintTemplate: 'A dominant chain links secondary dominants: e.g., V7/vi → V7/ii → V7/V → V7 → I. Each dominant resolves to the next, creating chromatic motion toward the tonic.',
+        hintTemplate: 'A dominant chain links secondary dominants: e.g., V7/vi → V7/ii → V7/V → V7 → I. Each dominant resolves to the next, creating chromatic motion towards the tonic.',
         params: {
           choiceSets: [
             [
@@ -300,10 +300,10 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-          { label: "At the start of a fresh phrase, the tonal center switches without a common chord connecting the keys", correct: true },
-          { label: 'At the start of a fresh phrase, the tonal center switches through a common chord connecting the keys', correct: false },
-          { label: 'At the start of a fresh phrase, the tonal center switches gradually through a prepared dominant of the new key', correct: false },
-          { label: 'At the start of a fresh phrase, a chord is briefly tonicized while the original key remains established', correct: false },
+          { label: "At the start of a fresh phrase, the tonal centre switches without a common chord connecting the keys", correct: true },
+          { label: 'At the start of a fresh phrase, the tonal centre switches through a common chord connecting the keys', correct: false },
+          { label: 'At the start of a fresh phrase, the tonal centre switches gradually through a prepared dominant of the new key', correct: false },
+          { label: 'At the start of a fresh phrase, a chord is briefly tonicised while the original key remains established', correct: false },
         ],
             [
               { label: 'The "truck driver" modulation jumps up a half or whole step for a lift', correct: true },
@@ -380,7 +380,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about chords borrowed from the parallel minor is true?',
-        hintTemplate: 'Common borrowed chords in major: iv (minor iv), bVI (flat-six major), bVII (flat-seven major), bIII. They add a darker color to a major key.',
+        hintTemplate: 'Common borrowed chords in major: iv (minor iv), bVI (flat-six major), bVII (flat-seven major), bIII. They add a darker colour to a major key.',
         params: {
           choiceSets: [
             [
@@ -468,8 +468,8 @@ const templates: ModuleTemplateConfig[] = [
           { label: 'ABACABA is a seven-part through-composed form', correct: false },
         ],
             [
-              { label: 'Each variation keeps the theme recognizable while changing other elements', correct: true },
-              { label: 'Each variation keeps the theme recognizable by repeating every musical element unchanged', correct: false },
+              { label: 'Each variation keeps the theme recognisable while changing other elements', correct: true },
+              { label: 'Each variation keeps the theme recognisable by repeating every musical element unchanged', correct: false },
               { label: 'Each variation replaces the theme with unrelated material while changing other elements', correct: false },
               { label: 'Each variation replaces the theme with unrelated material while keeping the other elements unchanged', correct: false },
             ],

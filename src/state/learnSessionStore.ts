@@ -30,6 +30,7 @@ import { exerciseFingerprint } from '../data/exercises/exerciseFingerprint';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { MODULE_INDEX } from '../data/moduleIndex';
 import { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION } from './learnSessionPersistence';
+import { tabSafeStorage, type TabStore } from './tabSafe';
 
 export { isFresh, LEARN_SESSION_KEY, LEARN_SESSION_VERSION, LEARN_SESSION_TTL_MS } from './learnSessionPersistence';
 
@@ -161,6 +162,25 @@ export function isValidLearnSession(v: unknown): v is { screen: SavedScreen | nu
 
 const EMPTY = { screen: null, check: null };
 
+/**
+ * Two tabs, one saved place (A1): a tab whose check moved on saves its place
+ * and check together (a reload there continues it); a tab that only opened
+ * another lesson saves that lesson and leaves the other tab's check saved.
+ * A tab that ENDS its check or leaves its lesson (second fix pass,
+ * 2026-11-19) ends only its own: when the save holds a different one
+ * (another lesson, another run), saved since by another tab, it stays.
+ */
+type Slot = { moduleId?: unknown; type?: unknown; run?: { order?: unknown } } | null | undefined;
+type Saved = { screen?: Slot; check?: Slot } | undefined;
+const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+/** This tab emptied the slot, and the save holds another tab's different one. */
+const other = (b: Slot, m: Slot, t: Slot) => !m && !!t && !same([b?.moduleId, b?.type, b?.run?.order], [t.moduleId, t.type, t.run?.order]);
+export function learnSessionMerge(base: unknown, mine: unknown, theirs: unknown): unknown {
+  const [b, m, t] = [base, mine, theirs] as Saved[];
+  if (!same(b?.check, m?.check) && !other(b?.check, m?.check, t?.check)) return m;
+  return { screen: same(b?.screen, m?.screen) || other(b?.screen, m?.screen, t?.screen) ? t?.screen ?? null : m?.screen ?? null, check: t?.check ?? null };
+}
+
 export const useLearnSessionStore = create<LearnSessionState>()(
   persist(
     (set) => ({
@@ -172,7 +192,7 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     {
       name: LEARN_SESSION_KEY,
       version: LEARN_SESSION_VERSION,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, (): TabStore => useLearnSessionStore, learnSessionMerge, isValidLearnSession)),
       partialize: (s) => ({ screen: s.screen, check: s.check }),
       // No older format exists; anything from another version starts empty.
       migrate: (persisted, version) => (version === LEARN_SESSION_VERSION && isValidLearnSession(persisted) ? persisted : EMPTY) as LearnSessionState,
@@ -183,6 +203,7 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     },
   ),
 );
+
 
 // ─── Freshness ──────────────────────────────────────────────────────────────
 

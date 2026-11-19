@@ -20,11 +20,12 @@ import { ChordChip } from './ChordChip';
 import { AnotherChordSheet } from './AnotherChordSheet';
 import { PresetList, PresetsSheet } from './PresetsSheet';
 import {
-  addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetSymbols, readChords,
+  addChord, capoIdeas, capoShapes, keyChords, keyLine, moveBy, moveChord, panelKeyFor, presetKeyFor, presetSymbols, readChords,
   readableSymbols, removeChord, scaleForKey,
 } from './progressionModel';
 import { chordList, chordName, keyLabel, keyLineSentences } from './progressionText';
 import { isLooping, retimeLoop, startLoop, stopLoop, useLoopState } from './loopController';
+import '../../../i18n/exploreTools';
 
 /** Tempo steps of the − / + buttons. */
 export const BPM_STEP = 5;
@@ -63,17 +64,26 @@ export default function ProgressionPanel() {
   const { key, exact } = useMemo(() => panelKeyFor(root, scale), [root, scale]);
   // The symbols that read: the chips, and the list every chip action edits (same indexes).
   const symbols = useMemo(() => readableSymbols(saved.chords), [saved.chords]);
+  // A common progression shown in another key (the other mode's, on the
+  // relative key: "ii–V–I … in A♭ major" from F minor) is NUMBERED in that
+  // key while the list is its chords; Explore's own key, scale, chord and
+  // comparison stay the learner's until they take "Switch to" (audit
+  // 2026-11-18 A7, fix pass item 3: moving Explore there replaced them
+  // silently).
+  const presetKey = useMemo(() => presetKeyFor(symbols, key), [symbols, key]);
+  const countKey = presetKey ?? key;
   const parsed = useMemo(() => readChords(symbols), [symbols]);
-  const infos = useMemo(() => parsed.map((c) => chordInKey(c, key)), [parsed, key]);
+  const infos = useMemo(() => parsed.map((c) => chordInKey(c, countKey)), [parsed, countKey]);
   // The chords as read in the key (C♯ typed in D♭ major is D♭): what the
   // chips show, the loop plays and the instrument lights.
   const chords = useMemo(() => infos.map((i) => i.chord), [infos]);
-  const line = useMemo(() => keyLine(chords, key), [chords, key]);
+  const line = useMemo(() => keyLine(chords, countKey), [chords, countKey]);
   const sentences = line ? keyLineSentences(line, chords, t, lang) : null;
   const own = useMemo(() => keyChords(key), [key]);
   const full = symbols.length >= MAX_PROGRESSION_CHORDS;
   const ideas = useMemo(() => (guitar && standardTuning ? capoIdeas(chords, key) : []), [guitar, standardTuning, chords, key]);
   const keyText = keyLabel(key, t);
+  const countText = keyLabel(countKey, t);
 
   // Leaving the panel (closed, view changed) stops the loop.
   useEffect(() => () => stopLoop('closed'), []);
@@ -184,14 +194,16 @@ export default function ProgressionPanel() {
     );
   }
 
-  const capoChoices = guitar && standardTuning ? [
+  // The ideas, and only the ideas (fix pass, item 4: the learner's own capo
+  // was added to this group when it was none — "Fret 1: E, A, B" under "Capo
+  // ideas, for shapes with open strings"). A capo that is no idea is named
+  // apart, by the "Capo on fret N: play …" line, and "No capo" takes it off.
+  const capoChoices = guitar && standardTuning && ideas.length > 0 ? [
     { value: 0, label: t('progression.noCapo') },
     // Each different shape once: the chip stays short (the line names them all, in order).
     ...ideas.map((o) => ({ value: o.fret, label: t('progression.capoIdea', { fret: o.fret, shapes: chordList(distinctChords(o.shapes.map((s) => s.shape))) }) })),
-    ...(capo > 0 && !ideas.some((o) => o.fret === capo)
-      ? [{ value: capo, label: t('progression.capoIdea', { fret: capo, shapes: chordList(distinctChords(capoShapes(chords, key, capo))) }) }]
-      : []),
   ] : [];
+  const capoIsIdea = ideas.some((o) => o.fret === capo);
 
   const clear = (
     <Button variant="quiet" className="prog-clear" onClick={() => { stopLoop('user'); setSymbols([]); setFocusChip(0); }} data-testid="progression-clear">{t('progression.clear')}</Button>
@@ -212,7 +224,7 @@ export default function ProgressionPanel() {
               numeral={info.numeral}
               outside={outside}
               playing={playing && loop.index === i}
-              label={t(outside ? 'progression.chipOutside' : 'progression.chip', { chord: name, numeral: info.numeral, key: keyText, n: i + 1, total: infos.length })}
+              label={t(outside ? 'progression.chipOutside' : 'progression.chip', { chord: name, numeral: info.numeral, key: countText, n: i + 1, total: infos.length })}
               menuLabel={t('progression.chipMenu', { chord: name })}
               onRef={(el) => { chipRefs.current[i] = el; }}
               actions={[
@@ -224,18 +236,23 @@ export default function ProgressionPanel() {
           );
         })}
       </ol>
-      {outsideAny && <p className="text-caption prog-dim prog-legend"><Term id="outOfKey">{t('progression.outsideLegend', { key: keyText })}</Term></p>}
+      {outsideAny && <p className="text-caption prog-dim prog-legend"><Term id="outOfKey">{t('progression.outsideLegend', { key: countText })}</Term></p>}
       </div>
 
       {addRow}
 
       <div className="prog-line" data-testid="progression-key-line">
         {sentences && <p className="text-ui" data-testid="progression-fit">{sentences.current}</p>}
-        {!exact && <p className="text-caption prog-dim" data-testid="progression-key-note">{t('progression.keyNote', { scale: scaleText, key: keyText })}</p>}
+        {presetKey ? (
+          <div className="prog-better" data-testid="progression-preset-key">
+            <p className="text-caption prog-dim">{t('exploreTools.presetCounted', { key: countText })}</p>
+            <Button variant="link" onClick={() => switchTo(presetKey)}>{t('progression.switchTo', { key: countText })}</Button>
+          </div>
+        ) : !exact && <p className="text-caption prog-dim" data-testid="progression-key-note">{t('progression.keyNote', { scale: scaleText, key: keyText })}</p>}
         {line?.better && sentences?.better && (
           <div className="prog-better" data-testid="progression-better">
             <p className="text-ui">{sentences.better}</p>
-            {line.better.keys.filter((k) => !sameKeyPc(k, key)).map((k) => (
+            {line.better.keys.filter((k) => !sameKeyPc(k, countKey)).map((k) => (
               <Button key={`${k.root.natural}${k.root.accidental}${k.mode}`} variant="link" onClick={() => switchTo(k)}>
                 {t('progression.switchTo', { key: keyLabel(k, t) })}
               </Button>
@@ -277,18 +294,25 @@ export default function ProgressionPanel() {
               <p className="text-caption prog-dim" data-testid="progression-capo-standard" {...termAttr('capo')}>{t('progression.capoStandardOnly')}</p>
               {capo > 0 && <Button variant="quiet" onClick={() => setCapoFret(0)}>{t('progression.noCapo')}</Button>}
             </div>
-          ) : capoChoices.length > 1 ? (
-            <div className="prog-capo-ideas">
-              {/* With a capo on, the row says which shapes to play; else what the ideas are. */}
-              {capo > 0
-                ? <span className="text-ui prog-capo-now" data-testid="progression-capo-now" {...termAttr('capo')}>{t('progression.capoNow', { fret: capo, shapes: chordList(capoShapes(chords, key, capo)) })}</span>
-                : <span className="prog-label" {...termAttr('capo')}>{t('progression.capoIdeas')}</span>}
-              <ChipGroup label={t('progression.capoIdeas')} value={capo} onChange={(f) => setCapoFret(Number(f))} options={capoChoices} />
-            </div>
           ) : (
-            <p className="text-caption prog-dim" data-testid="progression-capo-none">
-              {t(capoShapes(chords, key, 0).every(hasOpenGrip) ? 'progression.capoAllOpen' : 'progression.capoNoIdea')}
-            </p>
+            <div className="prog-capo-ideas">
+              {/* With a capo on, the row first says which shapes to play. */}
+              {capo > 0 && <span className="text-ui prog-capo-now" data-testid="progression-capo-now" {...termAttr('capo')}>{t('progression.capoNow', { fret: capo, shapes: chordList(capoShapes(chords, key, capo)) })}</span>}
+              {capoChoices.length > 0 ? (
+                <>
+                  {/* An idea the learner took is the checked chip; a capo of their own is no idea, so the label says what the chips are. */}
+                  {(capo === 0 || !capoIsIdea) && <span className="prog-label" {...termAttr('capo')}>{t('progression.capoIdeas')}</span>}
+                  <ChipGroup label={t('progression.capoIdeas')} value={capo} onChange={(f) => setCapoFret(Number(f))} options={capoChoices} />
+                </>
+              ) : (
+                <>
+                  <p className="text-caption prog-dim" data-testid="progression-capo-none">
+                    {t(capoShapes(chords, key, 0).every(hasOpenGrip) ? 'progression.capoAllOpen' : 'progression.capoNoIdea')}
+                  </p>
+                  {capo > 0 && <Button variant="quiet" onClick={() => setCapoFret(0)}>{t('progression.noCapo')}</Button>}
+                </>
+              )}
+            </div>
           )}
         </div>
         {clear}

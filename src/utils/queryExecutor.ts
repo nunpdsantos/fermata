@@ -20,6 +20,7 @@ import { useAppStore } from '../state/store';
 import { chordFromParsed } from '../core/utils/chordParser';
 import { resolveTheoryQuery, type ResolvedTheoryQuery } from './theoryQuery';
 import { parseChordListQuery } from './queryExecutorChords';
+import { selectChordAsWritten } from './chordSelection';
 import { requestProgression } from '../state/progressionRequest';
 
 export type TheoryQueryResult = 'chord' | 'scale' | 'key' | 'circle' | 'progression' | 'fallback';
@@ -29,8 +30,12 @@ export function applyResolvedTheoryQuery(resolved: ResolvedTheoryQuery): Exclude
   const store = useAppStore.getState();
   switch (resolved.kind) {
     case 'key':
+      // The root AND the scale together (audit A2, 2026-11-18): "key of G
+      // major" from A minor used to keep the minor scale. A key named with no
+      // quality is major ("key of G" = G major, as the lessons use it), and a
+      // minor key is the natural minor (the In key convention).
       store.setKey(resolved.root);
-      if (resolved.minor) store.setScale('natural_minor');
+      store.setScale(resolved.minor ? 'natural_minor' : 'major');
       return 'key';
     case 'circle':
       return 'circle'; // Explore renders it; nothing to select
@@ -42,7 +47,8 @@ export function applyResolvedTheoryQuery(resolved: ResolvedTheoryQuery): Exclude
       store.setScale(resolved.scaleType);
       return 'scale';
     case 'chord':
-      store.setSelectedChord(chordFromParsed(resolved.parsed));
+      // C/E opens as C major, first inversion (utils/chordSelection.ts).
+      selectChordAsWritten(chordFromParsed(resolved.parsed));
       return 'chord';
   }
 }

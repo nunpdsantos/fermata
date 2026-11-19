@@ -181,7 +181,10 @@ describe('the button on the dock', () => {
 describe('it saves exactly what Settings saves', () => {
   const T = new Date('2026-11-14T12:00:00Z');
   const start = () => {
+    // A fresh browser: storage emptied and read again (src/test/setup.ts). Since A1 (2026-11-18) a save
+    // emptied under a store that did not read it again counts as another tab's reset: old memory is not written back.
     localStorage.clear();
+    void useAppStore.persist.rehydrate();
     useAppStore.setState({ neckNutSide: 'right', neckTopString: 'low', guitarScalePosition: 5, preferencesUpdatedAt: 1793700000000 });
   };
 

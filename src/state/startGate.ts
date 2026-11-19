@@ -16,10 +16,29 @@
  *  - While a tour is requested (`useDemoRequest()` not null) it is hidden, so
  *    the app shows behind the tour; when the request clears and no door was
  *    chosen, it is back.
+ *  - A door chosen on a public page (`?start=`) and a `?view=` asked for
+ *    while it is owed (audit 2026-11-18, A19 and Q13): `startLinkPending`
+ *    below, and state/startLink.ts.
  */
 import { useWelcomeStore } from './welcomeGate.ts';
 import { openedFromShareLink } from './shareParams.ts';
 import { useDemoRequest } from './demoRequest.ts';
+
+/** The address parameter that carries a door chosen on a public page (audit 2026-11-18, A19: state/startLink.ts). */
+export const START_PARAM = 'start';
+
+/**
+ * Boot, once, after `applyShareLinkRule` (main.tsx): does this address need
+ * `state/startLink.ts` — a door from a public page (`?start=`, read on any
+ * visit so the address bar loses it), or a `?view=` asked for while the start
+ * screen is owed (Q13)? Then main.tsx loads it and renders once it has run.
+ * Everything else about those links lives in that lazy module, out of the
+ * entry bundle.
+ */
+export function startLinkPending(search: string): boolean {
+  const params = new URLSearchParams(search);
+  return params.has(START_PARAM) || (useWelcomeStore.getState().open && params.has('view'));
+}
 
 /** Boot, once: a shared link in the boot address keeps the start screen away for this visit. */
 export function applyShareLinkRule(): boolean {

@@ -541,8 +541,10 @@ for (const v of [PHONE, LAPTOP]) {
     expect(seen.chordsCard.filter((t) => t !== 'Progressão')).toEqual(main.chordsCard);
     expect(seen.chordsCard.filter((t) => t === 'Progressão')).toHaveLength(1);
     expect(seen.chordsCardHeight).toBe(main.chordsCardHeight);
-    // The whole of Explore: the same words, plus that one.
-    expect(seen.explore.filter((t) => t !== 'Progressão')).toEqual(main.explore);
+    // The whole of Explore: the same words, plus that one — and, first, the
+    // view's one top heading, read by screen readers and not drawn (audit
+    // 2026-11-18, Q14: Explore had no h1; e2e/explore-tools-audit.spec.ts).
+    expect(seen.explore.filter((t) => t !== 'Progressão')).toEqual(['Explorar', ...main.explore]);
     // Learn's overview: unchanged above the level grid (same words, every button where it was), the two track cards below it.
     expect(seen.learn).toEqual(main.learn);
     type Rect = [number, number, string];

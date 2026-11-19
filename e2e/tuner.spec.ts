@@ -375,7 +375,7 @@ test.describe('answering a check by playing', () => {
     await page.keyboard.press('Control+k');
     const search = page.getByRole('dialog', { name: 'Quick search' });
     await search.locator('input').fill('Major Triads');
-    await search.getByRole('button', { name: /^Your First Chords — Major Triads/ }).first().click();
+    await search.getByRole('option', { name: /^Your First Chords — Major Triads/ }).first().click();
     await expect(page.getByRole('heading', { level: 1, name: 'Your First Chords — Major Triads' })).toBeVisible({ timeout: 15_000 });
     const start = page.getByRole('button', { name: 'Start the check' });
     await start.scrollIntoViewIfNeeded();
@@ -439,7 +439,7 @@ test.describe('answering a check by playing', () => {
     await page.keyboard.press('Control+k');
     const search = page.getByRole('dialog', { name: 'Quick search' });
     await search.locator('input').fill('Major Triads');
-    await search.getByRole('button', { name: /^Your First Chords — Major Triads/ }).first().click();
+    await search.getByRole('option', { name: /^Your First Chords — Major Triads/ }).first().click();
     await page.getByRole('button', { name: 'Start the check' }).click();
     const checkAnswer = page.getByRole('button', { name: 'Check Answer' });
     for (let i = 0; i < 12 && !(await checkAnswer.count()); i++) await answerChoice(page);

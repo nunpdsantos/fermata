@@ -88,11 +88,11 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "D major chord" — este es V/V en C mayor. El F# es la única nota cromática. Funciona como sensible de G.',
+            'Pulsa "D major chord" — este es V/V en C mayor. El F# es la única nota cromática. Funciona como sensible de G.',
         },
         {
           instruction:
-            'Escribe "D7" y después "G major chord" — escucha cómo D7 crea una fuerte atracción hacia G. El trítono F#–C dentro de D7 (una 5.ª disminuida) se contrae hacia dentro, hasta la 3.ª mayor G–B.',
+            'Pulsa "D7" y después "G major chord" — escucha cómo D7 crea una fuerte atracción hacia G. El trítono F#–C dentro de D7 (una 5.ª disminuida) se contrae hacia dentro, hasta la 3.ª mayor G–B.',
         },
         {
           instruction:
@@ -133,15 +133,15 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "A7" — este es V7/ii en C mayor. El C# funciona como sensible de D. Ahora escribe "Dm" para escuchar la resolución.',
+            'Pulsa "A7" — este es V7/ii en C mayor. El C# funciona como sensible de D. Ahora pulsa "Dm" para escuchar la resolución.',
         },
         {
           instruction:
-            'Escribe "E7" — este es V7/vi en C mayor. El G# tira hacia A. Compara con "Em" (iii diatónico) — E7 tiene mucha más tensión por el G# cromático.',
+            'Pulsa "E7" — este es V7/vi en C mayor. El G# tira hacia A. Compara con "Em" (iii diatónico) — E7 tiene mucha más tensión por el G# cromático.',
         },
         {
           instruction:
-            'Escribe "C7" — este es V7/IV en C mayor. El Bb es la pista de que no está funcionando como acorde de tónica. Ahora escribe "F major chord" para escuchar la resolución.',
+            'Pulsa "C7" — este es V7/IV en C mayor. El Bb es la pista de que no está funcionando como acorde de tónica. Ahora pulsa "F major chord" para escuchar la resolución.',
         },
       ],
     },
@@ -178,11 +178,11 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "F#dim" y después "G major chord" — el F# tira un semitono arriba hacia G. Compara con "D7" resolviendo a "G" — ambos apuntan a G pero con diferente movimiento en el bajo.',
+            'Pulsa "F#dim" y después "G major chord" — el F# tira un semitono arriba hacia G. Compara con "D7" resolviendo a "G" — ambos apuntan a G pero con diferente movimiento en el bajo.',
         },
         {
           instruction:
-            'Escribe "G#dim7" — este es vii°7/vi en C mayor. El G# es la sensible de A. Ahora escribe "Am" para escuchar la resolución.',
+            'Pulsa "G#dim7" — este es vii°7/vi en C mayor. El G# es la sensible de A. Ahora pulsa "Am" para escuchar la resolución.',
         },
         {
           instruction:
@@ -272,7 +272,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "D7", después "G7", después "Cmaj7" — esta es una cadena de dominantes. D7 toniciza G, G7 toniciza C. La resolución final a Cmaj7 confirma C como la verdadera tónica.',
+            'Pulsa "D7", después "G7", después "Cmaj7" — esta es una cadena de dominantes. D7 toniciza G, G7 toniciza C. La resolución final a Cmaj7 confirma C como la verdadera tónica.',
         },
         {
           instruction:
@@ -403,7 +403,7 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C major scale" y después "Db major scale" — imagina una canción que termina una frase en C y comienza la siguiente en Db. Eso es una modulación directa — medio tono arriba, sin pivote necesario.',
+            'Pulsa "C major scale" y después "Db major scale" — imagina una canción que termina una frase en C y comienza la siguiente en Db. Eso es una modulación directa — medio tono arriba, sin pivote necesario.',
         },
         {
           instruction:
@@ -448,7 +448,7 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "Ab major chord" en el contexto de C mayor — Ab contiene Ab, C, Eb. El Ab y el Eb están prestados de C menor. Este es bVI, el acorde prestado más cinematográfico.',
+            'Pulsa "Ab major chord" en el contexto de C mayor — Ab contiene Ab, C, Eb. El Ab y el Eb están prestados de C menor. Este es bVI, el acorde prestado más cinematográfico.',
         },
         {
           instruction:
@@ -456,7 +456,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Bb major chord" — este es bVII en C mayor, prestado de C menor. Aparece por todas partes en el rock y el pop. Ahora escribe "C major chord" para escuchar la resolución bVII a I.',
+            'Pulsa "Bb major chord" — este es bVII en C mayor, prestado de C menor. Aparece por todas partes en el rock y el pop. Ahora pulsa "C major chord" para escuchar la resolución bVII a I.',
         },
       ],
     },
@@ -493,7 +493,7 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "C minor scale" para establecer el contexto menor. Ahora escribe "C major chord" — la tercera elevada (E natural en vez de Eb) es la tercera de Picardía. Un final brillante para una tonalidad oscura.',
+            'Pulsa "C minor scale" para establecer el contexto menor. Ahora pulsa "C major chord" — la tercera elevada (E natural en vez de Eb) es la tercera de Picardía. Un final brillante para una tonalidad oscura.',
         },
         {
           instruction:
@@ -591,7 +591,7 @@ const curriculumL5: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "C major scale" y después "C minor scale" — cambiar de mayor a menor es una de las técnicas de variación más habituales (variación modal). Misma tónica, carácter completamente diferente.',
+            'Pulsa "C major scale" y después "C minor scale" — cambiar de mayor a menor es una de las técnicas de variación más habituales (variación modal). Misma tónica, carácter completamente diferente.',
         },
       ],
     },
@@ -628,7 +628,7 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca una escala en el piano — eso es textura monofónica. Ahora toca un acorde bajo una nota melódica — eso es textura homofónica. La distinción es si el acompañamiento tiene interés melódico independiente.',
+            'Toca una escala — eso es textura monofónica. Ahora toca un acorde bajo una nota melódica — eso es textura homofónica. La distinción es si el acompañamiento tiene interés melódico independiente.',
         },
         {
           instruction:
@@ -673,11 +673,11 @@ const curriculumL5: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "Dm7" y encuentra la 3.ª (F) y la 7.ª (C). Ahora escribe "G7" — la 3.ª es B y la 7.ª es F. Observa: la 7.ª de Dm7 (C) descendió a B (3.ª de G7), y la 3.ª de Dm7 (F) se mantuvo como 7.ª de G7.',
+            'Pulsa "Dm7" y encuentra la 3.ª (F) y la 7.ª (C). Ahora pulsa "G7" — la 3.ª es B y la 7.ª es F. Observa: la 7.ª de Dm7 (C) descendió a B (3.ª de G7), y la 3.ª de Dm7 (F) se mantuvo como 7.ª de G7.',
         },
         {
           instruction:
-            'Escribe "G7" y después "Cmaj7" — traza las notas guía: la 3.ª de G7 (B) se convierte en la 7.ª de Cmaj7 (B, nota común). La 7.ª de G7 (F) desciende a la 3.ª de Cmaj7 (E). Cada conexión es por grado o estática.',
+            'Pulsa "G7" y después "Cmaj7" — traza las notas guía: la 3.ª de G7 (B) se convierte en la 7.ª de Cmaj7 (B, nota común). La 7.ª de G7 (F) desciende a la 3.ª de Cmaj7 (E). Cada conexión es por grado o estática.',
         },
         {
           instruction:

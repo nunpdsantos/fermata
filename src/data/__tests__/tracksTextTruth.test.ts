@@ -112,10 +112,10 @@ describe('PT and ES state the notes and numbers the English states', () => {
 
   it('the reader fires on a dropped sharp, a changed note and a changed number', () => {
     const en = noteFacts('B7, with B, D♯, F♯ and A, pulls to E. In D, the A chord holds C♯; fret 4 of the A string.');
-    expect(noteFacts('B7, com B, D, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o trasto 4 da corda A.')).not.toEqual(en);
+    expect(noteFacts('B7, com B, D, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o traste 4 da corda A.')).not.toEqual(en);
     expect(noteFacts('B7, con B, D♯, F♯ y A, tira hacia E. En D, el acorde de A tiene C; el traste 4 de la cuerda A.')).not.toEqual(en);
-    expect(noteFacts('B7, com B, D♯, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o trasto 3 da corda A.')).not.toEqual(en);
-    expect(noteFacts('B7, com B, D♯, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o trasto 4 da corda A.')).toEqual(en);
+    expect(noteFacts('B7, com B, D♯, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o traste 3 da corda A.')).not.toEqual(en);
+    expect(noteFacts('B7, com B, D♯, F♯ e A, puxa para E. Em D, o acorde de A tem C♯; o traste 4 da corda A.')).toEqual(en);
   });
 });
 

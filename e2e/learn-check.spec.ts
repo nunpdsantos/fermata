@@ -58,7 +58,7 @@ async function openLesson(page: Page, title: string) {
   const dialog = page.getByRole('dialog').filter({ has: page.locator('input') });
   await expect(dialog).toBeVisible();
   await dialog.locator('input').fill(title);
-  await dialog.getByRole('button', { name: new RegExp(`^${title}`) }).first().click();
+  await dialog.getByRole('option', { name: new RegExp(`^${title}`) }).first().click();
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
 }
 
@@ -93,8 +93,15 @@ for (const v of VIEWPORTS) {
         await expect(rail.locator('[data-section-link="c1"]')).toHaveAttribute('aria-current', 'location', { timeout: 5000 });
       } else {
         await page.getByTestId('section-picker').locator('button[aria-haspopup="dialog"]').click();
-        await page.getByTestId('section-sheet').locator('[data-section-link="c1"]').click();
-        await expect(page.getByTestId('section-picker')).toContainText('2 ·', { timeout: 5000 });
+        // Audit 2026-11-18, Q8: one number per section — the marker carries it, the words are the title alone.
+        const second = page.getByTestId('section-sheet').locator('[data-section-link="c1"]');
+        const title = (await second.locator('span.min-w-0').textContent())!.trim();
+        expect(title).not.toMatch(/^\d+ · /);
+        await second.click();
+        const picker = page.getByTestId('section-picker').locator('button[aria-haspopup="dialog"]');
+        await expect(picker).toContainText(`3 / `, { timeout: 5000 });
+        await expect(picker).toContainText(title);
+        await expect(picker).not.toContainText(`2 · ${title}`);
       }
 
       // Try This in place: hear it, then show it on the instrument (the dock opens, the view stays Learn).

@@ -13,6 +13,8 @@
  *            left out), at most 16 (wave 2)
  *   bpm    → a whole number 50–200 (only with `prog`)
  *   capo   → a whole number 0–9
+ *   inv    → a whole number 1 … the chord's notes − 1, only beside a valid
+ *            chord (audit A6); 0, absent or anything else: root position
  */
 import type { Chord, Note, NaturalNote, ScaleType } from '../core/types/music.ts';
 import { parseChordSymbol, chordFromParsed } from '../core/utils/chordParser.ts';
@@ -38,6 +40,8 @@ export interface ShareTarget {
   bpm?: number;
   /** The guitar capo fret, 0–9. */
   capo?: number;
+  /** The chord's inversion, 1 … notes − 1 (only with `chord`). */
+  inversion?: number;
 }
 
 const PICKER_SCALES: ReadonlySet<string> = new Set(SCALE_GROUPS.flatMap((g) => g.options));
@@ -173,6 +177,8 @@ export function parseShareLink(
   if (chord) {
     out.chord = chord;
     out.chordSymbol = (chordText as string).trim();
+    const inversion = wholeNumber(raw.inv, 1, chord.notes.length - 1);
+    if (inversion !== null) out.inversion = inversion;
   }
   const inst = parseShareInstrument(raw.inst);
   if (inst) out.inst = inst;

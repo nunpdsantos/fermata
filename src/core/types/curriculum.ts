@@ -36,6 +36,14 @@ export interface CurriculumConcept {
    * an octave lower, on a bass staff, so the two clefs meet at middle C.
    */
   clefs?: boolean;
+  /**
+   * A scale Try This heard and written from the top down: the tonic an octave
+   * up first, the lower tonic last (audit A22, 18 November 2026: the L9
+   * "Descending Large Intervals" lesson). The query stays the scale's own
+   * ('C major scale'), so search, "Show on the piano" and Explore are
+   * unchanged.
+   */
+  descending?: boolean;
   /** Simplified explanation for children's audience mode */
   childDescription?: string;
   /** Simplified query for children's audience mode */

@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 16,
+      "date": "2026-11-19",
+      "critical": false,
+      "notes": {
+        "en": "Open in two tabs, Fermatina no longer overwrites what the other tab saved. Also: clearer search, corrected lessons, playable guitar chords, British spelling.",
+        "pt": "Com a Fermatina aberta em dois separadores, um já não apaga o que o outro guardou. E ainda: pesquisa mais clara, lições corrigidas e o Treino todo em português.",
+        "es": "Con Fermatina abierta en dos pestañas, una ya no borra lo que la otra guardó. Además: búsqueda más clara, lecciones corregidas y la Práctica toda en español."
+      }
+    },
+    {
       "release": 15,
       "date": "2026-11-14",
       "critical": false,

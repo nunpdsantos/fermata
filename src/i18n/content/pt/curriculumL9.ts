@@ -90,11 +90,11 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major scale" e toca no piano. Tenta cantar cada nota à medida que a ouves — corresponde a tua voz à altura. Começa num registo confortável',
+            'Carrega em "C major scale" e toca-a no teu instrumento. Tenta cantar cada nota à medida que a ouves — corresponde a tua voz à altura. Começa num registo confortável',
         },
         {
           instruction:
-            'Toca notas individuais no piano com os olhos fechados — consegues dizer se a segunda nota é mais aguda ou mais grave que a primeira? Começa com saltos amplos, depois estreita até teclas adjacentes',
+            'Toca notas individuais no teu instrumento com os olhos fechados — consegues dizer se a segunda nota é mais aguda ou mais grave que a primeira? Começa com saltos amplos, depois estreita a distância até meio-tom',
         },
         {
           instruction:
@@ -165,7 +165,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com canções: intervalos pequenos',
           explanation:
-            'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você. 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial. Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha. Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
+            'Uma técnica mnemónica comprovada: associar cada intervalo com o início de uma melodia familiar. 2.ª menor ascendente = tema de Tubarão. 2.ª maior = Parabéns a Você (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). 3.ª menor = Greensleeves. 3.ª maior = When the Saints (oh-when). 4.ª perfeita = Marcha Nupcial de Wagner (Here Comes the Bride). Trítono = The Simpsons (The-Simp). 5.ª perfeita = Brilha Brilha Estrelinha (compara as 2.ª e 3.ª notas; as duas primeiras têm a mesma altura). Estas são rodinhas de treino — o objetivo é internalizar o som de cada intervalo diretamente e depois abandonar a muleta. Começa apenas com intervalos ascendentes, depois acrescenta descendentes quando os ascendentes estiverem sólidos.',
           tryThisLabel:
             'Toca C maior — ouve cada intervalo a partir da fundamental',
         },
@@ -186,15 +186,15 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" — o intervalo de C a E é uma 3.ª maior, e de C a G é uma 5.ª perfeita. Canta os dois intervalos separadamente. Memoriza cada som',
+            'Carrega em "C major chord" — o intervalo de C a E é uma 3.ª maior, e de C a G é uma 5.ª perfeita. Canta os dois intervalos separadamente. Memoriza cada som',
         },
         {
           instruction:
-            'Toca pares de notas no piano a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4P), C-Gb (trítono), C-G (5P). Nomeia cada um antes de verificar',
+            'Toca pares de notas a partir de C: C-Db (2m), C-D (2M), C-Eb (3m), C-E (3M), C-F (4P), C-Gb (trítono), C-G (5P). Nomeia cada um antes de verificar',
         },
         {
           instruction:
-            'Escreve "C7" — encontra o trítono (E a Bb). Este é o intervalo mais instável. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
+            'Carrega em "C7" — encontra o trítono (E a Bb). Este é um dos intervalos mais instáveis. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
         },
       ],
     },
@@ -213,13 +213,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com canções: intervalos amplos',
           explanation:
-            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6m vs. 6M, 7m vs. 7M.',
+            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (as duas primeiras notas do refrão, take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6m vs. 6M, 7m vs. 7M.',
           tryThisLabel: 'Ouve o intervalo de 7.ª maior (C a B)',
         },
         {
           title: 'Intervalos amplos descendentes',
           explanation:
-            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas de "Feelings" (Feel-ings) ou do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
+            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
           tryThisLabel:
             'Toca C maior descendente — ouve os intervalos ao contrário',
         },
@@ -238,7 +238,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Toca C a Ab (6m) e depois C a A (6M) no piano. A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
+            'Toca C a Ab (6m) e depois C a A (6M). A 6.ª menor soa mais sombria e pungente. A 6.ª maior soa mais quente e aberta. Repete a partir de diferentes fundamentais até as conseguires distinguir com fiabilidade',
         },
         {
           instruction:
@@ -281,15 +281,15 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca duas notas simultaneamente no piano: C e E (3M), C e G (5P), C e B (7M). Ouve como se fundem de forma diferente. Consonâncias misturam-se; dissonâncias criam batimentos e aspereza',
+            'Toca duas notas simultaneamente: C e E (3M), C e G (5P), C e B (7M). Ouve como se fundem de forma diferente. Consonâncias misturam-se; dissonâncias criam batimentos e aspereza',
         },
         {
           instruction:
-            'Escreve "Cmaj7" e ouve todos os intervalos harmónicos dentro dele: C-E (3M), C-G (5P), C-B (7M), E-G (3m), E-B (5P), G-B (3M). Um único acorde contém muitos intervalos simultâneos',
+            'Carrega em "Cmaj7" e ouve todos os intervalos harmónicos dentro dele: C-E (3M), C-G (5P), C-B (7M), E-G (3m), E-B (5P), G-B (3M). Um único acorde contém muitos intervalos simultâneos',
         },
         {
           instruction:
-            'Toca C3 e D4 no piano (uma 9.ª). Compara com C4 e D4 (uma 2.ª). A 9.ª soa como uma versão mais larga e espaçosa da 2.ª. Este é o princípio dos intervalos compostos em ação',
+            'Toca C3 e D4 (uma 9.ª). Compara com C4 e D4 (uma 2.ª). A 9.ª soa como uma versão mais larga e espaçosa da 2.ª. Este é o princípio dos intervalos compostos em ação',
         },
       ],
     },
@@ -571,7 +571,7 @@ const curriculumL9: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Pede a um amigo que toque 4-5 notas aleatórias da escala de C maior no piano. Tenta cantá-las de volta e depois encontrá-las no teclado. Começa apenas com movimento por graus',
+            'Pede a um amigo que toque 4-5 notas aleatórias da escala de C maior. Tenta cantá-las de volta e depois encontrá-las no teu instrumento. Começa apenas com movimento por graus',
         },
         {
           instruction:
@@ -676,7 +676,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Começa com cadências de dois acordes: toca pares aleatórios de V-I e IV-I em diferentes tonalidades no piano. Consegues dizer que tipo de cadência é antes de verificar? Depois acrescenta cadências interrompidas (V-vi)',
+            'Começa com cadências de dois acordes: toca pares aleatórios de V-I e IV-I em diferentes tonalidades. Consegues dizer que tipo de cadência é antes de verificar? Depois acrescenta cadências interrompidas (V-vi)',
         },
       ],
     },

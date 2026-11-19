@@ -66,6 +66,15 @@ export const answerOf = (state: SheetState, taskId: string): TaskAnswer => state
 export const closingKey = (sheetId: SheetId, q: ClosingId) => `q-${sheetId}-${q}`;
 export const answeredCount = (sheet: SheetText, state: SheetState) => sheet.tasks.filter((t) => !!answerOf(state, t.id).r).length;
 
+/**
+ * Anything to send from this sheet (audit A20): a task's result, a note that
+ * is not blank, or a closing answer that is not blank. A hint opened alone is
+ * not an answer.
+ */
+export const hasAnswers = (sheet: SheetText, sheetId: SheetId, state: SheetState) =>
+  sheet.tasks.some((t) => { const a = answerOf(state, t.id); return !!a.r || !!a.note.trim(); })
+  || sheet.closing.some((q) => !!(state.q[closingKey(sheetId, q)] ?? '').trim());
+
 /** YYYY-MM-DD, in the device's own time zone (the day the tester sent it). */
 export function isoDate(now: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0');

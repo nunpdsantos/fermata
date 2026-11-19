@@ -206,7 +206,7 @@ const templates: ModuleTemplateConfig[] = [
         // The history set has its own question (W4-26).
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the history of German-sixth enharmonic modulation is true?',
-        hintTemplate: 'Composers from Mozart and Schubert onward used the double identity of the German sixth (and of the dominant 7th) to jump to remote keys; it became a hallmark of Romantic harmony.',
+        hintTemplate: 'Composers from Mozart and Schubert onwards used the double identity of the German sixth (and of the dominant 7th) to jump to remote keys; it became a hallmark of Romantic harmony.',
         params: {
           choiceSets: [
             [
@@ -268,14 +268,14 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about the common-tone diminished 7th chord is true?',
-        hintTemplate: 'A CT°7 shares a common tone with the chord it embellishes. It decorates (rather than functions harmonically toward) a major or dominant 7th chord.',
+        hintTemplate: 'A CT°7 shares a common tone with the chord it embellishes. It decorates (rather than functions harmonically towards) a major or dominant 7th chord.',
         params: {
           choiceSets: [
             [
-          { label: "The embellished chord's root is usually a common tone; the dim7 decorates rather than tonicizes it", correct: true },
-          { label: "The embellished chord's root is usually a common tone; the dim7 tonicizes rather than decorates it", correct: false },
-          { label: "The embellished chord's root is usually its leading tone; the dim7 decorates rather than tonicizes it", correct: false },
-          { label: "The embellished chord's root is usually its leading tone; the dim7 tonicizes rather than decorates it", correct: false },
+          { label: "The embellished chord's root is usually a common tone; the dim7 decorates rather than tonicises it", correct: true },
+          { label: "The embellished chord's root is usually a common tone; the dim7 tonicises rather than decorates it", correct: false },
+          { label: "The embellished chord's root is usually its leading tone; the dim7 decorates rather than tonicises it", correct: false },
+          { label: "The embellished chord's root is usually its leading tone; the dim7 tonicises rather than decorates it", correct: false },
         ],
             [
           { label: "One part holds its note as the other three shift a step to dress up the chord", correct: true },
@@ -411,22 +411,22 @@ const templates: ModuleTemplateConfig[] = [
         params: {
           choiceSets: [
             [
-              { label: 'Nonfunctional chord connections mainly favor smooth linear movement and shared pitches', correct: true },
-              { label: 'Nonfunctional chord connections mainly favor parallel tritone motion in every voice', correct: false },
-              { label: 'Nonfunctional chord connections mainly favor wide melodic leaps and abrupt register changes', correct: false },
-              { label: 'Nonfunctional chord connections mainly favor removing shared pitches between successive chords', correct: false },
+              { label: 'Nonfunctional chord connections mainly favour smooth linear movement and shared pitches', correct: true },
+              { label: 'Nonfunctional chord connections mainly favour parallel tritone motion in every voice', correct: false },
+              { label: 'Nonfunctional chord connections mainly favour wide melodic leaps and abrupt register changes', correct: false },
+              { label: 'Nonfunctional chord connections mainly favour removing shared pitches between successive chords', correct: false },
             ],
             [
               { label: 'Chromatic planing moves one chord shape in parallel, keeping its exact quality', correct: true },
               { label: 'Chromatic planing moves one chord shape in parallel, adjusting it to fit the key', correct: false },
-              { label: 'Chromatic planing moves every voice in contrary motion toward the tonic', correct: false },
+              { label: 'Chromatic planing moves every voice in contrary motion towards the tonic', correct: false },
               { label: 'Chromatic planing keeps one chord and changes only its bass note', correct: false },
             ],
             [
           { label: 'Frequent chromatic changes and distant tonal destinations usually weaken the sense of a stable home key', correct: true },
           { label: 'Frequent chromatic changes and distant tonal destinations usually require a faster tempo', correct: false },
           { label: 'Frequent chromatic changes and distant tonal destinations usually clarify a stable home key', correct: false },
-          { label: 'Frequent chromatic changes and distant tonal destinations usually remove rhythmic organization', correct: false },
+          { label: 'Frequent chromatic changes and distant tonal destinations usually remove rhythmic organisation', correct: false },
         ],
           ],
         },
@@ -479,7 +479,7 @@ const templates: ModuleTemplateConfig[] = [
           choiceSets: [
             [
               { label: 'A weak-beat dissonance must be a passing tone, approached and left by step', correct: true },
-              { label: 'A weak-beat dissonance may be a passing tone or a neighbor tone', correct: false },
+              { label: 'A weak-beat dissonance may be a passing tone or a neighbour tone', correct: false },
               { label: 'A strong-beat dissonance is allowed if it then resolves by step', correct: false },
               { label: 'A weak-beat dissonance may be approached or left by a leap of a 3rd or a 4th', correct: false },
             ],
@@ -495,13 +495,13 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about third species (4:1) counterpoint is true?',
-        hintTemplate: 'Third species: four notes against each cantus note. The first is consonant; the others may be passing tones, neighbor tones, a cambiata (step to the dissonance, leap of a 3rd, step back) or a double neighbor.',
+        hintTemplate: 'Third species: four notes against each cantus note. The first is consonant; the others may be passing tones, neighbour tones, a cambiata (step to the dissonance, leap of a 3rd, step back) or a double neighbour.',
         nudgeTemplate: 'Third species sets four notes against each cantus note. Ask which of the four falls on the beat and so must be consonant; for each dissonant figure, trace its path note by note: by step or by leap, and does it come back to where it started?',
         params: {
           choiceSets: [
             [
-          { label: 'The first note of each group of four is consonant; the other notes may be passing or neighbor dissonances', correct: true },
-          { label: 'The first note of each group of four is dissonant; the other notes may be passing or neighbor dissonances', correct: false },
+          { label: 'The first note of each group of four is consonant; the other notes may be passing or neighbour dissonances', correct: true },
+          { label: 'The first note of each group of four is dissonant; the other notes may be passing or neighbour dissonances', correct: false },
           { label: 'The first note of each group of four is consonant; the other notes may be dissonances entered and left by leap', correct: false },
           { label: 'The first note of each group of four is dissonant; the other notes may be dissonances entered and left by leap', correct: false },
         ],
@@ -512,10 +512,10 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'The cambiata steps to a dissonance and steps on in the same direction', correct: false },
             ],
             [
-              { label: "A double neighbor is an upper and a lower neighbor in sequence around one note", correct: true },
-              { label: "A double neighbor is a step to dissonance, a leap of a third in the same direction, then a step back", correct: false },
-              { label: "A double neighbor is a weak-beat passing tone approached and left by step in the same direction", correct: false },
-              { label: "A double neighbor is two consecutive passing tones approached and left by step in the same direction", correct: false },
+              { label: "A double neighbour is an upper and a lower neighbour in sequence around one note", correct: true },
+              { label: "A double neighbour is a step to dissonance, a leap of a third in the same direction, then a step back", correct: false },
+              { label: "A double neighbour is a weak-beat passing tone approached and left by step in the same direction", correct: false },
+              { label: "A double neighbour is two consecutive passing tones approached and left by step in the same direction", correct: false },
             ],
           ],
         },
@@ -659,14 +659,14 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about harmonizing a soprano melody in SATB is true?',
-        hintTemplate: 'Harmonizing a soprano: find the key and the cadence points, choose a bass line and chords that lead to them, fill in alto and tenor by the shortest path, then check for parallels, spacing and doubling.',
+        promptTemplate: 'Which statement about harmonising a soprano melody in SATB is true?',
+        hintTemplate: 'Harmonising a soprano: find the key and the cadence points, choose a bass line and chords that lead to them, fill in alto and tenor by the shortest path, then check for parallels, spacing and doubling.',
         nudgeTemplate: 'Plan the way a composer would: decide where the phrases are heading before filling in the details, and keep the final step for proofreading the result against the part-writing rules.',
         params: {
           choiceSets: [
             [
               { label: "Locate the melody's cadence points, then choose a bass and chords that support them", correct: true },
-              { label: 'Harmonize from the first note and let the chords decide where each phrase ends', correct: false },
+              { label: 'Harmonise from the first note and let the chords decide where each phrase ends', correct: false },
               { label: 'Write the inner voices first, then fit the bass to those voices', correct: false },
               { label: 'Choose a new chord for every melody note, then mark the phrase endings', correct: false },
             ],
@@ -681,15 +681,15 @@ const templates: ModuleTemplateConfig[] = [
       },
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about figured bass realization is true?',
+        promptTemplate: 'Which statement about figured bass realisation is true?',
         hintTemplate: 'Figured bass: no figure = root position (5/3), 6 = first inversion, 6/4 = second inversion, 7 = root-position seventh, 6/5 = first inversion, 4/3 = second inversion, 4/2 = third inversion (7th in the bass).',
         params: {
           choiceSets: [
             [
-              { label: 'A bass note with no figure is realized as a root-position (5/3) chord', correct: true },
-              { label: 'A bass note with no figure is realized as a first-inversion (6/3) chord', correct: false },
+              { label: 'A bass note with no figure is realised as a root-position (5/3) chord', correct: true },
+              { label: 'A bass note with no figure is realised as a first-inversion (6/3) chord', correct: false },
               { label: 'A bass note with no figure is played alone, with no chord above it', correct: false },
-              { label: 'A bass note with no figure is realized as a seventh chord (7)', correct: false },
+              { label: 'A bass note with no figure is realised as a seventh chord (7)', correct: false },
             ],
             [
               { label: 'A 6 under a bass note means a triad in first inversion', correct: true },

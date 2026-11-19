@@ -440,10 +440,11 @@ async function reloadFromToast(page: Page, where: string) {
 // ── Learn helpers ──────────────────────────────────────────────────────────
 async function openLessonBySearch(page: Page, title: string) {
   await page.keyboard.press('Control+k');
-  const dialog = page.getByRole('dialog', { name: 'Quick search' });
+  // Named in the learner's language since the 2026-11-18 audit; its results are listbox options (A14).
+  const dialog = page.getByRole('dialog', { name: /^(Quick search|Pesquisa rápida|Búsqueda rápida)$/ });
   await expect(dialog).toBeVisible();
   await dialog.locator('input').fill(title);
-  await dialog.getByRole('button', { name: new RegExp(`^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) }).first().click();
+  await dialog.getByRole('option', { name: new RegExp(`^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) }).first().click();
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({ timeout: 15_000 });
   await page.waitForTimeout(800);
 }

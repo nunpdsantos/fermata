@@ -24,7 +24,7 @@ function files(edit: (pages: Map<string, string>, rest: { sitemap: string; home:
   edit(pages, rest);
   return { pages, ...rest };
 }
-const problems = (f: SiteFiles, forbidden?: Map<string, string[]>) => checkSite(f, { lessons: 136, forbidden }).problems;
+const problems = (f: SiteFiles, forbidden?: Map<string, string[]>) => checkSite(f, { lessons: 136, slugs: registry as SlugRegistry, forbidden }).problems;
 const replaceIn = (pages: Map<string, string>, path: string, from: string | RegExp, to: string) => {
   const html = pages.get(path)!;
   const next = html.replace(from, to);
@@ -66,7 +66,8 @@ describe('the whole-output checks catch', () => {
   it('a raw marker: a task\'s quoted query left as typed, an unfilled {{place}}', () => {
     const p = problems(
       files((pages) => {
-        replaceIn(pages, LESSON, '<span class="query">‘C major scale’</span>', '&#39;C major scale&#39;');
+        // (Since 2026-11-19 a quoted phrase is a link to the lesson in the app.)
+        replaceIn(pages, LESSON, /<a class="query" href="[^"]*">‘C major scale’<\/a>/, '&#39;C major scale&#39;');
         replaceIn(pages, '/es/', '<h1 class="hero">', '<h1 class="hero">{{count}} ');
       }),
       new Map([[LESSON, ["'C major scale'"]]]),

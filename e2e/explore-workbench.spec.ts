@@ -200,6 +200,40 @@ async function headroom(page: Page) {
 }
 const HEADROOM = 40;
 
+/**
+ * Wait until the layout holds still before measuring it (19 November 2026:
+ * "es guitar GMayor: 37.5 px to spare", now and then). These tests run with
+ * reduced motion, under which index.css gives every property a 0.01 ms
+ * transition (`transition-duration` on every element, `transition-property`
+ * left at its initial `all`), so a style a click changes shows its old value
+ * for one frame. Choosing G after F, the guitar's fret-number row stood 4 px
+ * taller for that frame — the open column's label is the same <span> going
+ * from F's screen-reader "1fr" to G's "0", its font size passing 16 → 12 px —
+ * which made the dock 325 px instead of 321 and left the work column 37.5 px
+ * to spare instead of 41.5. Measured once the work column and the dock keep
+ * the same size for two frames in a row.
+ */
+async function settled(page: Page) {
+  await page.evaluate(() => new Promise<void>((resolve) => {
+    const read = () => {
+      const m = document.querySelector('.explore-main');
+      const d = document.querySelector('[data-testid="instrument-dock"]');
+      return `${m?.clientHeight}|${m?.scrollHeight}|${d?.getBoundingClientRect().height}`;
+    };
+    let last = read();
+    let same = 0;
+    let frames = 0;
+    const tick = () => {
+      const now = read();
+      same = now === last ? same + 1 : 0;
+      last = now;
+      if (same >= 2 || ++frames > 60) resolve();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }));
+}
+
 /** Each chord in key in turn: its detail opens in two rows, nothing scrolls, the headroom holds. */
 async function everyChordFits(page: Page, label: string) {
   const cards = page.locator('.chord-row button');
@@ -208,12 +242,16 @@ async function everyChordFits(page: Page, label: string) {
   for (let i = 0; i < n; i++) {
     if ((await cards.nth(i).getAttribute('aria-pressed')) !== 'true') await cards.nth(i).click();
     await expect(page.getByTestId('chord-detail')).toBeVisible();
+    await settled(page);
     const name = await page.locator('.chord-detail-name').textContent();
     const rows = await page.locator('[data-testid="chord-detail"] .chord-detail-row').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
     expect(rows, `${label} ${name}: the detail's rows are one line each`).toEqual([36, 36]);
     const s = await scrollState(page);
     expect(s.main!.scroll, `${label} ${name}: the main column needs no scrolling`).toBeLessThanOrEqual(s.main!.client + 1);
-    expect(await headroom(page), `${label} ${name}: px to spare in the main column`).toBeGreaterThanOrEqual(HEADROOM);
+    const spare = await headroom(page);
+    // Logged, so GitHub's Linux run shows how much is left there.
+    console.log(`[headroom] 1440×900 ${label} ${name}: ${spare.toFixed(1)} px to spare`);
+    expect(spare, `${label} ${name}: px to spare in the main column`).toBeGreaterThanOrEqual(HEADROOM);
   }
 }
 
@@ -699,7 +737,7 @@ test('844×390 guitar: a non-default chord grip survives full neck in both direc
 // Main fails because nearest-scrolling the DETAIL leaves the header/root
 // rows sliced under the sticky strip, with no visible indication of its tab.
 for (const [w, h] of [[1280, 800], [1366, 768], [1440, 900], [1536, 864]]) {
-  test(`${w}×${h}: chord actions land on complete rows below the sticky strip`, async ({ browser }) => {
+  test(`${w}×${h}: chord actions land on complete rows below the sticky strip (Build under 900 px tall: the strip scrolls)`, async ({ browser }) => {
     const { context, page } = await open(browser, { w, h });
     const check = async (source: string) => {
       await expect(page.getByTestId('chord-detail')).toBeVisible();
@@ -709,7 +747,10 @@ for (const [w, h] of [[1280, 800], [1366, 768], [1440, 900], [1536, 864]]) {
         const card = document.querySelector<HTMLElement>('.chords-card')!;
         const detail = document.querySelector<HTMLElement>('.chord-detail')!;
         const main = card.closest<HTMLElement>('.explore-main')!;
-        const stripBottom = strip.getBoundingClientRect().bottom;
+        // A strip that scrolls with the work (Build under 900 px tall) covers
+        // nothing: the edge is then the work column's own top.
+        const held = getComputedStyle(strip).position === 'sticky';
+        const stripBottom = held ? strip.getBoundingClientRect().bottom : main.getBoundingClientRect().top;
         const clip = parseFloat(card.style.clipPath.replace('inset(', '')) || 0;
         const edge = Math.max(stripBottom, card.getBoundingClientRect().top + clip);
         // Text and controls above the detail must either be wholly hidden
@@ -722,14 +763,27 @@ for (const [w, h] of [[1280, 800], [1366, 768], [1440, 900], [1536, 864]]) {
           .filter((r) => r.compareDocumentPosition(detail) & Node.DOCUMENT_POSITION_FOLLOWING).at(-1);
         const d = detail.getBoundingClientRect(), r = row?.getBoundingClientRect();
         const room = main.getBoundingClientRect().bottom - stripBottom - 16;
-        return { sticky: getComputedStyle(strip).position, sliced, detailTop: d.top, stripBottom,
+        const builder = card.querySelector<HTMLElement>('.chord-builder');
+        const builderRows = builder
+          ? ['.chord-builder > [data-chord-scroll-row]', '.chords-card [role="group"]', '[data-testid="builder-readout"]']
+            .map((sel) => card.querySelector(sel)!.getBoundingClientRect())
+            .every((b) => b.top >= stripBottom - 0.5 && b.bottom <= main.getBoundingClientRect().bottom + 0.5)
+          : null;
+        return { sticky: getComputedStyle(strip).position, sliced, detailTop: d.top, stripBottom, builderRows,
           rowFits: !!r && d.bottom-r.top <= room, rowVisible: !!r && r.top >= edge,
           headerVisible: card.querySelector('.explore-card-head')!.getBoundingClientRect().top >= edge,
           source: detail.querySelector<HTMLElement>('.chord-detail-source')?.innerText,
           playBottom: detail.querySelector('.chord-detail-actions')!.getBoundingClientRect().bottom,
           bottom: main.getBoundingClientRect().bottom };
       });
-      expect(result.sticky).toBe('sticky');
+      // The owner's ruling of 19 November 2026: on the Build tab of a laptop
+      // under 900 px tall the strip scrolls with the work, and the builder's
+      // root row, notes and readout land on screen with ▶ Chord; everywhere
+      // else it stays held (e2e/explore-tools-audit.spec.ts covers Build in
+      // three languages and both instruments).
+      const buildUnpinned = source === 'Build' && h < 900;
+      expect(result.sticky).toBe(buildUnpinned ? 'static' : 'sticky');
+      if (buildUnpinned) expect(result.builderRows, 'the root row, the notes and the readout on screen').toBe(true);
       expect(result.sliced).toEqual([]);
       expect(result.detailTop).toBeGreaterThanOrEqual(result.stripBottom);
       expect(result.playBottom).toBeLessThanOrEqual(result.bottom);

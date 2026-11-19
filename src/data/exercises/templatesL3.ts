@@ -179,7 +179,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about SATB voicing is true?',
-        hintTemplate: 'SATB ranges: Soprano C4-G5, Alto F3-C5, Tenor C3-G4, Bass E2-C4. Adjacent voices should stay within an octave (except bass-tenor). Voice crossing puts a normally lower voice above its neighbor; in root-position triads, doubling the root is the usual starting point.',
+        hintTemplate: 'SATB ranges: Soprano C4-G5, Alto F3-C5, Tenor C3-G4, Bass E2-C4. Adjacent voices should stay within an octave (except bass-tenor). Voice crossing puts a normally lower voice above its neighbour; in root-position triads, doubling the root is the usual starting point.',
         params: {
           choiceSets: [
             [
@@ -317,7 +317,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Common 6/4 types: cadential, passing, pedal, arpeggiated', correct: true },
               { label: 'Common 6/4 types: tonic, predominant, dominant, tonic substitute', correct: false },
               { label: 'Common 6/4 types: authentic, plagal, half, deceptive', correct: false },
-              { label: 'Common 6/4 types: cadential, sequential, modulatory, tonicizing', correct: false },
+              { label: 'Common 6/4 types: cadential, sequential, modulatory, tonicising', correct: false },
             ],
             [
               { label: 'The cadential 6/4 decorates V: its 6th and 4th fall by step to the 5th and 3rd', correct: true },
@@ -443,7 +443,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'multiple_choice',
         promptTemplate: 'Which statement about harmonic rhythm is true?',
-        hintTemplate: 'Harmonic rhythm is the rate at which chords change. It can accelerate toward cadences, creating a sense of forward motion and arrival. In common-practice music, chords usually change on strong beats.',
+        hintTemplate: 'Harmonic rhythm is the rate at which chords change. It can accelerate towards cadences, creating a sense of forward motion and arrival. In common-practice music, chords usually change on strong beats.',
         params: {
           choiceSets: [
             [
@@ -468,7 +468,7 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'Harmonic rhythm is the rate of chord changes', correct: true },
               { label: 'Harmonic rhythm is the rate of melody-note changes', correct: false },
               { label: 'Harmonic rhythm is the rate of tempo changes', correct: false },
-              { label: 'Harmonic rhythm is the rate of meter changes', correct: false },
+              { label: 'Harmonic rhythm is the rate of metre changes', correct: false },
             ],
           ],
         },
@@ -483,21 +483,21 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'multiple_choice',
-        promptTemplate: 'Which statement about passing tones, neighbor tones and anticipations is true?',
-        hintTemplate: 'Passing tone: step–step in the same direction between two chord tones. Neighbor: step away and back to the same chord tone (incomplete: one side by leap). Anticipation: a note of the next chord sounding early.',
+        promptTemplate: 'Which statement about passing tones, neighbour tones and anticipations is true?',
+        hintTemplate: 'Passing tone: step–step in the same direction between two chord tones. Neighbour: step away and back to the same chord tone (incomplete: one side by leap). Anticipation: a note of the next chord sounding early.',
         params: {
           choiceSets: [
             [
               { label: 'Approached and left by step in the same direction: a passing tone', correct: true },
-              { label: 'Approached and left by step in the same direction: a neighbor tone', correct: false },
+              { label: 'Approached and left by step in the same direction: a neighbour tone', correct: false },
               { label: 'Approached and left by step in the same direction: an anticipation', correct: false },
-              { label: 'Approached and left by step in the same direction: an incomplete neighbor', correct: false },
+              { label: 'Approached and left by step in the same direction: an incomplete neighbour', correct: false },
             ],
             [
               { label: 'Passing tones may be accented (on the beat) or unaccented', correct: true },
-              { label: 'Passing tones can return by step to their starting chord tone (like complete neighbors)', correct: false },
+              { label: 'Passing tones can return by step to their starting chord tone (like complete neighbours)', correct: false },
               { label: 'Passing tones can announce the next chord early (without a stepwise connection)', correct: false },
-              { label: 'Passing tones can be approached by step and left by leap (like incomplete neighbors)', correct: false },
+              { label: 'Passing tones can be approached by step and left by leap (like incomplete neighbours)', correct: false },
             ],
             [
               { label: 'C–D–E over a C major chord: D is a passing tone', correct: true },
@@ -506,16 +506,16 @@ const templates: ModuleTemplateConfig[] = [
               { label: 'C–D–E over a C major chord: E is the passing tone', correct: false },
             ],
             [
-              { label: 'A note that steps away from a chord tone and back to it: a neighbor tone', correct: true },
+              { label: 'A note that steps away from a chord tone and back to it: a neighbour tone', correct: true },
               { label: 'A note that steps away from a chord tone and back to it: a passing tone', correct: false },
               { label: 'A note that steps away from a chord tone and back to it: an anticipation', correct: false },
-              { label: 'A note that steps away from a chord tone and back to it: an incomplete neighbor', correct: false },
+              { label: 'A note that steps away from a chord tone and back to it: an incomplete neighbour', correct: false },
             ],
             [
-              { label: 'An incomplete neighbor is the middle note of G4–D4–E4 over a held C major chord', correct: true },
-              { label: 'An incomplete neighbor is the middle note of E4–D4–C4 over a held C major chord', correct: false },
-              { label: 'An incomplete neighbor is the middle note of E4–D4–E4 over a held C major chord', correct: false },
-              { label: 'An incomplete neighbor is the middle note of E4–G4–C5 over a held C major chord', correct: false },
+              { label: 'An incomplete neighbour is the middle note of G4–D4–E4 over a held C major chord', correct: true },
+              { label: 'An incomplete neighbour is the middle note of E4–D4–C4 over a held C major chord', correct: false },
+              { label: 'An incomplete neighbour is the middle note of E4–D4–E4 over a held C major chord', correct: false },
+              { label: 'An incomplete neighbour is the middle note of E4–G4–C5 over a held C major chord', correct: false },
             ],
             [
               { label: 'An anticipation sounds a note of the next chord before that chord arrives', correct: true },

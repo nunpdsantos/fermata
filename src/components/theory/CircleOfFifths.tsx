@@ -25,6 +25,7 @@ import {
 
 import { innerLabelLayout } from './circleLabelLayout';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs';
+import '../../i18n/exploreTools';
 
 type Ring = 'major' | 'minor';
 
@@ -88,6 +89,10 @@ function arcPath(
     'Z',
   ].join(' ');
 }
+
+/** The key a wedge selects, in words, spelled with ♯ / ♭ ("F minor", "D♭ major"). */
+const destinationName = (note: Note, ring: Ring, t: (key: string, o?: Record<string, unknown>) => string): string =>
+  t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: withGlyphs(note) });
 
 const circleIndexOf = (pc: number): number => {
   const idx = CIRCLE_MAJOR.findIndex((n) => getPitchClass(n) === pc);
@@ -266,11 +271,13 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
       const display = chord
         ? `${noteToString(chord.root)}${chord.quality === 'augmented' ? '+' : ''}`
         : noteToString(note);
+      // The label names a chord (C♯ V) but the tap selects another spelling (D♭ major): A8.
+      const differs = display !== noteToString(note);
       const mid = polarToCartesian(CENTER, CENTER, (MAJOR_INNER + MAJOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MAJOR : DIST_FILL_MAJOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, display, mid, fill,
+        note, i, pc, selected, dist, numeral, display, differs, mid, fill,
         path: arcPath(CENTER, CENTER, MAJOR_INNER, MAJOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MAJOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MAJOR[dist],
@@ -292,11 +299,13 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
       const display = chord
         ? `${noteToString(chord.root)}${chord.quality === 'diminished' ? '°' : 'm'}`
         : `${noteToString(note)}m`;
+      // The label names a chord (E♯° vii°) but the tap selects a minor key (F minor): A8.
+      const differs = display !== `${noteToString(note)}m`;
       const mid = polarToCartesian(CENTER, CENTER, (MINOR_INNER + MINOR_OUTER) / 2, i * 30);
       const fill = neutral ? NEUTRAL_FILL_MINOR : DIST_FILL_MINOR[dist];
 
       return {
-        note, i, pc, selected, dist, numeral, display, mid, fill,
+        note, i, pc, selected, dist, numeral, display, differs, mid, fill,
         path: arcPath(CENTER, CENTER, MINOR_INNER, MINOR_OUTER, start, end),
         stroke: neutral ? NEUTRAL_STROKE : DIST_STROKE_MINOR[dist],
         textFill: neutral ? NEUTRAL_TEXT : DIST_TEXT_MINOR[dist],
@@ -336,12 +345,16 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
       : dist === 0
         ? t(isParent ? 'circle.parentKey' : 'circle.currentKey')
         : t(`circle.distance${dist}`);
+    const seg = hoveredRing === 'major' ? majorSegs[hoveredIdx] : minorSegs[hoveredIdx];
     return {
       name: withGlyphs(`${noteToString(shown)}${hoveredRing === 'minor' ? 'm' : ''}`),
       sig: formatKeySignature(majorKeySignature(major), t('circle.noAccidentals')),
       relative: t('circle.relative', { key: relative }),
       dist,
       distLabel,
+      // A wedge that shows a chord's name selects a key of another name
+      // (audit 2026-11-18, A8): say which, before the tap.
+      opens: seg.differs ? t('exploreTools.circleOpens', { key: destinationName(shown, hoveredRing, t) }) : null,
     };
   }, [hoveredIdx, hoveredRing, refIdx, majorSegs, minorSegs, selectedSeg, selectedKey, neutral, t]);
 
@@ -349,12 +362,17 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
   const scaleLine = selectedScale === 'major' || isMinorSel ? null : t(`scaleName.${selectedScale}`);
 
   // Accessible name = the visible text (name and numeral) plus what a click
-  // does — "B♯° (vii°) — select C minor" (WCAG 2.5.3 label in name).
+  // does (WCAG 2.5.3 label in name). A wedge that carries one of the scale's
+  // chords names the chord and its key, then the key the tap selects — two
+  // things, said apart (audit 2026-11-18, A8): "E♯° (vii°) in F♯ Major —
+  // select F minor".
   const segmentLabel = (s: { display: string; numeral?: string; note: Note; i: number }, ring: Ring) => {
-    const label = t('circle.segmentLabel', {
-      name: s.numeral ? `${withGlyphs(s.display)} (${s.numeral})` : withGlyphs(s.display),
-      key: t(ring === 'major' ? 'circle.keyMajor' : 'circle.keyMinor', { note: noteToString(s.note) }),
-    });
+    const label = s.numeral
+      ? t('exploreTools.circleChordLabel', {
+        chord: withGlyphs(s.display), numeral: s.numeral,
+        scale: `${withGlyphs(selectedKey)} ${t(`scaleName.${selectedScale}`)}`, key: destinationName(s.note, ring, t),
+      })
+      : t('circle.segmentLabel', { name: withGlyphs(s.display), key: destinationName(s.note, ring, t) });
     return chordMark?.ring === ring && chordMark.idx === s.i ? `${label}, ${t('explore.circleChordRoot')}` : label;
   };
 
@@ -487,6 +505,10 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
             onBlur={() => { setHoveredIdx(null); setHoveredRing(null); setFocusedSeg(null); }}
             onPointerEnter={(e) => { if (e.pointerType === 'mouse') setTintIdx(s.i); }}
             onPointerLeave={() => setTintIdx(null)}
+            // A finger or pen shows where the wedge leads while it is down,
+            // before the tap selects it (a mouse already does on hover; A8).
+            onPointerDown={(e) => { if (e.pointerType !== 'mouse') { setHoveredIdx(s.i); setHoveredRing('major'); } }}
+            onPointerCancel={() => { setHoveredIdx(null); setHoveredRing(null); }}
             onKeyDown={(e) => handleSegmentKeyDown(e, 'major', s.i, s.note)}
             className="cursor-pointer"
           >
@@ -525,6 +547,10 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
             onBlur={() => { setHoveredIdx(null); setHoveredRing(null); setFocusedSeg(null); }}
             onPointerEnter={(e) => { if (e.pointerType === 'mouse') setTintIdx(s.i); }}
             onPointerLeave={() => setTintIdx(null)}
+            // A finger or pen shows where the wedge leads while it is down,
+            // before the tap selects it (a mouse already does on hover; A8).
+            onPointerDown={(e) => { if (e.pointerType !== 'mouse') { setHoveredIdx(s.i); setHoveredRing('minor'); } }}
+            onPointerCancel={() => { setHoveredIdx(null); setHoveredRing(null); }}
             onKeyDown={(e) => handleSegmentKeyDown(e, 'minor', s.i, s.note)}
             className="cursor-pointer"
           >
@@ -588,7 +614,9 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
     <div className="cof-caption text-center text-ui mt-1 min-h-[2.9em]" style={{ color: 'var(--text-muted)' }} aria-live="polite">
       {hoveredIdx !== null && hoverInfo ? (
         <>
-          <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} data-term={hoverInfo.distLabel ? 'relatedKeys' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>
+          {hoverInfo.opens
+            ? <div data-testid="cof-hover-opens" style={{ color: 'var(--text-dim)' }}>{hoverInfo.opens}</div>
+            : <div data-testid={hoverInfo.distLabel ? 'cof-hover-dist' : undefined} data-term={hoverInfo.distLabel ? 'relatedKeys' : undefined} style={{ color: 'var(--text-dim)' }}>{hoverInfo.distLabel || '\u00a0'}</div>}
           <div data-testid="cof-hover-sig">{hoverInfo.sig} · {hoverInfo.relative}</div>
         </>
       ) : (

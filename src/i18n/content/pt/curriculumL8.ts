@@ -164,7 +164,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Cânone estrito e intervalos canónicos',
           explanation:
-            'Num cânone estrito, o dux, a voz que começa, apresenta uma melodia e o comes, a voz que imita, replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe uma quinta perfeita acima. O desafio composicional é profundo: o dux deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Os cânones ao uníssono e à oitava são geralmente os mais simples de escrever; noutros intervalos, as notas do comes assumem outros papéis na tonalidade e algumas qualidades de intervalo mudam, o que acrescenta restrições.',
+            'Num cânone estrito, o dux, a voz que começa, apresenta uma melodia e o comes, a voz que imita, replica-a exatamente após um atraso temporal fixo, transposta por algum intervalo. O cânone ao uníssono repete na mesma altura; o cânone à oitava desloca uma oitava; o cânone à quinta transpõe-na uma quinta acima ou abaixo. O desafio composicional é profundo: o dux deve gerar uma melodia que produza contraponto válido contra uma cópia de si mesma com atraso temporal. Os cânones ao uníssono e à oitava são geralmente os mais simples de escrever; noutros intervalos, as notas do comes assumem outros papéis na tonalidade e algumas qualidades de intervalo mudam, o que acrescenta restrições.',
           tryThisLabel: 'Vê a escala — a matéria-prima melódica de um cânone',
         },
         {
@@ -187,7 +187,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Ouve o cânone das Variações Goldberg de Bach (uma em cada três variações é um cânone). Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.ª (Var. 6) e o Cânone à 3.ª (Var. 9). Como é que o intervalo canónico afeta o carácter?',
+            'Ouve os cânones das Variações Goldberg de Bach: da Var. 3 à Var. 27, uma em cada três variações é um cânone, cada um a um intervalo mais largo, do uníssono à 9.ª; a Var. 30, onde caberia um décimo cânone, é antes um quodlibet. Compara o Cânone ao Uníssono (Var. 3), o Cânone à 2.ª (Var. 6) e o Cânone à 3.ª (Var. 9). Como é que o intervalo canónico afeta o carácter?',
         },
         {
           instruction:

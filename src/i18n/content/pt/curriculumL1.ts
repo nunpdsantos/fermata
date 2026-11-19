@@ -95,7 +95,7 @@ const curriculumL1: CurriculumLevelOverlay = {
           instruction: 'Seleciona Guitarra em Explorar. Encontra o pequeno 8 debaixo da clave de sol e explica a diferença entre o E4 escrito e o E3 que soa.'
         },
         {
-          instruction: 'Na tua guitarra, aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
+          instruction: 'Na tua guitarra ou no braço da guitarra da aplicação (seleciona Guitarra em Explorar), aponta para ① e ⑥. Diz as suas alturas sonoras na afinação padrão e depois encontra ③.'
         }
       ]
     },
@@ -137,18 +137,18 @@ const curriculumL1: CurriculumLevelOverlay = {
       concepts: [
         {
           title: 'Posições em algarismos romanos',
-          explanation: 'Um algarismo romano indica a posição da mão esquerda: I = 1.ª, II = 2.ª, V = 5.ª, VII = 7.ª. Na posição V, o indicador tem como base o trasto 5; os outros dedos cobrem normalmente os trastos 6, 7 e 8. Uma posição é um local da mão, não um número de corda nem um acorde. Uma indicação de posição, por si só, não exige uma pestana.',
+          explanation: 'Um algarismo romano indica a posição da mão esquerda: I = 1.ª, II = 2.ª, V = 5.ª, VII = 7.ª. Na posição V, o indicador tem como base o traste 5; os outros dedos cobrem normalmente os trastes 6, 7 e 8. Uma posição é um local da mão, não um número de corda nem um acorde. Uma indicação de posição, por si só, não exige uma pestana.',
           tryThisLabel: 'Mostra na Guitarra e escolhe a posição V'
         },
         {
           title: 'O sinal de pestana',
-          explanation: 'Uma pestana usa um dedo, geralmente o indicador, para premir várias cordas no mesmo trasto. C indica uma pestana completa; ½C indica uma pestana parcial. CV significa pestana completa no trasto 5, enquanto ½CV significa pestana parcial nesse trasto. A partitura ou a dedilhação indica que cordas a pestana parcial abrange; não deduzas um número fixo de cordas apenas a partir de ½.',
-          tryThisLabel: 'Mostra na Guitarra; na tua guitarra, localiza o trasto 5 para CV'
+          explanation: 'Uma pestana usa um dedo, geralmente o indicador, para premir várias cordas no mesmo traste. C indica uma pestana completa; ½C indica uma pestana parcial. CV significa pestana completa no traste 5, enquanto ½CV significa pestana parcial nesse traste. A partitura ou a dedilhação indica que cordas a pestana parcial abrange; não deduzas um número fixo de cordas apenas a partir de ½.',
+          tryThisLabel: 'Mostra na Guitarra; na tua guitarra, localiza o traste 5 para CV'
         }
       ],
       tasks: [
         {
-          instruction: 'Escolhe a posição V no braço da guitarra da aplicação. Localiza o trasto 5 e compara o número da posição com os números dos dedos nos pontos.'
+          instruction: 'Seleciona Guitarra em Explorar e escolhe a posição V no braço da guitarra da aplicação. Localiza o traste 5 e compara o número da posição com os números dos dedos nos pontos.'
         },
         {
           instruction: 'Lê V, CV e ½CV em voz alta. Explica qual das indicações apenas localiza a mão, qual pede uma pestana completa e qual pede uma pestana parcial.'
@@ -182,11 +182,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Olha para o teclado do piano — as notas vão do grave (esquerda) ao agudo (direita), tal como a pauta vai do grave (em baixo) ao agudo (em cima)',
+            'Olha para o teu instrumento — as notas vão do grave ao agudo, tal como a pauta vai do grave (em baixo) ao agudo (em cima): no piano da esquerda para a direita, na guitarra traste a traste em direção ao corpo',
         },
         {
           instruction:
-            'Escreve "C major scale" e repara como cada nota ocupa uma posição mais elevada à medida que a altura sobe',
+            'Carrega em "C major scale" e repara como cada nota ocupa uma posição mais elevada à medida que a altura sobe',
         },
       ],
     },
@@ -198,7 +198,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       objectives: [
         'Compreender as linhas suplementares como extensões acima ou abaixo da pauta',
         'Saber que a pauta dupla combina as claves de sol e de fá unidas por uma chaveta',
-        'Localizar o C central como a linha suplementar entre as duas pautas',
+        'Localizar o C central entre as duas pautas, numa linha suplementar abaixo da pauta de clave de sol ou acima da pauta de clave de fá',
       ],
       concepts: [
         {
@@ -210,14 +210,14 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'A pauta dupla',
           explanation:
-            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas por uma chaveta e ligadas por uma linha suplementar partilhada de C central. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
+            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas à esquerda por uma chaveta e uma linha. O C central fica entre elas, mas não há uma linha permanente para ele: escreve-se numa pequena linha suplementar só sua, logo abaixo da pauta de clave de sol ou logo acima da pauta de clave de fá, onde a nota for necessária. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
           tryThisLabel: 'Explora o C em todo o teclado',
         },
       ],
       tasks: [
         {
           instruction:
-            'Encontra o C central no piano — está entre as duas metades da pauta dupla',
+            'Encontra o C central no piano, ou na guitarra no traste 1 da corda B (a segunda mais fina) — está entre as duas metades da pauta dupla',
         },
         {
           instruction:
@@ -259,15 +259,15 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Toca notas adjacentes na escala cromática — cada passo é um meio-tom. Escreve "C chromatic scale" para as veres todas',
+            'Toca notas adjacentes na escala cromática — cada passo é um meio-tom. Carrega em "C chromatic scale" para as veres todas',
         },
         {
           instruction:
-            'Encontra E e F no piano — repara que não há tecla preta entre elas. Este par é um meio-tom natural',
+            'Encontra E e F — no piano não há tecla preta entre elas; na guitarra estão a um traste de distância. Este par é um meio-tom natural',
         },
         {
           instruction:
-            'Escreve "key of G" — que nota precisa de sustenido? O F torna-se F# para manter o padrão da escala maior',
+            'Carrega em "key of G" — que nota precisa de sustenido? O F torna-se F# para manter o padrão da escala maior',
         },
       ],
     },
@@ -299,11 +299,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C chromatic scale" e conta as 12 notas antes de o padrão se repetir',
+            'Carrega em "C chromatic scale" e conta as 12 notas antes de o padrão se repetir',
         },
         {
           instruction:
-            'No piano, encontra o grupo de 2 teclas pretas — a tecla branca logo abaixo do grupo é sempre C',
+            'Encontra C no teu instrumento — no piano, é sempre a tecla branca imediatamente à esquerda de um grupo de 2 teclas pretas; na guitarra, o C está no traste 3 da corda A, a segunda mais grossa',
         },
       ],
     },
@@ -418,15 +418,15 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major scale" e traça o padrão T-T-mT-T-T-T-mT no piano',
+            'Carrega em "C major scale" e traça o padrão T-T-mT-T-T-T-mT no teu instrumento',
         },
         {
           instruction:
-            'Escreve "G major scale" — que nota precisa de sustenido para manter o padrão?',
+            'Carrega em "G major scale" — que nota precisa de sustenido para manter o padrão?',
         },
         {
           instruction:
-            'Escreve "F major scale" — esta precisa de um bemol. Que nota?',
+            'Carrega em "F major scale" — esta precisa de um bemol. Que nota?',
         },
       ],
     },
@@ -444,7 +444,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'O que é uma armação de clave?',
           explanation:
-            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#. Isto poupa espaço e indica a tonalidade de relance.',
+            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#, a menos que um bequadro (♮) escrito antes de um F lhe anule o sustenido, desde essa nota até ao fim do compasso. Isto poupa espaço e mostra de relance que notas a tonalidade usa.',
           tryThisLabel: 'Vê a armação de G — um sustenido',
         },
         {
@@ -456,22 +456,22 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'Escala vs. tonalidade',
           explanation:
-            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de G maior", a escala de G maior fornece as tuas notas, G é a casa, e a armação de clave indica que F é sempre sustenido.',
+            'Uma escala é um padrão de notas em ordem. Uma tonalidade é o contexto musical que usa essas notas, com uma nota como "casa". Quando estás "na tonalidade de G maior", a escala de G maior fornece as tuas notas, G é a casa, e a armação de clave indica que deves tocar F como F#, a menos que um bequadro (♮) indique o contrário. A mesma armação de um sustenido serve também a tonalidade de E menor, que usa as mesmas notas com E como casa: a armação dá as notas, e a música diz qual delas é a casa.',
           tryThisLabel: 'Vê a armação de F — um bemol',
         },
       ],
       tasks: [
         {
           instruction:
-            'Escreve "key of G" — quantos sustenidos tem a armação de clave?',
+            'Carrega em "key of G" — quantos sustenidos tem a armação de clave?',
         },
         {
           instruction:
-            'Escreve "key of D" — que novo sustenido foi acrescentado além do F# de G maior?',
+            'Carrega em "key of D" — que novo sustenido foi acrescentado além do F# de G maior?',
         },
         {
           instruction:
-            'Escreve "key of F" — esta é a primeira tonalidade com bemol. Que nota é bemolizada?',
+            'Carrega em "key of F" — esta é a primeira tonalidade com bemol. Que nota é bemolizada?',
         },
       ],
     },
@@ -509,11 +509,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" — o intervalo de C a E é uma 3.ª, e de C a G é uma 5.ª. Conta as letras para confirmar',
+            'Carrega em "C major chord" — o intervalo de C a E é uma 3.ª, e de C a G é uma 5.ª. Conta as letras para confirmar',
         },
         {
           instruction:
-            'Escreve "C major scale" — cada par adjacente é uma 2.ª (um passo). Toca notas não adjacentes para ouvires intervalos maiores',
+            'Carrega em "C major scale" — cada par adjacente é uma 2.ª (um passo). Toca notas não adjacentes para ouvires intervalos maiores',
         },
         {
           instruction:
@@ -555,11 +555,11 @@ const curriculumL1: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escreve "C major chord" e conta os meios-tons: C a E = 4 (3.ª maior), E a G = 3 (3.ª menor), C a G = 7 (5.ª perfeita)',
+            'Carrega em "C major chord" e conta os meios-tons: C a E = 4 (3.ª maior), E a G = 3 (3.ª menor), C a G = 7 (5.ª perfeita)',
         },
         {
           instruction:
-            'Escreve "G major chord" — identifica a fundamental, a 3.ª e a 5.ª. Mesmo padrão intervalar, nota inicial diferente',
+            'Carrega em "G major chord" — identifica a fundamental, a 3.ª e a 5.ª. Mesmo padrão intervalar, nota inicial diferente',
         },
         {
           instruction:
@@ -590,18 +590,18 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           title: 'Mais agudo na guitarra',
-          explanation: 'Na guitarra, uma nota fica mais aguda à medida que o dedo avança ao longo de uma corda em direção ao corpo da guitarra, um trasto de cada vez. As cordas também vão do grave ao agudo: tocadas soltas, sem nenhum dedo, a corda mais grossa soa a mais grave e cada corda mais fina soa mais aguda do que a do lado.',
+          explanation: 'Na guitarra, uma nota fica mais aguda à medida que o dedo avança ao longo de uma corda em direção ao corpo da guitarra, um traste de cada vez. As cordas também vão do grave ao agudo: tocadas soltas, sem nenhum dedo, a corda mais grossa soa a mais grave e cada corda mais fina soa mais aguda do que a do lado.',
           tryThisLabel: 'Ouve notas a subir do grave ao agudo e depois mostra-as no teu instrumento',
         },
         {
           title: 'A mesma nota, mais aguda',
-          explanation: 'Continua a subir a partir de qualquer nota e chegas a uma nota que soa como a primeira, só que mais aguda. As duas soam tão parecidas que têm o mesmo nome. Essa distância chama-se oitava. No piano são doze teclas mais à direita, contando as brancas e as pretas; numa corda da guitarra são doze trastos mais adiante.',
+          explanation: 'Continua a subir a partir de qualquer nota e chegas a uma nota que soa como a primeira, só que mais aguda. As duas soam tão parecidas que têm o mesmo nome. Essa distância chama-se oitava. No piano são doze teclas mais à direita, contando as brancas e as pretas; numa corda da guitarra são doze trastes mais adiante.',
           tryThisLabel: 'Ouve C a subir até ao C seguinte: o mesmo nome, um som mais agudo',
         },
       ],
       tasks: [
-        { instruction: 'Toca uma nota qualquer e depois uma nota à direita dela no piano, ou um trasto mais perto do corpo na guitarra. Escuta: a segunda nota é mais aguda.' },
-        { instruction: 'Toca uma nota e a mesma nota uma oitava acima: no piano, doze teclas à direita; na guitarra, uma corda solta e depois a mesma corda no trasto 12. Ouve como soam parecidas.' },
+        { instruction: 'Toca uma nota qualquer e depois uma nota à direita dela no piano, ou um traste mais perto do corpo na guitarra. Escuta: a segunda nota é mais aguda.' },
+        { instruction: 'Toca uma nota e a mesma nota uma oitava acima: no piano, doze teclas à direita; na guitarra, uma corda solta e depois a mesma corda no traste 12. Ouve como soam parecidas.' },
       ],
     },
     l1u34m2: {
@@ -630,13 +630,13 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           title: 'A letra seguinte',
-          explanation: 'Para passar de uma letra à seguinte, toca no piano a tecla branca seguinte, à direita: de C para D, de D para E, e assim por diante. Numa corda da guitarra, a letra seguinte está dois trastos mais adiante, exceto de E para F e de B para C, que ficam a apenas um trasto.',
+          explanation: 'Para passar de uma letra à seguinte, toca no piano a tecla branca seguinte, à direita: de C para D, de D para E, e assim por diante. Numa corda da guitarra, a letra seguinte está dois trastes mais adiante, exceto de E para F e de B para C, que ficam a apenas um traste.',
           tryThisLabel: 'Ouve as letras a subir a partir de F: F, G, A, B, C, D, E e de novo F',
         },
       ],
       tasks: [
         { instruction: 'Piano: encontra todos os C, a tecla branca imediatamente à esquerda de cada grupo de duas teclas pretas, e toca-os da esquerda para a direita. Guitarra: toca as cordas soltas da mais grossa para a mais fina e diz os seus nomes.' },
-        { instruction: 'Toca C, D, E, F, G, A, B e de novo C, dizendo cada nome enquanto tocas. No piano são as teclas brancas a partir de qualquer C; na guitarra, o C está no trasto 3 da corda A, a segunda mais grossa.' },
+        { instruction: 'Toca C, D, E, F, G, A, B e de novo C, dizendo cada nome enquanto tocas. No piano são as teclas brancas a partir de qualquer C; na guitarra, o C está no traste 3 da corda A, a segunda mais grossa.' },
       ],
     },
     l1u34m3: {
@@ -650,12 +650,12 @@ const curriculumL1: CurriculumLevelOverlay = {
       concepts: [
         {
           title: 'A nota mais próxima: um meio-tom',
-          explanation: 'A nota mais próxima, acima ou abaixo de qualquer nota, está a um meio-tom de distância. No piano é a tecla imediatamente a seguir, preta ou branca, sem nada pelo meio. Na guitarra é o trasto seguinte, na mesma corda. Notas tocadas por ordem, uma depois da outra, formam uma escala: doze meios-tons seguidos, todas as teclas de um C ao seguinte, formam a escala cromática.',
+          explanation: 'A nota mais próxima, acima ou abaixo de qualquer nota, está a um meio-tom de distância. No piano é a tecla imediatamente a seguir, preta ou branca, sem nada pelo meio. Na guitarra é o traste seguinte, na mesma corda. Notas tocadas por ordem, uma depois da outra, formam uma escala: doze meios-tons seguidos, todas as teclas de um C ao seguinte, formam a escala cromática.',
           tryThisLabel: 'Ouve doze meios-tons seguidos, de C até ao C seguinte',
         },
         {
           title: 'Dois meios-tons: um tom',
-          explanation: 'Dois meios-tons formam um tom. No piano, um tom salta uma tecla: de C para D passa por cima da tecla preta que fica entre as duas. Na guitarra são dois trastos na mesma corda. Uma escala feita só de tons chama-se escala de tons inteiros.',
+          explanation: 'Dois meios-tons formam um tom. No piano, um tom salta uma tecla: de C para D passa por cima da tecla preta que fica entre as duas. Na guitarra são dois trastes na mesma corda. Uma escala feita só de tons chama-se escala de tons inteiros.',
           tryThisLabel: 'Ouve só tons, de C até ao C seguinte',
         },
         {
@@ -670,8 +670,8 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
       ],
       tasks: [
-        { instruction: 'Toca uma nota qualquer e depois a nota meio-tom acima: a tecla seguinte no piano ou o trasto seguinte na guitarra. Depois toca um tom: duas teclas mais adiante, ou dois trastos.' },
-        { instruction: 'Encontra o C sustenido: no piano, a tecla preta imediatamente à direita de C; na guitarra, o trasto 4 da corda A. Diz os seus dois nomes: C sustenido e D bemol.' },
+        { instruction: 'Toca uma nota qualquer e depois a nota meio-tom acima: a tecla seguinte no piano ou o traste seguinte na guitarra. Depois toca um tom: duas teclas mais adiante, ou dois trastes.' },
+        { instruction: 'Encontra o C sustenido: no piano, a tecla preta imediatamente à direita de C; na guitarra, o traste 4 da corda A. Diz os seus dois nomes: C sustenido e D bemol.' },
       ],
     },
     l1u34m4: {
@@ -695,7 +695,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           title: 'A partir de qualquer nota',
-          explanation: 'Começa em qualquer nota, dá os mesmos passos e obténs a escala maior dessa nota. A partir de G: G, A, B, C, D, E, F♯ e G. O F sobe para F♯ para que o último passo, até G, seja um meio-tom e o anterior um tom. Numa só corda da guitarra, os mesmos passos são 2, 2, 1, 2, 2, 2 e 1 trastos.',
+          explanation: 'Começa em qualquer nota, dá os mesmos passos e obténs a escala maior dessa nota. A partir de G: G, A, B, C, D, E, F♯ e G. O F sobe para F♯ para que o último passo, até G, seja um meio-tom e o anterior um tom. Numa só corda da guitarra, os mesmos passos são 2, 2, 1, 2, 2, 2 e 1 trastes.',
           tryThisLabel: 'Ouve a escala maior a partir de G, com F♯',
         },
         {
@@ -706,7 +706,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca a escala de C maior, de C até ao C seguinte, dizendo tom ou meio-tom em cada passo enquanto tocas.' },
-        { instruction: 'Escolhe uma nota de partida qualquer e sobe tom, tom, meio-tom, tom, tom, tom, meio-tom. Na guitarra podes fazê-lo numa só corda: 2, 2, 1, 2, 2, 2 e 1 trastos. A nota de cima soa como a casa?' },
+        { instruction: 'Escolhe uma nota de partida qualquer e sobe tom, tom, meio-tom, tom, tom, tom, meio-tom. Na guitarra podes fazê-lo numa só corda: 2, 2, 1, 2, 2, 2 e 1 trastes. A nota de cima soa como a casa?' },
       ],
     },
     l1u34m5: {
@@ -777,7 +777,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G, C, D e Em, um de cada vez, e diz em voz alta as três notas de cada um: G B D, C E G, D F♯ A, E G B.' },
-        { instruction: 'Toca a escala de G maior, de G até G, e depois toca G, C e D. Na guitarra, encontra o F♯ do teu acorde de D: trasto 2 da corda mais fina.' },
+        { instruction: 'Toca a escala de G maior, de G até G, e depois toca G, C e D. Na guitarra, encontra o F♯ do teu acorde de D: traste 2 da corda mais fina.' },
       ],
     },
     l1u35m2: {
@@ -831,7 +831,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           title: 'O acorde sobre o 7',
-          explanation: 'O acorde sobre o 7, construído com as notas da tonalidade, é diminuto: como um acorde menor com a nota de cima meio-tom abaixo, e soa tenso. Um meio-tom é a nota mais próxima: um trasto na guitarra, a tecla imediatamente a seguir no piano; dois meios-tons fazem um tom. Escreve-se vii°. Em G é F♯ diminuto, F♯, A e C; em C é B diminuto, B, D e F.',
+          explanation: 'O acorde sobre o 7, construído com as notas da tonalidade, é diminuto: como um acorde menor com a nota de cima meio-tom abaixo, e soa tenso. Um meio-tom é a nota mais próxima: um traste na guitarra, a tecla imediatamente a seguir no piano; dois meios-tons fazem um tom. Escreve-se vii°. Em G é F♯ diminuto, F♯, A e C; em C é B diminuto, B, D e F.',
           tryThisLabel: 'Ouve o vii° de G: F♯, A e C',
         },
         {
@@ -882,7 +882,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G, C, D e para no D. Espera e depois toca G. A seguir toca G, D, C, para no C e depois toca G. Qual das paragens soou mais por terminar?' },
-        { instruction: 'Toca D e depois F♯ e G, uma nota a seguir à outra: na guitarra, trastos 2 e 3 da corda mais fina. Ouve o F♯ inclinar-se para G.' },
+        { instruction: 'Toca D e depois F♯ e G, uma nota a seguir à outra: na guitarra, trastes 2 e 3 da corda mais fina. Ouve o F♯ inclinar-se para G.' },
       ],
     },
     l1u35m5: {
@@ -890,7 +890,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       subtitle: 'A nota do meio, meio-tom abaixo',
       objectives: [
         'Encontrar a única nota que muda entre um acorde maior e o acorde menor sobre a mesma nota',
-        'Mudá-la na guitarra, um trasto abaixo, ou no piano, uma tecla abaixo',
+        'Mudá-la na guitarra, um traste abaixo, ou no piano, uma tecla abaixo',
         'Distinguir de ouvido um acorde maior de um menor',
       ],
       concepts: [
@@ -900,8 +900,8 @@ const curriculumL1: CurriculumLevelOverlay = {
           tryThisLabel: 'Ouve G e depois Gm',
         },
         {
-          title: 'Um trasto abaixo',
-          explanation: 'Na guitarra, um meio-tom é um trasto, por isso a corda que toca a nota do meio desce um trasto. De E para Em: a corda G deixa o trasto 1 e fica solta. De A para Am: a corda B passa do trasto 2 para o trasto 1. De D para Dm: a corda mais fina passa do trasto 2 para o trasto 1. Nas formas abertas de G e de C, a nota do meio também está numa corda solta, que não pode descer, por isso Gm e Cm precisam de outras formas. No piano, a nota do meio passa para a tecla imediatamente abaixo.',
+          title: 'Um traste abaixo',
+          explanation: 'Na guitarra, um meio-tom é um traste, por isso a corda que toca a nota do meio desce um traste. De E para Em: a corda G deixa o traste 1 e fica solta. De A para Am: a corda B passa do traste 2 para o traste 1. De D para Dm: a corda mais fina passa do traste 2 para o traste 1. Nas formas abertas de G e de C, a nota do meio também está numa corda solta, que não pode descer, por isso Gm e Cm precisam de outras formas. No piano, a nota do meio passa para a tecla imediatamente abaixo.',
           tryThisLabel: 'Ouve E e depois Em: uma nota desce meio-tom',
         },
         {
@@ -912,7 +912,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca E e depois Em, e repara em que dedo se mexe. Faz o mesmo com A e Am, e com D e Dm.' },
-        { instruction: 'Toca G e depois G menor. Na guitarra, experimenta Gm com uma pestana no trasto 3; no piano, desce o B de G maior uma tecla, para B♭.' },
+        { instruction: 'Toca G e depois G menor. Na guitarra, experimenta Gm com uma pestana no traste 3; no piano, desce o B de G maior uma tecla, para B♭.' },
       ],
     },
     l1u35m6: {
@@ -946,7 +946,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
       ],
       tasks: [
-        { instruction: 'Toca um acorde de G aberto, uma corda de cada vez, a partir da mais grossa, e diz o nome de cada nota: G, B, D, G, B, G.' },
+        { instruction: 'Toca um acorde de G uma nota de cada vez, a partir da mais grave, e diz o nome de cada nota. Na guitarra, um acorde de G aberto dá G, B, D, G, B, G a partir da corda mais grossa.' },
         { instruction: 'Escolhe um acorde maior que conheças e diz a sua fundamental. Conta uma nota sim, outra não, da escala maior dessa fundamental para encontrares a 3.ª e a 5.ª, e toca as três notas uma a seguir à outra.' },
       ],
     },
@@ -982,7 +982,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca G7 e depois C, e a seguir G e depois C. Qual dos dois se inclina mais para C?' },
-        { instruction: 'Toca o blues de doze compassos em G, quatro batidas por compasso: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7.' },
+        { instruction: 'Toca o blues de doze compassos em G, quatro pulsações por compasso: G7 durante quatro compassos, C7 durante dois, G7 durante dois, e depois D7, C7, G7 e D7.' },
       ],
     },
     l1u35m8: {
@@ -1001,23 +1001,23 @@ const curriculumL1: CurriculumLevelOverlay = {
         },
         {
           title: 'Os nomes mudam',
-          explanation: 'Para passares uma música de G para A, sobe todos os acordes a mesma distância. De G para A é um tom, por isso D passa a E, Em passa a F♯m e C passa a D. Conta em números ou em trastos: o resultado é o mesmo.',
+          explanation: 'Para passares uma música de G para A, sobe todos os acordes a mesma distância. De G para A é um tom, por isso D passa a E, Em passa a F♯m e C passa a D. Conta em números ou em trastes: o resultado é o mesmo.',
           tryThisLabel: 'Ouve a mesma sequência em A: A, E, F♯m e D',
         },
         {
           title: 'O que faz um capo',
-          explanation: 'Um capo prende as seis cordas num trasto, por isso cada forma que tocas soa mais aguda, meio-tom por cada trasto até ao capo. Com o capo no trasto 2, a forma de G soa A, a de C soa D, a de D soa E e a de Em soa F♯m. Formas de G com o capo no trasto 2 soam na tonalidade de A.',
-          tryThisLabel: 'Ouve as formas de G, C, D e G com o capo no trasto 2: A, D, E e A',
+          explanation: 'Um capo prende as seis cordas num traste, por isso cada forma que tocas soa mais aguda, meio-tom por cada traste até ao capo. Com o capo no traste 2, a forma de G soa A, a de C soa D, a de D soa E e a de Em soa F♯m. Formas de G com o capo no traste 2 soam na tonalidade de A.',
+          tryThisLabel: 'Ouve as formas de G, C, D e G com o capo no traste 2: A, D, E e A',
         },
         {
           title: 'Forma e som',
-          explanation: 'Com um capo, cada acorde tem dois nomes: a forma que fazes com os dedos e o acorde que soa. A tonalidade é a que soa. Formas de C com o capo no trasto 4 estão na tonalidade de E; formas de D com o capo no trasto 5 estão na tonalidade de G. Uma grelha pode estar escrita de qualquer das maneiras, por isso confirma qual delas usa.',
-          tryThisLabel: 'Vê a tonalidade de E: onde soam as formas de C com o capo no trasto 4',
+          explanation: 'Com um capo, cada acorde tem dois nomes: a forma que fazes com os dedos e o acorde que soa. A tonalidade é a que soa. Formas de C com o capo no traste 4 estão na tonalidade de E; formas de D com o capo no traste 5 estão na tonalidade de G. Uma grelha pode estar escrita de qualquer das maneiras, por isso confirma qual delas usa.',
+          tryThisLabel: 'Vê a tonalidade de E: onde soam as formas de C com o capo no traste 4',
         },
       ],
       tasks: [
-        { instruction: 'Toca G, D, Em e C e depois a mesma sequência em A: A, E, F♯m e D. Na guitarra, F♯m pode ser uma pestana no trasto 2.' },
-        { instruction: 'Põe um capo no trasto 2 e toca as tuas formas de G, D, Em e C. Soam A, E, F♯m e D: compara-as com a sequência em A que tocaste sem capo.' },
+        { instruction: 'Toca G, D, Em e C e depois a mesma sequência em A: A, E, F♯m e D. Na guitarra, F♯m pode ser uma pestana no traste 2.' },
+        { instruction: 'Na guitarra, põe um capo no traste 2 e toca as tuas formas de G, D, Em e C: soam A, E, F♯m e D. No piano, toca G, D, Em e C e depois cada acorde dois meios-tons acima, A, E, F♯m e D: é isso que o capo faz. Compara-os com a sequência em A que tocaste antes.' },
       ],
     },
     l1u35m9: {
@@ -1052,7 +1052,7 @@ const curriculumL1: CurriculumLevelOverlay = {
       ],
       tasks: [
         { instruction: 'Toca a pentatónica maior de G a subir e a descer: G, A, B, D, E e G. Depois toca G, C ou D e responde a cada acorde com uma das cinco notas, a ouvir se alguma choca.' },
-        { instruction: 'Toca a pentatónica menor de E: E, G, A, B, D e E. Na guitarra fica nas cordas soltas e nos trastos 2 e 3: corda mais grossa 0 e 3, depois 0 e 2 nas três cordas seguintes, depois 0 e 3 nas duas últimas.' },
+        { instruction: 'Toca a pentatónica menor de E: E, G, A, B, D e E. Na guitarra fica nas cordas soltas e nos trastes 2 e 3: corda mais grossa 0 e 3, depois 0 e 2 nas três cordas seguintes, depois 0 e 3 nas duas últimas.' },
       ],
     },
     l1u35m10: {

@@ -367,7 +367,7 @@ const overlay: ExerciseLevelOverlay = {
     choices: [
       'Os números indicam à banda o lugar de cada acorde na tonalidade, por isso 4 significa o acorde construído sobre o quarto grau',
       "Os números dizem à banda quantos tempos dura cada acorde, por isso 4 significa quatro tempos",
-      "Os números costumam indicar ao guitarrista o trasto a tocar, por isso 1 significa o primeiro trasto em qualquer tonalidade",
+      "Os números costumam indicar ao guitarrista o traste a tocar, por isso 1 significa o primeiro traste em qualquer tonalidade",
       "Os números medem meios-tons acima da tónica, por isso 4 significa o acorde com fundamental uma terça maior acima",
     ],
     hint: 'O sistema de números de Nashville escreve acordes como números de graus da escala (1=I, 4=IV, 5=V). Uma cifra a ler "1-5-6m-4" pode ser tocada em qualquer tonalidade instantaneamente. É usado extensivamente em sessões de estúdio de Nashville.',

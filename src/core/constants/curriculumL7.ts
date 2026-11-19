@@ -36,7 +36,7 @@ const l7u21m1: CurriculumModule = {
     {
       title: 'Alterations: b9, #9, #11, b13',
       explanation:
-        'Alterations chromatically modify extensions on dominant chords. b9 darkens the sound, common on V7 resolving to minor. #9 is the "Hendrix chord" with its bluesy bite — actually a minor third above the root, notated as an augmented 9th. #11 replaces the natural 11 for a brighter color, avoiding the 3rd/11 clash. b13 creates a tense altered dominant sound, enharmonic with #5. These alterations give jazz musicians precise control over color and tension on any dominant chord.',
+        'Alterations chromatically modify extensions on dominant chords. b9 darkens the sound, common on V7 resolving to minor. #9 is the "Hendrix chord" with its bluesy bite — actually a minor third above the root, notated as an augmented 9th. #11 replaces the natural 11 for a brighter colour, avoiding the 3rd/11 clash. b13 creates a tense altered dominant sound, enharmonic with #5. These alterations give jazz musicians precise control over colour and tension on any dominant chord.',
       tryThisQuery: 'C7b9',
       tryThisLabel: 'Build C7b9 — darkened dominant resolving to minor',
     },
@@ -45,7 +45,7 @@ const l7u21m1: CurriculumModule = {
     {
       id: 'l7u21m1t1',
       instruction:
-        "Type 'Cmaj9', 'Dm11', and 'G13' one after another. For each chord, identify the root, quality, and which extensions are present. Notice how maj9 implies maj7, m11 implies m7+9+11, and 13 implies 7+9+13.",
+        "Tap 'Cmaj9', 'Dm11', and 'G13' one after another. For each chord, identify the root, quality, and which extensions are present. Notice how maj9 implies maj7, m11 implies m7+9+11, and 13 implies 7+9+13.",
     },
     {
       id: 'l7u21m1t2',
@@ -55,7 +55,7 @@ const l7u21m1: CurriculumModule = {
     {
       id: 'l7u21m1t3',
       instruction:
-        "Build a dominant alteration ladder: type 'C7', then 'C7b9', then 'C7#9', then 'C7#11'. Each alteration chromatically modifies one extension while keeping the dominant shell (C-E-Bb) intact.",
+        "Build a dominant alteration ladder: tap 'C7', then 'C7b9', then 'C7#9', then 'C7#11'. Each alteration chromatically modifies one extension while keeping the dominant shell (C-E-Bb) intact.",
     },
   ],
   prerequisites: ['l6u20m4'],
@@ -69,7 +69,7 @@ const l7u21m2: CurriculumModule = {
   subtitle: 'Root-3rd-7th shells, the alt chord, and suspended dominants',
   objectives: [
     'Construct shell voicings (root, 3rd, 7th) for every chord quality',
-    'Understand why the shell defines the chord — extensions are color, the shell is identity',
+    'Understand why the shell defines the chord — extensions are colour, the shell is identity',
     'Build the "alt" chord (7alt) and understand its maximum-tension role',
     'Use sus4 and 7sus4 chords as pre-resolution dominant voicings',
   ],
@@ -84,9 +84,9 @@ const l7u21m2: CurriculumModule = {
     {
       title: 'The Alt Chord: Maximum Chromatic Tension',
       explanation:
-        'C7alt is a dominant 7th with every extension altered: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). It packs the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs with the altered scale, which is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
+        'C7alt is a dominant 7th (C, E, Bb) with an altered 5th, an altered 9th, or both. Four alterations are available: b9, #9, #11 (enharmonic with b5), and b13 (enharmonic with #5). A voicing needs one or more of them over the shell: C, E and Bb with D# (#9) and Ab (b13) is already a C7alt. The app\'s C7alt plays all four at once, the maximum chromatic tension possible before resolution — every non-shell tone is chromatically displaced. The alt chord pairs with the altered scale, which holds all four: it is mode 7 of melodic minor a half step above the root (C altered = Db melodic minor). This is the go-to dominant sound for resolving to minor chords in jazz.',
       tryThisQuery: 'C7alt',
-      tryThisLabel: 'Build C7alt — every extension altered',
+      tryThisLabel: 'Build C7alt — here with all four alterations',
     },
     {
       title: 'Suspended Dominants: 7sus4',
@@ -100,17 +100,17 @@ const l7u21m2: CurriculumModule = {
     {
       id: 'l7u21m2t1',
       instruction:
-        "Build shells across qualities: type 'Cmaj7', 'Cm7', 'C7', 'Cm7b5'. In each, identify the root, 3rd, and 7th. The 3rd and 7th tell Cmaj7, Cm7 and C7 apart, but Cm7 and Cm7b5 share the same 3rd and 7th (Eb and Bb) — only the flatted 5th (Gb) separates them, so keep it in the m7b5 shell.",
+        "Build shells across qualities: tap 'Cmaj7', 'Cm7', 'C7', 'Cm7b5'. In each, identify the root, 3rd, and 7th. The 3rd and 7th tell Cmaj7, Cm7 and C7 apart, but Cm7 and Cm7b5 share the same 3rd and 7th (Eb and Bb) — only the flatted 5th (Gb) separates them, so keep it in the m7b5 shell.",
     },
     {
       id: 'l7u21m2t2',
       instruction:
-        "Type 'C7alt' — this is a dominant 7th with all altered extensions (b9, #9, #11/b5, b13/#5). Count the chromatic notes compared to a plain C7. This chord is maximum tension before resolution.",
+        "Tap 'C7alt' — the app plays a dominant 7th with all four available alterations (b9, #9, #11/b5, b13/#5); a C7alt voicing needs only one or more of them. Count the chromatic notes compared to a plain C7. With all four, this chord is maximum tension before resolution.",
     },
     {
       id: 'l7u21m2t3',
       instruction:
-        "Compare 'G7' with 'G7sus4' — the sus4 replaces the B (major 3rd) with C (perfect 4th). The dominant function remains (the b7 still pulls downward), but the sound is open and unresolved.",
+        "Compare 'G7' with 'G7sus4' — the sus4 replaces the B (major 3rd) with C (perfect 4th). The dominant function remains (the b7 still pulls downwards), but the sound is open and unresolved.",
     },
   ],
   prerequisites: ['l7u21m1'],
@@ -126,27 +126,27 @@ const l7u21m3: CurriculumModule = {
     'Master the ii-V-I progression in major keys (Dm7-G7-Cmaj7)',
     'Master the ii-V-i progression in minor keys (Dm7b5-G7b9-Cm7)',
     'Understand related ii-V pairs — every V7 can be preceded by its ii',
-    'Analyze jazz standards as chains of ii-V-I units, some complete, some partial',
+    'Analyse jazz standards as chains of ii-V-I units, some complete, some partial',
   ],
   concepts: [
     {
       title: 'Major ii-V-I',
       explanation:
-        'The ii-V-I is the foundational unit of jazz harmony. In C major: Dm7-G7-Cmaj7. The ii chord (Dm7) acts as a pre-dominant, setting up the V7 (G7) whose tritone (B-F) creates maximum tension, resolving to Cmaj7. The voice leading is remarkably smooth: the 3rd of ii (F) becomes the 7th of V, the 7th of ii (C) steps down to the 3rd of V (B), and the tritone of V resolves inward to the root and 3rd of I. This three-chord unit drives virtually every jazz standard.',
+        'The ii-V-I is the foundational unit of jazz harmony. In C major: Dm7-G7-Cmaj7. The ii chord (Dm7) acts as a pre-dominant, setting up the V7 (G7) whose tritone (B-F) creates maximum tension, resolving to Cmaj7. The voice leading is remarkably smooth: the 3rd of ii (F) becomes the 7th of V, the 7th of ii (C) steps down to the 3rd of V (B), and the tritone of V resolves inwards to the root and 3rd of I. This three-chord unit drives virtually every jazz standard.',
       tryThisQuery: 'Dm7',
       tryThisLabel: 'Start the ii-V-I: play Dm7 (ii in C)',
     },
     {
       title: 'Minor ii-V-i',
       explanation:
-        'The minor ii-V-i uses the half-diminished ii and an altered dominant V. In C minor: Dm7b5-G7b9-Cm7. The Dm7b5 (half-diminished) has a darker pre-dominant color than the minor 7th used in major. The G7b9 adds the b9 (Ab) — the dark, tense alteration that pulls toward a minor resolution. The b9 is the b6 of the target minor key, which is why it sounds "right" resolving to minor. Many jazz musicians use G7alt instead of G7b9 for even more chromatic tension.',
+        'The minor ii-V-i uses the half-diminished ii and an altered dominant V. In C minor: Dm7b5-G7b9-Cm7. The Dm7b5 (half-diminished) has a darker pre-dominant colour than the minor 7th used in major. The G7b9 adds the b9 (Ab) — the dark, tense alteration that pulls towards a minor resolution. The b9 is the b6 of the target minor key, which is why it sounds "right" resolving to minor. Many jazz musicians use G7alt instead of G7b9 for even more chromatic tension.',
       tryThisQuery: 'Dm7b5',
       tryThisLabel: 'Build Dm7b5 — the half-diminished ii for minor',
     },
     {
       title: 'Related ii-V Pairs',
       explanation:
-        'Every dominant 7th chord can be preceded by its related ii chord — the minor 7th built a perfect 4th below the dominant root (or a 5th above). This "prepares" the dominant and creates smoother voice leading. If a song has E7 resolving somewhere, you can insert Bm7 before it: Bm7-E7 is a ii-V pair. Jazz musicians chain these pairs across key centers: Bm7-E7-Am7-D7-Gmaj7 is a chain of ii-V pairs cascading through the cycle of fifths, each pair targeting the next key.',
+        'Every dominant 7th chord can be preceded by its related ii chord — the minor 7th built a perfect 4th below the dominant root (or a 5th above). This "prepares" the dominant and creates smoother voice leading. If a song has E7 resolving somewhere, you can insert Bm7 before it: Bm7-E7 is a ii-V pair. Jazz musicians chain these pairs across key centres: Bm7-E7-Am7-D7-Gmaj7 is a chain of ii-V pairs cascading through the cycle of fifths, each pair targeting the next key.',
       tryThisQuery: 'G7',
       tryThisLabel: 'Hear G7 — the V of the ii-V-I in C',
     },
@@ -155,17 +155,17 @@ const l7u21m3: CurriculumModule = {
     {
       id: 'l7u21m3t1',
       instruction:
-        "Build a major ii-V-I in C: type 'Dm7', then 'G7', then 'Cmaj7'. Listen to the tension build from ii through V and resolve to I. The tritone in G7 (B and F) resolves inward to C and E.",
+        "Build a major ii-V-I in C: tap 'Dm7', then 'G7', then 'Cmaj7'. Listen to the tension build from ii through V and resolve to I. The tritone in G7 (B and F) resolves inwards to C and E.",
     },
     {
       id: 'l7u21m3t2',
       instruction:
-        "Now build a minor ii-V-i in C minor: type 'Dm7b5', then 'G7b9', then 'Cm7'. Compare the mood — the half-diminished ii and the b9 alteration darken everything compared to the major version.",
+        "Now build a minor ii-V-i in C minor: tap 'Dm7b5', then 'G7b9', then 'Cm7'. Compare the mood — the half-diminished ii and the b9 alteration darken everything compared to the major version.",
     },
     {
       id: 'l7u21m3t3',
       instruction:
-        "Chain ii-V pairs: type 'Em7', 'A7', 'Dm7', 'G7', 'Cmaj7'. This is a cascading ii-V-I where each pair targets the next — Em7-A7 targets Dm7, then Dm7-G7 targets Cmaj7. The cycle of fifths in action.",
+        "Chain ii-V pairs: tap 'Em7', 'A7', 'Dm7', 'G7', 'Cmaj7'. This is a cascading ii-V-I where each pair targets the next — Em7-A7 targets Dm7, then Dm7-G7 targets Cmaj7. The cycle of fifths in action.",
     },
   ],
   prerequisites: ['l7u21m2'],
@@ -181,7 +181,7 @@ const l7u21m4: CurriculumModule = {
     'Apply tritone substitution to any dominant 7th chord',
     'Understand why tritone subs work — shared tritone interval between the two dominants',
     'Add the related ii of the substituted dominant for an even richer chromatic line',
-    'Recognize the back-door dominant (bVII7-I) as a related reharmonization technique',
+    'Recognise the back-door dominant (bVII7-I) as a related reharmonisation technique',
   ],
   concepts: [
     {
@@ -220,7 +220,7 @@ const l7u21m4: CurriculumModule = {
     {
       id: 'l7u21m4t3',
       instruction:
-        "Try the back-door dominant: play 'Bb7' then 'Cmaj7'. The Bb7 resolves UP by a whole step to C instead of DOWN by a fifth. It sounds warm and unexpected — a favorite surprise ending in jazz ballads.",
+        "Try the back-door dominant: play 'Bb7' then 'Cmaj7'. The Bb7 resolves UP by a whole step to C instead of DOWN by a fifth. It sounds warm and unexpected — a favourite surprise ending in jazz ballads.",
     },
   ],
   prerequisites: ['l7u21m3'],
@@ -236,7 +236,7 @@ const l7u21m5: CurriculumModule = {
     'Play the basic 12-bar blues form using dominant 7th chords throughout',
     'Understand the jazz blues enrichment: ii-V insertions, tritone subs, diminished passing chords',
     'Build a minor blues form with minor 7th chords and bVI7',
-    'Recognize why all chords in the blues are dominant — the pervasive tension IS the blues sound',
+    'Recognise why every chord of the basic blues is dominant — the pervasive tension IS the blues sound',
   ],
   concepts: [
     {
@@ -250,8 +250,9 @@ const l7u21m5: CurriculumModule = {
       title: 'Jazz Blues',
       explanation:
         'Jazz blues enriches the basic 12-bar form with ii-V insertions, tritone substitutions, and diminished passing chords. A common jazz blues in C: C7 / F7 / C7 / C7 / F7 / F#dim7 / C7 / A7 / Dm7 / G7 / C7-A7 / Dm7-G7. The #IVdim7 (F#dim7) acts as a chromatic passing chord between IV7 and I7. A7 (V7/ii) pulls to Dm7, supplying the ii-V logic of bars 8–9 and the turnaround. The final four bars become a turnaround with a ii-V (Dm7-G7) that cycles back to the top. Bird blues (Charlie Parker) adds even more substitutions and ii-V chains.',
-      tryThisQuery: 'F7',
-      tryThisLabel: 'Build F7 — the IV7 of C blues',
+      // The passing diminished chord with its bass line F–F#–G (audit A29).
+      tryThisQuery: 'chords: F7 F#dim7 C7/G',
+      tryThisLabel: 'Hear F7 → F#dim7 → C7/G: the bass climbs F–F#–G',
     },
     {
       title: 'Minor Blues',
@@ -270,7 +271,7 @@ const l7u21m5: CurriculumModule = {
     {
       id: 'l7u21m5t2',
       instruction:
-        "Add the jazz blues passing chord: play 'F7' then 'F#dim7' then 'C7'. The diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G, where G is the 5th of C). This is the signature jazz blues move.",
+        "Add the jazz blues passing chord: tap 'F7', 'F#dim7' and 'C7/G' (C7 with its 5th, G, in the bass) to see each chord, then, under Jazz Blues above, press Hear it to hear the three in a row: the diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G). This is the signature jazz blues move.",
     },
     {
       id: 'l7u21m5t3',
@@ -290,7 +291,7 @@ const l7u21m6: CurriculumModule = {
   objectives: [
     'Understand rhythm changes as a 32-bar AABA form derived from "I Got Rhythm"',
     'Build turnaround patterns: I-vi-ii-V, chromatic, diminished approach',
-    'Analyze the rhythm changes bridge as a cycle of dominants (III7-VI7-II7-V7)',
+    'Analyse the rhythm changes bridge as a cycle of dominants (III7-VI7-II7-V7)',
     'Apply turnarounds at the end of any section to create smooth harmonic cycles',
   ],
   concepts: [
@@ -311,7 +312,7 @@ const l7u21m6: CurriculumModule = {
     {
       title: 'The Cycle of Dominants',
       explanation:
-        'The bridge of rhythm changes uses a cycle of dominant 7th chords moving in fourths: D7-G7-C7-F7 in Bb. Each dominant resolves to the next as if it were a V-I, but the "I" is itself a dominant chord, so the resolution is perpetually deferred. This creates forward momentum without ever landing on a stable tonic. The cycle of dominants appears throughout jazz — in bridges, intros, and transitional passages. Each dominant chord implies its own key center briefly, making it a rich arena for improvisation.',
+        'The bridge of rhythm changes uses a cycle of dominant 7th chords moving in fourths: D7-G7-C7-F7 in Bb. Each dominant resolves to the next as if it were a V-I, but the "I" is itself a dominant chord, so the resolution is perpetually deferred. This creates forward momentum without ever landing on a stable tonic. The cycle of dominants appears throughout jazz — in bridges, intros, and transitional passages. Each dominant chord implies its own key centre briefly, making it a rich arena for improvisation.',
       tryThisQuery: 'D7',
       tryThisLabel: 'Build D7 — the first dominant in the bridge cycle',
     },
@@ -351,7 +352,7 @@ const l7u22m1: CurriculumModule = {
   objectives: [
     'Map every standard chord quality to its primary and alternative scales',
     'Understand why certain scales "work" over certain chords — shared chord tones as the basis',
-    'Apply chord-scale theory to analyze and improvise over ii-V-I progressions',
+    'Apply chord-scale theory to analyse and improvise over ii-V-I progressions',
     'Use the altered scale for 7alt chords and Lydian dominant for 7#11 chords',
   ],
   concepts: [
@@ -388,17 +389,17 @@ const l7u22m1: CurriculumModule = {
     {
       id: 'l7u22m1t1',
       instruction:
-        "Match chord to scale: type 'Dm7' (Dorian), then 'D dorian' to see the scale. Now try 'G7' (Mixolydian) and 'G mixolydian'. The chord tones sit inside the scale — this is chord-scale alignment.",
+        "Match chord to scale: tap 'Dm7' (Dorian), then 'D dorian' to see the scale. Now try 'G7' (Mixolydian) and 'G mixolydian'. The chord tones sit inside the scale — this is chord-scale alignment.",
     },
     {
       id: 'l7u22m1t2',
       instruction:
-        "Explore the altered dominant: type 'C altered scale', then 'C7alt'. Every note of the chord is contained in the scale. To find any altered scale quickly: play melodic minor a half step above the root (C altered = Db melodic minor).",
+        "Explore the altered dominant: tap 'C altered scale', then 'C7alt'. Every note of the chord is contained in the scale. To find any altered scale quickly: play melodic minor a half step above the root (C altered = Db melodic minor).",
     },
     {
       id: 'l7u22m1t3',
       instruction:
-        "Compare two dominant scales: type 'G mixolydian' (unaltered dominant) and then 'G altered scale' (maximum alteration). Mixolydian is bright and stable; altered is dark and chromatic. Context determines which to use.",
+        "Compare two dominant scales: tap 'G mixolydian' (unaltered dominant) and then 'G altered scale' (maximum alteration). Mixolydian is bright and stable; altered is dark and chromatic. Context determines which to use.",
     },
   ],
   prerequisites: ['l7u21m6'],
@@ -408,12 +409,12 @@ const l7u22m2: CurriculumModule = {
   id: 'l7u22m2',
   unitId: 'u22',
   levelId: 'l7',
-  title: 'Upper Structures and Reharmonization',
+  title: 'Upper Structures and Reharmonisation',
   subtitle: 'Voicing complex chords with simple triads, and enriching progressions',
   objectives: [
     'Construct upper-structure triads over dominant bass notes to voice extensions',
     'Understand how the upper triad creates specific extensions without spelling each note',
-    'Apply basic reharmonization: substitute chords within the same function',
+    'Apply basic reharmonisation: substitute chords within the same function',
     'Use tritone subs, secondary dominants, and passing chords to enrich simple progressions',
   ],
   concepts: [
@@ -425,16 +426,16 @@ const l7u22m2: CurriculumModule = {
       tryThisLabel: 'Build C13#11 — the sound of a D major triad over C7',
     },
     {
-      title: 'Reharmonization Principles',
+      title: 'Reharmonisation Principles',
       explanation:
-        'Reharmonization replaces the original chords of a melody with different chords that still support the melody notes. The melody notes become different extensions of the new chords. Basic techniques: substitute chords within the same function (iii for I, vi for IV), add secondary dominants before target chords, insert tritone substitutions, use passing diminished chords between diatonic chords, and apply chromatic bass motion. Every reharmonization must preserve the melody — the melody note must be a chord tone or acceptable extension of the new chord.',
+        'Reharmonisation replaces the original chords of a melody with different chords that still support the melody notes. The melody notes become different extensions of the new chords. Basic techniques: substitute chords within the same function (iii for I, vi for IV), add secondary dominants before target chords, insert tritone substitutions, use passing diminished chords between diatonic chords, and apply chromatic bass motion. Every reharmonisation must preserve the melody — the melody note must be a chord tone or acceptable extension of the new chord.',
       tryThisQuery: 'Em7',
       tryThisLabel: 'Build Em7 — a iii that can substitute for Cmaj7',
     },
     {
       title: 'Chromatic Bass Lines and Passing Chords',
       explanation:
-        'One of the most powerful reharmonization tools is creating a chromatic bass line by inserting passing chords. Between C and Dm, insert C#dim7 — the bass walks C-C#-D. Between F and C/G, insert F#dim7 — the bass walks F-F#-G. Diminished 7th chords are the most versatile passing chords because every diminished chord is enharmonically equivalent to three others (due to symmetric construction), so they connect to multiple destinations. Combined with tritone subs and secondary dominants, chromatic bass motion transforms simple diatonic progressions into rich jazz harmony.',
+        'One of the most powerful reharmonisation tools is creating a chromatic bass line by inserting passing chords. Between C and Dm, insert C#dim7 — the bass walks C-C#-D. Between F and C/G, insert F#dim7 — the bass walks F-F#-G. Diminished 7th chords are the most versatile passing chords because every diminished chord is enharmonically equivalent to three others (due to symmetric construction), so they connect to multiple destinations. Combined with tritone subs and secondary dominants, chromatic bass motion transforms simple diatonic progressions into rich jazz harmony.',
       tryThisQuery: 'C#dim7',
       tryThisLabel: 'Hear C#dim7 — a chromatic passing chord',
     },
@@ -443,12 +444,12 @@ const l7u22m2: CurriculumModule = {
     {
       id: 'l7u22m2t1',
       instruction:
-        "Explore upper structures: type 'C13#11' — this is the sound of a D major triad (D-F#-A = 9-#11-13) over a C7 shell (C-E-Bb). The complex symbol is voiced with a simple triad on top.",
+        "Explore upper structures: tap 'C13#11' — this is the sound of a D major triad (D-F#-A = 9-#11-13) over a C7 shell (C-E-Bb). The complex symbol is voiced with a simple triad on top.",
     },
     {
       id: 'l7u22m2t2',
       instruction:
-        "Try a function substitution: play 'Cmaj7' then play 'Em7'. Both are tonic-function chords in C major — Em7 shares three notes with Cmaj7 (E-G-B) but adds a different color. This is the simplest reharmonization.",
+        "Try a function substitution: play 'Cmaj7' then play 'Em7'. Both are tonic-function chords in C major — Em7 shares three notes with Cmaj7 (E-G-B) but adds a different colour. This is the simplest reharmonisation.",
     },
     {
       id: 'l7u22m2t3',
@@ -464,42 +465,42 @@ const l7u22m3: CurriculumModule = {
   unitId: 'u22',
   levelId: 'l7',
   title: 'Coltrane Changes and Advanced Jazz Harmony',
-  subtitle: 'Giant Steps matrix, constant structure, and three-key-center architecture',
+  subtitle: 'Giant Steps matrix, constant structure, and three-key-centre architecture',
 
   objectives: [
-    'Analyze the Coltrane (Giant Steps) matrix — three major key centers a major third apart',
-    'Understand why each key center is approached by its V7 dominant chord',
-    'Recognize constant structure as a related technique — parallel chord motion regardless of key',
-    'Appreciate the improvisational challenge of navigating three key centers at high tempo',
+    'Analyse the Coltrane (Giant Steps) matrix — three major key centres a major third apart',
+    'Understand why each key centre is approached by its V7 dominant chord',
+    'Recognise constant structure as a related technique — parallel chord motion regardless of key',
+    'Appreciate the improvisational challenge of navigating three key centres at high tempo',
   ],
   concepts: [
     {
       title: 'The Giant Steps Matrix',
       explanation:
-        'John Coltrane devised chord progressions that cycle through three major key centers separated by major thirds, dividing the octave into three equal parts. The Giant Steps progression: Bmaj7-D7-Gmaj7-Bb7-Ebmaj7-F#7-Bmaj7, touching keys B, G, and Eb (abbreviated — the full tune interleaves ii7 chords such as Am7-D7). Each key center is approached by its V7 chord. The result is extremely rapid harmonic rhythm that demands thinking in three keys simultaneously — one of the great challenges in jazz improvisation and a summit of chord-scale mastery.',
+        'John Coltrane devised chord progressions that cycle through three major key centres separated by major thirds, dividing the octave into three equal parts. The Giant Steps progression: Bmaj7-D7-Gmaj7-Bb7-Ebmaj7-F#7-Bmaj7, touching keys B, G, and Eb (abbreviated — the full tune interleaves ii7 chords such as Am7-D7). Each key centre is approached by its V7 chord. The result is extremely rapid harmonic rhythm that demands thinking in three keys simultaneously — one of the great challenges in jazz improvisation and a summit of chord-scale mastery.',
       tryThisQuery: 'Bmaj7',
-      tryThisLabel: 'Start on Bmaj7 — the first key center',
+      tryThisLabel: 'Start on Bmaj7 — the first key centre',
     },
     {
       title: 'Constant Structure',
       explanation:
-        'Constant structure moves the same chord quality chromatically or by some interval pattern regardless of key. Cmaj7-Dbmaj7-Dmaj7-Ebmaj7 (ascending major sevenths) creates parallel voice leading (planing) with a modern jazz color. This technique abandons functional harmony entirely — there is no key, only motion. Wayne Shorter and Herbie Hancock used constant structure extensively. It is related to Coltrane changes in that both treat chord movement as geometric patterns rather than functional progressions.',
+        'Constant structure moves the same chord quality chromatically or by some interval pattern regardless of key. Cmaj7-Dbmaj7-Dmaj7-Ebmaj7 (ascending major sevenths) creates parallel voice leading (planing) with a modern jazz colour. This technique abandons functional harmony entirely — there is no key, only motion. Wayne Shorter and Herbie Hancock used constant structure extensively. It is related to Coltrane changes in that both treat chord movement as geometric patterns rather than functional progressions.',
       tryThisQuery: 'Dbmaj7',
       tryThisLabel: 'Hear Dbmaj7 — constant structure in motion',
     },
     {
-      title: 'Three-Key-Center Improvisation',
+      title: 'Three-Key-Centre Improvisation',
       explanation:
-        'Improvising over Coltrane changes requires thinking in three keys simultaneously at high tempo. The standard approach: play the major scale (or pentatonic) of each key center for the duration of that chord, switching instantly when the harmony moves. More advanced approaches use enclosures, digital patterns (1235, 1357), and superimposed pentatonics. The difficulty lies in the speed of harmonic rhythm — each key center may last only two beats. This is the Everest of jazz improvisation, requiring total command of all 12 keys.',
+        'Improvising over Coltrane changes requires thinking in three keys simultaneously at high tempo. The standard approach: play the major scale (or pentatonic) of each key centre for the duration of that chord, switching instantly when the harmony moves. More advanced approaches use enclosures, digital patterns (1235, 1357), and superimposed pentatonics. The difficulty lies in the speed of harmonic rhythm — each key centre may last only two beats. This is the Everest of jazz improvisation, requiring total command of all 12 keys.',
       tryThisQuery: 'Gmaj7',
-      tryThisLabel: 'Hear Gmaj7 — the second key center',
+      tryThisLabel: 'Hear Gmaj7 — the second key centre',
     },
   ],
   tasks: [
     {
       id: 'l7u22m3t1',
       instruction:
-        "Trace the Coltrane cycle: play 'Bmaj7', 'D7', 'Gmaj7', 'Bb7', 'Ebmaj7', 'F#7'. The three key centers (B, G, Eb) are a major third apart — they divide the octave into three equal parts.",
+        "Trace the Coltrane cycle: play 'Bmaj7', 'D7', 'Gmaj7', 'Bb7', 'Ebmaj7', 'F#7'. The three key centres (B, G, Eb) are a major third apart — they divide the octave into three equal parts.",
     },
     {
       id: 'l7u22m3t2',
@@ -509,7 +510,7 @@ const l7u22m3: CurriculumModule = {
     {
       id: 'l7u22m3t3',
       instruction:
-        "Explore constant structure: play 'Cmaj7', 'Dbmaj7', 'Dmaj7', 'Ebmaj7'. The same chord quality moves chromatically — parallel motion that abandons functional harmony entirely. Listen to the color shift as the root ascends.",
+        "Explore constant structure: play 'Cmaj7', 'Dbmaj7', 'Dmaj7', 'Ebmaj7'. The same chord quality moves chromatically — parallel motion that abandons functional harmony entirely. Listen to the colour shift as the root ascends.",
     },
   ],
   prerequisites: ['l7u22m2'],
@@ -524,28 +525,28 @@ const l7u22m4: CurriculumModule = {
   objectives: [
     'Distinguish modal harmony from tonal harmony and understand why V-I is generally avoided',
     'Identify the characteristic tone of each mode and use it to select chords',
-    'Build modal chord progressions that preserve the modal color',
+    'Build modal chord progressions that preserve the modal colour',
     'Use pedal points, drones, and ostinato patterns to anchor the modal tonic',
   ],
   concepts: [
     {
       title: 'Modal vs. Tonal Thinking',
       explanation:
-        'In tonal music, the V-I relationship defines the key and creates the gravitational pull that organizes all harmony. In modal music, V-I is generally avoided because it tends to collapse the modal color back into major or minor tonality. Modal harmony establishes the tonic through repetition, pedal points, drones, and non-dominant chord relationships. Miles Davis, McCoy Tyner, and Herbie Hancock built entire compositions on this principle — "So What" spends 16 bars in D Dorian, 8 in Eb Dorian and 8 more in D Dorian: two modal centres for a whole tune. The mode itself IS the harmony.',
+        'In tonal music, the V-I relationship defines the key and creates the gravitational pull that organises all harmony. In modal music, V-I is generally avoided because it tends to collapse the modal colour back into major or minor tonality. Modal harmony establishes the tonic through repetition, pedal points, drones, and non-dominant chord relationships. Miles Davis, McCoy Tyner, and Herbie Hancock built entire compositions on this principle — "So What" spends 16 bars in D Dorian, 8 in Eb Dorian and 8 more in D Dorian: two modal centres for a whole tune. The mode itself IS the harmony.',
       tryThisQuery: 'D dorian',
       tryThisLabel: 'See D Dorian — the jazz modal staple',
     },
     {
       title: 'Characteristic Tones',
       explanation:
-        'Each mode has one note that distinguishes it from plain major or natural minor — the characteristic tone. Dorian has a raised 6th compared to natural minor (the note that makes it brighter). Phrygian has a lowered 2nd (dark, Spanish flavor). Lydian has a raised 4th (bright, floating, dreamlike). Mixolydian has a lowered 7th (bluesy, rock). Heard against plain major or minor they sound like alterations, but in modal writing they are the essential notes that must be emphasized in both melody and chord choices to establish the mode.',
+        'Each mode has one note that distinguishes it from plain major or natural minor — the characteristic tone. Dorian has a raised 6th compared to natural minor (the note that makes it brighter). Phrygian has a lowered 2nd (dark, Spanish flavour). Lydian has a raised 4th (bright, floating, dreamlike). Mixolydian has a lowered 7th (bluesy, rock). Heard against plain major or minor they sound like alterations, but in modal writing they are the essential notes that must be emphasised in both melody and chord choices to establish the mode.',
       tryThisQuery: 'F lydian',
       tryThisLabel: 'Hear F Lydian — the raised 4th defines it',
     },
     {
       title: 'Modal Chord Progressions',
       explanation:
-        'Each mode supports specific chord movements that reinforce its color. Dorian\'s defining color chord is the major IV over an i tonic — the raised 6th lives in it (Dm-G-Dm); ii and bVII serve as secondary colors. Phrygian centers on i and bII — the bII is a half step above the tonic, the signature Phrygian sound (Em-F-Em). Lydian\'s defining color chord is the major II over a I tonic — the raised 4th lives in it (C-D-C); vii shares that raised 4th as a secondary color. Mixolydian leans on I and bVII — the lowered 7th sits in the bVII chord (G-F-Dm-G). Avoid any chord that implies dominant-tonic resolution.',
+        'Each mode supports specific chord movements that reinforce its colour. Dorian\'s defining colour chord is the major IV over an i tonic — the raised 6th lives in it (Dm-G-Dm); ii and bVII serve as secondary colours. Phrygian centres on i and bII — the bII is a half step above the tonic, the signature Phrygian sound (Em-F-Em). Lydian\'s defining colour chord is the major II over a I tonic — the raised 4th lives in it (C-D-C); vii shares that raised 4th as a secondary colour. Mixolydian leans on I and bVII — the lowered 7th sits in the bVII chord (G-F-Dm-G). Avoid any chord that implies dominant-tonic resolution.',
       tryThisQuery: 'G mixolydian',
       tryThisLabel: 'See G Mixolydian — bVII is the key chord',
     },
@@ -554,12 +555,12 @@ const l7u22m4: CurriculumModule = {
     {
       id: 'l7u22m4t1',
       instruction:
-        "Type 'D dorian' and identify the characteristic tone (B natural — the raised 6th). Now type 'D natural minor scale' and compare — only one note differs. That single note defines the Dorian sound.",
+        "Tap 'D dorian' and identify the characteristic tone (B natural — the raised 6th). Now tap 'D natural minor scale' and compare — only one note differs. That single note defines the Dorian sound.",
     },
     {
       id: 'l7u22m4t2',
       instruction:
-        "Type 'E phrygian' — the characteristic tone is F (the lowered 2nd). Build a Phrygian vamp: play 'Em' then 'F major chord' and back to 'Em'. The half-step root motion is the Phrygian signature.",
+        "Tap 'E phrygian' — the characteristic tone is F (the lowered 2nd). Build a Phrygian vamp: play 'Em' then 'F major chord' and back to 'Em'. The half-step root motion is the Phrygian signature.",
     },
     {
       id: 'l7u22m4t3',
@@ -581,13 +582,13 @@ const l7u22m5: CurriculumModule = {
     'Build quartal voicings (stacked perfect fourths) and understand their harmonic ambiguity',
     'Understand quintal voicings as inverted quartal — stacked perfect fifths for an open, spacious sound',
     'Use pedal points and drones to anchor modal compositions without dominant function',
-    'Recognize quartal voicing as McCoy Tyner\'s signature technique in modal jazz',
+    'Recognise quartal voicing as McCoy Tyner\'s signature technique in modal jazz',
   ],
   concepts: [
     {
       title: 'Quartal Voicings',
       explanation:
-        'Quartal chords are built by stacking perfect fourths instead of thirds. A quartal voicing on D: D-G-C-F. This could imply Dm7, Dm11, or simply a floating quartal sonority with no clear major/minor identity. The ambiguity is intentional and perfect for modal music — quartal voicings do not pull toward resolution the way triads do. McCoy Tyner built his entire signature sound on quartal stacks, often moving them in parallel over a bass pedal. In the right hand: fourths. In the left hand: the modal tonic as a drone.',
+        'Quartal chords are built by stacking perfect fourths instead of thirds. A quartal voicing on D: D-G-C-F. This could imply Dm7, Dm11, or simply a floating quartal sonority with no clear major/minor identity. The ambiguity is intentional and perfect for modal music — quartal voicings do not pull towards resolution the way triads do. McCoy Tyner built his entire signature sound on quartal stacks, often moving them in parallel over a bass pedal. In the right hand: fourths. In the left hand: the modal tonic as a drone.',
       tryThisQuery: 'Dm11',
       tryThisLabel: 'Hear Dm11 — a quartal stack in chord form',
     },
@@ -601,7 +602,7 @@ const l7u22m5: CurriculumModule = {
     {
       title: 'Pedal Points and Drones',
       explanation:
-        'A pedal point is a sustained or repeated bass note over which the upper harmonies change freely. A drone is a continuously sounding pitch (or fifth) that anchors the tonal center. In modal music, pedal points and drones replace dominant function — the tonic is established by sheer persistence rather than by harmonic gravity. Indian classical music is entirely built on a drone (the tanpura). Miles Davis used pedal points in modal jazz to free the harmony from functional chord changes, allowing the soloist to explore the mode freely.',
+        'A pedal point is a sustained or repeated bass note over which the upper harmonies change freely. A drone is a continuously sounding pitch (or fifth) that anchors the tonal centre. In modal music, pedal points and drones replace dominant function — the tonic is established by sheer persistence rather than by harmonic gravity. Indian classical music is entirely built on a drone (the tanpura). Miles Davis used pedal points in modal jazz to free the harmony from functional chord changes, allowing the soloist to explore the mode freely.',
       tryThisQuery: 'D natural minor scale',
       tryThisLabel: 'See D natural minor — a scale over a D pedal',
     },
@@ -610,17 +611,17 @@ const l7u22m5: CurriculumModule = {
     {
       id: 'l7u22m5t1',
       instruction:
-        "Build a quartal sound: type 'Dm11' — this contains the notes D-G-C-F when voiced in fourths. Compare with 'Dm7' — the 11th extension adds the quartal stacking that creates the open, ambiguous quality.",
+        "Build a quartal sound: tap 'Dm11' — this contains the notes D-G-C-F when voiced in fourths. Compare with 'Dm7' — the 11th extension adds the quartal stacking that creates the open, ambiguous quality.",
     },
     {
       id: 'l7u22m5t2',
       instruction:
-        "Explore the power chord as a minimal fifth stack: type 'C5', then 'D5', then 'E5'. Power chords are neither major nor minor — pure fifths with no third. This is quintal thinking at its most basic.",
+        "Explore the power chord as a minimal fifth stack: tap 'C5', then 'D5', then 'E5'. Power chords are neither major nor minor — pure fifths with no third. This is quintal thinking at its most basic.",
     },
     {
       id: 'l7u22m5t3',
       instruction:
-        "Compare 'D dorian' with 'D natural minor scale'. Over a D pedal drone, Dorian's raised 6th (B natural) creates a brighter modal color. The pedal anchors D as tonic while the scale defines the mode.",
+        "Compare 'D dorian' with 'D natural minor scale'. Over a D pedal drone, Dorian's raised 6th (B natural) creates a brighter modal colour. The pedal anchors D as tonic while the scale defines the mode.",
     },
   ],
   prerequisites: ['l7u22m4'],
@@ -639,9 +640,9 @@ const l7u23m1: CurriculumModule = {
   title: 'Pop Progressions and Nashville Numbers',
   subtitle: 'Pop chord loops, the Nashville Number System, and loop-based harmony',
   objectives: [
-    'Analyze the most common pop chord progressions and their emotional signatures',
+    'Analyse the most common pop chord progressions and their emotional signatures',
     'Understand the Nashville Number System and use it for instant transposition',
-    'Recognize loop-based harmony as a distinct approach — the loop IS the harmony',
+    'Recognise loop-based harmony as a distinct approach — the loop IS the harmony',
     'Identify the Axis (I-V-vi-IV), Sensitive (vi-IV-I-V), and other standard pop loops',
   ],
   concepts: [
@@ -657,7 +658,7 @@ const l7u23m1: CurriculumModule = {
       explanation:
         'The Nashville Number System simplifies Roman numerals for session musicians: plain numbers for major chords (1, 4, 5), a dash for minor (2-, 6-), superscript 7 for seventh chords. The key is stated once at the top of the chart, and everything else is relative — "1 5 6- 4" in the key of G means G-D-Em-C. This allows instant transposition: change the key declaration and play the same numbers. Modern pop builds on 2-4 chord loops that repeat through an entire section. The loop provides harmonic stability; all variation happens in the layers above it.',
       tryThisQuery: 'Am',
-      tryThisLabel: 'Am is the vi in C — the emotional center of pop',
+      tryThisLabel: 'Am is the vi in C — the emotional centre of pop',
     },
     {
       title: 'Loop Rotations and Emotional Shifts',
@@ -695,15 +696,15 @@ const l7u23m2: CurriculumModule = {
   subtitle: 'Borrowed chords in pop and rock, chromatic mediants in film scores',
   objectives: [
     'Apply modal mixture (borrowed chords from the parallel minor) in pop and rock contexts',
-    'Recognize the minor iv, bVI, and bVII as the most common borrowed chords in pop',
-    'Understand chromatic mediants (major-third-related chords) and their dramatic color shifts',
+    'Recognise the minor iv, bVI, and bVII as the most common borrowed chords in pop',
+    'Understand chromatic mediants (major-third-related chords) and their dramatic colour shifts',
     'Identify the "Mario cadence" (bVI-bVII-I) and direct modulations in contemporary songwriting',
   ],
   concepts: [
     {
       title: 'Modal Mixture in Pop',
       explanation:
-        'Borrowed chords from the parallel minor appear constantly in pop and rock. Minor iv replacing major IV creates the "heartbreak" sound — Fm in a C major song instantly shifts the mood to bittersweet. The b6 scale degree (Ab in C) is doing the emotional work, pulling the bright major sound toward minor darkness without fully committing. bVI and bVII are rock and cinematic staples: the progression bVI-bVII-I (Ab-Bb-C in C) is the "Mario cadence," a hallmark of 80s rock with its triumphant ascending bass.',
+        'Borrowed chords from the parallel minor appear constantly in pop and rock. Minor iv replacing major IV creates the "heartbreak" sound — Fm in a C major song instantly shifts the mood to bittersweet. The b6 scale degree (Ab in C) is doing the emotional work, pulling the bright major sound towards minor darkness without fully committing. bVI and bVII are rock and cinematic staples: the progression bVI-bVII-I (Ab-Bb-C in C) is the "Mario cadence," a hallmark of 80s rock with its triumphant ascending bass.',
       tryThisQuery: 'Fm',
       tryThisLabel: 'Hear Fm — borrowed iv in C major',
     },
@@ -758,7 +759,7 @@ const l7u23m3: CurriculumModule = {
     {
       title: 'The Melodic Minor Parent Scale',
       explanation:
-        'In jazz, this ascending form is used in both directions. Explore labels its up-and-down practice as classical melodic minor, whose descent uses natural minor. The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Unlike the diatonic modes which all share the same notes, melodic minor modes each have a unique chromatic flavor that makes them essential for navigating altered jazz harmony.',
+        'In jazz, this ascending form is used in both directions. Explore labels its up-and-down practice as classical melodic minor, whose descent uses natural minor. The ascending melodic minor scale raises both the 6th and 7th of natural minor, creating a scale with a minor 3rd but major 6th and 7th. Its interval pattern (W-H-W-W-W-W-H) generates seven modes, each with a distinct character and jazz application. Mode 1 (jazz minor itself) pairs with minor-major 7th chords — the m(maj7) sound. Like the modes of the major scale, the seven modes of one melodic minor scale all share its notes; each still has its own chromatic colour, which makes them essential for navigating altered jazz harmony.',
       tryThisQuery: 'C melodic minor',
       tryThisLabel: 'See C melodic minor — the parent of 7 modes',
     },
@@ -772,7 +773,7 @@ const l7u23m3: CurriculumModule = {
     {
       title: 'The Altered Scale (Super Locrian)',
       explanation:
-        'Mode 7 of melodic minor is the altered scale, also called Super Locrian. Its formula from the root: H-W-H-W-W-W-W. It contains every possible alteration of a dominant chord: b9, #9, b5 (#11), and #5 (b13). The altered scale pairs exclusively with 7alt chords and is THE essential sound for dominant chords resolving to minor with maximum tension. The shortcut: the altered scale on any root equals the melodic minor scale starting a half step above (C altered = Db melodic minor). Locrian natural 2 (mode 6) is the standard half-diminished scale.',
+        'Mode 7 of melodic minor is the altered scale, also called Super Locrian. Its formula from the root: H-W-H-W-W-W-W. It contains every possible alteration of a dominant chord: b9, #9, b5 (#11), and #5 (b13). The altered scale pairs with 7alt chords — it holds all four of their alterations — and is THE essential sound for dominant chords resolving to minor with maximum tension. The shortcut: the altered scale on any root equals the melodic minor scale starting a half step above (C altered = Db melodic minor). Locrian natural 2 (mode 6) is the standard half-diminished scale.',
       tryThisQuery: 'C altered scale',
       tryThisLabel: 'See the altered scale — mode 7 of melodic minor',
     },
@@ -781,17 +782,17 @@ const l7u23m3: CurriculumModule = {
     {
       id: 'l7u23m3t1',
       instruction:
-        "Explore the melodic minor family: type 'C melodic minor', then 'C lydian dominant', then 'C altered scale'. These are modes 1, 4, and 7 of the same parent scale (on different roots). Each has a completely different character.",
+        "Explore the melodic minor family: tap 'C melodic minor', then 'F lydian dominant', then 'B altered scale'. These are modes 1, 4, and 7 of one parent scale, C melodic minor: the same seven notes (C D Eb F G A B), starting on C, F and B. Each has a completely different character.",
     },
     {
       id: 'l7u23m3t2',
       instruction:
-        "Verify the altered scale shortcut: type 'C altered scale', then type 'Db melodic minor'. They contain the same notes — the altered scale on any root is the melodic minor a half step above. This is the fastest way to find any altered scale.",
+        "Verify the altered scale shortcut: tap 'C altered scale', then tap 'Db melodic minor'. They contain the same notes — the altered scale on any root is the melodic minor a half step above. This is the fastest way to find any altered scale.",
     },
     {
       id: 'l7u23m3t3',
       instruction:
-        "Match mode to chord: type 'C lydian dominant' alongside 'C7#11'. Every note of the chord sits inside the scale. Now try 'C altered scale' alongside 'C7alt'. The scale contains every altered extension — perfect alignment.",
+        "Match mode to chord: tap 'C lydian dominant' alongside 'C7#11'. Every note of the chord sits inside the scale. Now try 'C altered scale' alongside 'C7alt'. The scale contains every altered extension — perfect alignment.",
     },
   ],
   prerequisites: ['l7u23m2'],
@@ -804,7 +805,7 @@ const l7u23m4: CurriculumModule = {
   title: 'Scales: Harmonic Minor Modes, Symmetric, and World',
   subtitle: 'Harmonic minor modes, whole-tone, diminished, and world scales',
   objectives: [
-    'Recognize the seven modes of harmonic minor by their augmented-second signature, and play the two built into the app: harmonic minor and Phrygian dominant (mode 5)',
+    'Recognise the seven modes of harmonic minor by their augmented-second signature, and play the two built into the app: harmonic minor and Phrygian dominant (mode 5)',
     'Understand symmetric scales (whole-tone, diminished) and their limited transpositions',
     'Explore world and ethnic scales: double harmonic major, Hungarian minor, Persian, and more',
     'Use Phrygian dominant (harmonic minor mode 5) for flamenco, klezmer, and Middle Eastern sounds',
@@ -813,21 +814,21 @@ const l7u23m4: CurriculumModule = {
     {
       title: 'Modes of Harmonic Minor',
       explanation:
-        'Harmonic minor yields seven modes, each marked by a distinctive augmented-second interval that gives them an exotic color. The 5th mode, Phrygian dominant, is used extensively in flamenco, klezmer, and Middle Eastern music — it has a major 3rd over a Phrygian framework, creating a bright yet dark sound. The 4th mode, Dorian #4 (Ukrainian Dorian), appears in Eastern European folk traditions. The 6th mode, Lydian #2, begins with an augmented second that sounds immediately distinctive. Each mode has a defined chord-scale pairing and a characteristic cultural context. (The app can show and play harmonic minor and Phrygian dominant; the other five modes are described here for reference.)',
+        'Harmonic minor yields seven modes, each marked by a distinctive augmented-second interval that gives them an exotic colour. The 5th mode, Phrygian dominant, is used extensively in flamenco, klezmer, and Middle Eastern music — it has a major 3rd over a Phrygian framework, creating a bright yet dark sound. The 4th mode, Dorian #4 (Ukrainian Dorian), appears in Eastern European folk traditions. The 6th mode, Lydian #2, begins with an augmented second that sounds immediately distinctive. Each mode has a defined chord-scale pairing and a characteristic cultural context. (The app can show and play harmonic minor and Phrygian dominant; the other five modes are described here for reference.)',
       tryThisQuery: 'C phrygian dominant',
       tryThisLabel: 'Hear Phrygian dominant — flamenco and klezmer',
     },
     {
       title: 'Symmetric Scales: Whole-Tone and Diminished',
       explanation:
-        'Symmetric scales have repeating interval patterns that limit their transpositions. The whole-tone scale (W-W-W-W-W-W) has only 2 unique forms and produces a dreamy, unresolved, Debussy-like sound — 6 notes, no half steps, no strong pull in any direction. The diminished scale comes in two flavors: half-whole (H-W-H-W-H-W-H-W) and whole-half (W-H-W-H-W-H-W-H), with only 3 unique forms each. The half-whole version pairs with dominant b9 chords; the whole-half version pairs with diminished 7th chords. Both have 8 notes and divide the octave into four equal parts.',
+        'Symmetric scales have repeating interval patterns that limit their transpositions. The whole-tone scale (W-W-W-W-W-W) has only 2 unique forms and produces a dreamy, unresolved, Debussy-like sound — 6 notes, no half steps, no strong pull in any direction. The diminished scale comes in two flavours: half-whole (H-W-H-W-H-W-H-W) and whole-half (W-H-W-H-W-H-W-H), with only 3 unique forms each. The half-whole version pairs with dominant b9 chords; the whole-half version pairs with diminished 7th chords. Both have 8 notes and divide the octave into four equal parts.',
       tryThisQuery: 'C whole tone scale',
       tryThisLabel: 'Hear the whole-tone scale — 6 notes, 2 unique forms',
     },
     {
       title: 'World and Ethnic Scales',
       explanation:
-        'Beyond Western functional scales, the engine includes scales from diverse musical traditions. Double harmonic major (1-b2-3-4-5-b6-7) is used in Middle Eastern, Romani, and Indian music — two augmented seconds create an intensely exotic flavor. Hungarian minor (1-2-b3-#4-5-b6-7) features the raised 4th combined with minor quality. Persian (1-b2-3-4-b5-b6-7) has a distinctive dark color. Neapolitan minor and major provide the flattened 2nd of Neapolitan harmony. Each scale carries its cultural origin in its intervals.',
+        'Beyond Western functional scales, the engine includes scales from diverse musical traditions. Double harmonic major (1-b2-3-4-5-b6-7) is used in Middle Eastern, Romani, and Indian music — two augmented seconds create an intensely exotic flavour. Hungarian minor (1-2-b3-#4-5-b6-7) features the raised 4th combined with minor quality. Persian (1-b2-3-4-b5-b6-7) has a distinctive dark colour. Neapolitan minor and major provide the flattened 2nd of Neapolitan harmony. Each scale carries its cultural origin in its intervals.',
       tryThisQuery: 'C hungarian minor',
       tryThisLabel: 'Hear Hungarian minor — raised 4th in a minor scale',
     },
@@ -836,17 +837,17 @@ const l7u23m4: CurriculumModule = {
     {
       id: 'l7u23m4t1',
       instruction:
-        "Explore Phrygian dominant: type 'C phrygian dominant'. It has a b2 (Db) and a major 3rd (E) — the augmented second between them is the signature interval. This is the flamenco/klezmer sound. Compare with 'C phrygian' to hear the difference the major 3rd makes.",
+        "Explore Phrygian dominant: tap 'C phrygian dominant'. It has a b2 (Db) and a major 3rd (E) — the augmented second between them is the signature interval. This is the flamenco/klezmer sound. Compare with 'C phrygian' to hear the difference the major 3rd makes.",
     },
     {
       id: 'l7u23m4t2',
       instruction:
-        "Type 'C whole tone scale' — notice only 6 notes and no half steps anywhere. Now type 'Db whole tone scale'. These are the only two unique whole-tone scales; every other root duplicates one of them. Total symmetry means total ambiguity.",
+        "Tap 'C whole tone scale' — notice only 6 notes and no half steps anywhere. Now tap 'Db whole tone scale'. These are the only two unique whole-tone scales; every other root duplicates one of them. Total symmetry means total ambiguity.",
     },
     {
       id: 'l7u23m4t3',
       instruction:
-        "Compare world scales: type 'C double harmonic major', then 'C hungarian minor'. Both feature augmented seconds but in different positions, creating very different melodic characters. The engine has many more scales — explore freely.",
+        "Compare world scales: tap 'C double harmonic major', then 'C hungarian minor'. Both feature augmented seconds but in different positions, creating very different melodic characters. The engine has many more scales — explore freely.",
     },
   ],
   prerequisites: ['l7u23m3'],
@@ -891,17 +892,17 @@ const l7u23m5: CurriculumModule = {
     {
       id: 'l7u23m5t1',
       instruction:
-        "Build the extension ladder on C: type 'Cmaj7', 'Cmaj9', 'Cmaj13' in sequence. Hear how each extension adds richness while the shell (C, E, B) remains the same.",
+        "Build the extension ladder on C: tap 'Cmaj7', 'Cmaj9', 'Cmaj13' in sequence. Hear how each extension adds richness while the shell (C, E, B) remains the same.",
     },
     {
       id: 'l7u23m5t2',
       instruction:
-        "Compare suspended and added-tone chords: type 'Csus4', then 'Cadd9', then 'C6/9'. Notice that sus4 has no 3rd, add9 has no 7th, and 6/9 has neither a 7th nor the resolution tension of a suspended chord.",
+        "Compare suspended and added-tone chords: tap 'Csus4', then 'Cadd9', then 'C6/9'. Notice that sus4 has no 3rd, add9 has no 7th, and 6/9 has neither a 7th nor the resolution tension of a suspended chord.",
     },
     {
       id: 'l7u23m5t3',
       instruction:
-        "Explore dominant variations: type 'C7', 'C9', 'C7sus4', 'C7b9', 'C7#9', 'C13'. All are dominant-family chords, but each has a distinct color — from warm (C9) to dark (C7b9) to gritty (C7#9) to wide (C13).",
+        "Explore dominant variations: tap 'C7', 'C9', 'C7sus4', 'C7b9', 'C7#9', 'C13'. All are dominant-family chords, but each has a distinct colour — from warm (C9) to dark (C7b9) to gritty (C7#9) to wide (C13).",
     },
   ],
   prerequisites: ['l7u23m4'],
@@ -927,7 +928,7 @@ export const L7_UNITS: CurriculumUnit[] = [
         'Navigate blues forms (12-bar, jazz blues, minor blues) and rhythm changes with turnarounds',
       ],
       bridgeText:
-        'You command the full jazz harmonic vocabulary — symbols, progressions, blues forms, and turnarounds. Now deepen with chord-scale theory, reharmonization, and modal thinking.',
+        'You command the full jazz harmonic vocabulary — symbols, progressions, blues forms, and turnarounds. Now deepen with chord-scale theory, reharmonisation, and modal thinking.',
       tryThisQuery: 'Dm9',
       tryThisLabel: 'Build Dm9 — start a ii-V-I',
       tryThisPrompt:
@@ -939,17 +940,17 @@ export const L7_UNITS: CurriculumUnit[] = [
     levelId: 'l7',
     title: 'Advanced Jazz, Modal, and Pop',
     description:
-      'Chord-scale theory, upper structures, reharmonization, Coltrane changes, modal chord progressions, quartal voicings, and drones',
+      'Chord-scale theory, upper structures, reharmonisation, Coltrane changes, modal chord progressions, quartal voicings, and drones',
     icon: 'scales',
     modules: [l7u22m1, l7u22m2, l7u22m3, l7u22m4, l7u22m5],
     milestone: {
       skillsSummary: [
         'Match any chord to its compatible scales using chord-scale theory',
-        'Voice complex chords using upper-structure triads and apply reharmonization techniques',
-        'Build modal progressions that preserve each mode\'s characteristic color using pedal points and quartal voicings',
+        'Voice complex chords using upper-structure triads and apply reharmonisation techniques',
+        'Build modal progressions that preserve each mode\'s characteristic colour using pedal points and quartal voicings',
       ],
       bridgeText:
-        'You can think in jazz, modal, and tonal frameworks and understand the advanced techniques that connect them. The final step: commanding the complete catalog of scales, chords, and pop harmony the engine offers.',
+        'You can think in jazz, modal, and tonal frameworks and understand the advanced techniques that connect them. The final step: commanding the complete catalogue of scales, chords, and pop harmony the engine offers.',
       tryThisQuery: 'E phrygian',
       tryThisLabel: 'Explore E Phrygian mode',
       tryThisPrompt:
@@ -966,7 +967,7 @@ export const L7_UNITS: CurriculumUnit[] = [
     modules: [l7u23m1, l7u23m2, l7u23m3, l7u23m4, l7u23m5],
     milestone: {
       skillsSummary: [
-        'Analyze pop chord loops, apply modal mixture and chromatic mediants in contemporary contexts',
+        'Analyse pop chord loops, apply modal mixture and chromatic mediants in contemporary contexts',
         'Navigate every scale family in the engine: melodic minor modes, harmonic minor modes, symmetric, pentatonic, bebop, and world',
         'Build any of the engine\'s chord types from any root and match any chord to its compatible scales',
       ],

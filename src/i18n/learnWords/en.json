@@ -1,0 +1,40 @@
+{
+  "optionalUnits_one": "+ {{count}} optional unit",
+  "optionalUnits_other": "+ {{count}} optional units",
+  "staff": {
+    "clef": "{{clef}}.",
+    "clefSignature": "{{clef}}, {{signature}}.",
+    "noSignature": "no sharps or flats in the key signature",
+    "sharps_one": "one sharp in the key signature: {{places}}",
+    "sharps_other": "{{count}} sharps in the key signature: {{places}}",
+    "flats_one": "one flat in the key signature: {{places}}",
+    "flats_other": "{{count}} flats in the key signature: {{places}}",
+    "sigLine": "on the {{letter}} line",
+    "sigSpace": "in the {{letter}} space",
+    "sigSpaceAbove": "in the {{letter}} space above the staff",
+    "sigSpaceBelow": "in the {{letter}} space below the staff",
+    "oneNote": "One note, {{place}}.",
+    "notesInOrder": "{{count}} notes, one after the other: {{places}}.",
+    "chord": "{{count}} notes stacked as one chord, from the lowest: {{places}}.",
+    "then": ", then ",
+    "place": {
+      "line": "on line {{n}}",
+      "space": "in space {{n}}",
+      "spaceBelowStaff": "in the space just below the staff",
+      "spaceAboveStaff": "in the space just above the staff",
+      "ledgerBelow": "on ledger line {{n}} below the staff",
+      "ledgerAbove": "on ledger line {{n}} above the staff",
+      "spaceUnderLedger": "in the space below ledger line {{n}}, under the staff",
+      "spaceOverLedger": "in the space above ledger line {{n}}, over the staff"
+    },
+    "acc": {
+      "sharp": "with a sharp",
+      "flat": "with a flat",
+      "doubleSharp": "with a double sharp",
+      "doubleFlat": "with a double flat",
+      "natural": "with a natural sign"
+    },
+    "counted": "The staff's lines and spaces are counted from the bottom.",
+    "countedLedger": "Ledger lines are counted outwards from the staff."
+  }
+}

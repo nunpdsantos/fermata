@@ -90,11 +90,11 @@ const curriculumL6: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "Db major chord" para escuchar el acorde napolitano de C menor. Observa cómo Db-F-Ab suena sombrío y dramático en comparación con un acorde de Dm o F en este contexto',
+            'Pulsa "Db major chord" para escuchar el acorde napolitano de C menor. Observa cómo Db-F-Ab suena sombrío y dramático en comparación con un acorde de Dm o F en este contexto',
         },
         {
           instruction:
-            'Escribe "Db/F" para escuchar el napolitano en primera inversión. La nota del bajo F se enlaza suavemente con G (dominante). Esta es la disposición estándar bII6 usada en la música clásica',
+            'Pulsa "Db/F" para escuchar el napolitano en primera inversión. La nota del bajo F se enlaza suavemente con G (dominante). Esta es la disposición estándar bII6 usada en la música clásica',
         },
         {
           instruction:
@@ -143,7 +143,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Ab major chord" y escucha. Ahora imagina añadir F# en una voz superior. El intervalo Ab hasta F# es la sexta aumentada que define toda esta familia de acordes',
+            'Pulsa "Ab major chord" y escucha. Ahora imagina añadir F# en una voz superior. El intervalo Ab hasta F# es la sexta aumentada que define toda esta familia de acordes',
         },
       ],
     },
@@ -188,7 +188,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Ab7" para escuchar el acorde. Este es simultáneamente V7 de Db y Gr+6 en C. La resolución que elijas determina la tonalidad que el oyente percibe',
+            'Pulsa "Ab7" para escuchar el acorde. Este es simultáneamente V7 de Db y Gr+6 en C. La resolución que elijas determina la tonalidad que el oyente percibe',
         },
       ],
     },
@@ -233,7 +233,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "Db major chord" y escucha la tonalidad de llegada. Una sola reinterpretación enarmónica nos trasladó de C a Db — cinco posiciones alrededor del círculo de quintas en un solo paso',
+            'Pulsa "Db major chord" y escucha la tonalidad de llegada. Una sola reinterpretación enarmónica nos trasladó de C a Db — cinco posiciones alrededor del círculo de quintas en un solo paso',
         },
       ],
     },
@@ -270,7 +270,7 @@ const curriculumL6: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "Bdim7" — este acorde puede resolver a C menor, Eb menor, Gb menor o A menor. Las cuatro resoluciones son igualmente válidas. La grafía enarmónica determina la tonalidad de destino',
+            'Pulsa "Bdim7" — este acorde puede resolver a C menor, Eb menor, Gb menor o A menor. Las cuatro resoluciones son igualmente válidas. La grafía enarmónica determina la tonalidad de destino',
         },
         {
           instruction:
@@ -323,7 +323,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "C major chord" y escucha el objetivo de la resolución. Ahora imagina el acorde CTo7 (C-D#-F#-A) aproximándose — tres voces se desplazan por grado conjunto (dos por semitono, una por tono) mientras C se sostiene. Esto es puro embellecimiento cromático, no modulación',
+            'Pulsa "C major chord" y escucha el objetivo de la resolución. Ahora imagina el acorde CTo7 (C-D#-F#-A) aproximándose — tres voces se desplazan por grado conjunto (dos por semitono, una por tono) mientras C se sostiene. Esto es puro embellecimiento cromático, no modulación',
         },
       ],
     },
@@ -368,7 +368,7 @@ const curriculumL6: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escribe "C7#5" para escuchar una dominante alterada. La quinta elevada crea tensión cromática adicional que intensifica la resolución hacia la tónica. Compara con un C7 simple',
+            'Pulsa "C7#5" para escuchar una dominante alterada. La quinta elevada crea tensión cromática adicional que intensifica la resolución hacia la tónica. Compara con un C7 simple',
         },
       ],
     },
@@ -405,11 +405,11 @@ const curriculumL6: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe "whole tone scale" — cada intervalo adyacente es un tono. Sin semitonos, sin sensibles, sin atracción de dominante. Esto es pura ambigüedad tonal, el fundamento del lenguaje armónico de Debussy',
+            'Pulsa "whole tone scale" — cada intervalo adyacente es un tono. Sin semitonos, sin sensibles, sin atracción de dominante. Esto es pura ambigüedad tonal, el fundamento del lenguaje armónico de Debussy',
         },
         {
           instruction:
-            'Escribe "C diminished scale" — este patrón alternado tono-semitono crea una escala simétrica de ocho notas formada por dos acordes de séptima disminuida completos entrelazados, así que contiene ocho terceras menores y cuatro tritonos, y su patrón se repite cada tercera menor, dividiendo la octava en cuatro partes iguales',
+            'Pulsa "C diminished scale" — este patrón alternado tono-semitono crea una escala simétrica de ocho notas formada por dos acordes de séptima disminuida completos entrelazados, así que contiene ocho terceras menores y cuatro tritonos, y su patrón se repite cada tercera menor, dividiendo la octava en cuatro partes iguales',
         },
         {
           instruction:

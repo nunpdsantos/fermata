@@ -13,8 +13,8 @@ const l6u18m1: CurriculumModule = {
   subtitle: 'A dramatic chromatic pre-dominant built on the lowered second degree',
   objectives: [
     'Build the Neapolitan chord (major triad on the lowered 2nd degree) and use bII6 as a chromatic pre-dominant',
-    'Apply proper voice leading where b2 resolves downward and the bass moves 4 to 5',
-    'Recognize the Neapolitan\u2019s dark, majestic emotional effect and its Phrygian color',
+    'Apply proper voice leading where b2 resolves downwards and the bass moves 4 to 5',
+    'Recognise the Neapolitan\u2019s dark, majestic emotional effect and its Phrygian colour',
   ],
   concepts: [
     {
@@ -27,14 +27,14 @@ const l6u18m1: CurriculumModule = {
     {
       title: 'Why First Inversion (bII6)?',
       explanation:
-        'In first inversion, the bass note is the 4th scale degree (F in C minor), which connects smoothly to the dominant via the bass motion 4 \u2192 5 \u2014 the same motion as IV \u2192 V. The chromatic drama lives in the upper voices, where the lowered 2nd degree (Db) resolves downward to the leading tone or tonic. Root position bII is rarer but appears in Romantic music for a more emphatic, surprising effect.',
+        'In first inversion, the bass note is the 4th scale degree (F in C minor), which connects smoothly to the dominant via the bass motion 4 \u2192 5 \u2014 the same motion as IV \u2192 V. The chromatic drama lives in the upper voices, where the lowered 2nd degree (Db) resolves downwards to the leading tone or tonic. Root position bII is rarer but appears in Romantic music for a more emphatic, surprising effect.',
       tryThisQuery: 'Db/F',
       tryThisLabel: 'Hear Db/F \u2014 Neapolitan in first inversion',
     },
     {
       title: 'Voice Leading and Emotional Effect',
       explanation:
-        'The lowered 2nd degree is a strong tendency tone that must resolve downward \u2014 either to the leading tone when moving to V, or directly to the tonic. Never double it. The b6 (fifth of bII) also resolves down to 5. The Neapolitan sounds dark, majestic, and weighty, importing a Phrygian-mode color into the harmony. It is a signature sound of Beethoven, Schubert, and modern film scores.',
+        'The lowered 2nd degree is a strong tendency tone that must resolve downwards \u2014 either to the leading tone when moving to V, or directly to the tonic. Never double it. The b6 (fifth of bII) also resolves down to 5. The Neapolitan sounds dark, majestic, and weighty, importing a Phrygian-mode colour into the harmony. It is a signature sound of Beethoven, Schubert, and modern film scores.',
       tryThisQuery: 'C minor scale',
       tryThisLabel: 'See C minor \u2014 the Neapolitan\u2019s home context',
     },
@@ -43,13 +43,13 @@ const l6u18m1: CurriculumModule = {
     {
       id: 'l6u18m1t1',
       instruction:
-        "Type 'Db major chord' to hear the Neapolitan chord of C minor. Notice how Db-F-Ab sounds dark and dramatic compared to a standard Dm or F chord in this context",
+        "Tap 'Db major chord' to hear the Neapolitan chord of C minor. Notice how Db-F-Ab sounds dark and dramatic compared to a standard Dm or F chord in this context",
       query: 'Db major chord',
     },
     {
       id: 'l6u18m1t2',
       instruction:
-        "Type 'Db/F' to hear the first inversion Neapolitan. The bass note F connects smoothly to G (dominant). This is the standard bII6 voicing used in classical music",
+        "Tap 'Db/F' to hear the first inversion Neapolitan. The bass note F connects smoothly to G (dominant). This is the standard bII6 voicing used in classical music",
       query: 'Db/F',
     },
     {
@@ -70,13 +70,13 @@ const l6u18m2: CurriculumModule = {
   objectives: [
     'Understand the augmented sixth interval (b6 to #4) and its outward resolution to an octave on scale degree 5',
     'Build the Italian sixth (It+6): b6, 1, #4 and resolve it to V',
-    'Build the French sixth (Fr+6): b6, 1, 2, #4 and recognize its whole-tone color',
+    'Build the French sixth (Fr+6): b6, 1, 2, #4 and recognise its whole-tone colour',
   ],
   concepts: [
     {
       title: 'The Augmented Sixth Interval',
       explanation:
-        'All augmented sixth chords contain an augmented sixth interval between the lowered 6th degree in the bass and the raised 4th degree in an upper voice. In C: Ab (b6) up to F# (#4). This interval resolves outward by contrary motion \u2014 Ab moves down to G, F# moves up to G \u2014 producing an octave on scale degree 5, the root of the dominant chord. This outward resolution is the defining gesture of the entire augmented sixth family.',
+        'All augmented sixth chords contain an augmented sixth interval between the lowered 6th degree in the bass and the raised 4th degree in an upper voice. In C: Ab (b6) up to F# (#4). This interval resolves outwards by contrary motion \u2014 Ab moves down to G, F# moves up to G \u2014 producing an octave on scale degree 5, the root of the dominant chord. This outward resolution is the defining gesture of the entire augmented sixth family.',
       tryThisQuery: 'key of C',
       tryThisLabel: 'See C major \u2014 the context for augmented sixths',
     },
@@ -90,7 +90,7 @@ const l6u18m2: CurriculumModule = {
     {
       title: 'The French Sixth (Fr+6)',
       explanation:
-        'The French sixth has four notes: b6, 1, 2, #4. In C: Ab-C-D-F#. It adds scale degree 2 to the Italian sixth. The result contains two tritones (Ab-D and C-F#), giving it a distinctive whole-tone quality \u2014 all four notes belong to the same whole-tone collection (a six-note scale built entirely of whole steps, explored later in this level). This exotic, unresolved color makes the French sixth a favorite of composers seeking maximum pre-dominant tension.',
+        'The French sixth has four notes: b6, 1, 2, #4. In C: Ab-C-D-F#. It adds scale degree 2 to the Italian sixth. The result contains two tritones (Ab-D and C-F#), giving it a distinctive whole-tone quality \u2014 all four notes belong to the same whole-tone collection (a six-note scale built entirely of whole steps, explored later in this level). This exotic, unresolved colour makes the French sixth a favourite of composers seeking maximum pre-dominant tension.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Hear G major \u2014 the V chord these resolve to in C',
     },
@@ -99,7 +99,7 @@ const l6u18m2: CurriculumModule = {
     {
       id: 'l6u18m2t1',
       instruction:
-        'Spell the Italian sixth in C: Ab-C-F#. Now spell it in G: Eb-G-C#. The pattern is always b6, 1, #4 of the target key. Practice building It+6 in D, A, and Eb',
+        'Spell the Italian sixth in C: Ab-C-F#. Now spell it in G: Eb-G-C#. The pattern is always b6, 1, #4 of the target key. Practise building It+6 in D, A, and Eb',
     },
     {
       id: 'l6u18m2t2',
@@ -109,7 +109,7 @@ const l6u18m2: CurriculumModule = {
     {
       id: 'l6u18m2t3',
       instruction:
-        "Type 'Ab major chord' and listen. Now imagine adding F# in an upper voice. The interval Ab to F# is the augmented sixth that defines this entire chord family",
+        "Tap 'Ab major chord' and listen. Now imagine adding F# in an upper voice. The interval Ab to F# is the augmented sixth that defines this entire chord family",
       query: 'Ab major chord',
     },
   ],
@@ -124,15 +124,15 @@ const l6u18m3: CurriculumModule = {
   title: 'German Augmented Sixth and Its Dual Identity',
   subtitle: 'The Gr+6 chord and its enharmonic equivalence with the dominant seventh',
   objectives: [
-    'Build the German sixth (Gr+6): b6, 1, b3, #4 and recognize its rich, full sonority',
-    'Recognize that Gr+6 is enharmonically identical to a dominant seventh chord',
+    'Build the German sixth (Gr+6): b6, 1, b3, #4 and recognise its rich, full sonority',
+    'Recognise that Gr+6 is enharmonically identical to a dominant seventh chord',
     'Resolve Gr+6 through a cadential 6/4 to avoid parallel fifths',
   ],
   concepts: [
     {
       title: 'The German Sixth (Gr+6)',
       explanation:
-        'The German sixth has four notes: b6, 1, b3, #4. In C: Ab-C-Eb-F#. It adds the lowered 3rd degree (from minor mode) to the Italian sixth. Unlike the French sixth\u2019s whole-tone color, the German sixth sounds rich and full \u2014 a complete four-note sonority whose lower three notes (Ab-C-Eb) form a major triad, which is why it sounds exactly like a dominant seventh.',
+        'The German sixth has four notes: b6, 1, b3, #4. In C: Ab-C-Eb-F#. It adds the lowered 3rd degree (from minor mode) to the Italian sixth. Unlike the French sixth\u2019s whole-tone colour, the German sixth sounds rich and full \u2014 a complete four-note sonority whose lower three notes (Ab-C-Eb) form a major triad, which is why it sounds exactly like a dominant seventh.',
       tryThisQuery: 'Ab7',
       tryThisLabel: 'Hear Ab7 \u2014 the enharmonic twin of Gr+6 in C',
     },
@@ -165,7 +165,7 @@ const l6u18m3: CurriculumModule = {
     {
       id: 'l6u18m3t3',
       instruction:
-        "Type 'Ab7' to hear the chord. This is simultaneously V7 of Db and Gr+6 in C. The resolution you choose determines which key the listener perceives",
+        "Tap 'Ab7' to hear the chord. This is simultaneously V7 of Db and Gr+6 in C. The resolution you choose determines which key the listener perceives",
       query: 'Ab7',
     },
   ],
@@ -221,7 +221,7 @@ const l6u18m4: CurriculumModule = {
     {
       id: 'l6u18m4t3',
       instruction:
-        "Type 'Db major chord' and hear the arrival key. A single enharmonic reinterpretation moved us from C to Db \u2014 five positions around the circle of fifths in one step",
+        "Tap 'Db major chord' and hear the arrival key. A single enharmonic reinterpretation moved us from C to Db \u2014 five positions around the circle of fifths in one step",
       query: 'Db major chord',
     },
   ],
@@ -272,7 +272,7 @@ const l6u19m1: CurriculumModule = {
     {
       id: 'l6u19m1t1',
       instruction:
-        "Type 'Bdim7' \u2014 this chord can resolve to C minor, Eb minor, Gb minor, or A minor. All four resolutions are equally valid. Enharmonic spelling determines the destination key",
+        "Tap 'Bdim7' \u2014 this chord can resolve to C minor, Eb minor, Gb minor, or A minor. All four resolutions are equally valid. Enharmonic spelling determines the destination key",
       query: 'Bdim7',
     },
     {
@@ -319,7 +319,7 @@ const l6u19m2: CurriculumModule = {
     {
       title: 'CTo7 in Musical Context',
       explanation:
-        'CTo7 is common in Romantic music and film scores. It often embellishes the tonic (CTo7 \u2192 I) or the dominant (CTo7 \u2192 V). Because it does not change the key, it functions more like a chromatic neighbor chord than a true modulation. The notation CTo7 distinguishes it from a viio7 analysis, which would imply a tonicization. CTo7 is pure color and embellishment.',
+        'CTo7 is common in Romantic music and film scores. It often embellishes the tonic (CTo7 \u2192 I) or the dominant (CTo7 \u2192 V). Because it does not change the key, it functions more like a chromatic neighbour chord than a true modulation. The notation CTo7 distinguishes it from a viio7 analysis, which would imply a tonicisation. CTo7 is pure colour and embellishment.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Hear G major \u2014 CTo7 can also embellish V',
     },
@@ -338,7 +338,7 @@ const l6u19m2: CurriculumModule = {
     {
       id: 'l6u19m2t3',
       instruction:
-        "Type 'C major chord' and hear the resolution target. Now imagine the CTo7 chord (C-D#-F#-A) approaching it \u2014 three voices shift by step (two by half step, one by whole step) while C sustains. This is pure chromatic embellishment, not modulation",
+        "Tap 'C major chord' and hear the resolution target. Now imagine the CTo7 chord (C-D#-F#-A) approaching it \u2014 three voices shift by step (two by half step, one by whole step) while C sustains. This is pure chromatic embellishment, not modulation",
       query: 'C major chord',
     },
   ],
@@ -355,20 +355,20 @@ const l6u19m3: CurriculumModule = {
   objectives: [
     'Identify chromatic mediant relationships (roots a third apart with at least one chromatic shift)',
     'Build altered dominants (V+, V7b5, V7#5) and understand their intensified resolution to I',
-    'Recognize the omnibus progression as a chromatic voice-exchange pattern through dominant sonorities',
+    'Recognise the omnibus progression as a chromatic voice-exchange pattern through dominant sonorities',
   ],
   concepts: [
     {
       title: 'Chromatic Mediants',
       explanation:
-        'A chromatic mediant is a chord whose root is a major or minor third away from the current chord, with at least one chromatic alteration between them. From C major, Ab major and E major are chromatic mediants \u2014 each shares one common tone with C but shifts the other notes chromatically. Doubly chromatic mediants share no common tones at all. These dramatic shifts are a signature of film scores and late Romantic music. Some chromatic mediants (like \u266dVI) can also be analyzed as mode mixture \u2014 the distinction depends on context and function.',
+        'A chromatic mediant is a chord whose root is a major or minor third away from the current chord, with at least one chromatic alteration between them. From C major, Ab major and E major are chromatic mediants \u2014 each shares one common tone with C but shifts the other notes chromatically. Doubly chromatic mediants share no common tones at all. These dramatic shifts are a signature of film scores and late Romantic music. Some chromatic mediants (like \u266dVI) can also be analysed as mode mixture \u2014 the distinction depends on context and function.',
       tryThisQuery: 'Ab major chord',
       tryThisLabel: 'Hear Ab major \u2014 chromatic mediant of C',
     },
     {
       title: 'Altered Dominants',
       explanation:
-        'Altered dominants add chromatic tension to the dominant chord. V+ (augmented dominant) raises the fifth, which resolves upward to the 3rd of I. V7b5 lowers the fifth, common in jazz. V7#5 combines the augmented fifth with a seventh. Doubly-applied dominants (V/V/V) extend the chain one level further: in C, A7 \u2192 D7 \u2192 G7 \u2192 C creates cascading forward momentum through sequential dominant resolutions.',
+        'Altered dominants add chromatic tension to the dominant chord. V+ (augmented dominant) raises the fifth, which resolves upwards to the 3rd of I. V7b5 lowers the fifth, common in jazz. V7#5 combines the augmented fifth with a seventh. Doubly-applied dominants (V/V/V) extend the chain one level further: in C, A7 \u2192 D7 \u2192 G7 \u2192 C creates cascading forward momentum through sequential dominant resolutions.',
       tryThisQuery: 'E major chord',
       tryThisLabel: 'Hear E major \u2014 another chromatic mediant of C',
     },
@@ -395,7 +395,7 @@ const l6u19m3: CurriculumModule = {
     {
       id: 'l6u19m3t3',
       instruction:
-        "Type 'C7#5' to hear an altered dominant. The raised fifth creates additional chromatic tension that intensifies the resolution to the tonic. Compare it to a plain C7",
+        "Tap 'C7#5' to hear an altered dominant. The raised fifth creates additional chromatic tension that intensifies the resolution to the tonic. Compare it to a plain C7",
       query: 'C7#5',
     },
   ],
@@ -409,29 +409,29 @@ const l6u19m4: CurriculumModule = {
   title: 'Late Romantic Harmonic Techniques',
   subtitle: 'Nonfunctional harmony, chromatic planing, and the dissolution of tonality',
   objectives: [
-    'Recognize equal division of the octave (whole-tone, diminished, augmented patterns) as sources of tonal ambiguity',
+    'Recognise equal division of the octave (whole-tone, diminished, augmented patterns) as sources of tonal ambiguity',
     'Identify nonfunctional chord successions and chromatic planing as alternatives to functional harmony',
-    'Understand extended tonality as the stretching and eventual dissolution of tonal centers',
+    'Understand extended tonality as the stretching and eventual dissolution of tonal centres',
   ],
   concepts: [
     {
       title: 'Equal Division of the Octave',
       explanation:
-        'Symmetric patterns that divide the octave\u2019s 12 half steps into equal parts create tonal ambiguity because no single note feels like home. Steps of 2 half steps cut the octave into 6 equal parts: the whole-tone scale (6 notes, only 2 transpositions possible). Steps of 3 half steps (minor thirds) cut it into 4 equal parts: the diminished seventh chord (4 notes). Steps of 4 half steps (major thirds) cut it into 3 equal parts: the augmented triad (3 notes). These structures were exploited by Debussy, Ravel, Liszt, and Wagner to blur or dissolve key centers.',
+        'Symmetric patterns that divide the octave\u2019s 12 half steps into equal parts create tonal ambiguity because no single note feels like home. Steps of 2 half steps cut the octave into 6 equal parts: the whole-tone scale (6 notes, only 2 transpositions possible). Steps of 3 half steps (minor thirds) cut it into 4 equal parts: the diminished seventh chord (4 notes). Steps of 4 half steps (major thirds) cut it into 3 equal parts: the augmented triad (3 notes). These structures were exploited by Debussy, Ravel, Liszt, and Wagner to blur or dissolve key centres.',
       tryThisQuery: 'whole tone scale',
       tryThisLabel: 'Hear the whole-tone scale \u2014 the octave in 6 equal whole steps',
     },
     {
       title: 'Nonfunctional Chord Successions',
       explanation:
-        'In late Romantic music, chord progressions increasingly abandon functional logic (T-PD-D-T). Instead, chords connect through voice-leading proximity (each voice moves minimally), common-tone persistence (a pitch sustains across chord changes), or pure sonority logic (chords chosen for color, not function). This marks the beginning of tonality\u2019s dissolution and the road toward atonality.',
+        'In late Romantic music, chord progressions increasingly abandon functional logic (T-PD-D-T). Instead, chords connect through voice-leading proximity (each voice moves minimally), common-tone persistence (a pitch sustains across chord changes), or pure sonority logic (chords chosen for colour, not function). This marks the beginning of tonality\u2019s dissolution and the road towards atonality.',
       tryThisQuery: 'C diminished scale',
       tryThisLabel: 'Hear the diminished scale \u2014 8 notes alternating whole and half steps',
     },
     {
       title: 'Chromatic Planing and Extended Tonality',
       explanation:
-        'Planing moves a chord shape in parallel motion, ignoring key constraints. Chromatic (real) planing keeps every chord\u2019s exact quality as it moves, whatever the interval, producing a wash of pure color with no functional direction. Diatonic planing adjusts interval quality to stay in the key. Extended tonality stretches tonal boundaries: remote modulations become frequent, chromatic saturation makes key identification difficult, and traditional cadences are avoided. This is the twilight of common-practice tonality.',
+        'Planing moves a chord shape in parallel motion, ignoring key constraints. Chromatic (real) planing keeps every chord\u2019s exact quality as it moves, whatever the interval, producing a wash of pure colour with no functional direction. Diatonic planing adjusts interval quality to stay in the key. Extended tonality stretches tonal boundaries: remote modulations become frequent, chromatic saturation makes key identification difficult, and traditional cadences are avoided. This is the twilight of common-practice tonality.',
       tryThisQuery: 'whole tone scale',
       tryThisLabel: 'Explore the whole-tone world \u2014 Debussy\u2019s palette',
     },
@@ -440,13 +440,13 @@ const l6u19m4: CurriculumModule = {
     {
       id: 'l6u19m4t1',
       instruction:
-        "Type 'whole tone scale' \u2014 every adjacent interval is a whole step. No half steps, no leading tones, no dominant pull. This is pure tonal ambiguity, the foundation of Debussy\u2019s harmonic language",
+        "Tap 'whole tone scale' \u2014 every adjacent interval is a whole step. No half steps, no leading tones, no dominant pull. This is pure tonal ambiguity, the foundation of Debussy\u2019s harmonic language",
       query: 'whole tone scale',
     },
     {
       id: 'l6u19m4t2',
       instruction:
-        "Type 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale made of two complete diminished seventh chords interlocked, so it contains eight minor thirds and four tritones, and its pattern repeats every minor third, dividing the octave into four equal parts",
+        "Tap 'C diminished scale' \u2014 this alternating whole-half pattern creates a symmetric eight-note scale made of two complete diminished seventh chords interlocked, so it contains eight minor thirds and four tritones, and its pattern repeats every minor third, dividing the octave into four equal parts",
       query: 'C diminished scale',
     },
     {
@@ -467,32 +467,32 @@ const l6u20m1: CurriculumModule = {
   id: 'l6u20m1',
   unitId: 'u20',
   levelId: 'l6',
-  title: 'Species Counterpoint: First through Third Species',
+  title: 'Species Counterpoint: First to Third Species',
   subtitle: 'Cantus firmus, note-against-note, 2:1, and 4:1 counterpoint',
   objectives: [
     'Write a cantus firmus following established rules (8\u201312 notes, stepwise, single climax)',
     'Master first species (1:1) consonances and second species (2:1) weak-beat dissonance treatment',
-    'Master third species (4:1) with passing tones, neighbors, cambiata, and double neighbors',
+    'Master third species (4:1) with passing tones, neighbours, cambiata, and double neighbours',
   ],
   concepts: [
     {
       title: 'Cantus Firmus and First Species (1:1)',
       explanation:
-        'The cantus firmus (CF) is a simple melody of 8\u201312 whole notes, beginning and ending on the tonic, mostly stepwise with one climax point. First species places one note against each CF note using only consonances \u2014 begin on P1, P5, or P8, end on P1 or P8 approached by step, favor imperfect consonances (3rds and 6ths), and prohibit parallel perfect intervals. No voice crossing, no more than three consecutive 3rds or 6ths.',
+        'The cantus firmus (CF) is a simple melody of 8\u201312 whole notes, beginning and ending on the tonic, mostly stepwise with one climax point. First species places one note against each CF note using only consonances \u2014 begin on P1, P5, or P8, end on P1 or P8 approached by step, favour imperfect consonances (3rds and 6ths), and prohibit parallel perfect intervals. No voice crossing, no more than three consecutive 3rds or 6ths.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See the notes available for a CF in C major',
     },
     {
       title: 'Second Species (2:1)',
       explanation:
-        'Two notes against each CF note. Strong beats must be consonant with the CF. Weak beats may also be consonant \u2014 a leap to a consonant interval is permitted. Weak beats may be dissonant only as passing tones \u2014 approached and left by step in the same direction (neighbor tones wait until third species). No unisons on strong beats except at the beginning and end. Second species introduces the fundamental principle of dissonance treatment: dissonance is permitted only when controlled by stepwise motion.',
+        'Two notes against each CF note. Strong beats must be consonant with the CF. Weak beats may also be consonant \u2014 a leap to a consonant interval is permitted. Weak beats may be dissonant only as passing tones \u2014 approached and left by step in the same direction (neighbour tones wait until third species). No unisons on strong beats except at the beginning and end. Second species introduces the fundamental principle of dissonance treatment: dissonance is permitted only when controlled by stepwise motion.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'See G major \u2014 another common CF key',
     },
     {
       title: 'Third Species (4:1)',
       explanation:
-        'Four notes against each CF note. The first note of each group must be consonant; the remaining three may be dissonant as passing tones, neighbor tones, or the cambiata figure (step to dissonance, leap of a third, step back). Double neighbors (upper and lower neighbor in sequence) are also permitted. Third species produces the most melodically active and ornamented counterpoint before syncopation enters in fourth species.',
+        'Four notes against each CF note. The first note of each group must be consonant; the remaining three may be dissonant as passing tones, neighbour tones, or the cambiata figure (step to dissonance, leap of a third, step back). Double neighbours (upper and lower neighbour in sequence) are also permitted. Third species produces the most melodically active and ornamented counterpoint before syncopation enters in fourth species.',
       tryThisQuery: 'D major scale',
       tryThisLabel: 'See D major \u2014 try tracing a cantus firmus',
     },
@@ -511,7 +511,7 @@ const l6u20m1: CurriculumModule = {
     {
       id: 'l6u20m1t3',
       instruction:
-        'In third species, the cambiata is a specific ornamental figure: consonance, step to dissonance, leap of a third in the same direction, then step back. It allows a dissonant note to be left by leap \u2014 one of the few exceptions to the rule that dissonance must resolve by step (the double neighbor, also allowed in third species, is another)',
+        'In third species, the cambiata is a specific ornamental figure: consonance, step to dissonance, leap of a third in the same direction, then step back. It allows a dissonant note to be left by leap \u2014 one of the few exceptions to the rule that dissonance must resolve by step (the double neighbour, also allowed in third species, is another)',
     },
   ],
   prerequisites: ['l6u19m4'],
@@ -525,7 +525,7 @@ const l6u20m2: CurriculumModule = {
   title: 'Species Counterpoint: Fourth and Fifth Species',
   subtitle: 'Syncopated counterpoint, suspensions, and florid counterpoint',
   objectives: [
-    'Master fourth species (syncopated): tied notes creating suspensions that resolve downward by step',
+    'Master fourth species (syncopated): tied notes creating suspensions that resolve downwards by step',
     'Identify standard dissonant suspensions (7-6, 4-3, 9-8, 2-3) and chain them into sequences',
     'Master fifth species (florid): combining all previous species freely in a single line',
   ],
@@ -633,26 +633,26 @@ const l6u20m4: CurriculumModule = {
   unitId: 'u20',
   levelId: 'l6',
   title: 'Advanced Part Writing and Score Reading',
-  subtitle: 'SATB harmonization, figured bass realization, and orchestral score reading',
+  subtitle: 'SATB harmonisation, figured bass realisation, and orchestral score reading',
   objectives: [
-    'Harmonize soprano and bass melodies in four-part SATB texture following voice-leading rules',
-    'Realize figured bass by filling in upper voices from bass figures and accidentals',
+    'Harmonise soprano and bass melodies in four-part SATB texture following voice-leading rules',
+    'Realise figured bass by filling in upper voices from bass figures and accidentals',
     'Read full orchestral scores by transposing instruments to concert pitch and reducing to harmonic content',
   ],
   concepts: [
     {
-      title: 'Soprano Harmonization',
+      title: 'Soprano Harmonisation',
       explanation:
         'Given a soprano melody, the task is to choose chords and fill in alto, tenor, and bass. The process: determine the key and locate cadence points, choose a bass line and chord progression that supports the melody functionally, fill in inner voices following voice-leading rules, then check for errors (parallel fifths/octaves, spacing violations, doubling mistakes, voice crossing).',
       tryThisQuery: 'key of C',
-      tryThisLabel: 'See C major diatonic chords \u2014 the harmonization palette',
+      tryThisLabel: 'See C major diatonic chords \u2014 the harmonisation palette',
     },
     {
-      title: 'Figured Bass Realization',
+      title: 'Figured Bass Realisation',
       explanation:
-        'Figured bass notation provides a bass line with numbers indicating intervals above each note. No figures means root position (5/3), 6 means first inversion, 6/4 means second inversion, 7 means a root-position seventh chord. Accidentals modify specific intervals. Realizing figured bass \u2014 filling in the upper three voices in real time \u2014 was the everyday skill of every Baroque keyboardist.',
+        'Figured bass notation provides a bass line with numbers indicating intervals above each note. No figures means root position (5/3), 6 means first inversion, 6/4 means second inversion, 7 means a root-position seventh chord. Accidentals modify specific intervals. Realising figured bass \u2014 filling in the upper three voices in real time \u2014 was the everyday skill of every Baroque keyboardist.',
       tryThisQuery: 'key of G',
-      tryThisLabel: 'See G major \u2014 practice figured bass mentally',
+      tryThisLabel: 'See G major \u2014 practise figured bass mentally',
     },
     {
       title: 'Orchestral Score Reading',
@@ -666,7 +666,7 @@ const l6u20m4: CurriculumModule = {
     {
       id: 'l6u20m4t1',
       instruction:
-        'To harmonize a soprano melody: first identify cadence points (they determine harmonic goals), then work backward from each cadence to fill in the chord progression. Inner voices follow the shortest path between chord tones',
+        'To harmonise a soprano melody: first identify cadence points (they determine harmonic goals), then work backwards from each cadence to fill in the chord progression. Inner voices follow the shortest path between chord tones',
     },
     {
       id: 'l6u20m4t2',
@@ -700,7 +700,7 @@ export const L6_UNITS: CurriculumUnit[] = [
       skillsSummary: [
         'Build and resolve the Neapolitan chord (bII6) as a chromatic pre-dominant',
         'Construct Italian, French, and German augmented sixth chords and understand their distinct characters',
-        'Recognize the Gr+6/V7 enharmonic equivalence and use it to modulate between distant keys',
+        'Recognise the Gr+6/V7 enharmonic equivalence and use it to modulate between distant keys',
       ],
       bridgeText:
         'You can now deploy the most dramatic chromatic chords in tonal music and modulate between distant keys through the German sixth pivot. Next you\u2019ll explore diminished seventh reinterpretation, common-tone embellishment, and the broader chromatic landscape that pushed tonality to its limits.',
@@ -737,14 +737,14 @@ export const L6_UNITS: CurriculumUnit[] = [
     levelId: 'l6',
     title: 'Counterpoint and Part Writing',
     description:
-      'Complete species counterpoint, invertible counterpoint, SATB harmonization, and score reading',
+      'Complete species counterpoint, invertible counterpoint, SATB harmonisation, and score reading',
     icon: 'scales',
     modules: [l6u20m1, l6u20m2, l6u20m3, l6u20m4],
     milestone: {
       skillsSummary: [
-        'Apply all five species of counterpoint from cantus firmus through florid writing',
+        'Apply all five species of counterpoint from cantus firmus to florid writing',
         'Understand invertible and triple counterpoint techniques used in Bach\u2019s fugues',
-        'Harmonize melodies in SATB, realize figured bass, and read orchestral scores',
+        'Harmonise melodies in SATB, realise figured bass, and read orchestral scores',
       ],
       bridgeText:
         'You\u2019ve completed the full arc of chromatic harmony and contrapuntal technique. These skills \u2014 chromatic chords, enharmonic modulation, species counterpoint, and part writing \u2014 form the toolkit of advanced tonal composition and analysis.',

@@ -398,11 +398,13 @@ describe('the capo\'s chips and line in the learner\'s language (the seat\'s dec
     const badge = /(\d+)fr/.exec(grid().textContent ?? '');
     if (badge) expect(chips[0]).toMatch(new RegExp(`^Fret ${badge[1]}\\b`));
   });
-  it('without a capo the chips are as before (the library\'s own names)', async () => {
+  it('without a capo the chips are the same grips, named in the learner\'s language too (QA audit Q1, 2026-11-18)', async () => {
+    // Until 2026-11-18 a chip without a capo printed the library's own English
+    // name in every language ("E barre" in Portuguese).
     await act(async () => { await i18n.changeLanguage('pt'); });
     reset({ language: 'pt', capoFret: 0, selectedChord: buildChord(N('G'), 'major') });
     render(<Fretboard />);
-    expect(chipTexts()).toContain('E barre');
+    expect(chipTexts()).toEqual(['forma de G', 'pestana de E', 'pestana de D', 'pestana de A', 'pestana de C', 'pestana de G']);
   });
 });
 

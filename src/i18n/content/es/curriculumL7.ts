@@ -96,7 +96,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe «Cmaj9», «Dm11» y «G13» uno tras otro. Para cada acorde, identifica la fundamental, la cualidad y qué extensiones están presentes. Observa cómo maj9 implica maj7, m11 implica m7+9+11 y 13 implica 7+9+13.',
+            'Pulsa «Cmaj9», «Dm11» y «G13» uno tras otro. Para cada acorde, identifica la fundamental, la cualidad y qué extensiones están presentes. Observa cómo maj9 implica maj7, m11 implica m7+9+11 y 13 implica 7+9+13.',
         },
         {
           instruction:
@@ -104,7 +104,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Construye una escalera de alteraciones dominantes: escribe «C7», luego «C7b9», luego «C7#9», luego «C7#11». Cada alteración modifica cromáticamente una extensión manteniendo el shell dominante (C-E-Bb) intacto.',
+            'Construye una escalera de alteraciones dominantes: pulsa «C7», luego «C7b9», luego «C7#9», luego «C7#11». Cada alteración modifica cromáticamente una extensión manteniendo el shell dominante (C-E-Bb) intacto.',
         },
       ],
     },
@@ -130,8 +130,8 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'El acorde alt: tensión cromática máxima',
           explanation:
-            'C7alt es un acorde de séptima de dominante con todas las extensiones alteradas: b9, #9, #11 (enarmónico de b5) y b13 (enarmónico de #5). Concentra la tensión cromática máxima posible antes de la resolución — cada nota fuera del shell está cromáticamente desplazada. El acorde alt se empareja con la escala alterada, que es el modo 7 de la menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica). Este es el sonido dominante de referencia para resolver a acordes menores en el jazz.',
-          tryThisLabel: 'Construye C7alt — todas las extensiones alteradas',
+            'C7alt es un acorde de séptima de dominante (C, E, Bb) con la quinta alterada, la novena alterada, o ambas. Hay cuatro alteraciones disponibles: b9, #9, #11 (enarmónico de b5) y b13 (enarmónico de #5). Un voicing necesita una o más de ellas sobre el shell: C, E y Bb con D# (#9) y Ab (b13) ya es un C7alt. El C7alt de la aplicación toca las cuatro a la vez, la tensión cromática máxima posible antes de la resolución — cada nota fuera del shell está cromáticamente desplazada. El acorde alt se empareja con la escala alterada, que contiene las cuatro: es el modo 7 de la menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica). Este es el sonido dominante de referencia para resolver a acordes menores en el jazz.',
+          tryThisLabel: 'Construye C7alt — aquí con las cuatro alteraciones',
         },
         {
           title: 'Dominantes suspendidas: 7sus4',
@@ -143,11 +143,11 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye shells en varias cualidades: escribe «Cmaj7», «Cm7», «C7», «Cm7b5». En cada uno, identifica la fundamental, tercera y séptima. La tercera y la séptima distinguen Cmaj7, Cm7 y C7, pero Cm7 y Cm7b5 comparten la misma tercera y séptima (Eb y Bb) — solo la quinta disminuida (Gb) los separa, así que mantenla en el shell del m7b5.',
+            'Construye shells en varias cualidades: pulsa «Cmaj7», «Cm7», «C7», «Cm7b5». En cada uno, identifica la fundamental, tercera y séptima. La tercera y la séptima distinguen Cmaj7, Cm7 y C7, pero Cm7 y Cm7b5 comparten la misma tercera y séptima (Eb y Bb) — solo la quinta disminuida (Gb) los separa, así que mantenla en el shell del m7b5.',
         },
         {
           instruction:
-            'Escribe «C7alt» — es un acorde de séptima de dominante con todas las extensiones alteradas (b9, #9, #11/b5, b13/#5). Cuenta las notas cromáticas en comparación con un C7 simple. Este acorde es tensión máxima antes de la resolución.',
+            'Pulsa «C7alt» — la aplicación toca un acorde de séptima de dominante con las cuatro alteraciones disponibles (b9, #9, #11/b5, b13/#5); un voicing de C7alt solo necesita una o más de ellas. Cuenta las notas cromáticas en comparación con un C7 simple. Con las cuatro, este acorde es tensión máxima antes de la resolución.',
         },
         {
           instruction:
@@ -190,15 +190,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye una ii-V-I mayor en C: escribe «Dm7», luego «G7», luego «Cmaj7». Escucha la tensión acumularse del ii al V y resolver en el I. El trítono en G7 (B y F) resuelve hacia dentro, hacia C y E.',
+            'Construye una ii-V-I mayor en C: pulsa «Dm7», luego «G7», luego «Cmaj7». Escucha la tensión acumularse del ii al V y resolver en el I. El trítono en G7 (B y F) resuelve hacia dentro, hacia C y E.',
         },
         {
           instruction:
-            'Ahora construye una ii-V-i menor en C menor: escribe «Dm7b5», luego «G7b9», luego «Cm7». Compara la atmósfera — el ii semidisminuido y la alteración b9 oscurecen todo en comparación con la versión mayor.',
+            'Ahora construye una ii-V-i menor en C menor: pulsa «Dm7b5», luego «G7b9», luego «Cm7». Compara la atmósfera — el ii semidisminuido y la alteración b9 oscurecen todo en comparación con la versión mayor.',
         },
         {
           instruction:
-            'Encadena pares ii-V: escribe «Em7», «A7», «Dm7», «G7», «Cmaj7». Esta es una ii-V-I en cascada donde cada par apunta al siguiente — Em7-A7 apunta a Dm7, luego Dm7-G7 apunta a Cmaj7. El ciclo de quintas en acción.',
+            'Encadena pares ii-V: pulsa «Em7», «A7», «Dm7», «G7», «Cmaj7». Esta es una ii-V-I en cascada donde cada par apunta al siguiente — Em7-A7 apunta a Dm7, luego Dm7-G7 apunta a Cmaj7. El ciclo de quintas en acción.',
         },
       ],
     },
@@ -258,7 +258,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         'Tocar la forma básica del blues de 12 compases usando acordes de séptima de dominante',
         'Comprender el enriquecimiento del jazz blues: inserciones ii-V, sustituciones tritonales, acordes disminuidos de paso',
         'Construir una forma de blues menor con acordes m7 y bVI7',
-        'Reconocer por qué todos los acordes en el blues son dominantes — la tensión omnipresente ES el sonido del blues',
+        'Reconocer por qué todos los acordes del blues básico son dominantes — la tensión omnipresente ES el sonido del blues',
       ],
       concepts: [
         {
@@ -271,7 +271,7 @@ const curriculumL7: CurriculumLevelOverlay = {
           title: 'Jazz blues',
           explanation:
             'El jazz blues enriquece la forma básica de 12 compases con inserciones ii-V, sustituciones tritonales y acordes disminuidos de paso. Un jazz blues habitual en C: C7 / F7 / C7 / C7 / F7 / F#dim7 / C7 / A7 / Dm7 / G7 / C7-A7 / Dm7-G7. El #IVdim7 (F#dim7) funciona como acorde de paso cromático entre IV7 e I7. El A7 (V7/ii) tira hacia Dm7, aportando la lógica ii-V de los compases 8–9 y del turnaround. Los últimos cuatro compases se convierten en un turnaround con un ii-V (Dm7-G7) que recicla al inicio. El bird blues (Charlie Parker) añade aún más sustituciones y cadenas ii-V.',
-          tryThisLabel: 'Construye F7 — el IV7 del blues en C',
+          tryThisLabel: 'Escucha F7 → F#dim7 → C7/G: el bajo sube F–F#–G',
         },
         {
           title: 'Blues menor',
@@ -287,7 +287,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Añade el acorde de paso del jazz blues: toca «F7», luego «F#dim7», luego «C7». El acorde disminuido enlaza el IV7 con el I7 mediante una subida cromática del bajo (F-F#-G, donde G es la quinta de C). Este es el movimiento emblemático del jazz blues.',
+            'Añade el acorde de paso del jazz blues: pulsa «F7», «F#dim7» y «C7/G» (C7 con su quinta, G, en el bajo) para ver cada acorde; después, en Jazz blues (arriba), pulsa Escuchar para oír los tres seguidos: el acorde disminuido enlaza el IV7 con el I7 mediante una subida cromática del bajo (F-F#-G). Este es el movimiento emblemático del jazz blues.',
         },
         {
           instruction:
@@ -387,15 +387,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Empareja acorde con escala: escribe «Dm7» (dórico), luego «D dorian» para ver la escala. Ahora prueba «G7» (mixolidio) y «G mixolydian». Las notas del acorde están dentro de la escala — esto es la alineación acorde-escala.',
+            'Empareja acorde con escala: pulsa «Dm7» (dórico), luego «D dorian» para ver la escala. Ahora prueba «G7» (mixolidio) y «G mixolydian». Las notas del acorde están dentro de la escala — esto es la alineación acorde-escala.',
         },
         {
           instruction:
-            'Explora la dominante alterada: escribe «C altered scale», luego «C7alt». Cada nota del acorde está contenida en la escala. Para encontrar rápidamente cualquier escala alterada: toca menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica).',
+            'Explora la dominante alterada: pulsa «C altered scale», luego «C7alt». Cada nota del acorde está contenida en la escala. Para encontrar rápidamente cualquier escala alterada: toca menor melódica un semitono por encima de la fundamental (C alterada = Db menor melódica).',
         },
         {
           instruction:
-            'Compara dos escalas dominantes: escribe «G mixolydian» (dominante no alterada) y luego «G altered scale» (alteración máxima). Mixolidio es brillante y estable; alterada es oscura y cromática. El contexto determina cuál usar.',
+            'Compara dos escalas dominantes: pulsa «G mixolydian» (dominante no alterada) y luego «G altered scale» (alteración máxima). Mixolidio es brillante y estable; alterada es oscura y cromática. El contexto determina cuál usar.',
         },
       ],
     },
@@ -434,7 +434,7 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Explora estructuras superiores: escribe «C13#11» — este es el sonido de una tríada de D mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
+            'Explora estructuras superiores: pulsa «C13#11» — este es el sonido de una tríada de D mayor (D-F#-A = 9-#11-13) sobre un shell de C7 (C-E-Bb). El cifrado complejo se realiza con una tríada simple por encima.',
         },
         {
           instruction:
@@ -528,11 +528,11 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Escribe «D dorian» e identifica la nota característica (B natural — la sexta elevada). Ahora escribe «D natural minor scale» y compara — solo una nota difiere. Esa única nota define el sonido dórico.',
+            'Pulsa «D dorian» e identifica la nota característica (B natural — la sexta elevada). Ahora pulsa «D natural minor scale» y compara — solo una nota difiere. Esa única nota define el sonido dórico.',
         },
         {
           instruction:
-            'Escribe «E phrygian» — la nota característica es F (la segunda rebajada). Construye un vamp frigio: toca «Em» y luego «F major chord» y vuelve a «Em». El movimiento de la fundamental por semitono es la firma del frigio.',
+            'Pulsa «E phrygian» — la nota característica es F (la segunda rebajada). Construye un vamp frigio: toca «Em» y luego «F major chord» y vuelve a «Em». El movimiento de la fundamental por semitono es la firma del frigio.',
         },
         {
           instruction:
@@ -575,11 +575,11 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye un sonido cuartal: escribe «Dm11» — contiene las notas D-G-C-F cuando se voicea en cuartas. Compara con «Dm7» — la extensión de oncena añade el apilamiento cuartal que crea la cualidad abierta y ambigua.',
+            'Construye un sonido cuartal: pulsa «Dm11» — contiene las notas D-G-C-F cuando se voicea en cuartas. Compara con «Dm7» — la extensión de oncena añade el apilamiento cuartal que crea la cualidad abierta y ambigua.',
         },
         {
           instruction:
-            'Explora el power chord como apilamiento mínimo de quintas: escribe «C5», luego «D5», luego «E5». Los power chords no son mayores ni menores — quintas puras sin tercera. Este es el pensamiento quintal en su forma más básica.',
+            'Explora el power chord como apilamiento mínimo de quintas: pulsa «C5», luego «D5», luego «E5». Los power chords no son mayores ni menores — quintas puras sin tercera. Este es el pensamiento quintal en su forma más básica.',
         },
         {
           instruction:
@@ -701,7 +701,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La escala madre menor melódica',
           explanation:
-            'En el jazz, esta forma ascendente se usa en ambos sentidos. En Explorar, la práctica al subir y al bajar se identifica como menor melódica clásica, cuyo descenso usa la menor natural. La escala menor melódica ascendente eleva tanto la sexta como la séptima del menor natural, creando una escala con tercera menor pero sexta y séptima mayores. Su patrón de intervalos (T-S-T-T-T-T-S) genera siete modos, cada uno con un carácter distinto y aplicación en el jazz. El modo 1 (la propia menor jazz) se empareja con acordes menor-mayor 7 — el sonido m(maj7). A diferencia de los modos diatónicos que comparten todos las mismas notas, los modos de la menor melódica poseen cada uno un sabor cromático único que los hace esenciales para navegar la armonía jazz alterada.',
+            'En el jazz, esta forma ascendente se usa en ambos sentidos. En Explorar, la práctica al subir y al bajar se identifica como menor melódica clásica, cuyo descenso usa la menor natural. La escala menor melódica ascendente eleva tanto la sexta como la séptima del menor natural, creando una escala con tercera menor pero sexta y séptima mayores. Su patrón de intervalos (T-S-T-T-T-T-S) genera siete modos, cada uno con un carácter distinto y aplicación en el jazz. El modo 1 (la propia menor jazz) se empareja con acordes menor-mayor 7 — el sonido m(maj7). Como los modos de la escala mayor, los siete modos de una escala menor melódica comparten todas sus notas; aun así, cada uno tiene su propio sabor cromático, lo que los hace esenciales para navegar la armonía jazz alterada.',
           tryThisLabel: 'Observa C menor melódica — la escala madre de 7 modos',
         },
         {
@@ -713,22 +713,22 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La escala alterada (superlocria)',
           explanation:
-            'El modo 7 de la menor melódica es la escala alterada, también llamada superlocria. Su fórmula desde la fundamental: S-T-S-T-T-T-T. Contiene todas las alteraciones posibles de un acorde dominante: b9, #9, b5 (#11) y #5 (b13). La escala alterada se empareja exclusivamente con acordes 7alt y ES el sonido esencial para dominantes que resuelven a menor con tensión máxima. El atajo: la escala alterada en cualquier fundamental equivale a la escala menor melódica comenzando un semitono más arriba (C alterada = Db menor melódica). El locrio natural 2 (modo 6) es la escala estándar para acordes semidisminuidos.',
+            'El modo 7 de la menor melódica es la escala alterada, también llamada superlocria. Su fórmula desde la fundamental: S-T-S-T-T-T-T. Contiene todas las alteraciones posibles de un acorde dominante: b9, #9, b5 (#11) y #5 (b13). La escala alterada se empareja con acordes 7alt — contiene las cuatro alteraciones que pueden llevar — y ES el sonido esencial para dominantes que resuelven a menor con tensión máxima. El atajo: la escala alterada en cualquier fundamental equivale a la escala menor melódica comenzando un semitono más arriba (C alterada = Db menor melódica). El locrio natural 2 (modo 6) es la escala estándar para acordes semidisminuidos.',
           tryThisLabel: 'Observa la escala alterada — modo 7 de la menor melódica',
         },
       ],
       tasks: [
         {
           instruction:
-            'Explora la familia de la menor melódica: escribe «C melodic minor», luego «C lydian dominant», luego «C altered scale». Son los modos 1, 4 y 7 de la misma escala madre (en fundamentales diferentes). Cada uno tiene un carácter completamente distinto.',
+            'Explora la familia de la menor melódica: pulsa «C melodic minor», luego «F lydian dominant», luego «B altered scale». Son los modos 1, 4 y 7 de una sola escala madre, C menor melódica: las mismas siete notas (C D Eb F G A B), empezando en C, en F y en B. Cada uno tiene un carácter completamente distinto.',
         },
         {
           instruction:
-            'Verifica el atajo de la escala alterada: escribe «C altered scale», luego «Db melodic minor». Contienen las mismas notas — la escala alterada en cualquier fundamental es la menor melódica un semitono más arriba. Esta es la forma más rápida de encontrar cualquier escala alterada.',
+            'Verifica el atajo de la escala alterada: pulsa «C altered scale», luego «Db melodic minor». Contienen las mismas notas — la escala alterada en cualquier fundamental es la menor melódica un semitono más arriba. Esta es la forma más rápida de encontrar cualquier escala alterada.',
         },
         {
           instruction:
-            'Empareja modo con acorde: escribe «C lydian dominant» junto a «C7#11». Todas las notas del acorde están dentro de la escala. Ahora prueba «C altered scale» junto a «C7alt». La escala contiene todas las extensiones alteradas — alineación perfecta.',
+            'Empareja modo con acorde: pulsa «C lydian dominant» junto a «C7#11». Todas las notas del acorde están dentro de la escala. Ahora prueba «C altered scale» junto a «C7alt». La escala contiene todas las extensiones alteradas — alineación perfecta.',
         },
       ],
     },
@@ -767,15 +767,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Explora el frigio dominante: escribe «C phrygian dominant». Tiene una b2 (Db) y una tercera mayor (E) — la segunda aumentada entre ellas es el intervalo firma. Este es el sonido de flamenco/klezmer. Compara con «C phrygian» para escuchar la diferencia que hace la tercera mayor.',
+            'Explora el frigio dominante: pulsa «C phrygian dominant». Tiene una b2 (Db) y una tercera mayor (E) — la segunda aumentada entre ellas es el intervalo firma. Este es el sonido de flamenco/klezmer. Compara con «C phrygian» para escuchar la diferencia que hace la tercera mayor.',
         },
         {
           instruction:
-            'Escribe «C whole tone scale» — observa que tiene solo 6 notas y ningún semitono. Ahora escribe «Db whole tone scale». Estas son las únicas dos escalas de tonos enteros únicas; cualquier otra fundamental duplica una de ellas. Simetría total significa ambigüedad total.',
+            'Pulsa «C whole tone scale» — observa que tiene solo 6 notas y ningún semitono. Ahora pulsa «Db whole tone scale». Estas son las únicas dos escalas de tonos enteros únicas; cualquier otra fundamental duplica una de ellas. Simetría total significa ambigüedad total.',
         },
         {
           instruction:
-            'Compara escalas del mundo: escribe «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene muchas más escalas — explora libremente.',
+            'Compara escalas del mundo: pulsa «C double harmonic major», luego «C hungarian minor». Ambas presentan segundas aumentadas pero en posiciones diferentes, creando caracteres melódicos muy distintos. El motor tiene muchas más escalas — explora libremente.',
         },
       ],
     },
@@ -814,15 +814,15 @@ const curriculumL7: CurriculumLevelOverlay = {
       tasks: [
         {
           instruction:
-            'Construye la escalera de extensiones en C: escribe «Cmaj7», «Cmaj9», «Cmaj13» en secuencia. Escucha cómo cada extensión añade riqueza mientras el shell (C, E, B) se mantiene igual.',
+            'Construye la escalera de extensiones en C: pulsa «Cmaj7», «Cmaj9», «Cmaj13» en secuencia. Escucha cómo cada extensión añade riqueza mientras el shell (C, E, B) se mantiene igual.',
         },
         {
           instruction:
-            'Compara acordes suspendidos y de nota añadida: escribe «Csus4», luego «Cadd9», luego «C6/9». Observa que sus4 no tiene tercera, add9 no tiene séptima, y 6/9 no tiene ni séptima ni la tensión de resolución de un acorde suspendido.',
+            'Compara acordes suspendidos y de nota añadida: pulsa «Csus4», luego «Cadd9», luego «C6/9». Observa que sus4 no tiene tercera, add9 no tiene séptima, y 6/9 no tiene ni séptima ni la tensión de resolución de un acorde suspendido.',
         },
         {
           instruction:
-            'Explora variaciones dominantes: escribe «C7», «C9», «C7sus4», «C7b9», «C7#9», «C13». Todos son acordes de la familia dominante, pero cada uno tiene un color distinto — de cálido (C9) a oscuro (C7b9) a áspero (C7#9) a amplio (C13).',
+            'Explora variaciones dominantes: pulsa «C7», «C9», «C7sus4», «C7b9», «C7#9», «C13». Todos son acordes de la familia dominante, pero cada uno tiene un color distinto — de cálido (C9) a oscuro (C7b9) a áspero (C7#9) a amplio (C13).',
         },
       ],
     },

@@ -177,7 +177,8 @@ export function ModuleView({
   // ── Sections (the rail) ───────────────────────────────────────────────────
   const sections = useMemo((): Omit<LessonSection, 'done'>[] => {
     const out: Omit<LessonSection, 'done'>[] = [{ id: 'intro', label: t('lesson.intro'), marker: '·' }];
-    module.concepts.forEach((c, i) => out.push({ id: `c${i}`, label: t('lesson.conceptItem', { n: i + 1, title: c.title }), marker: String(i + 1) }));
+    // One number per section (audit Q8): the marker shows it, the words are the title; the name keeps both.
+    module.concepts.forEach((c, i) => out.push({ id: `c${i}`, label: c.title, name: t('lesson.conceptItem', { n: i + 1, title: c.title }), marker: String(i + 1) }));
     if (songRefs.length > 0) out.push({ id: 'songs', label: t('songRef.title'), marker: '♫' });
     if (module.tasks.length > 0) {
       out.push({
@@ -570,7 +571,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} names={noStaff} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} descending={concept.descending} names={noStaff} accent={accent} />
             </section>
           ))}
 

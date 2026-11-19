@@ -25,7 +25,7 @@ const ON_TOPIC_KEYWORDS: Record<string, string[]> = {
   l5u15m1: ['major triad', 'V/V'],
   l5u15m2: ['dominant 7th', 'secondary dominant'],
   l5u15m3: ['leading-tone'],
-  l5u15m4: ['tonicization', 'modulation'],
+  l5u15m4: ['tonicisation', 'modulation'],
   l5u15m5: ['dominant chain', 'V7'],
   l5u16m1: ['pivot'],
   l5u16m2: ['closely related', 'relative minor'], // Modulation to Closely Related Keys

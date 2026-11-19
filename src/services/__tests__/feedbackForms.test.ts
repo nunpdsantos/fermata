@@ -74,8 +74,11 @@ describe('"Feedback or a problem" (2026-11-14): the words', () => {
     for (const lang of ['en', 'pt', 'es'] as const) expect(LOCALES[lang].report.offline).not.toMatch(/report|comunicar|avisar/i);
   });
 
-  it('release 15 is the newest: not critical, dated 2026-11-14, one line per language within 160 characters, naming the item by its new words and "⋯"', () => {
-    const [newest, previous] = parseReleaseNotes(JSON.parse(releaseNotesSource));
+  it('release 15 (the newest until release 16 of 19 November 2026): not critical, dated 2026-11-14, one line per language within 160 characters, naming the item by its new words and "⋯"', () => {
+    const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const at = releases.findIndex((r) => r.release === 15);
+    expect(at).toBeGreaterThanOrEqual(0);
+    const [newest, previous] = releases.slice(at);
     expect([newest.release, newest.date, newest.critical]).toEqual([15, '2026-11-14', false]);
     expect(previous.release).toBe(14);
     for (const lang of ['en', 'pt', 'es'] as const) {

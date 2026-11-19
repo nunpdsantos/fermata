@@ -417,6 +417,11 @@ describe('General accessibility', () => {
     const dialog = screen.queryByRole('dialog');
     expect(dialog).not.toBeNull();
     expect(dialog!.getAttribute('aria-modal')).toBe('true');
-    expect(dialog!.getAttribute('aria-label')).toBe('Quick search');
+    // Named in the learner's language since the 2026-11-18 audit (A13 / A14):
+    // this file's mock renders a plain key as the key; the English word is the
+    // locale's (PT / ES: searchAudit.test.tsx).
+    expect(dialog!.getAttribute('aria-label')).toBe('search.dialogLabel');
+    const en = (await import('../../i18n/locales/en.json')).default as { search: { dialogLabel: string } };
+    expect(en.search.dialogLabel).toBe('Quick search');
   });
 });

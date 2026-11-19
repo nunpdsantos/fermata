@@ -164,7 +164,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         {
           title: 'Canon estricto e intervalos canónicos',
           explanation:
-            'En un canon estricto, la propuesta, la voz que empieza, presenta una melodía y la respuesta, la voz que imita, la replica exactamente a una distancia temporal fija, transpuesta por algún intervalo. El canon al unísono repite en la misma altura; el canon a la octava desplaza una octava; el canon a la quinta transpone una quinta justa por encima. El desafío composicional es profundo: la propuesta debe generar una melodía que produzca contrapunto válido contra una copia de sí misma desplazada en el tiempo. Los cánones al unísono y a la octava son en general los más sencillos de escribir; en otros intervalos, las notas de la respuesta asumen otros papeles en la tonalidad y algunas cualidades de intervalo cambian, lo que añade restricciones.',
+            'En un canon estricto, la propuesta, la voz que empieza, presenta una melodía y la respuesta, la voz que imita, la replica exactamente a una distancia temporal fija, transpuesta por algún intervalo. El canon al unísono repite en la misma altura; el canon a la octava desplaza una octava; el canon a la quinta la transpone una quinta por encima o por debajo. El desafío composicional es profundo: la propuesta debe generar una melodía que produzca contrapunto válido contra una copia de sí misma desplazada en el tiempo. Los cánones al unísono y a la octava son en general los más sencillos de escribir; en otros intervalos, las notas de la respuesta asumen otros papeles en la tonalidad y algunas cualidades de intervalo cambian, lo que añade restricciones.',
           tryThisLabel: 'Observa la escala — la materia prima melódica de un canon',
         },
         {
@@ -187,7 +187,7 @@ const curriculumL8: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Escucha el canon de las Variaciones Goldberg de Bach (una de cada tres variaciones es un canon). Compara el Canon al Unísono (Var. 3), el Canon a la 2.ª (Var. 6) y el Canon a la 3.ª (Var. 9). ¿Cómo afecta el intervalo canónico al carácter?',
+            'Escucha los cánones de las Variaciones Goldberg de Bach: de la Var. 3 a la Var. 27, una de cada tres variaciones es un canon, cada uno a un intervalo más amplio, del unísono a la 9.ª; la Var. 30, donde iría un décimo canon, es en cambio un quodlibet. Compara el Canon al Unísono (Var. 3), el Canon a la 2.ª (Var. 6) y el Canon a la 3.ª (Var. 9). ¿Cómo afecta el intervalo canónico al carácter?',
         },
         {
           instruction:

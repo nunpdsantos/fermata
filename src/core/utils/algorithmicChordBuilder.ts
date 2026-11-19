@@ -177,6 +177,11 @@ function normalizeChordInput(input: string): string {
   const root = rootMatch[0].charAt(0).toUpperCase() + rootMatch[0].slice(1).toLowerCase();
   let rest = s.substring(rootMatch[0].length);
 
+  // A leading capital M is major ("CM7b9" = Cmaj7b9): lower-cased it would
+  // read as minor (fix pass, review of audit 2026-11-18). "Maj" / "MAJ" are
+  // already words.
+  rest = rest.replace(/^M(?![aA])/, 'maj');
+
   // Convert to lowercase for matching
   rest = rest.toLowerCase();
 

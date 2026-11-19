@@ -71,7 +71,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "11 semitones", correct: false },
         ],
       },
-      hint: 'An augmented 6th is one half step larger than a major 6th (9 semitones). It spans 10 semitones and is enharmonically the same size as a minor 7th, but the two notes resolve outward to an octave.',
+      hint: 'An augmented 6th is one half step larger than a major 6th (9 semitones). It spans 10 semitones and is enharmonically the same size as a minor 7th, but the two notes resolve outwards to an octave.',
     },
     {
       id: 'l6u18m2e2',
@@ -102,7 +102,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Mediant: it supplies the iii or VI harmony in the tonal progression', correct: false },
         ],
       },
-      hint: 'All augmented 6th chords function as chromatic pre-dominants. The augmented 6th interval (b6 and #4) resolves outward by half step in both voices to the dominant note, creating an intensely directed approach to V.',
+      hint: 'All augmented 6th chords function as chromatic pre-dominants. The augmented 6th interval (b6 and #4) resolves outwards by half step in both voices to the dominant note, creating an intensely directed approach to V.',
     },
   ],
 
@@ -136,7 +136,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "A, C, Eb, F# -- 6, 1, b3, #4", correct: false },
         ],
       },
-      hint: 'In C minor, the Gr+6 contains b6 (Ab), 1 (C), b3 (Eb), and #4 (F#). The crucial augmented 6th interval is between Ab and F#, which resolves outward to G-G (octave on the dominant).',
+      hint: 'In C minor, the Gr+6 contains b6 (Ab), 1 (C), b3 (Eb), and #4 (F#). The crucial augmented 6th interval is between Ab and F#, which resolves outwards to G-G (octave on the dominant).',
     },
     {
       id: 'l6u18m3e3',
@@ -151,7 +151,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Gr+6 → I6/4 → IV', correct: false },
         ],
       },
-      hint: 'Like all augmented 6th chords, the Gr+6 resolves to V. b6 (usually in the bass) and #4 (in an upper voice) move outward by half step to an octave on the dominant pitch. A cadential 6/4 often intervenes to avoid parallel 5ths.',
+      hint: 'Like all augmented 6th chords, the Gr+6 resolves to V. b6 (usually in the bass) and #4 (in an upper voice) move outwards by half step to an octave on the dominant pitch. A cadential 6/4 often intervenes to avoid parallel 5ths.',
     },
   ],
 
@@ -191,7 +191,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l6u18m4e3',
       type: 'multiple_choice',
-      prompt: 'If a Gr+6 in C minor (Ab, C, Eb, F#) is reinterpreted as a V7, what key does it now tonicize?',
+      prompt: 'If a Gr+6 in C minor (Ab, C, Eb, F#) is reinterpreted as a V7, what key does it now tonicise?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -271,7 +271,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'F–Ab–C–Eb', correct: false },
         ],
       },
-      hint: 'The common-tone diminished 7th keeps one note (the common tone) from the chord it decorates. The other three voices move by step, creating a chromatic neighbor-note embellishment.',
+      hint: 'The common-tone diminished 7th keeps one note (the common tone) from the chord it decorates. The other three voices move by step, creating a chromatic neighbour-note embellishment.',
     },
     {
       id: 'l6u19m2e2',
@@ -296,12 +296,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'Ornamentation of a chord', correct: true },
-          { label: 'Tonicization of a chord', correct: false },
+          { label: 'Tonicisation of a chord', correct: false },
           { label: 'Replacement of the dominant', correct: false },
           { label: 'Modulation to another key', correct: false },
         ],
       },
-      hint: 'Unlike vii°7 (which has dominant function), the CTo7 is purely decorative. It embellishes a chord through chromatic neighbor motion, adding color without changing the harmonic direction.',
+      hint: 'Unlike vii°7 (which has dominant function), the CTo7 is purely decorative. It embellishes a chord through chromatic neighbour motion, adding colour without changing the harmonic direction.',
     },
   ],
 
@@ -335,7 +335,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Three types", correct: false },
         ],
       },
-      hint: 'From any major triad, you can move to another major triad a major or minor 3rd above or below: C to E, C to Eb, C to A, C to Ab. Each produces a different color, and all four are chromatic mediants.',
+      hint: 'From any major triad, you can move to another major triad a major or minor 3rd above or below: C to E, C to Eb, C to A, C to Ab. Each produces a different colour, and all four are chromatic mediants.',
     },
     {
       id: 'l6u19m3e3',
@@ -359,7 +359,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l6u19m4e1',
       type: 'multiple_choice',
-      prompt: 'What characterizes "nonfunctional harmony" in late Romantic music?',
+      prompt: 'What characterises "nonfunctional harmony" in late Romantic music?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -369,7 +369,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Chord connections are shaped mainly by alternating two fixed chords throughout a piece', correct: false },
         ],
       },
-      hint: 'In nonfunctional harmony, chord progressions are driven by smooth voice leading, shared tones, or coloristic effect rather than the traditional T-PD-D-T functional cycle. Wagner, Liszt, and late Chopin pioneered this approach.',
+      hint: 'In nonfunctional harmony, chord progressions are driven by smooth voice leading, shared tones, or colouristic effect rather than the traditional T-PD-D-T functional cycle. Wagner, Liszt, and late Chopin pioneered this approach.',
     },
     {
       id: 'l6u19m4e2',
@@ -394,9 +394,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'The loss of a secure home key through pervasive chromaticism and remote modulation', correct: true },
-          { label: 'The loss of regular meter through constantly changing time signatures', correct: false },
-          { label: 'The loss of chordal harmony in favor of a single unison melody', correct: false },
-          { label: 'The loss of thematic repetition in favor of continuously new material', correct: false },
+          { label: 'The loss of regular metre through constantly changing time signatures', correct: false },
+          { label: 'The loss of chordal harmony in favour of a single unison melody', correct: false },
+          { label: 'The loss of thematic repetition in favour of continuously new material', correct: false },
         ],
       },
       hint: 'Composers like Wagner (Tristan und Isolde) used continuous chromaticism, deceptive resolutions, and enharmonic ambiguity so extensively that the sense of a home key became elusive — paving the way for atonality in the 20th century.',
@@ -452,7 +452,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "One note in the counterpoint against each note of the cantus firmus", correct: false },
         ],
       },
-      hint: 'Third species sets four quarter notes against each whole note in the cantus firmus. This introduces neighbor tones and double passing tones (two passing tones in a row, moving stepwise in one direction to fill a fourth) in addition to the passing tones from second species.',
+      hint: 'Third species sets four quarter notes against each whole note in the cantus firmus. This introduces neighbour tones and double passing tones (two passing tones in a row, moving stepwise in one direction to fill a fourth) in addition to the passing tones from second species.',
     },
   ],
 
@@ -471,7 +471,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Strong-beat preparation is held into weak-beat dissonance, resolving by step from the lower note to the higher note", correct: false },
         ],
       },
-      hint: 'Fourth species introduces the suspension: a consonance on a weak beat is tied into the next strong beat where it becomes a dissonance, then resolves downward by step. This creates the characteristic syncopated texture.',
+      hint: 'Fourth species introduces the suspension: a consonance on a weak beat is tied into the next strong beat where it becomes a dissonance, then resolves downwards by step. This creates the characteristic syncopated texture.',
     },
     {
       id: 'l6u20m2e2',
@@ -501,7 +501,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Preparation (dissonance), suspension (consonance on strong beat), resolution (step up)", correct: false },
         ],
       },
-      hint: 'A suspension requires: (1) Preparation — the note is introduced as a consonance; (2) Suspension — the note is held (tied) into a strong beat where it becomes dissonant; (3) Resolution — the note resolves downward by step to a consonance.',
+      hint: 'A suspension requires: (1) Preparation — the note is introduced as a consonance; (2) Suspension — the note is held (tied) into a strong beat where it becomes dissonant; (3) Resolution — the note resolves downwards by step to a consonance.',
     },
   ],
 
@@ -574,7 +574,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l6u20m4e2',
       type: 'multiple_choice',
-      prompt: 'What does figured bass realization require a performer to do?',
+      prompt: 'What does figured bass realisation require a performer to do?',
       config: {
         type: 'multiple_choice',
         choices: [

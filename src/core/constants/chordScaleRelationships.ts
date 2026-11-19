@@ -79,6 +79,11 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
     { scale: 'major', fit: 'primary', context: '9th is natural in major scale' },
     { scale: 'pentatonic_major', fit: 'secondary', context: 'Clean melodic approach' },
   ],
+  // Cm(add9): C D E♭ G — the 9th (D) is the natural 2nd of both minors, as for minor9.
+  minor_add9: [
+    { scale: 'dorian', fit: 'primary', context: '9th is natural 2nd in dorian' },
+    { scale: 'natural_minor', fit: 'secondary', context: 'Works but less bright' },
+  ],
   add11: [
     {
       scale: 'major',
@@ -176,7 +181,7 @@ export const CHORD_SCALE_MAP: Record<ChordQuality, ScaleSuggestion[]> = {
       fit: 'primary',
       context: 'Half-whole pattern fits all chord tones including b9',
     },
-    { scale: 'phrygian_dominant', fit: 'secondary', context: 'Spanish/Flamenco flavor with b2' },
+    { scale: 'phrygian_dominant', fit: 'secondary', context: 'Spanish/Flamenco flavour with b2' },
     { scale: 'altered', fit: 'color', context: 'Maximum tension for resolving to minor' },
   ],
   dominant7sharp9: [

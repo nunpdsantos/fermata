@@ -48,11 +48,11 @@ const l2u4m1: CurriculumModule = {
     },
     {
       id: 'l2u4m1t2',
-      instruction: "Type 'Ab major scale' — how many flats does it need? Can you name them in order?",
+      instruction: "Tap 'Ab major scale' — how many flats does it need? Can you name them in order?",
     },
     {
       id: 'l2u4m1t3',
-      instruction: "Type 'E major scale' — the last sharp is D#. Go up a half step: E. The trick works!",
+      instruction: "Tap 'E major scale' — the last sharp is D#. Go up a half step: E. The trick works!",
     },
   ],
   prerequisites: ['l1u3m4'],
@@ -73,23 +73,23 @@ const l2u4m2: CurriculumModule = {
     {
       title: 'The Seven Scale Degree Names',
       explanation:
-        'Each scale degree has a functional name: 1=Tonic (home), 2=Supertonic (above tonic), 3=Mediant (midpoint between tonic and dominant), 4=Subdominant (the "lower dominant" — a 5th below the tonic, as the dominant is a 5th above), 5=Dominant (creates tension toward tonic), 6=Submediant (the "lower mediant" — midway between the tonic and the subdominant below it), 7=Leading Tone (half step below tonic, strongest pull home).',
+        'Each scale degree has a functional name: 1=Tonic (home), 2=Supertonic (above tonic), 3=Mediant (midpoint between tonic and dominant), 4=Subdominant (the "lower dominant" — a 5th below the tonic, as the dominant is a 5th above), 5=Dominant (creates tension towards tonic), 6=Submediant (the "lower mediant" — midway between the tonic and the subdominant below it), 7=Leading Tone (half step below tonic, strongest pull home).',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See all seven degrees of C major',
     },
     {
       title: 'Leading Tone vs. Subtonic',
       explanation:
-        "When degree 7 is a half step below the tonic (as in major and harmonic minor), it's called the leading tone — it pulls strongly upward to resolve. When degree 7 is a whole step below the tonic (as in natural minor), it's called the subtonic — the pull is weaker. This distinction explains why harmonic minor exists: composers raised the 7th to create a leading tone.",
+        "When degree 7 is a half step below the tonic (as in major and harmonic minor), it's called the leading tone — it pulls strongly upwards to resolve. When degree 7 is a whole step below the tonic (as in natural minor), it's called the subtonic — the pull is weaker. This distinction explains why harmonic minor exists: composers raised the 7th to create a leading tone.",
       tryThisQuery: 'A natural minor scale',
       tryThisLabel: 'Hear the subtonic in natural minor',
     },
     {
       title: 'Why These Names Matter',
       explanation:
-        "The names aren't arbitrary labels — they describe harmonic function. The dominant (5) and leading tone (7) create tension. The tonic (1) provides resolution. The subdominant (4) and supertonic (2) create motion toward the dominant. Understanding function is the key to understanding harmony. The color system in this app encodes these functions: blue=tonic, amber=dominant, red=leading tone.",
+        "The names aren't arbitrary labels — they describe harmonic function. The dominant (5) and leading tone (7) create tension. The tonic (1) provides resolution. The subdominant (4) and supertonic (2) create motion towards the dominant. Understanding function is the key to understanding harmony. The colour system in this app encodes these functions: blue=tonic, amber=dominant, red=leading tone.",
       tryThisQuery: 'key of G',
-      tryThisLabel: 'See degree colors in G major',
+      tryThisLabel: 'See degree colours in G major',
     },
   ],
   tasks: [
@@ -99,11 +99,11 @@ const l2u4m2: CurriculumModule = {
     },
     {
       id: 'l2u4m2t2',
-      instruction: 'Look at the degree colors — which degree is blue (tonic)? Which is amber (dominant)? Which is red (leading tone)?',
+      instruction: 'Look at the degree colours — which degree is blue (tonic)? Which is amber (dominant)? Which is red (leading tone)?',
     },
     {
       id: 'l2u4m2t3',
-      instruction: "Type 'A natural minor scale' then 'A harmonic minor scale' — which raises the 7th to create a leading tone?",
+      instruction: "Tap 'A natural minor scale' then 'A harmonic minor scale' — which raises the 7th to create a leading tone?",
     },
   ],
   prerequisites: ['l2u4m1'],
@@ -148,11 +148,11 @@ const l2u5m1: CurriculumModule = {
     },
     {
       id: 'l2u5m1t2',
-      instruction: "Type 'D minor scale' — which note gets a flat to maintain the W-H-W-W-H-W-W pattern?",
+      instruction: "Tap 'D minor scale' — which note gets a flat to maintain the W-H-W-W-H-W-W pattern?",
     },
     {
       id: 'l2u5m1t3',
-      instruction: "Type 'E minor scale' — how many sharps does it need? Compare with G major (its relative major)",
+      instruction: "Tap 'E minor scale' — how many sharps does it need? Compare with G major (its relative major)",
     },
   ],
   prerequisites: ['l2u4m2'],
@@ -199,11 +199,11 @@ const l2u5m2: CurriculumModule = {
     },
     {
       id: 'l2u5m2t2',
-      instruction: "Type 'D harmonic minor scale' — which note is raised compared to D natural minor?",
+      instruction: "Tap 'D harmonic minor scale' — which note is raised compared to D natural minor?",
     },
     {
       id: 'l2u5m2t3',
-      instruction: "Type 'E melodic minor scale' — identify the two notes that are raised compared to natural minor",
+      instruction: "Tap 'E melodic minor scale' — identify the two notes that are raised compared to natural minor",
     },
   ],
   prerequisites: ['l2u5m1'],
@@ -231,7 +231,7 @@ const l2u5m3: CurriculumModule = {
     {
       title: 'Parallel Keys',
       explanation:
-        "Parallel keys share the same root but have different qualities. C major and C minor are parallel: C minor is the parallel minor of C major, and C major is the parallel major of C minor. They share the tonic note but differ in the 3rd, 6th, and 7th degrees. The parallel relationship becomes critical later in mode mixture — borrowing chords from the parallel key to add color.",
+        "Parallel keys share the same root but have different qualities. C major and C minor are parallel: C minor is the parallel minor of C major, and C major is the parallel major of C minor. They share the tonic note but differ in the 3rd, 6th, and 7th degrees. The parallel relationship becomes critical later in mode mixture — borrowing chords from the parallel key to add colour.",
       tryThisQuery: 'C minor scale',
       tryThisLabel: 'Compare C minor with C major',
     },
@@ -239,11 +239,11 @@ const l2u5m3: CurriculumModule = {
   tasks: [
     {
       id: 'l2u5m3t1',
-      instruction: "Type 'Eb major scale' — what is the 6th degree? That's the relative minor. Verify with the Circle of Fifths",
+      instruction: "Tap 'Eb major scale' — what is the 6th degree? That's the relative minor. Verify with the Circle of Fifths",
     },
     {
       id: 'l2u5m3t2',
-      instruction: "Type 'C major scale' then 'C minor scale' — which three notes change? (3rd, 6th, 7th). These are parallel keys",
+      instruction: "Tap 'C major scale' then 'C minor scale' — which three notes change? (3rd, 6th, 7th). These are parallel keys",
     },
     {
       id: 'l2u5m3t3',
@@ -266,10 +266,10 @@ const l2u6m1: CurriculumModule = {
   id: 'l2u6m1',
   unitId: 'u6',
   levelId: 'l2',
-  title: 'Compound Meter: 6/8, 9/8, 12/8',
+  title: 'Compound Metre: 6/8, 9/8, 12/8',
   subtitle: 'When beats divide into three — the lilting feel of compound time',
   objectives: [
-    'Distinguish simple meter (beats divide by 2) from compound meter (beats divide by 3)',
+    'Distinguish simple metre (beats divide by 2) from compound metre (beats divide by 3)',
     'Read compound time signatures: 6/8, 9/8, 12/8',
     'Feel the difference between 3/4 (three duple beats) and 6/8 (two triple beats)',
   ],
@@ -277,7 +277,7 @@ const l2u6m1: CurriculumModule = {
     {
       title: 'Simple vs. Compound',
       explanation:
-        'In simple meter, each beat divides naturally into two equal parts (a quarter note splits into two eighths). In compound meter, each beat divides into three (a dotted quarter splits into three eighths). The top number in compound signatures is 6, 9, or 12 — divide by 3 to find the number of beats: 6/8 has 2 beats, 9/8 has 3, 12/8 has 4.',
+        'In simple metre, each beat divides naturally into two equal parts (a quarter note splits into two eighths). In compound metre, each beat divides into three (a dotted quarter splits into three eighths). The top number in compound signatures is 6, 9, or 12 — divide by 3 to find the number of beats: 6/8 has 2 beats, 9/8 has 3, 12/8 has 4.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'Hear 6/8: two big beats, each divided in three',
       rhythm: { time: '6/8', notes: '>8 8 8 >8 8 8 | >q. >q.' },
@@ -285,7 +285,7 @@ const l2u6m1: CurriculumModule = {
     {
       title: '3/4 vs. 6/8',
       explanation:
-        '3/4 has three beats, each dividing into two: ONE-and TWO-and THREE-and. 6/8 has two beats, each dividing into three: ONE-and-a TWO-and-a. Same total number of eighth notes per measure (six), but different grouping. 3/4 feels like a waltz; 6/8 feels like a jig. The distinction is about feel, not math.',
+        '3/4 has three beats, each dividing into two: ONE-and TWO-and THREE-and. 6/8 has two beats, each dividing into three: ONE-and-a TWO-and-a. Same total number of eighth notes per measure (six), but different grouping. 3/4 feels like a waltz; 6/8 feels like a jig. The distinction is about feel, not maths.',
       tryThisQuery: 'G major scale',
       tryThisLabel: 'Hear 3/4: the same six eighth notes, grouped in pairs; compare it with 6/8',
       rhythm: { time: '3/4', notes: '>8 8 >8 8 >8 8 | >q q q' },
@@ -327,7 +327,7 @@ const l2u6m2: CurriculumModule = {
     {
       title: 'Triplets and Duplets',
       explanation:
-        'A triplet divides a beat that normally has two subdivisions into three equal parts. In 4/4, an eighth-note triplet squeezes three notes into the space of two — it creates a brief compound feel inside simple meter. The reverse also exists: a duplet divides a compound beat into two instead of three. These borrowed divisions add rhythmic variety and cross-rhythm effects.',
+        'A triplet divides a beat that normally has two subdivisions into three equal parts. In 4/4, an eighth-note triplet squeezes three notes into the space of two — it creates a brief compound feel inside simple metre. The reverse also exists: a duplet divides a compound beat into two instead of three. These borrowed divisions add rhythmic variety and cross-rhythm effects.',
       tryThisQuery: 'G major chord',
       tryThisLabel: 'Hear two eighths to a beat, then three (a triplet)',
       rhythm: { time: '2/4', notes: '8 8 8 8 | t8 t8 t8 t8 t8 t8 | 8 8 t8 t8 t8 | q q' },
@@ -388,11 +388,11 @@ const l2u7m1: CurriculumModule = {
   tasks: [
     {
       id: 'l2u7m1t1',
-      instruction: "Type 'C major chord' then 'Cm' — the only difference is E vs. Eb. Major 3rd (4 half steps) vs. minor 3rd (3 half steps). One semitone changes everything",
+      instruction: "Tap 'C major chord' then 'Cm' — the only difference is E vs. Eb. Major 3rd (4 half steps) vs. minor 3rd (3 half steps). One semitone changes everything",
     },
     {
       id: 'l2u7m1t2',
-      instruction: "Type 'C major scale' — every interval from C to each upper note is either perfect (4th, 5th, octave) or major (2nd, 3rd, 6th, 7th). This is the reference set",
+      instruction: "Tap 'C major scale' — every interval from C to each upper note is either perfect (4th, 5th, octave) or major (2nd, 3rd, 6th, 7th). This is the reference set",
     },
     {
       id: 'l2u7m1t3',
@@ -443,11 +443,11 @@ const l2u7m2: CurriculumModule = {
     },
     {
       id: 'l2u7m2t2',
-      instruction: "Type 'C7' and listen — the tritone between E and Bb is what gives the dominant seventh its tension and need to resolve",
+      instruction: "Tap 'C7' and listen — the tritone between E and Bb is what gives the dominant seventh its tension and need to resolve",
     },
     {
       id: 'l2u7m2t3',
-      instruction: "Type 'Cmaj9' — the 9th (D) is the 2nd degree an octave higher. What quality is C to D? Major 2nd, so major 9th",
+      instruction: "Tap 'Cmaj9' — the 9th (D) is the 2nd degree an octave higher. What quality is C to D? Major 2nd, so major 9th",
     },
   ],
   prerequisites: ['l2u7m1'],
@@ -494,11 +494,11 @@ const l2u7m3: CurriculumModule = {
     },
     {
       id: 'l2u7m3t2',
-      instruction: "Type 'Fdim' and count: root to 3rd is 3 half steps (m3), 3rd to 5th is 3 half steps (m3). Both thirds are minor — that's what makes it diminished",
+      instruction: "Tap 'Fdim' and count: root to 3rd is 3 half steps (m3), 3rd to 5th is 3 half steps (m3). Both thirds are minor — that's what makes it diminished",
     },
     {
       id: 'l2u7m3t3',
-      instruction: "Type 'Caug' and count: root to 3rd is 4 half steps (M3), 3rd to 5th is 4 half steps (M3). Both thirds are major — augmented",
+      instruction: "Tap 'Caug' and count: root to 3rd is 4 half steps (M3), 3rd to 5th is 4 half steps (M3). Both thirds are major — augmented",
     },
   ],
   prerequisites: ['l2u7m2'],
@@ -541,15 +541,15 @@ const l2u7m4: CurriculumModule = {
   tasks: [
     {
       id: 'l2u7m4t1',
-      instruction: "Type 'C major chord', 'C/E', and 'C/G' in sequence — same three notes, but hear how the character changes with each bass note",
+      instruction: "Tap 'C major chord', 'C/E', and 'C/G' in sequence — same three notes, but hear how the character changes with each bass note",
     },
     {
       id: 'l2u7m4t2',
-      instruction: "Type 'C/E' — E is in the bass. The intervals above are a 3rd (E to G) and a 6th (E to C). That's why it's called the 6 position",
+      instruction: "Tap 'C/E' — E is in the bass. The intervals above are a 3rd (E to G) and a 6th (E to C). That's why it's called the 6 position",
     },
     {
       id: 'l2u7m4t3',
-      instruction: "Type 'Am/C' — A minor with C in the bass. C is the 3rd of Am, so this is first inversion. Hear how it sounds lighter than root-position Am",
+      instruction: "Tap 'Am/C' — A minor with C in the bass. C is the 3rd of Am, so this is first inversion. Hear how it sounds lighter than root-position Am",
     },
   ],
   prerequisites: ['l2u7m3'],
@@ -645,7 +645,7 @@ export const L2_UNITS: CurriculumUnit[] = [
         'Find relative and parallel key relationships instantly',
       ],
       bridgeText:
-        'You now command both sides of tonality — major and minor. Next, you will expand your rhythmic vocabulary with compound meter and syncopation.',
+        'You now command both sides of tonality — major and minor. Next, you will expand your rhythmic vocabulary with compound metre and syncopation.',
       tryThisQuery: 'D harmonic minor scale',
       tryThisLabel: 'Build D harmonic minor',
       tryThisPrompt: 'Which note is raised compared to natural minor?',
@@ -654,13 +654,13 @@ export const L2_UNITS: CurriculumUnit[] = [
   {
     id: 'u6',
     levelId: 'l2',
-    title: 'Compound Meter and Syncopation',
+    title: 'Compound Metre and Syncopation',
     description: 'Compound time signatures, syncopation, triplets, and advanced rhythmic concepts',
     icon: 'building-blocks',
     modules: [l2u6m1, l2u6m2],
     milestone: {
       skillsSummary: [
-        'Distinguish simple meter from compound meter by how beats subdivide',
+        'Distinguish simple metre from compound metre by how beats subdivide',
         'Read compound time signatures: 6/8, 9/8, 12/8',
         'Hear syncopation as accents on normally weak beats',
         'Understand triplets as borrowed groupings of three',
@@ -699,13 +699,13 @@ export const L2_UNITS: CurriculumUnit[] = [
         'Scale degree names and their functional significance',
         'Three forms of minor: natural, harmonic, and melodic',
         'Relative and parallel key relationships',
-        'Compound meter, syncopation, and triplets',
+        'Compound metre, syncopation, and triplets',
         'The full interval quality system including augmented, diminished, and compound',
         'All four triad types and inversions with figured bass',
         'Diatonic triads and Roman numeral analysis',
       ],
       whatsNext:
-        'Level 3 adds seventh chords, voice leading, cadences, phrase structure, and non-chord tones — the tools for analyzing real music.',
+        'Level 3 adds seventh chords, voice leading, cadences, phrase structure, and non-chord tones — the tools for analysing real music.',
       tryThisQuery: 'key of Bb',
       tryThisLabel: 'Explore the key of Bb',
       tryThisPrompt:

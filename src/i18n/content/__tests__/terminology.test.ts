@@ -23,6 +23,8 @@ import { describe, it, expect } from 'vitest';
 import { overlayStrings } from './overlayStrings';
 import pt from '../../locales/pt.json';
 import es from '../../locales/es.json';
+import ptTools from '../../exploreTools/pt.json';
+import esTools from '../../exploreTools/es.json';
 
 const strings = overlayStrings();
 
@@ -73,11 +75,15 @@ describe('PT/ES terminology is consistent (D-19)', () => {
   }
 
   it('the Chord Builder calls the chord root "fundamental", not "tónica"', () => {
-    for (const loc of [pt, es]) {
+    for (const [loc, tools] of [[pt, ptTools], [es, esTools]] as const) {
       expect(loc.chordBuilder.chordRoot).toMatch(/^Fundamental/);
       expect(loc.chordBuilder.syncRootTitle).toMatch(/fundamental/);
-      expect(loc.chordBuilder.nonDiatonicAt).toMatch(/fundamental/);
-      expect(loc.chordBuilder.nonDiatonicAt).not.toMatch(/tónica/);
+      // Build's out-of-key sentences (audit 2026-11-18 fix pass: they moved to
+      // the lazy exploreTools namespace and name the root's degree).
+      for (const sentence of [tools.rootInKey, tools.rootOutside]) {
+        expect(sentence).toMatch(/fundamental/);
+        expect(sentence).not.toMatch(/tónica/);
+      }
     }
   });
 

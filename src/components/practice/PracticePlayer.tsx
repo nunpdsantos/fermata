@@ -64,7 +64,21 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
       document.removeEventListener('visibilitychange', hidden);
     };
   }, [stop]);
-  useEffect(() => { cursor.current?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' }); }, [index]);
+  // Bring the active chip into view by scrolling its strip sideways, and only
+  // the strip: scrollIntoView also scrolled the sheet, which opened (and
+  // reopened on every tab) 134 px down, hiding the key and the tabs (QA audit Q3).
+  useEffect(() => {
+    const chip = cursor.current;
+    const strip = chip?.parentElement;
+    if (!chip || !strip) return;
+    // Whole inside the strip's padding, not flush with its edge: a chip brought flush was found cut by 2 px at some
+    // steps (19 November 2026; e2e/instruments-audit.spec.ts "the active chip stays in the strip").
+    const box = strip.getBoundingClientRect();
+    const at = chip.getBoundingClientRect();
+    const pad = parseFloat(getComputedStyle(strip).paddingLeft) || 0;
+    if (at.left < box.left + pad) strip.scrollLeft -= box.left + pad - at.left;
+    else if (at.right > box.right - pad) strip.scrollLeft += at.right - (box.right - pad);
+  }, [index]);
 
   const play = async (event?: number) => {
     stop();

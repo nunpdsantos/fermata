@@ -33,17 +33,8 @@ const SEVENTH_QUALITIES: readonly ChordQuality[] = [
   'diminished7',
 ];
 
-/**
- * Step description used in the why explanation for each seventh quality.
- * Builds on the previous step to create a memorisation ladder.
- */
-const STEP_LABEL: Record<string, string> = {
-  major7: 'the reference stack (M3+m3+M3)',
-  dominant7: 'maj7 with the 7th lowered a half step',
-  minor7: 'dominant 7 with the 3rd also lowered',
-  half_diminished7: 'm7 with the 5th also lowered',
-  diminished7: 'ø7 with the 7th lowered again (double-flat 7)',
-};
+// The why line's step on the memorisation ladder (each builds on the one
+// before) is a clause by key: the quality itself (clauses.ts, audit A12).
 
 /** Rank base for a root: follows KEY_PRIORITY order, fallback after known keys. */
 function rootRankBase(root: Note): number {
@@ -90,7 +81,7 @@ export function genSeventh(): DrillItem[] {
           },
           answer: { kind: 'notes', notes: correctAscii },
           whyKey: 'drill.why.seventhLadder',
-          whyParams: { chord: chordDisplay, step: STEP_LABEL[quality] ?? '' },
+          whyParams: { chord: chordDisplay, step: quality },
           rank: baseRank + offset,
           chord: { root: rootAscii, quality },
         });
@@ -116,7 +107,7 @@ export function genSeventh(): DrillItem[] {
           },
           answer: { kind: 'rootQuality', root: rootAscii, quality },
           whyKey: 'drill.why.seventhLadder',
-          whyParams: { chord: chordDisplay, step: STEP_LABEL[quality] ?? '' },
+          whyParams: { chord: chordDisplay, step: quality },
           rank: baseRank + offset,
           chord: { root: rootAscii, quality },
         });

@@ -6,6 +6,9 @@
  */
 import ptLocale from '../../locales/pt.json';
 import esLocale from '../../locales/es.json';
+// Explore tools' lazy namespace (audit 2026-11-18, stream C): checked as the locales are.
+import ptExploreTools from '../../exploreTools/pt.json';
+import esExploreTools from '../../exploreTools/es.json';
 
 type Overlay = { default: unknown };
 
@@ -50,7 +53,7 @@ function collect(lang: 'pt' | 'es', files: Record<string, Overlay>, locale: unkn
 export function overlayStrings(opts: { includeLocale?: boolean } = {}): OverlayString[] {
   const includeLocale = opts.includeLocale ?? true;
   return [
-    ...collect('pt', ptFiles, ptLocale, includeLocale),
-    ...collect('es', esFiles, esLocale, includeLocale),
+    ...collect('pt', ptFiles, { ...ptLocale, exploreTools: ptExploreTools }, includeLocale),
+    ...collect('es', esFiles, { ...esLocale, exploreTools: esExploreTools }, includeLocale),
   ];
 }

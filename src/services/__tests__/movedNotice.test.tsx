@@ -6,7 +6,7 @@
  * flag never read or written. Expected words come from the locale files.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 
 const host = vi.hoisted(() => ({ value: 'fermata-music.vercel.app' }));
 vi.mock('../appAddress', async (importOriginal) => {
@@ -240,7 +240,8 @@ describe('the panel (MovedNoticeHost in the shell)', () => {
     expect(link.getAttribute('rel')).toBe('noopener noreferrer');
 
     fireEvent.click(within(panel).getByRole('button', { name: movedEn.export }));
-    expect(createObjectURL).toHaveBeenCalledTimes(1);
+    // The file is checked by the importer's own check first (A16), so it comes a moment after the tap.
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledTimes(1));
     expect(downloads).toHaveLength(1);
     expect(downloads[0]).toMatch(/^fermatina-backup-\d{4}-\d{2}-\d{2}\.json$/);
     expect(toasts().map((t) => t.message)).toContain(en.backup.exported);
@@ -284,6 +285,7 @@ describe('the panel (MovedNoticeHost in the shell)', () => {
       render(<><ToastRegion /><MovedNoticeHost /></>);
       fireEvent.click(within(screen.getByTestId('toast-region')).getByRole('button', { name: en.movedEntry.action }));
       fireEvent.click(await screen.findByRole('button', { name: movedEn.export }, { timeout: 8000 }));
+      await waitFor(() => expect(blob).not.toBeNull()); // checked by the importer's own check first (A16)
       // (jsdom's Blob has no text(): read it as a browser would.)
       const text = await new Promise<string>((resolve) => {
         const reader = new FileReader();

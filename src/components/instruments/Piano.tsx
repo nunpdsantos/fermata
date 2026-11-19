@@ -443,16 +443,20 @@ export function Piano() {
   const octaveRow = (
     <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
       <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
-      {/* One sideways row on a phone: the fade says there are more octaves. */}
-      <EdgeFade>
-        <ChipGroup
-          label={t('instrument.baseOctave')}
-          className="chip-row-phone min-w-0"
-          value={baseOctave}
-          onChange={setBaseOctave}
-          options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
-        />
-      </EdgeFade>
+      {/* One sideways row on a phone: the fade says there are more octaves,
+          and it rests on whole pills (index.css .octave-fit, QA audit Q14;
+          not in the dock bar, whose width is the row's own). */}
+      <div className={toolsSlot ? 'octave-wrap' : 'octave-wrap octave-fit'}>
+        <EdgeFade>
+          <ChipGroup
+            label={t('instrument.baseOctave')}
+            className="chip-row-phone min-w-0"
+            value={baseOctave}
+            onChange={setBaseOctave}
+            options={[0, 1, 2, 3, 4, 5, 6, 7, 8].filter((oct) => octaveFits[oct]).map((oct) => ({ value: oct, label: `C${oct}` }))}
+          />
+        </EdgeFade>
+      </div>
     </div>
   );
 

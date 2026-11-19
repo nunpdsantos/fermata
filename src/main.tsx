@@ -10,7 +10,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { registerInstrumentVoices } from './services/instrumentVoices.ts'
 import { registerDrillWorkInProgress } from './state/drillWork.ts'
 import { registerLearnWorkInProgress } from './state/learnWork.ts'
-import { applyShareLinkRule } from './state/startGate.ts'
+import { applyShareLinkRule, startLinkPending } from './state/startGate.ts'
 import { noteBootAddress } from './state/shareParams.ts'
 
 // A shared link wins over the start screen on this visit (state/startGate.ts):
@@ -35,10 +35,15 @@ registerDrillWorkInProgress();
 // Protect a saved check before the lazy Learn view/store or an update decision.
 registerLearnWorkInProgress();
 
-createRoot(document.getElementById('root')!).render(
+const render = () => createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
   </StrictMode>,
 )
+// A door chosen on a public page (`?start=`), or a view asked for while the
+// start screen is owed (audit 2026-11-18, A19 and Q13): its lazy module runs
+// before the first render, so a linked door's start screen never shows.
+if (startLinkPending(window.location.search)) import('./state/startLink.ts').then((m) => m.applyStartLink()).catch(() => undefined).finally(render)
+else render()

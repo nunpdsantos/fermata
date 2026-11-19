@@ -10,7 +10,9 @@
  * hidden, when the Progression panel's loop starts (two clocks at once are
  * worse than none — the loop has its own count-in), when a rhythm starts
  * playing (a lesson's or a check's: `playRhythm` counts in too; it says so
- * through `utils/rhythmStart.ts`, which imports nothing of this), on the way into Drill
+ * through `utils/rhythmStart.ts`, which imports nothing of this), on the way into Drill,
+ * when the landscape full-neck view opens over everything (`fullScreenCover.ts`),
+ * when the app's error boundary replaces the whole screen (`stopRequest.ts`)
  * and when the tour is asked for (the bar is not shown there). Starting it
  * while the loop plays stops the loop: the newer clock wins. While it runs
  * it is work in progress (`services/workInProgress.ts`): an update waits.
@@ -27,8 +29,10 @@ import { isLooping, stopLoop, useLoopState } from '../../components/explore/prog
 import { onRhythmStart } from '../../utils/rhythmStart';
 import { MetronomeClock, clampTempo, type ClickSink, type LoopTimer } from './clock';
 import { clickSink, pendingClicks, prepareClicks, resumeClicks } from './clickVoice';
+import { watchFullScreenCover } from './fullScreenCover';
+import { onMetronomeStopRequest } from './stopRequest';
 
-export type MetronomeStop = 'user' | 'closed' | 'hidden' | 'loop' | 'rhythm' | 'drill' | 'tour';
+export type MetronomeStop = 'user' | 'closed' | 'hidden' | 'loop' | 'rhythm' | 'drill' | 'tour' | 'covered' | 'crash';
 
 interface MetronomeState {
   running: boolean;
@@ -137,6 +141,15 @@ if (typeof document !== 'undefined') {
 useAppStore.subscribe((state, prev) => {
   if (state.view === 'drill' && prev.view !== 'drill') stopMetronome('drill');
 });
+
+// The landscape full-neck view covers the whole app, the bar with it: nothing
+// on screen could stop the clicks there (audit 2026-11-18, Q9).
+watchFullScreenCover((open) => {
+  if (open) stopMetronome('covered');
+});
+
+// The app's error boundary replaced the whole screen (review of e92e44e): no bar, no "⋯" — stop.
+onMetronomeStopRequest(() => stopMetronome('crash'));
 
 useLoopState.subscribe((state, prev) => {
   if (state.playing && !prev.playing && clock.running) stopMetronome('loop');

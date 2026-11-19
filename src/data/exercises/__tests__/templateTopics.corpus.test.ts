@@ -26,7 +26,7 @@ const MODULE_TOPIC: Record<string, RegExp> = {
   l1u1m3: /half step|whole step|semitone|accidental|sharp|flat|enharmonic|interval_id/i,
   l1u1m4: /chromatic|black[- ]key|enharmonic|note_id/i,
   l1u2m1: /note value|whole note|half note|quarter|eighth|sixteenth|dotted|\brests?\b|\btie/i,
-  l1u2m2: /time signature|meter|beats? per measure|\b[234]\/4\b/i,
+  l1u2m2: /time signature|metre|beats? per measure|\b[234]\/4\b/i,
   l1u3m1: /major scale|scale_build major|scale_degree_id/i,
   l1u3m2: /key signature|sharps?|flats?/i,
   l1u3m3: /interval|interval_id/i,
@@ -94,7 +94,7 @@ const MODULE_TOPIC: Record<string, RegExp> = {
   l6u20m1: /cantus firmus|first species|second species|third species|\b1:1\b|\b2:1\b|\b4:1\b|cambiata|double neighbou?r/i,
   l6u20m2: /fourth species|fifth species|florid|syncopat|suspension|tied/i,
   l6u20m3: /three-part|three voices|invertible|triple counterpoint|double counterpoint/i,
-  l6u20m4: /harmoni[sz]|soprano|figured bass|score|transposing|concert pitch|SATB|realiz/i,
+  l6u20m4: /harmoni[sz]|soprano|figured bass|score|transposing|concert pitch|SATB|realis/i,
   // L7
   l7u21m1: /chord symbol|extension|\b9th\b|\b11th\b|\b13th\b|alteration|\b(b9|#9|#11|b13)\b|major9|minor9|dominant9|C13|min7\(b5\)|C7\(#9\)/i,
   l7u21m2: /shell|guide tone|alt\b|altered|sus4|7sus4/i,
@@ -104,7 +104,7 @@ const MODULE_TOPIC: Record<string, RegExp> = {
   l7u21m6: /rhythm changes|turnaround|cycle of dominants|AABA/i,
   l7u22m1: /chord-scale|scale (for|over)|over (a |the )?\w*\s?(chord|maj7|m7|7)|avoid note|scale_build (dorian|phrygian|lydian|mixolydian|locrian|altered|lydian_dominant)/i,
   l7u22m2: /upper[- ]structure|reharmoni[sz]|substitut|passing chord|chromatic bass/i,
-  l7u22m3: /coltrane|giant steps|major thirds?|key centers?|constant structure|augmented triad/i,
+  l7u22m3: /coltrane|giant steps|major thirds?|key centres?|constant structure|augmented triad/i,
   l7u22m4: /modal|characteristic|dorian|phrygian|lydian|mixolydian|aeolian|locrian|vamp|drone/i,
   l7u22m5: /quartal|quintal|fourths|fifths|drone|pedal|planing/i,
   l7u23m1: /nashville|pop|loop|axis|I-V-vi-IV|vi-IV-I-V/i,
@@ -123,7 +123,7 @@ const MODULE_TOPIC: Record<string, RegExp> = {
   l8u27m2: /twelve-tone|tone row|\brow\b|matrix|retrograde|inversion|combinatorial|hexachord/i,
   l8u27m3: /planing|polytonal|polymodal|pandiatonic|quartal|quintal|bitonal|microton|spectral/i,
   l8u27m4: /minimalis|phas|additive|aleator|chance|extended technique|prepared piano|multiphonic|sprechstimme|mobile form|indetermina/i,
-  l8u27m5: /polyrhythm|polymeter|hemiola|metric modulation|tuplet|cross-rhythm|3:2|3 against 2/i,
+  l8u27m5: /polyrhythm|polymetre|hemiola|metric modulation|tuplet|cross-rhythm|3:2|3 against 2/i,
 };
 
 function descriptor(cfg: ExerciseConfig): string {
