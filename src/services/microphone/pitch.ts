@@ -21,7 +21,18 @@
  *
  * Range C2 (65 Hz, below the low D of Drop D) to C7 (2,093 Hz). A4 = 440 Hz.
  * Pure: no Web Audio, no DOM — the tests feed it synthesised tones.
+ *
+ * The window follows the sample rate (audit M61, 19 November 2026): the NSDF
+ * holds at least 2.5 periods of the lowest frequency looked for at ANY rate
+ * (`nsdfWindow`), and the microphone hands over a frame twice that long
+ * (`analysisFrameSize`), so every rate sees the same stretch of time — 46 ms
+ * and 93 ms at 44.1 / 88.2 kHz, 43 ms and 85 ms at 48 / 96 / 192 kHz. Until
+ * then both were fixed in samples (2,048 and 4,096), which at 192 kHz is 11
+ * and 21 ms: too short for a period of D2, E♭2 or E2, which gave no reading.
+ * The NSDF's autocorrelation is taken by FFT (`autocorrelation.ts`): the same
+ * numbers, at a cost that no longer grows with the square of the rate.
  */
+import { autocorrelate } from './autocorrelation.ts';
 
 /** Lowest and highest frequencies looked for (with room for a string tuned far off). */
 export const MIN_FREQUENCY = 60;
@@ -33,8 +44,28 @@ export const QUIET_RMS = 0.004;
 
 /** The key-maximum threshold of the McLeod method (k in the paper). */
 const KEY_MAX_SHARE = 0.93;
-/** The NSDF is computed on at most this many samples (the most recent). */
-const NSDF_WINDOW = 2048;
+/** The NSDF window holds at least this many periods of MIN_FREQUENCY. */
+const WINDOW_PERIODS = 2.5;
+/** The smallest NSDF window (the one 44.1 and 48 kHz have always had). */
+const MIN_NSDF_WINDOW = 2048;
+/** An AnalyserNode's largest fftSize (Web Audio API). */
+const MAX_FRAME = 32768;
+
+/**
+ * The NSDF is computed on the most recent this-many samples: the smallest
+ * power of two from 2,048 up holding WINDOW_PERIODS periods of MIN_FREQUENCY
+ * (2,048 at 44.1 / 48 kHz, 4,096 at 88.2 / 96 kHz, 8,192 at 176.4 / 192 kHz).
+ */
+export function nsdfWindow(sampleRate: number): number {
+  let n = MIN_NSDF_WINDOW;
+  while (n < (WINDOW_PERIODS * sampleRate) / MIN_FREQUENCY && 2 * n <= MAX_FRAME) n *= 2;
+  return n;
+}
+
+/** The frame the microphone hands the detector (the analyser's fftSize): twice the NSDF window. */
+export function analysisFrameSize(sampleRate: number): number {
+  return Math.min(MAX_FRAME, 2 * nsdfWindow(sampleRate));
+}
 /** Fundamental at least this far below the strongest harmonic (−30 dB) counts as present. */
 const FUNDAMENTAL_FLOOR = 10 ** (-30 / 20);
 /** Each of harmonics 2–5 at least this far below the strongest (−40 dB) when the fundamental is weak. */
@@ -61,20 +92,19 @@ export function detectPitch(frame: Float32Array, sampleRate: number): PitchEstim
   }
   if (Math.sqrt(energy / total) < QUIET_RMS) return null;
 
-  // The NSDF on the most recent samples (cost grows with window × lag).
-  const n = Math.min(total, NSDF_WINDOW);
+  // The NSDF on the most recent samples: n_τ = 2·r(τ) / m(τ), r by FFT.
+  const n = Math.min(total, nsdfWindow(sampleRate));
   const x = new Float64Array(n);
   for (let i = 0; i < n; i++) x[i] = frame[total - n + i] - mean;
   const maxLag = Math.min(Math.floor(sampleRate / MIN_FREQUENCY), n - 2);
   const minLag = Math.max(2, Math.floor(sampleRate / MAX_FREQUENCY));
   const nsdf = new Float64Array(maxLag + 2);
+  const r = autocorrelate(x, maxLag + 2);
   let m = 0;
   for (let i = 0; i < n; i++) m += 2 * x[i] * x[i];
   for (let tau = 0; tau <= maxLag + 1; tau++) {
     if (tau > 0) m -= x[n - tau] * x[n - tau] + x[tau - 1] * x[tau - 1];
-    let r = 0;
-    for (let j = 0; j < n - tau; j++) r += x[j] * x[j + tau];
-    nsdf[tau] = m > 0 ? (2 * r) / m : 0;
+    nsdf[tau] = m > 0 ? (2 * r[tau]) / m : 0;
   }
 
   // Key maxima: one per positive stretch, after the first negative crossing.

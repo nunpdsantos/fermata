@@ -52,16 +52,19 @@ export class FakeAudioContext {
     return { gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() };
   }
   createAnalyser() {
-    return {
+    // As a real AnalyserNode: it copies the most recent fftSize samples, and
+    // elements of a longer array beyond them are left as they were (here 0).
+    const node = {
       fftSize: 2048,
       smoothingTimeConstant: 0.8,
       connect: vi.fn(),
       disconnect: vi.fn(),
       getFloatTimeDomainData: (buf: Float32Array) => {
         buf.fill(0);
-        FakeAudioContext.sound?.(buf, this.sampleRate, performance.now());
+        FakeAudioContext.sound?.(buf.subarray(0, Math.min(buf.length, node.fftSize)), this.sampleRate, performance.now());
       },
     };
+    return node;
   }
 }
 

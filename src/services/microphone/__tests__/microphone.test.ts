@@ -6,7 +6,7 @@
  * is still asking, a second session replacing the first.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { installFakeMic, midiHz, tone, type FakeMic } from './fakeMic';
+import { FakeAudioContext, installFakeMic, midiHz, tone, type FakeMic } from './fakeMic';
 import { isListening, MIC_CONSTRAINTS, MicError, startListening, stopListening, subscribeListening } from '../microphone';
 import { microphoneSupported } from '../support';
 import { useAppStore } from '../../../state/store';
@@ -63,6 +63,34 @@ describe('startListening', () => {
     expect(heard.length).toBe(frames.length);
     for (const f of heard) expect(1200 * Math.log2(f / midiHz(40))).toBeCloseTo(-12, 0);
   });
+
+  // Audit M61: the frame follows the device's rate. At 192 kHz a 4,096-sample frame is 21 ms, too short for
+  // the low strings; the D of Drop D, the E♭ of Half Step Down and the low E must be heard there too.
+  for (const rate of [88200, 96000, 192000]) {
+    it(`at ${rate / 1000} kHz the lowest open strings (D2, E♭2, E2) are heard`, async () => {
+      const was = mic.contexts.length;
+      const before = FakeAudioContext.rate;
+      FakeAudioContext.rate = rate;
+      try {
+        for (const midi of [38, 39, 40]) {
+          const frames: (number | null)[] = [];
+          mic.setSound(tone(midiHz(midi)));
+          await startListening({ onFrame: (e) => frames.push(e ? e.frequency : null) });
+          expect(mic.contexts[mic.contexts.length - 1].sampleRate).toBe(rate);
+          await vi.advanceTimersByTimeAsync(200);
+          stopListening();
+          expect(frames.length, `${midi} at ${rate}`).toBeGreaterThanOrEqual(5);
+          for (const f of frames) {
+            expect(f, `${midi} at ${rate}: a reading`).not.toBeNull();
+            expect(Math.abs(1200 * Math.log2(f! / midiHz(midi)))).toBeLessThan(1);
+          }
+        }
+      } finally {
+        FakeAudioContext.rate = before;
+      }
+      expect(mic.contexts.length).toBe(was + 3);
+    });
+  }
 
   it('its own stop: every track stopped, the context closed, no more frames', async () => {
     const onFrame = vi.fn();

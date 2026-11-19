@@ -3,18 +3,26 @@
  * Independent of the code under test: the tones, the note numbers and the
  * cents are computed here from A4 = 440 Hz, never with pitch.ts's helpers.
  *
- * Every note from E2 to C6, at 44.1 and 48 kHz, in tune and ±20 cents, as a
- * sine and as a plucked-string-like tone (strong overtones, a fundamental
- * 16 dB under its 2nd harmonic, decaying): the note is right every time —
- * an octave error fails it — and the cents are within ±5. Silence, noise and
- * two notes at once give nothing or a clarity under "sure", never a sure note.
+ * At every rate a device may give the page — 44.1, 48, 88.2, 96 and 192 kHz
+ * (audit M61, 19 November 2026; until then only 44.1 and 48) — each frame as
+ * long as the one the microphone hands over at that rate
+ * (`analysisFrameSize`, the analyser's fftSize):
+ *  - every open string of every tuning (D2 up to E4), and every note from E2
+ *    to C6, in tune and ±20 cents, as a sine and as a plucked-string-like
+ *    tone (strong overtones, a fundamental 16 dB under its 2nd harmonic,
+ *    decaying): the note is right every time — an octave error fails it —
+ *    and the cents are within ±5;
+ *  - silence, noise and two notes at once give nothing or a clarity under
+ *    "sure", never a sure note.
  */
 import { describe, expect, it } from 'vitest';
-import { detectPitch, nearestNote, SURE_CLARITY } from '../pitch';
+import { analysisFrameSize, detectPitch, nearestNote, SURE_CLARITY } from '../pitch';
+import { GUITAR_TUNINGS } from '../../../core/constants/guitarTunings';
 
-const FRAME = 4096;
-const RATES = [44100, 48000];
+const RATES = [44100, 48000, 88200, 96000, 192000];
 const DETUNE = [-20, 0, 20];
+/** The frame the microphone hands the detector at this rate. */
+const frameAt = (rate: number) => analysisFrameSize(rate);
 
 /** Seeded noise (mulberry32), so a failure can be reproduced. */
 function rng(seed: number) {
@@ -32,8 +40,8 @@ const hz = (midi: number, cents = 0) => 440 * Math.pow(2, (midi - 69 + cents / 1
 
 /** A frame taken `start` seconds into the tone. */
 function sine(f: number, rate: number, amp = 0.3, start = 0.1): Float32Array {
-  const out = new Float32Array(FRAME);
-  for (let i = 0; i < FRAME; i++) out[i] = amp * Math.sin(2 * Math.PI * f * (start + i / rate));
+  const out = new Float32Array(frameAt(rate));
+  for (let i = 0; i < out.length; i++) out[i] = amp * Math.sin(2 * Math.PI * f * (start + i / rate));
   return out;
 }
 
@@ -46,8 +54,8 @@ const PLUCK = [0.15, 1, 0.8, 0.5, 0.45, 0.3, 0.25, 0.2, 0.15, 0.12, 0.1, 0.08];
 function plucked(f: number, rate: number, seed: number, start = 0.12): Float32Array {
   const random = rng(seed);
   const phases = PLUCK.map(() => random() * 2 * Math.PI);
-  const out = new Float32Array(FRAME);
-  for (let i = 0; i < FRAME; i++) {
+  const out = new Float32Array(frameAt(rate));
+  for (let i = 0; i < out.length; i++) {
     const t = start + i / rate;
     let v = 0;
     PLUCK.forEach((a, k) => {
@@ -61,8 +69,8 @@ function plucked(f: number, rate: number, seed: number, start = 0.12): Float32Ar
 }
 
 function mix(...frames: Float32Array[]): Float32Array {
-  const out = new Float32Array(FRAME);
-  for (const f of frames) for (let i = 0; i < FRAME; i++) out[i] += f[i];
+  const out = new Float32Array(frames[0].length);
+  for (const f of frames) for (let i = 0; i < out.length; i++) out[i] += f[i];
   return out;
 }
 
@@ -103,6 +111,47 @@ describe('detectPitch: one note, E2 to C6', () => {
       });
     }
   }
+
+  // Every open-string target of every tuning the tuner offers (16 pitches, D2 to E4), at every rate (audit M61:
+  // at 192 kHz D2, E♭2 and E2 gave no reading with the 4,096-sample frame).
+  const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const OPEN_STRINGS = [...new Set(GUITAR_TUNINGS.flatMap((t) => t.strings.map((s) =>
+    12 * (s.octave + 1) + LETTER[s.natural] + (s.accidental === '#' ? 1 : s.accidental === 'b' ? -1 : 0))))].sort((a, b) => a - b);
+
+  it('the open strings are the 16 pitches of the seven tunings, D2 to E4', () => {
+    expect(GUITAR_TUNINGS).toHaveLength(7);
+    expect(OPEN_STRINGS).toEqual([38, 39, 40, 43, 44, 45, 49, 50, 54, 55, 57, 58, 59, 62, 63, 64]);
+  });
+
+  for (const rate of RATES) {
+    it(`every open string of every tuning at ${rate / 1000} kHz, sine and plucked, in tune and ±20 cents: right, within ±5 cents, sure`, () => {
+      const misses: string[] = [];
+      for (const midi of OPEN_STRINGS) {
+        for (const cents of DETUNE) {
+          for (const [kind, frame] of [['sine', sine(hz(midi, cents), rate)], ['plucked', plucked(hz(midi, cents), rate, midi * 3 + cents)]] as const) {
+            const got = heard(frame, rate);
+            const what = `${kind} ${midi}${cents >= 0 ? '+' : ''}${cents}`;
+            if (!got) misses.push(`${what}: nothing`);
+            else if (got.midi !== midi) misses.push(`${what}: heard ${got.midi}`);
+            else if (Math.abs(got.cents - cents) > 5) misses.push(`${what}: ${got.cents.toFixed(1)} cents`);
+            else if (got.clarity < SURE_CLARITY) misses.push(`${what}: clarity ${got.clarity.toFixed(2)}`);
+          }
+        }
+      }
+      expect(misses).toEqual([]);
+    });
+  }
+
+  it('the frame holds the same stretch of time at every rate (85 to 93 ms), never a 4,096-sample frame at 192 kHz', () => {
+    for (const rate of RATES) {
+      const ms = (1000 * frameAt(rate)) / rate;
+      expect(ms, `${rate}`).toBeGreaterThanOrEqual(85);
+      expect(ms, `${rate}`).toBeLessThanOrEqual(93);
+    }
+    expect(frameAt(44100)).toBe(4096);
+    expect(frameAt(48000)).toBe(4096);
+    expect(frameAt(192000)).toBe(16384);
+  });
 
   it('the open strings of the other tunings, down to D2 (Drop D, Open G, DADGAD)', () => {
     for (const midi of [38, 39, 43, 45]) {
@@ -147,8 +196,8 @@ describe('detectPitch: one note, E2 to C6', () => {
     for (const rate of RATES) {
       for (const midi of NOTES) {
         const f = hz(midi);
-        const out = new Float32Array(FRAME);
-        for (let i = 0; i < FRAME; i++) {
+        const out = new Float32Array(frameAt(rate));
+        for (let i = 0; i < out.length; i++) {
           const t = 0.1 + i / rate;
           out[i] = 0.08 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * 2 * f * t + 0.7);
         }
@@ -172,9 +221,9 @@ describe('detectPitch: one note, E2 to C6', () => {
 describe('detectPitch: nothing that is not one note', () => {
   it('silence and a very quiet room: nothing', () => {
     for (const rate of RATES) {
-      expect(detectPitch(new Float32Array(FRAME), rate)).toBeNull();
+      expect(detectPitch(new Float32Array(frameAt(rate)), rate)).toBeNull();
       const random = rng(3);
-      const hiss = new Float32Array(FRAME).map(() => 0.003 * (random() * 2 - 1));
+      const hiss = new Float32Array(frameAt(rate)).map(() => 0.003 * (random() * 2 - 1));
       expect(detectPitch(hiss, rate)).toBeNull();
       // A quiet note under the floor (−55 dBFS) is the quiet room too.
       expect(detectPitch(sine(hz(57), rate, 0.0025), rate)).toBeNull();
@@ -185,12 +234,12 @@ describe('detectPitch: nothing that is not one note', () => {
     for (const rate of RATES) {
       for (let seed = 1; seed <= 20; seed++) {
         const random = rng(seed);
-        const white = new Float32Array(FRAME).map(() => 0.3 * (random() * 2 - 1));
+        const white = new Float32Array(frameAt(rate)).map(() => 0.3 * (random() * 2 - 1));
         const w = detectPitch(white, rate);
         expect(w === null || w.clarity < SURE_CLARITY, `white ${seed}: ${JSON.stringify(w)}`).toBe(true);
         // Brown noise (integrated white): strong low rumble, no pitch.
         let acc = 0;
-        const brown = new Float32Array(FRAME).map(() => {
+        const brown = new Float32Array(frameAt(rate)).map(() => {
           acc = 0.995 * acc + 0.05 * (random() * 2 - 1);
           return acc;
         });
