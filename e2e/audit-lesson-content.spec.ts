@@ -86,6 +86,6 @@ test.describe('audit A22, A27, A29: what the demonstrations play', () => {
     test.skip(!(await hasDevModules(page)), 'dev server only');
     const played = await hear(page, page.locator('[data-section="c1"] [data-testid="inline-try-this"]'));
     expect(played.map((c) => Math.min(...c))).toEqual([C4 - 7, C4 - 6, C4 - 5]);
-    await expect(page.locator('[data-section="tasks"]').getByRole('button', { name: '‘C7/G’' })).toBeVisible();
+    await expect(page.locator('[data-section="tasks"]').getByRole('button', { name: '‘C7/G’', exact: true })).toBeVisible();
   });
 });

@@ -113,7 +113,8 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
       expect(played.map((p) => name(p.midi))).toEqual(c.scale.map((s) => name(midiOf(s))));
       expectDrawnAsPlayed(score, played);
     }
-    const chip = page.locator('[data-section="tasks"]').getByRole('button', { name: '‘key of D’' });
+    // exact: the task's tick box is named by the whole instruction since this round, phrase included
+    const chip = page.locator('[data-section="tasks"]').getByRole('button', { name: '‘key of D’', exact: true });
     await chip.scrollIntoViewIfNeeded();
     await chip.click();
     const task = page.locator('[data-section="tasks"] [data-testid="inline-try-this"]');
@@ -189,7 +190,7 @@ test.describe('second audit: lesson demonstrations play and draw what the lesson
 
   test('QA P7 — ‘G7/B’ drawn and played as V6/5, the leading note once; the chord list of l1u35m3 climbs by step', async ({ page }) => {
     await openLesson(page, 'l4u12m5');
-    const chip = page.locator('[data-section="tasks"]').getByRole('button', { name: '‘G7/B’' });
+    const chip = page.locator('[data-section="tasks"]').getByRole('button', { name: '‘G7/B’', exact: true });
     await chip.scrollIntoViewIfNeeded();
     await chip.click();
     const task = page.locator('[data-section="tasks"] [data-testid="inline-try-this"]');
