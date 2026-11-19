@@ -6,8 +6,11 @@
  *
  * Each way of playing a key gives exactly ONE note-on and ONE note-off: a
  * mouse press (with the click that follows it, wherever the browser sends
- * it), a touch (with its click), Enter, Space, and a bare click. The browser's
- * own event order is checked in e2e/instruments-audit.spec.ts.
+ * it), a touch (with its click), Enter, Space, and a bare click. A press and
+ * its click are paired by the event sequence, never by a clock (review of
+ * a611beb): a real press then a bare click 100 ms later is two notes, and a
+ * press leaves no listener behind. The browser's own event order is checked
+ * in e2e/instruments-audit.spec.ts.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
@@ -16,7 +19,6 @@ import type { PianoKey as PianoKeyData } from '../../../core/utils/pianoLayout';
 import { useAppStore } from '../../../state/store';
 
 beforeEach(() => {
-  // performance.now() too: a click belongs to a press by how soon it follows it.
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date', 'performance'] });
   useAppStore.setState({ themeMode: 'fermata' });
 });
@@ -67,41 +69,90 @@ for (const keyData of KEYS) {
       expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
     });
 
-    it('a mouse press plays once, even when its click reaches the key', () => {
+    it('a mouse press plays once, its click reaching the key', () => {
       const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'desktop');
       act(() => { key.dispatchEvent(pointer('pointerdown', 'mouse')); });
       // The desktop piano lets the note go on the container's pointerup.
-      act(() => { window.dispatchEvent(pointer('pointerup', 'mouse')); });
-      fireEvent.pointerLeave(key, { pointerType: 'mouse' });
+      act(() => { window.dispatchEvent(pointer('pointerup', 'mouse')); onNoteOff(keyData); });
       fireEvent.click(key, { detail: 1 });
       expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
     });
 
-    it('a touch plays once, its click included', () => {
+    it('a mouse press plays once, its click going to the container that captured the pointer; a bare click 100 ms later plays again', () => {
+      const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'desktop');
+      act(() => { key.dispatchEvent(pointer('pointerdown', 'mouse')); });
+      act(() => { window.dispatchEvent(pointer('pointerup', 'mouse')); onNoteOff(keyData); });
+      fireEvent.click(document.body, { detail: 1 });
+      expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
+      act(() => { vi.advanceTimersByTime(100); });
+      key.click();
+      expect(heard(onNoteOn, onNoteOff)).toEqual([2, 2]);
+    });
+
+    it('a touch plays once, its click included; a bare click 100 ms later plays again', () => {
       const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'mobile');
       act(() => { key.dispatchEvent(pointer('pointerdown', 'touch')); });
       act(() => { key.dispatchEvent(pointer('pointerup', 'touch')); });
       fireEvent.click(key, { detail: 1 });
+      expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
+      act(() => { vi.advanceTimersByTime(100); });
+      key.click();
+      expect(heard(onNoteOn, onNoteOff)).toEqual([2, 2]);
+    });
+
+    it('a touch whose click comes with detail 0 (as Chromium sends it) is still one note', () => {
+      const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'mobile');
+      act(() => { key.dispatchEvent(pointer('pointerdown', 'touch')); });
+      act(() => { key.dispatchEvent(pointer('pointerup', 'touch')); });
+      fireEvent.click(key, { detail: 0 });
       expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
     });
 
     for (const k of ['Enter', ' ']) {
-      it(`${k === ' ' ? 'Space' : k} plays once, and a click right after it is the same press`, () => {
+      it(`${k === ' ' ? 'Space' : k} plays once; a click while it is down is its own, one after it is a new note`, () => {
         const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'desktop');
         fireEvent.keyDown(key, { key: k });
-        fireEvent.keyUp(key, { key: k });
         fireEvent.click(key, { detail: 0 });
+        fireEvent.keyUp(key, { key: k });
         expect(heard(onNoteOn, onNoteOff)).toEqual([1, 1]);
+        key.click();
+        expect(heard(onNoteOn, onNoteOff)).toEqual([2, 2]);
       });
     }
 
-    it('a bare click well after a press plays again (the press does not swallow it)', () => {
-      const { key, onNoteOn, onNoteOff } = renderKey(keyData, 'mobile');
-      act(() => { key.dispatchEvent(pointer('pointerdown', 'touch')); });
-      act(() => { key.dispatchEvent(pointer('pointerup', 'touch')); });
-      act(() => { vi.advanceTimersByTime(1000); });
-      key.click();
-      expect(heard(onNoteOn, onNoteOff)).toEqual([2, 2]);
+    it('thirty presses leave no listener on the window (each press removes all three it adds)', () => {
+      const count = new Map<string, number>();
+      const add = window.addEventListener.bind(window);
+      const remove = window.removeEventListener.bind(window);
+      const spyAdd = vi.spyOn(window, 'addEventListener').mockImplementation((type, fn, opts) => { count.set(type, (count.get(type) ?? 0) + 1); add(type, fn, opts); });
+      const spyRemove = vi.spyOn(window, 'removeEventListener').mockImplementation((type, fn, opts) => { count.set(type, (count.get(type) ?? 0) - 1); remove(type, fn, opts); });
+      try {
+        const { key } = renderKey(keyData, 'mobile');
+        for (let i = 0; i < 30; i++) {
+          act(() => { key.dispatchEvent(pointer('pointerdown', 'touch')); });
+          act(() => { key.dispatchEvent(pointer('pointerup', 'touch')); });
+          // Half of them get their click, half a cancelled pointer instead.
+          if (i % 2) fireEvent.click(key, { detail: 1 });
+          else act(() => { window.dispatchEvent(pointer('pointercancel', 'touch')); });
+        }
+        for (const type of ['click', 'pointercancel', 'pointerdown', 'pointerup']) expect(count.get(type) ?? 0, type).toBe(0);
+      } finally {
+        spyAdd.mockRestore();
+        spyRemove.mockRestore();
+      }
+    });
+
+    it('a touch that sent no click (it moved away) stops waiting at the next press or click anywhere; then a bare click plays', () => {
+      for (const next of ['pointerdown', 'click'] as const) {
+        const { key, onNoteOn, onNoteOff, unmount } = { ...renderKey(keyData, 'mobile'), unmount: cleanup };
+        act(() => { key.dispatchEvent(pointer('pointerdown', 'touch')); });
+        act(() => { key.dispatchEvent(pointer('pointerup', 'touch')); });
+        if (next === 'pointerdown') act(() => { document.body.dispatchEvent(pointer('pointerdown', 'touch')); });
+        else fireEvent.click(document.body, { detail: 1 });
+        key.click();
+        expect(heard(onNoteOn, onNoteOff), next).toEqual([2, 2]);
+        unmount();
+      }
     });
 
     it('a key taken away while its click note sounds still lets the note go', () => {

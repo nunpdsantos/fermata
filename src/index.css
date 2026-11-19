@@ -3092,13 +3092,38 @@ html[data-metro-room] .learn-scroll {
    row that does not fit rests on whole pills. Its window ends between two
    pills, as the staff strip's resting edge ends between noteheads, and the
    edge fade still says there is more (the row scrolls as before). The
-   wrapper is the row's free width; the window takes the whole pills that fit:
-   a pill is exactly var(--tap) wide here (44 px on a touch screen, whatever
-   the font), 6 px apart, and the scroller pads 2 px inside a -2 px margin
-   (.chip-row-phone). A browser without round() or container units keeps the
-   plain scrolling row. */
-@media (max-width: 639px) and (pointer: coarse) {
-  .octave-fit { flex: 1 1 0; min-width: 0; container-type: inline-size; }
+   wrapper shrinks with the row everywhere (.octave-wrap: the EdgeFade inside
+   it used to be the row's shrinking item; without this, with a mouse, the
+   pills ran off a narrow screen — review of a611beb). Below 640 px, with a
+   mouse or a touch screen, the wrapper is the row's free width (not in the
+   dock bar: .octave-fit only outside it) and the window takes the whole
+   pills that fit: a pill is exactly var(--tap) wide here (36 px with a
+   mouse, 44 on a touch screen, whatever the font), 6 px apart, and the
+   scroller pads 2 px inside a -2 px margin (.chip-row-phone). A browser
+   without round() or container units keeps the plain scrolling row. */
+.octave-wrap { min-width: 0; }
+@media (max-width: 639px) {
+  .octave-fit { flex: 1 1 0; container-type: inline-size; }
   .octave-fit > .edge-fade { max-width: calc(round(down, 100cqw + 4px, var(--tap) + 6px) - 4px); }
   .octave-fit .chip { width: var(--tap); padding: 0; }
+}
+
+/* Instruments stream (builder D), review of a611beb: the chord-position chips
+   in the dock's controls row stay on ONE line and scroll sideways with the
+   edge fade (ChordShapeSelector oneLine: .chip-row-scroll inside an EdgeFade).
+   From 640 px they share the line with "Flip neck" and the tuning and give
+   up width, never a line (a basis of 0 that grows up to their own width, so
+   where they fit nothing moves): the button adds no height in any language,
+   and translated chips ("pestana de A") no longer wrap the row. Below 640 px
+   they take a line of their own, as wide as the row. */
+.chord-shapes-line { min-width: 0; }
+.chord-shapes-line > .edge-fade { --edge-fade-bg: var(--bg); }
+/* The scroller's 2 px (room for a chip's focus ring) cancelled outside it:
+   where the chips fit, the line is exactly as wide and tall as before. */
+.chord-shapes-line .chip-group.chip-row-scroll { margin: -2px; }
+@media (max-width: 639px) {
+  .chord-shapes-line { flex: 1 1 100%; }
+}
+@media (min-width: 640px) {
+  .chord-shapes-line { flex: 1 1 0; max-width: max-content; }
 }

@@ -3208,13 +3208,29 @@ export function sortShapesForDefault<T extends { shape: ChordShape; baseFret: nu
 
 // ── Requested bass: inversions and slash chords (audit W3-11) ────────────────
 
-/** Pitch class of the lowest sounding string of a placed shape (standard tuning). */
+/** The open strings' MIDI numbers in standard tuning, 6th to 1st (E2 A2 D3 G3 B3 E4). */
+const OPEN_STRING_MIDI = [40, 45, 50, 55, 59, 64];
+
+/**
+ * The lowest PITCH a placed shape sounds (MIDI; a capo is already in its
+ * frets), or null when nothing sounds. Not the lowest string: the open A (A2)
+ * is lower than the low E at fret 9 (C♯3), so `9 0 0 x x 0` has A in the bass
+ * (independent review of a611beb, 2026-11-19).
+ */
+export function lowestSoundingMidi(entry: { shape: ChordShape; baseFret: number }): number | null {
+  let low: number | null = null;
+  entry.shape.strings.forEach((p, i) => {
+    if (p.fret === null) return;
+    const midi = OPEN_STRING_MIDI[i] + entry.baseFret + p.fret;
+    if (low === null || midi < low) low = midi;
+  });
+  return low;
+}
+
+/** Pitch class of the lowest pitch a placed shape sounds (standard tuning). */
 export function lowestSoundingPitchClass(entry: { shape: ChordShape; baseFret: number }): number | null {
-  for (let i = 0; i < 6; i++) {
-    const p = entry.shape.strings[i];
-    if (p.fret !== null) return (OPEN_STRING_PITCH_CLASSES[i] + entry.baseFret + p.fret + 120) % 12;
-  }
-  return null;
+  const low = lowestSoundingMidi(entry);
+  return low === null ? null : low % 12;
 }
 
 /**
@@ -3294,14 +3310,16 @@ function addBassBelow(
         strings,
       };
       const placed = { shape: extended, baseFret };
-      if (isPlayableChordShape(placed)) return placed;
+      // The bass must be what sounds lowest, not only the lowest string.
+      if (isPlayableChordShape(placed) && lowestSoundingPitchClass(placed) === bassPc) return placed;
     }
   }
   return null;
 }
 
 /**
- * Mute every string below the lowest string that already sounds the bass —
+ * Mute every string below the lowest string that already sounds the bass's
+ * pitch class, kept only when that note is then the lowest PITCH —
  * the usual way a guitarist plays an inversion from a known grip (G open
  * 320003 → x20003 for G/B). Kept only if at least three strings still sound
  * and every essential chord tone survives.
@@ -3347,11 +3365,13 @@ function withLowerStringsMuted(
   };
   if (!barreInfo) delete trimmed.barreInfo;
   const placed = { shape: trimmed, baseFret };
-  return isPlayableChordShape(placed) ? placed : null;
+  // The bass string's note must also be the lowest pitch left sounding.
+  return isPlayableChordShape(placed) && lowestSoundingPitchClass(placed) === bassPc ? placed : null;
 }
 
 /**
- * Order chord shapes so the first one has `bassPc` as its lowest note:
+ * Order chord shapes so the first one has `bassPc` as its lowest PITCH
+ * (`lowestSoundingPitchClass`, never the lowest string):
  * existing shapes with that bass first (in their given order); else shapes
  * with the strings below a bass-note string muted; else shapes extended with
  * the bass on a free lower string (slash chords). `bassMatched` is false when

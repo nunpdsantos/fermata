@@ -444,8 +444,9 @@ export function Piano() {
     <div className="piano-octave-row flex items-center gap-2 px-3 max-sm:px-2 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
       <span className="type-label shrink-0" aria-hidden="true">{t('play.octave')}</span>
       {/* One sideways row on a phone: the fade says there are more octaves,
-          and it rests on whole pills (index.css .octave-fit, QA audit Q14). */}
-      <div className={toolsSlot ? undefined : 'octave-fit'}>
+          and it rests on whole pills (index.css .octave-fit, QA audit Q14;
+          not in the dock bar, whose width is the row's own). */}
+      <div className={toolsSlot ? 'octave-wrap' : 'octave-wrap octave-fit'}>
         <EdgeFade>
           <ChipGroup
             label={t('instrument.baseOctave')}

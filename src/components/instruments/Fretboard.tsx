@@ -867,6 +867,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
               labels={positionLabels}
               selectedIdx={selectedShapeIdx}
               onSelect={setSelectedShapeIdx}
+              oneLine
             />
           )}
           {capoLine && <p className="text-ui" style={{ color: 'var(--text-muted)' }} data-testid="capo-line">{capoLine}</p>}

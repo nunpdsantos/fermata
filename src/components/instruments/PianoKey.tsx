@@ -10,11 +10,10 @@ import { readableTextOn } from './fretboardConstants.ts';
 
 import { PIANO_DIMS, type SizeMode } from './pianoDimensions';
 
-/**
- * A bare click (assistive technology, element.click()) holds its note this
- * long; and a click this soon after a press ends is that press's own click.
- */
-const CLICK_MS = 500;
+/** A bare click (assistive technology, element.click()) holds its note this long. */
+const CLICK_NOTE_MS = 500;
+/** What ends a pointer press's wait for its own click: that click (anywhere), a cancelled pointer, the next press. */
+const PRESS_ENDS = ['click', 'pointercancel', 'pointerdown'] as const;
 
 interface PianoKeyProps {
   keyData: PianoKeyData;
@@ -95,13 +94,23 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   //  • A BARE CLICK (QA audit A10, 2026-11-18): assistive technology and
   //    element.click() send a click with no press before it, and the key used
   //    to stay silent. Such a click plays the key once: note-on, note-off
-  //    CLICK_MS later (the piano's own release, so it lands even if the key
-  //    is gone by then). The click that ends a mouse press or a touch, or
-  //    comes with Enter / Space, belongs to that press, which already
-  //    sounded: `pressEnd` is Infinity while a press is on (until the pointer
-  //    lifts anywhere: desktop note-off is the container's, or the key comes
-  //    up), then the time it ended.
-  const pressEnd = useRef(-Infinity);
+  //    CLICK_NOTE_MS later (the piano's own release, so it lands even if the
+  //    key is gone by then). Decided by the event sequence, never a clock
+  //    (independent review of a611beb): a pointer press on this key is
+  //    followed by ITS click — here for a touch, which captures its own
+  //    pointer, on the container for a desktop mouse, which the container
+  //    captures — and that click was already heard. So a press waits for the
+  //    next click anywhere (`pressWaits` = the remover of its three window
+  //    listeners, all removed together), and gives up at a cancelled pointer
+  //    or the next press (a touch's click comes with detail 0 in Chromium,
+  //    so the sequence decides, not the event's fields). A click here while
+  //    Enter / Space hold the key is theirs. Known limit: a touch that moves
+  //    far enough to send no click leaves its press waiting until the next
+  //    press or click anywhere, so a bare click on that key just then is
+  //    taken as its own (once).
+  const pressWaits = useRef<(() => void) | null>(null);
+  const heldByKey = useRef(false);
+  useEffect(() => () => pressWaits.current?.(), []);
 
   const refreshTouchNote = useCallback(() => {
     const desired = touchPointers.current.size > 0;
@@ -139,7 +148,7 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
         e.preventDefault();
-        pressEnd.current = Infinity;
+        heldByKey.current = true;
         if (!isPressed.current) {
           isPressed.current = true;
           onNoteOn(keyData);
@@ -154,9 +163,9 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if ((e.key === 'Enter' || e.key === ' ') && isPressed.current) {
         isPressed.current = false;
-        pressEnd.current = performance.now();
         onNoteOff(keyData);
       }
+      if (e.key === 'Enter' || e.key === ' ') heldByKey.current = false;
       onKeyUp?.(e, keyData);
     },
     [keyData, onNoteOff, onKeyUp],
@@ -168,9 +177,9 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
 
   const handleBlur = useCallback(() => {
     onKeyBlur?.();
+    heldByKey.current = false;
     if (isPressed.current) {
       isPressed.current = false;
-      pressEnd.current = performance.now();
       onNoteOff(keyData);
     }
   }, [keyData, onNoteOff, onKeyBlur]);
@@ -184,10 +193,18 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      pressEnd.current = Infinity;
-      const end = () => { pressEnd.current = performance.now(); };
-      window.addEventListener('pointerup', end, { capture: true, once: true });
-      window.addEventListener('pointercancel', end, { capture: true, once: true });
+      pressWaits.current?.();
+      const settle = (ev: Event) => {
+        // Its own click on this key is the key's click handler's to take.
+        if (ev.type === 'click' && elementRef.current?.contains(ev.target as Node)) return;
+        stop();
+      };
+      const stop = () => {
+        for (const type of PRESS_ENDS) window.removeEventListener(type, settle, true);
+        pressWaits.current = null;
+      };
+      for (const type of PRESS_ENDS) window.addEventListener(type, settle, true);
+      pressWaits.current = stop;
       if (isMobile) {
         // Own the touch: capture so this pointer's up/cancel always lands here
         // even if the finger slides off the key. Guarded — jsdom lacks capture.
@@ -210,9 +227,14 @@ export const PianoKeyComponent = memo(function PianoKeyComponent({
   );
 
   const handleClick = useCallback(() => {
-    if (performance.now() - pressEnd.current < CLICK_MS) return;
+    if (touchPointers.current.size > 0) return; // a finger still holds the key: its touch's click
+    if (pressWaits.current) {
+      pressWaits.current(); // the press's own click: already heard
+      return;
+    }
+    if (heldByKey.current) return;
     onNoteOn(keyData);
-    setTimeout(() => onNoteOff(keyData), CLICK_MS);
+    setTimeout(() => onNoteOff(keyData), CLICK_NOTE_MS);
   }, [keyData, onNoteOn, onNoteOff]);
 
   const handlePointerUp = useCallback(

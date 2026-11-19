@@ -29,10 +29,11 @@
  * muted basses included), and the 24 major / minor triads and the dominant
  * sevenths with a capo on frets 1-9.
  */
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { buildChord, CHORD_FORMULAS } from '../chords';
+import { rightHandStudy, RIGHT_HAND_PATTERNS } from '../../utils/rightHandPatterns';
 import { CHORD_SHAPE_LIBRARY, chordShapesForCapo, getChordShapes, isPlayableChordShape, type ChordShape } from '../guitarChordShapes';
-import type { ChordQuality, Note } from '../../types/music';
+import type { Chord, ChordQuality, Note } from '../../types/music';
 
 const MAX_FRET = 15;
 const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
@@ -207,28 +208,154 @@ describe('every hand-made shape, on all twelve roots, can be played (Q1)', () =>
   }, 60_000);
 });
 
-describe('every grip the board can offer can be played (Q1, the whole class)', () => {
-  it('every quality x 12 roots x every inversion, no capo; triads and dominant sevenths with a capo on 1-9', () => {
-    const faults: string[] = [];
-    let shown = 0;
-    const check = (root: string, quality: string, inversion: number, capo: number) => {
+// ── Every grip the board can offer: one walk, four checks ───────────────────
+//
+// The requests: every quality on the 21 root spellings in every inversion, and
+// the common qualities over every other bass (slash chords: C/E, C/B♭, …), each
+// with a capo on frets 0-9 — what chordShapesForCapo hands the fretboard.
+// Checked on every grip (independent review of a611beb, 2026-11-19):
+//  - the fingering rules above;
+//  - the bass: a request called matched has the requested bass as the LOWEST
+//    PITCH of its first grip (tuning + capo + fret, never the lowest string),
+//    and so has every grip labelled with it ("/C♯");
+//  - only the chord's tones sound (and the slash bass);
+//  - the tones the chord is named for sound: root, the third (or the
+//    suspension), the seventh where there is one and the defining alterations
+//    (written here from the chord formulas, independent of the app's own list).
+const SPELLINGS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'E#', 'Fb', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'B#', 'Cb'];
+const SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const SLASH_QUALITIES = ['major', 'minor', 'dominant7', 'minor7', 'major7', 'sus4', 'sus2', 'add9', 'major6', 'minor6', 'power'];
+const OPEN_MIDI = [40, 45, 50, 55, 59, 64]; // E2 A2 D3 G3 B3 E4
+const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const ACCIDENTAL: Record<string, number> = { '': 0, '#': 1, b: -1, '##': 2, bb: -2 };
+const pcOfNote = (n: Note) => (LETTER[n.natural] + ACCIDENTAL[n.accidental] + 24) % 12;
+const lowestPitch = ({ shape, baseFret }: Placed) =>
+  Math.min(...shape.strings.flatMap((p, i) => (p.fret === null ? [] : [OPEN_MIDI[i] + baseFret + p.fret])));
+const soundingPcs = ({ shape, baseFret }: Placed) =>
+  new Set(shape.strings.flatMap((p, i) => (p.fret === null ? [] : [(OPEN_MIDI[i] + baseFret + p.fret) % 12])));
+
+/** The offsets above the root a grip must sound, from the chord's formula; `oneOf` = at least one of them. */
+function namedTones(quality: string): { all: number[]; oneOf?: number[] } {
+  const offsets = new Set(CHORD_FORMULAS[quality as ChordQuality].map((x) => ((x % 12) + 12) % 12));
+  const all = [0];
+  if (offsets.has(4)) all.push(4);
+  else if (offsets.has(3)) all.push(3);
+  else if (quality.includes('sus')) all.push(offsets.has(5) ? 5 : 2);
+  if (offsets.has(11)) all.push(11);
+  else if (offsets.has(10)) all.push(10);
+  const DEFINING: Record<string, number[]> = {
+    diminished: [6], diminished7: [6, 9], half_diminished7: [6], major7flat5: [6], diminished_major7: [6],
+    dominant7flat5: [6], dominant7flat5flat9: [6, 1], dominant7flat5sharp9: [6, 3],
+    augmented: [8], augmented7: [8], augmented_major7: [8], dominant7sharp5: [8], dominant7sharp5flat9: [8, 1], dominant7sharp5sharp9: [8, 3],
+    major6: [9], minor6: [9], six_nine: [9, 2], minor_six_nine: [9, 2], add9: [2], add11: [5],
+    dominant7flat9: [1], dominant7sharp9: [3], dominant13flat9: [1], dominant7sharp11: [6], major7sharp11: [6],
+    dominant9sharp11: [6], major9sharp11: [6], dominant7flat13: [8],
+  };
+  all.push(...(DEFINING[quality] ?? []));
+  return quality === 'dominant7alt' ? { all, oneOf: [1, 3, 6, 8] } : { all };
+}
+
+interface Walk { requests: number; grips: number; fingering: string[]; bass: string[]; wrongNotes: string[]; missing: string[] }
+const walk: Walk = { requests: 0, grips: 0, fingering: [], bass: [], wrongNotes: [], missing: [] };
+
+beforeAll(() => {
+  const request = (name: string, chord: Chord, inversion: number, capo: number, bassPc: number | null) => {
+    walk.requests++;
+    const got = chordShapesForCapo(chord, inversion, capo);
+    const rootPc = pcOfNote(chord.root);
+    const allowed = new Set(chord.notes.map(pcOfNote));
+    if (chord.bassNote) allowed.add(pcOfNote(chord.bassNote));
+    const tones = namedTones(chord.quality);
+    if (bassPc !== null && got.bassMatched && got.shapes.length > 0 && lowestPitch(got.shapes[0]) % 12 !== bassPc) {
+      walk.bass.push(`${name}: called matched, first grip ${grip(got.shapes[0])} sounds ${lowestPitch(got.shapes[0]) % 12} lowest, not ${bassPc}`);
+    }
+    for (const entry of got.shapes) {
+      walk.grips++;
+      const where = `${name} "${entry.shape.name}": ${grip(entry)}`;
+      const f = fingeringFaults(entry, capo);
+      if (f.length) walk.fingering.push(`${where}: ${f.join('; ')}`);
+      if (bassPc !== null && entry.shape.shortName.includes('/') && lowestPitch(entry) % 12 !== bassPc) {
+        walk.bass.push(`${where}: labelled with the bass, sounds ${lowestPitch(entry) % 12} lowest, not ${bassPc}`);
+      }
+      const pcs = soundingPcs(entry);
+      const wrong = [...pcs].filter((x) => !allowed.has(x));
+      if (wrong.length) walk.wrongNotes.push(`${where}: sounds ${wrong.join(', ')}`);
+      const missing = tones.all.filter((o) => !pcs.has((rootPc + o) % 12));
+      if (tones.oneOf && !tones.oneOf.some((o) => pcs.has((rootPc + o) % 12))) missing.push(-1);
+      if (missing.length) walk.missing.push(`${chord.quality}: ${where}: lacks ${missing.join(', ')}`);
+    }
+  };
+  for (const quality of Object.keys(CHORD_FORMULAS)) {
+    for (const root of SPELLINGS) {
       const chord = buildChord(toNote(root), quality as ChordQuality);
-      for (const entry of chordShapesForCapo(chord, inversion, capo).shapes) {
-        shown++;
-        const f = fingeringFaults(entry, capo);
-        if (f.length) faults.push(`${root} ${quality} inversion ${inversion} capo ${capo} "${entry.shape.name}": ${grip(entry)}: ${f.join('; ')}`);
-      }
-    };
-    for (const quality of Object.keys(CHORD_FORMULAS)) {
-      for (const root of ROOTS) {
-        const notes = buildChord(toNote(root), quality as ChordQuality).notes.length;
-        for (let inversion = 0; inversion < notes; inversion++) check(root, quality, inversion, 0);
+      for (let inversion = 0; inversion < chord.notes.length; inversion++) {
+        const bassPc = inversion === 0 ? null : pcOfNote(chord.notes[inversion]);
+        for (let capo = 0; capo <= 9; capo++) request(`${root} ${quality} inversion ${inversion} capo ${capo}`, chord, inversion, capo, bassPc);
       }
     }
-    for (const quality of ['major', 'minor', 'dominant7']) {
-      for (const root of ROOTS) for (let capo = 1; capo <= 9; capo++) check(root, quality, 0, capo);
+  }
+  for (const quality of SLASH_QUALITIES) {
+    for (const root of SHARPS) {
+      for (const bass of SHARPS) {
+        if (bass === root) continue;
+        const chord = { ...buildChord(toNote(root), quality as ChordQuality), bassNote: toNote(bass) };
+        for (let capo = 0; capo <= 9; capo++) request(`${root} ${quality}/${bass} capo ${capo}`, chord, 0, capo, pcOfNote(chord.bassNote));
+      }
     }
-    expect([...new Set(faults)]).toEqual([]);
-    expect(shown).toBeGreaterThan(11000);
-  }, 120_000);
+  }
+}, 900_000);
+
+describe('every grip the board can offer (Q1, the whole class; the review of a611beb)', () => {
+  it('walks every request: 21 spellings x every quality x every inversion, slash chords, capo 0-9', () => {
+    expect(walk.requests).toBeGreaterThan(50_000);
+    expect(walk.grips).toBeGreaterThan(200_000);
+  });
+  it('can be played', () => {
+    expect([...new Set(walk.fingering)]).toEqual([]);
+  });
+  it('a grip called a match, or labelled with a bass, has that bass as its LOWEST PITCH', () => {
+    expect(walk.bass).toEqual([]);
+  });
+  it('sounds only the chord\'s tones (and a slash chord\'s bass)', () => {
+    expect(walk.wrongNotes).toEqual([]);
+  });
+  it('sounds the tones the chord is named for: root, third or suspension, seventh, its alterations', () => {
+    expect(walk.missing).toEqual([]);
+  });
+});
+
+// ── The right-hand studies of the practice sheet ─────────────────────────────
+// A bar plucks some strings of ONE grip, which the left hand holds whole (a
+// barre still presses the strings it does not pluck). So the grip is checked
+// whole, and every plucked note must be a string and fret of that grip, under
+// the finger the grip gives it.
+describe('every grip of every right-hand study can be played (the practice sheet)', () => {
+  it('every key x major / minor x pattern: the grip each bar holds breaks no rule, and its notes are that grip\'s', () => {
+    const faults: string[] = [];
+    let bars = 0;
+    for (const key of SPELLINGS) {
+      for (const mode of ['major', 'minor'] as const) {
+        for (const pattern of RIGHT_HAND_PATTERNS) {
+          const study = rightHandStudy(toNote(key), mode, pattern.id);
+          if (!study) continue;
+          for (const bar of study.bars) {
+            bars++;
+            const held = chordShapesForCapo(buildChord(bar.chord.root, bar.chord.quality), 0, 0).shapes[0];
+            const where = `${key} ${mode} ${pattern.id} ${bar.numeral} (${bar.shape.name})`;
+            if (held.shape.name !== bar.shape.name || held.baseFret !== bar.shape.baseFret) { faults.push(`${where}: not the chord's default grip`); continue; }
+            const f = fingeringFaults(held);
+            if (f.length) faults.push(`${where}: ${grip(held)}: ${f.join('; ')}`);
+            for (const n of bar.notes) {
+              const p = held.shape.strings[n.stringIndex];
+              const fret = p.fret === null ? null : held.baseFret + p.fret;
+              const finger = fret === 0 ? 0 : p.finger === 'bar' ? 1 : p.finger;
+              if (fret !== n.fret || finger !== n.lh) faults.push(`${where}: plucks ${STRING[n.stringIndex]}${n.fret} with finger ${n.lh}; the grip has ${fret === null ? 'it muted' : `fret ${fret}, finger ${finger}`}`);
+            }
+          }
+        }
+      }
+    }
+    expect(faults).toEqual([]);
+    expect(bars).toBeGreaterThan(200);
+  });
 });

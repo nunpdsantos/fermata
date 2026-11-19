@@ -95,6 +95,22 @@ describe('every chip the board can offer carries a learner\'s name (Q1)', () => 
   });
 });
 
+describe('a generated grip is named where it is drawn (review of a611beb)', () => {
+  it('a bass added at fret 9 to a voicing built at fret 2 reads "Fret 9/C♯", the anchor badge\'s fret; open is "Open"; a capo counts', () => {
+    const t = i18n.getFixedT('en');
+    const shape = (strings: (number | null)[], shortName: string) => ({
+      name: shortName, shortName, type: 'barre' as const, cagedShape: 'E' as const, rootString: 6 as const, rootFretOffset: 0,
+      strings: strings.map((fret) => ({ fret, finger: fret === null ? 0 : 1 })) as never,
+    });
+    // A add11 / C♯ as a611beb drew it: 9 0 0 x x 0, built at fret 2.
+    expect(chordChipLabel({ shape: shape([7, -2, -2, null, null, -2], 'Pos 2/C#'), baseFret: 2 }, 0, t)).toBe('Fret 9/C#');
+    expect(chordChipLabel({ shape: shape([0, 2, 2, 1, 0, 0], 'Open'), baseFret: 0 }, 0, t)).toBe('Open');
+    // Capo 3: the lowest fret above it.
+    expect(chordChipLabel({ shape: shape([0, 2, 2, 1, 0, 0], 'Pos 3'), baseFret: 3 }, 3, t)).toBe('Open');
+    expect(chordChipLabel({ shape: shape([2, 0, 0, 1, null, null], 'Pos 4'), baseFret: 4 }, 3, t)).toBe('Fret 4');
+  });
+});
+
 describe('the board shows the learner\'s names (Q1)', () => {
   for (const [lang, expected] of [['en', ['A barre', 'E barre']], ['pt', ['pestana de A', 'pestana de E']], ['es', ['cejilla de A', 'cejilla de E']]] as const) {
     it(`${lang}: Cmaj13's chips`, async () => {
