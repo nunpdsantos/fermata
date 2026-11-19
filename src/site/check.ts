@@ -233,9 +233,13 @@ export function homeFallbackProblems(home: string): string[] {
   const root = home.match(/<div id="root">([\s\S]*?)<\/div>/);
   if (!root) return ['no <div id="root">'];
   if (root[1] !== '') problems.push('#root is not empty in the initial HTML: the app\'s tests and the rule that hides the links read an empty #root');
-  const box = home.slice((root.index ?? 0) + root[0].length).match(/^\s*<div id="boot-links">([\s\S]*?)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
+  const box = home.slice((root.index ?? 0) + root[0].length).match(/^\s*<div id="boot-links"( data-nosnippet)?>([\s\S]*?)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
   if (!box) return [...problems, 'no <div id="boot-links"> right after #root, the last thing in the body: no way on when the app does not start (audit A18)'];
-  const links = box[1];
+  const links = box[2];
+  // The block is in the home page's raw text, lines included: without `data-nosnippet` (which Google reads on a
+  // div, span or section: developers.google.com/search/docs/crawling-indexing/robots-meta-tag, read 19 November
+  // 2026) "Fermatina is taking a while to start" could be shown as the site's snippet in search results.
+  if (!box[1]) problems.push('#boot-links is not marked data-nosnippet: its "taking a while to start" lines could become the home page\'s snippet in search results');
   if (/<script\b/i.test(links)) problems.push('#boot-links holds a script');
   if (!/#root:not\(:empty\)\+#boot-links\{display:none\}/.test(home)) problems.push('no style hiding #boot-links once the app has put anything into #root');
   const name = appText('en', 'nav.musicTheory');

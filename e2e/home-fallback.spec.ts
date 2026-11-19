@@ -123,7 +123,7 @@ const framesOf = async (page: Page) => {
 test('the initial HTML of the home page: #root empty, then the six links, with no script of their own', async ({ request }) => {
   const html = await (await request.get('/')).text();
   // The entry script follows the links in index.html; the build moves it into the head.
-  const box = html.match(/<div id="root"><\/div>\s*<div id="boot-links">([\s\S]*?)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
+  const box = html.match(/<div id="root"><\/div>\s*<div id="boot-links" data-nosnippet>([\s\S]*?)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
   expect(box, 'an empty #root, then the links, the last thing in the body').not.toBeNull();
   for (const { href } of LINKS) expect(box![1]).toContain(`href="${href}"`);
   expect(box![1]).not.toContain('<script');
