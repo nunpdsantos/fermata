@@ -3226,16 +3226,26 @@ html[data-metro-room] .learn-scroll {
     height: auto !important;
     padding-bottom: 0 !important;
   }
-  [data-learn-scroll] div:has(> aside > [data-testid="section-rail"]) {
-    display: block !important;
-  }
-  aside:has(> [data-testid="section-rail"]),
+  /* Plain selectors in one list; each :has() and the complex :not() in a
+     rule of its own (review of bd14071), so a browser without one of them
+     drops only that rule, never the others. Without :has() the rail still
+     goes (its nav), only its empty column stays — and only on paper wider
+     than 1024 px, where the rail's grid applies at all. */
+  [data-testid="section-rail"],
   [data-testid="section-picker"],
   [data-section="intro"] > div:first-child > button,
-  [data-testid="inline-try-this"] button:not([data-testid="try-this-chords"] button),
   [data-section="check"],
   [data-section="check"] ~ * {
     display: none !important;
+  }
+  [data-testid="inline-try-this"] button:not([data-testid="try-this-chords"] button) {
+    display: none !important;
+  }
+  aside:has(> [data-testid="section-rail"]) {
+    display: none !important;
+  }
+  [data-learn-scroll] div:has(> aside > [data-testid="section-rail"]) {
+    display: block !important;
   }
   [data-testid="try-this-chords"] button {
     min-height: 0;
