@@ -64,11 +64,14 @@ export function isValidFingeringKey(key: unknown): key is string {
 
 function isValidRouteFingeringKey(key: string): boolean {
   const p = key.split('|');
+  // `position-walk` (music audit 2, M38, 19 November 2026): the Position walk's route id. Until then the guard
+  // refused its keys, so a teacher's walk finger was never stored — the display snapped back and Reset stayed
+  // off. A key in the same v1 dictionary, guarded like the others: no new field, no version change.
   return p.length === 9 && p[0] === 'route:1'
     && /^[a-z0-9-]{1,32}$/.test(p[1])
     && /^[A-G](bb|##|b|#)?$/.test(p[2])
     && Object.hasOwn(SCALE_FORMULAS, p[3])
-    && /^(scale|tonicArpeggio|dominantSeventh|diminishedSeventh|thirds|sixths|octaves|chromatic|brokenChord)(-broken|-together|-upper)?$/.test(p[4])
+    && /^(?:(scale|tonicArpeggio|dominantSeventh|diminishedSeventh|thirds|sixths|octaves|chromatic|brokenChord)(-broken|-together|-upper)?|position-walk)$/.test(p[4])
     && /^[1-3]$/.test(p[5]) && /^\d{1,3}$/.test(p[6])
     && /^[0-5]$/.test(p[7]) && /^(?:[1-9]|1[0-5])$/.test(p[8]);
 }

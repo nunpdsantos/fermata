@@ -70,6 +70,12 @@
   "finger": "Mano izquierda {{finger}}",
   "fingerFor": "Dedo para {{note}}, cuerda {{string}}",
   "barre": "Cejilla parcial",
+  "barreFull": "Cejilla completa",
+  "barreSpan": "Cejilla: dedo {{finger}} sobre las cuerdas {{from}} a {{to}}, traste {{fret}}",
+  "fingerBusy": "El dedo {{finger}} no está disponible para {{target}} en la cuerda {{targetString}}: a la vez ya está en {{note}}, en la cuerda {{string}}, traste {{fret}}, y un dedo no puede estar en dos trastes.",
+  "fingerAcross": "El dedo {{finger}} no está disponible para {{target}} en la cuerda {{targetString}}: tendido desde {{note}}, en la cuerda {{string}}, traste {{fret}}, pisaría también la cuerda {{between}}, que suena al aire o en un traste más bajo a la vez.",
+  "fingerClash": "El dedo {{finger}} está en {{a}}, en la cuerda {{aString}}, traste {{aFret}}, y en {{b}}, en la cuerda {{bString}}, traste {{bFret}}, a la vez: un dedo no puede estar en dos trastes. Cambia uno de los dos.",
+  "fingerClashAcross": "El dedo {{finger}} está en {{a}}, en la cuerda {{aString}}, y en {{b}}, en la cuerda {{bString}}, en el traste {{fret}}: tendido, pisaría también la cuerda {{between}}, que suena al aire o en un traste más bajo a la vez. Cambia uno de los dos.",
   "reach": "Reajusta la apertura de la mano",
   "shift": {
     "guide": "Cambio con dedo guía: {{from}} → {{to}}",

@@ -8,6 +8,8 @@ import { useFingeringStore, FINGERING_STORE_KEY, isValidFingeringKey } from '../
 import { fingeringKey } from '../../core/utils/guitarPositions';
 import { BACKUP_KEYS, buildBackup, validateBackup, backupSections } from '../../utils/backupHelpers';
 import errorBoundarySource from '../../components/ErrorBoundary.tsx?raw';
+import { GUITAR_TUNINGS } from '../../core/constants/guitarTunings';
+import { SCALE_FORMULAS } from '../../core/constants/scales';
 
 const K1 = fingeringKey('major', 'standard', 5, 0, 2, 9);
 const K2 = fingeringKey('major', 'standard', 5, 0, 3, 5);
@@ -140,5 +142,91 @@ describe('additive route namespace, unchanged production v1 shape', () => {
     const result = await validateBackup(buildBackup(localStorage));
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.backup.data[FINGERING_STORE_KEY]).toMatchObject({ state: { overrides: { [K1]: 3, [routeKey]: 2 } } });
+  });
+});
+
+describe('the Position walk\'s keys (music audit 2, M38) in the same v1 save', () => {
+  // Release 16 refused these keys, so a teacher's walk finger was never stored.
+  const walkKey = 'route:1|standard|C|major|position-walk|2|0|1|3';
+  // A save as release 16 writes it: positions, route fingers, and one the editor now calls impossible (M37:
+  // finger 3 on the E of C major's first 3rds pair, while the C holds it at another fret) — kept as saved.
+  const FROZEN = JSON.stringify({ state: { overrides: {
+    'major|standard|p5|2|4': 3, 'natural_minor|drop-d|open9|1|2': 4,
+    'route:1|standard|Bb|major|scale|2|0|1|1': 2, 'route:1|standard|C|major|thirds-together|1|0|2|2': 3,
+  }, labelMode: 'degree' }, version: 1 });
+
+  it('the walk route is accepted, the other route ids as before, and anything else still refused', () => {
+    expect(isValidFingeringKey(walkKey)).toBe(true);
+    expect(isValidFingeringKey('route:1|standard|C|major|scale|2|0|1|3')).toBe(true);
+    expect(isValidFingeringKey('route:1|standard|C|major|brokenChord-upper|1|0|1|3')).toBe(true);
+    for (const bad of ['position-walk-together', 'positionwalk', 'position-walks', 'walk', 'p-i-m-a']) {
+      expect(isValidFingeringKey(walkKey.replace('position-walk', bad))).toBe(false);
+    }
+    useFingeringStore.getState().setOverride(walkKey, 3);
+    expect(useFingeringStore.getState().overrides).toEqual({ [walkKey]: 3 });
+  });
+
+  it('a production-shaped save from release 16 loads unchanged, every override kept, and is written back byte for byte', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, FROZEN);
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides).toEqual(JSON.parse(FROZEN).state.overrides);
+    useFingeringStore.setState({ labelMode: useFingeringStore.getState().labelMode });
+    expect(localStorage.getItem(FINGERING_STORE_KEY)).toBe(FROZEN);
+  });
+
+  it('a walk finger added to it is one more key; Reset takes exactly it out again, byte for byte', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, FROZEN);
+    await useFingeringStore.persist.rehydrate();
+    useFingeringStore.getState().setOverride(walkKey, 3);
+    const withWalk = JSON.parse(localStorage.getItem(FINGERING_STORE_KEY)!);
+    expect(withWalk).toEqual({ state: { overrides: { ...JSON.parse(FROZEN).state.overrides, [walkKey]: 3 }, labelMode: 'degree' }, version: 1 });
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides[walkKey]).toBe(3);
+    useFingeringStore.getState().clearOverrides([walkKey]);
+    expect(localStorage.getItem(FINGERING_STORE_KEY)).toBe(FROZEN);
+  });
+});
+
+describe('the route key\'s guard, one field at a time (the review of 19 November 2026)', () => {
+  // A real key (C major's walk, step 1): each field is varied alone, over what the routes produce (the review's
+  // census of 1,276,332 real keys: string 0-5, fret 1-15, octaves 1-3, 14 route ids, event index up to 91), then
+  // just outside it.
+  const REAL = ['route:1', 'standard', 'C', 'major', 'position-walk', '2', '0', '1', '3'];
+  const withField = (i: number, v: string) => REAL.map((x, j) => (j === i ? v : x)).join('|');
+  const ROUTE_IDS = ['scale', 'position-walk', 'tonicArpeggio', 'dominantSeventh', 'diminishedSeventh', 'thirds-broken', 'thirds-together',
+    'sixths-broken', 'sixths-together', 'octaves-broken', 'octaves-together', 'chromatic', 'brokenChord', 'brokenChord-upper'];
+  const accepts = (i: number, values: readonly string[]) => expect(values.filter((v) => !isValidFingeringKey(withField(i, v)))).toEqual([]);
+  const refuses = (i: number, values: readonly string[]) => expect(values.filter((v) => isValidFingeringKey(withField(i, v)))).toEqual([]);
+
+  it('the real key itself, and nine fields exactly', () => {
+    expect(isValidFingeringKey(REAL.join('|'))).toBe(true);
+    expect(isValidFingeringKey(REAL.slice(0, 8).join('|'))).toBe(false);
+    expect(isValidFingeringKey([...REAL, '0'].join('|'))).toBe(false);
+  });
+  it('version: route:1 only', () => { accepts(0, ['route:1']); refuses(0, ['route:0', 'route:2', 'route:', 'route']); });
+  it('tuning: the seven tunings; not a label', () => { accepts(1, GUITAR_TUNINGS.map((t) => t.id)); refuses(1, ['Standard', 'drop d', '', 'x'.repeat(33)]); });
+  it('root: the 21 spellings; nothing else', () => {
+    accepts(2, ['C', 'D', 'E', 'F', 'G', 'A', 'B'].flatMap((l) => [l, `${l}#`, `${l}b`]));
+    refuses(2, ['H', 'c', 'C#b', 'Cx', '']);
+  });
+  it('scale: the 37 scale types; an unknown one refused', () => {
+    accepts(3, Object.keys(SCALE_FORMULAS));
+    expect(Object.keys(SCALE_FORMULAS)).toHaveLength(37);
+    refuses(3, ['mega', 'constructor', 'Major', '']);
+  });
+  it('route id: the 14 the editor offers; the right-hand patterns and near misses refused', () => {
+    accepts(4, ROUTE_IDS);
+    refuses(4, ['walk', 'positionwalk', 'position_walk', 'position-walks', 'position-walk-together', 'p-i-m-a', 'p+a-i-m-i', 'Scale', '']);
+  });
+  it('octaves: 1 to 3; 0 and 4 refused', () => { accepts(5, ['1', '2', '3']); refuses(5, ['0', '4', '12', '']); });
+  it('event index: 0 to 91 (and up to 999); four digits or a sign refused', () => {
+    accepts(6, Array.from({ length: 92 }, (_, k) => String(k)));
+    accepts(6, ['999']);
+    refuses(6, ['1000', '-1', '', '1.5']);
+  });
+  it('string: 0 to 5; 6 and -1 refused', () => { accepts(7, ['0', '1', '2', '3', '4', '5']); refuses(7, ['6', '-1', '']); });
+  it('fret: 1 to 15 (no route keys an open string); 0 and 16 refused', () => {
+    accepts(8, Array.from({ length: 15 }, (_, k) => String(k + 1)));
+    refuses(8, ['0', '16', '19', '99', '-1', '']);
   });
 });

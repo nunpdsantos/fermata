@@ -70,6 +70,12 @@
   "finger": "Mão esquerda {{finger}}",
   "fingerFor": "Dedo para {{note}}, corda {{string}}",
   "barre": "Pestana parcial",
+  "barreFull": "Pestana completa",
+  "barreSpan": "Pestana: dedo {{finger}} sobre as cordas {{from}} a {{to}}, traste {{fret}}",
+  "fingerBusy": "O dedo {{finger}} não está disponível para {{target}} na corda {{targetString}}: ao mesmo tempo, já está em {{note}}, na corda {{string}}, traste {{fret}}, e um dedo não pode estar em dois trastes.",
+  "fingerAcross": "O dedo {{finger}} não está disponível para {{target}} na corda {{targetString}}: deitado desde {{note}}, na corda {{string}}, traste {{fret}}, prenderia também a corda {{between}}, que se toca solta ou num traste mais baixo ao mesmo tempo.",
+  "fingerClash": "O dedo {{finger}} está em {{a}}, na corda {{aString}}, traste {{aFret}}, e em {{b}}, na corda {{bString}}, traste {{bFret}}, ao mesmo tempo: um dedo não pode estar em dois trastes. Muda um deles.",
+  "fingerClashAcross": "O dedo {{finger}} está em {{a}}, na corda {{aString}}, e em {{b}}, na corda {{bString}}, no traste {{fret}}: deitado, prenderia também a corda {{between}}, que se toca solta ou num traste mais baixo ao mesmo tempo. Muda um deles.",
   "reach": "Reajusta a abertura da mão",
   "shift": {
     "guide": "Mudança com dedo guia: {{from}} → {{to}}",
