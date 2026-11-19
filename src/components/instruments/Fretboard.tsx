@@ -1086,9 +1086,11 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
                   // The window's first fret is already numbered beside this
                   // column, so "2fr" printed it twice (QA audit Q6): it is
                   // kept for a screen reader only, which hears the row as before.
-                  <span className="sr-only">{lowestVisibleFret}fr</span>
+                  // Keyed apart from the "0" below: reused as one element, the span stood at the wrong size for a
+                  // frame under reduced motion (every property has a 0.01 ms transition there), the dock 4 px taller.
+                  <span key="window" className="sr-only">{lowestVisibleFret}fr</span>
                 ) : atNut ? (
-                  <span style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
+                  <span key="open" style={{ color: 'var(--text-dim)', fontSize: 12 }}>0</span>
                 ) : null}
               </div>
             );
