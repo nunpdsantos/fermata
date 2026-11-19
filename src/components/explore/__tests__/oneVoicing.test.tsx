@@ -193,6 +193,25 @@ describe('M58: one voicing — ▶ Chord, the small staff, ▶ Arpeggio and the 
   });
 });
 
+describe('M58\'s sibling: the builder\'s ▶ plays the selected chord as the detail does', () => {
+  it('piano at C3, C major built and set to its first inversion: the builder\'s ▶, the detail\'s ▶ Chord and the lit keys agree', async () => {
+    useAppStore.setState({ baseOctave: 3 });
+    render(<ChordsCard />);
+    await click(screen.getByRole('tab', { name: 'Build' }));
+    const blocks = screen.getByRole('group', { name: /Chromatic strip/ }).querySelectorAll('button');
+    await click(blocks[4]);
+    await click(blocks[7]);
+    act(() => useAppStore.setState({ chordInversion: 1 }));
+    const lit = sorted(renderHook(() => useKeyContext()).result.current.chordVoicingMidi);
+    expect(lit).toEqual([52, 60, 67]); // E3 C4 G4: the open voicing below C4, in first inversion
+    onsets();
+    await click(screen.getByRole('button', { name: 'Play' }));
+    expect(onsets(), 'the builder\'s ▶ (it played C3 G3 E4, root position, at 153caab)').toEqual([lit]);
+    await click(screen.getByRole('button', { name: 'Chord' }));
+    expect(onsets(), 'the detail\'s ▶ Chord').toEqual([lit]);
+  });
+});
+
 describe('M59: the staff strip draws, lists and sounds where ▶ Play scale plays', () => {
   const CASES: [string, ScaleType][] = [['C', 'major'], ['A', 'natural_minor'], ['B', 'major'], ['F#', 'major'], ['Eb', 'dorian'], ['G', 'major_blues']];
   for (const [root, type] of CASES) {
