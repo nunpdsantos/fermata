@@ -9,7 +9,8 @@
  * British query returns the same lessons.
  */
 import { describe, expect, it } from 'vitest';
-import { findModulesByQuery, MODULE_INDEX } from '../moduleIndex';
+import { findModulesByQuery, MODULE_INDEX, TITLE_AMERICAN, americanTitle } from '../moduleIndex';
+import { SPELLINGS } from '../exercises/__tests__/respelling';
 import { getResults, searchNames } from '../../components/navigation/quickSearchResults';
 
 const find = (q: string) => findModulesByQuery(q, MODULE_INDEX.length).map((m) => m.id);
@@ -53,12 +54,37 @@ describe('lesson search finds both spellings (British pass, 19 November 2026)', 
     expect(find(gb)).toEqual(before);
   });
 
-  it('every title or subtitle word the pass changed is covered above', () => {
-    const changed = /\b(metres?|neighbours?|upwards|colour|analysing|tonicisation|harmonisation|realisation|reharmonisation|centre|recognising)\b/i;
-    const words = new Set(MODULE_INDEX.flatMap((m) => `${m.title} ${m.subtitle}`.match(new RegExp(changed.source, 'gi')) ?? []).map((w) => w.toLowerCase()));
-    const covered = new Set(PAIRS.flatMap(([, gb]) => gb.split(/[\s-]/)));
-    expect([...words].filter((w) => !covered.has(w))).toEqual([]);
-    expect(words.size).toBeGreaterThan(10);
+  const TITLES = MODULE_INDEX.flatMap((m) => [m.title, m.subtitle]);
+  const fold = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const titleWords = new Set(TITLES.flatMap((t) => fold(t).match(/[a-z]+/g) ?? []));
+
+  it('every British word of the word table in a title or subtitle is on the search list, with its American form (derived, not hand-listed)', () => {
+    const british = new Map(SPELLINGS.map(([us, gb]) => [gb, us]));
+    const missing = [...titleWords].filter((w) => british.has(w) && TITLE_AMERICAN[w] !== british.get(w));
+    expect(missing).toEqual([]);
+    // and the list holds nothing that is not in a title (it does not rot)
+    expect(Object.keys(TITLE_AMERICAN).filter((w) => !titleWords.has(w))).toEqual([]);
+    expect(TITLES.length).toBe(272);
+  });
+
+  it('the search list re-spells exactly its words and leaves every other word of the 272 titles and subtitles alone', () => {
+    for (const t of TITLES) {
+      const before = fold(t).match(/[a-z]+/g) ?? [];
+      const after = americanTitle(t).match(/[a-z]+/g) ?? [];
+      expect(after.length, t).toBe(before.length);
+      before.forEach((w, i) => expect(after[i], `${w} in "${t}"`).toBe(TITLE_AMERICAN[w] ?? w));
+    }
+    const negatives = 'improvisation stepwise exercise otherwise raised precise noise rise wise surprise promise';
+    expect(negatives.split(' ').filter((w) => titleWords.has(w)).length).toBeGreaterThan(1);
+    expect(americanTitle(negatives)).toBe(negatives);
+    expect(find('improvization')).toEqual([]);
+    expect(find('stepwize')).toEqual([]);
+  });
+
+  it('a British learner who types the verb finds what the noun finds (the titles keep the noun "Practice")', () => {
+    const noun = find('practice');
+    expect(noun).toEqual(['l3u10m2', 'l4u14m4']);
+    for (const verb of ['practise', 'practising', 'practised', 'Practise', 'practicing']) expect(find(verb), verb).toEqual(noun);
   });
 
   it('Quick Search (Cmd+K) lists the same lessons for both spellings, under their British titles', () => {

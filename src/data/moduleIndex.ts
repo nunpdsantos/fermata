@@ -76,7 +76,7 @@ const RAW: Array<[string, string, string]> = [
   ['l1u2m2', 'Metre and Time Signatures', 'How beats group into measures — 2/4, 3/4, and 4/4'],
   ['l1u3m1', 'The Major Scale', 'The W-W-H-W-W-W-H pattern that defines major tonality'],
   ['l1u3m2', 'Key Signatures — First Four Keys', 'C, G, D, and F — the keys you will use most'],
-  ['l1u3m3', 'Intervals by Number', 'Measuring distance between notes — unison through octave'],
+  ['l1u3m3', 'Intervals by Number', 'Measuring distance between notes — unison to octave'],
   ['l1u3m4', 'Your First Chords — Major Triads', 'Three notes that sound complete — root, major third, perfect fifth'],
   ['l1u33m1', 'Guitar Notation: Clef and Strings', 'Read sounding pitch and circled string numbers'],
   ['l1u33m2', 'Guitar Notation: The Two Hands', 'Left-hand 0–4 and right-hand p-i-m-a'],
@@ -111,7 +111,7 @@ const RAW: Array<[string, string, string]> = [
   ['l2u7m4', 'Triad Inversions and Figured Bass', 'Same notes, different bass — root position, first inversion, second inversion'],
   ['l2u7m5', 'Diatonic Triads and Roman Numerals', 'The seven chords that belong to every major key — and how to name them'],
   ['l3u9m1', 'Seventh Chords: The Five Qualities', 'Build and identify all five standard seventh chord types and hear their distinct characters'],
-  ['l3u9m2', 'Seventh Chord Inversions', 'Four positions for every seventh chord — root position through third inversion'],
+  ['l3u9m2', 'Seventh Chord Inversions', 'Four positions for every seventh chord — root position to third inversion'],
   ['l3u9m3', 'Diatonic Seventh Chords in Major', 'Seventh chords on every degree of the major scale and the dominant seventh as harmonic engine'],
   ['l3u9m4', 'Diatonic Seventh Chords in Minor', 'Harmonic minor\u2019s seventh chord landscape — from the haunting i(m\u03947) to the explosive viio7'],
   ['l3u10m1', 'Voice Leading — SATB Basics', 'SATB voicing, ranges, spacing rules, and doubling conventions'],
@@ -160,7 +160,7 @@ const RAW: Array<[string, string, string]> = [
   ['l6u19m2', 'Common-Tone Diminished Seventh', 'The CTo7 chord as a chromatic embellishment sharing a common tone with its target'],
   ['l6u19m3', 'Chromatic Mediants and Altered Dominants', 'Third-related chromatic chords, altered dominants, and the omnibus progression'],
   ['l6u19m4', 'Late Romantic Harmonic Techniques', 'Nonfunctional harmony, chromatic planing, and the dissolution of tonality'],
-  ['l6u20m1', 'Species Counterpoint: First through Third Species', 'Cantus firmus, note-against-note, 2:1, and 4:1 counterpoint'],
+  ['l6u20m1', 'Species Counterpoint: First to Third Species', 'Cantus firmus, note-against-note, 2:1, and 4:1 counterpoint'],
   ['l6u20m2', 'Species Counterpoint: Fourth and Fifth Species', 'Syncopated counterpoint, suspensions, and florid counterpoint'],
   ['l6u20m3', 'Three-Part Counterpoint and Invertible Counterpoint', 'Multi-voice counterpoint and invertible techniques at the octave, tenth, and twelfth'],
   ['l6u20m4', 'Advanced Part Writing and Score Reading', 'SATB harmonisation, figured bass realisation, and orchestral score reading'],
@@ -253,13 +253,22 @@ function scoreFields(q: string, title: string, subtitle: string, keywords: reado
 }
 
 /**
- * The English titles in the American spelling a learner may still type
- * (titles are British since 19 November 2026): "compound meter" finds
- * "Compound Metre" exactly as it found "Compound Meter". Only ever adds a
- * match; a British query matches the title as written.
+ * The words of the English titles and subtitles that the British spelling
+ * pass changed (19 November 2026), each with the American spelling a learner
+ * may still type: "compound meter" finds "Compound Metre" exactly as it found
+ * "Compound Meter". Exact words, nothing else re-spelt; it only ever adds a
+ * match, and a British query matches the title as written. A title word a
+ * later pass changes goes here too (searchSpelling.test.ts fails until it does).
  */
-const american = (s: string) =>
-  s.replace(/(colo|neighbo|flavo|favo)ur/gi, '$1r').replace(/(cen|me)tre/gi, '$1ter').replace(/([iy])s(ation|ing|e[sd]?)\b/gi, '$1z$2').replace(/wards\b/gi, 'ward');
+export const TITLE_AMERICAN: Readonly<Record<string, string>> = {
+  metre: 'meter', metres: 'meters', neighbour: 'neighbor', upwards: 'upward', colour: 'color', analysing: 'analyzing',
+  tonicisation: 'tonicization', harmonisation: 'harmonization', reharmonisation: 'reharmonization', realisation: 'realization',
+  centre: 'center', recognising: 'recognizing',
+};
+export const americanTitle = (s: string) => fold(s).replace(/[a-z]+/g, (w) => TITLE_AMERICAN[w] ?? w);
+
+/** The verb a learner may type for a title's noun: "practise" finds what "practice" finds (the titles keep the noun). */
+const AS_NOUN: Readonly<Record<string, string>> = { practise: 'practice', practising: 'practice', practised: 'practice', practicing: 'practice', practiced: 'practice' };
 
 /**
  * Lesson search. With a localized index (Portuguese/Spanish), a module
@@ -274,9 +283,14 @@ export function findModulesByQuery(
 ): ModuleIndexEntry[] {
   const q = fold(query.trim());
   if (q.length < 2) return [];
+  const asNoun = q.replace(/[a-z]+/g, (w) => AS_NOUN[w] ?? w);
+  const queries = asNoun === q ? [q] : [q, asNoun];
   const matches: Array<{ entry: ModuleIndexEntry; score: number }> = [];
   for (const entry of MODULE_INDEX) {
-    let score = Math.max(scoreFields(q, entry.title, entry.subtitle, entry.keywords), scoreFields(q, american(entry.title), american(entry.subtitle), []));
+    let score = 0;
+    for (const qq of queries) {
+      score = Math.max(score, scoreFields(qq, entry.title, entry.subtitle, entry.keywords), scoreFields(qq, americanTitle(entry.title), americanTitle(entry.subtitle), []));
+    }
     const loc = localized?.titles[entry.id];
     if (loc) {
       score = Math.max(score, scoreFields(q, loc[0], loc[1], localized?.keywords[entry.id] ?? []));

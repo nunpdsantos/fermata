@@ -243,7 +243,7 @@ const l5u15m5: CurriculumModule = {
     {
       title: 'Chains of Secondary Dominants',
       explanation:
-        'A chain of dominants where each resolves to the next: V7/vi to V7/ii to V7/V to V7 to I. Each chord is the dominant of the next, creating intense chromatic momentum descending by fifths. In C major: E7 targets Am, A7 targets Dm, D7 targets G, G7 targets C. The chain follows the Circle of Fifths counterclockwise. This technique creates powerful forward motion through accumulated chromatic tension.',
+        'A chain of dominants where each resolves to the next: V7/vi to V7/ii to V7/V to V7 to I. Each chord is the dominant of the next, creating intense chromatic momentum descending by fifths. In C major: E7 targets Am, A7 targets Dm, D7 targets G, G7 targets C. The chain follows the Circle of Fifths anticlockwise. This technique creates powerful forward motion through accumulated chromatic tension.',
       tryThisQuery: 'circle of fifths',
       tryThisLabel: 'See the fifths cycle that chains follow',
     },
@@ -266,7 +266,7 @@ const l5u15m5: CurriculumModule = {
     {
       id: 'l5u15m5t1',
       instruction:
-        "Open the Circle of Fifths and trace a dominant chain: E7 targets Am, A7 targets Dm, D7 targets G, G7 targets C. Each step is a fifth — the chain follows the circle counterclockwise.",
+        "Open the Circle of Fifths and trace a dominant chain: E7 targets Am, A7 targets Dm, D7 targets G, G7 targets C. Each step is a fifth — the chain follows the circle anticlockwise.",
       query: 'circle of fifths',
     },
     {
@@ -389,7 +389,7 @@ const l5u16m2: CurriculumModule = {
     {
       id: 'l5u16m2t2',
       instruction:
-        "Open the Circle of Fifths and pick C major. Count the closely related keys: G (one clockwise), F (one counterclockwise), Am (relative minor), Dm (ii), Em (iii). Five closely related keys total.",
+        "Open the Circle of Fifths and pick C major. Count the closely related keys: G (one clockwise), F (one anticlockwise), Am (relative minor), Dm (ii), Em (iii). Five closely related keys total.",
       query: 'circle of fifths',
     },
     {

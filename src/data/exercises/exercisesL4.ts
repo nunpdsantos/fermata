@@ -698,7 +698,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "The duration of each upper pitch in beats, specifying its place within the bar", correct: false },
         ],
       },
-      hint: 'Figured bass numbers show intervals above the lowest sounding note. No numbers (or 5/3) = root position. 6 (or 6/3) = first inversion. 6/4 = second inversion. For seventh chords: 7, 6/5, 4/3, 4/2 indicate root position through third inversion.',
+      hint: 'Figured bass numbers show intervals above the lowest sounding note. No numbers (or 5/3) = root position. 6 (or 6/3) = first inversion. 6/4 = second inversion. For seventh chords: 7, 6/5, 4/3, 4/2 indicate root position to third inversion.',
     },
   ],
 

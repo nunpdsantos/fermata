@@ -145,7 +145,7 @@ const l8u25m3: CurriculumModule = {
     {
       title: 'Free Imitation vs. Strict Canon',
       explanation:
-        'Strict canon maintains exact intervallic replication throughout; free imitation uses the subject as a starting point but allows departure when strict following would produce poor counterpoint or dissonance. Most Renaissance and Baroque polyphony uses free imitation — passages begin with canonic entries (called "points of imitation") but quickly diverge into independent counterpoint. Understanding the spectrum from strict canon to free imitation illuminates virtually all polyphonic music from Josquin through Bach.',
+        'Strict canon maintains exact intervallic replication throughout; free imitation uses the subject as a starting point but allows departure when strict following would produce poor counterpoint or dissonance. Most Renaissance and Baroque polyphony uses free imitation — passages begin with canonic entries (called "points of imitation") but quickly diverge into independent counterpoint. Understanding the spectrum from strict canon to free imitation illuminates virtually all polyphonic music from Josquin to Bach.',
       tryThisQuery: 'A natural minor scale',
       tryThisLabel: 'Hear minor — common in Renaissance imitative writing',
     },
@@ -362,7 +362,7 @@ const l8u27m1: CurriculumModule = {
     {
       title: 'Pitch Class, Integer Notation, and Interval Class',
       explanation:
-        'Post-tonal theory collapses all octave-equivalent pitches into 12 pitch classes numbered 0 through 11 (C=0, C#/Db=1, D=2, ... B=11). Enharmonic spellings become irrelevant — F# and Gb are both pitch class 6. Interval class (IC) measures the shortest distance between two pitch classes on the mod-12 clock: the interval between PC 0 and PC 4 is IC 4 (not 8, because we take the smaller complement). IC values range from 1 to 6, since any interval larger than 6 semitones has a smaller complement. This stripping away of octave, spelling, and directional distinctions reveals the abstract intervallic skeleton of any sonority.',
+        'Post-tonal theory collapses all octave-equivalent pitches into 12 pitch classes numbered 0 to 11 (C=0, C#/Db=1, D=2, ... B=11). Enharmonic spellings become irrelevant — F# and Gb are both pitch class 6. Interval class (IC) measures the shortest distance between two pitch classes on the mod-12 clock: the interval between PC 0 and PC 4 is IC 4 (not 8, because we take the smaller complement). IC values range from 1 to 6, since any interval larger than 6 semitones has a smaller complement. This stripping away of octave, spelling, and directional distinctions reveals the abstract intervallic skeleton of any sonority.',
       tryThisQuery: 'C chromatic scale',
       tryThisLabel: 'See all 12 pitch classes laid out chromatically',
     },

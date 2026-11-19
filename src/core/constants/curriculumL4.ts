@@ -553,7 +553,7 @@ const l4u14m1: CurriculumModule = {
     {
       title: 'What Is Counterpoint?',
       explanation:
-        'Counterpoint is the art of combining two or more independent melodic lines that are harmonically related but melodically independent. While harmony is a vertical perspective (chords stacked at a moment in time), counterpoint is horizontal (melodies unfolding over time and interweaving). The two perspectives complement each other \u2014 good harmony usually implies good counterpoint, and vice versa. Counterpoint was the dominant compositional technique from the Renaissance through the Baroque era.',
+        'Counterpoint is the art of combining two or more independent melodic lines that are harmonically related but melodically independent. While harmony is a vertical perspective (chords stacked at a moment in time), counterpoint is horizontal (melodies unfolding over time and interweaving). The two perspectives complement each other \u2014 good harmony usually implies good counterpoint, and vice versa. Counterpoint was the dominant compositional technique from the Renaissance to the Baroque era.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'A scale is the simplest melodic line',
     },

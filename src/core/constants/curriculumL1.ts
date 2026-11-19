@@ -332,7 +332,7 @@ const l1u3m3: CurriculumModule = {
   unitId: 'u3',
   levelId: 'l1',
   title: 'Intervals by Number',
-  subtitle: 'Measuring distance between notes — unison through octave',
+  subtitle: 'Measuring distance between notes — unison to octave',
   objectives: [
     'Name intervals from unison to octave by counting letter names',
     'Distinguish melodic intervals (notes in sequence) from harmonic intervals (notes together)',

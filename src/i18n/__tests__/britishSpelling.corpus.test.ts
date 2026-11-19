@@ -1,6 +1,7 @@
 /**
  * British spelling throughout (the owner's ruling, 18 November 2026: "British
- * throughout", knowing a reworded question loses its saved per-question score).
+ * throughout", knowing a reworded question loses its saved per-question score;
+ * the seat ruled on 19 November that a respelled question keeps it).
  *
  * Every English sentence a learner can read is checked here: the curriculum
  * (every level, the tracks, milestones and completion texts), the authored
@@ -8,134 +9,29 @@
  * lesson index Cmd+K searches, the chord panel's scale notes, every English
  * namespace (the entry locales and the lazy ones: glossary, practice, tuner,
  * microphone, MIDI, metronome, moved, backup file, learn words, explore tools,
- * Drill terms), the tester's sheet and every Drill item as the learner meets it.
+ * Drill terms), the tester's sheet, every Drill item as the learner meets it,
+ * and the English in code (chord, scale and shape names, feedback fallbacks,
+ * backup messages…: every non-test source file but those NOT_READ_AS_CODE
+ * lists, each with its reason). The rules and the guards are in
+ * britishCorpus.ts.
  *
- * - An AMERICAN form of the word table (data/exercises/__tests__/respelling.ts,
- *   the one table, shared with the respelling proof) fails wherever it appears.
- * - A word that is American only in one of its uses ("practice" the verb,
- *   "upward" the adverb) fails unless the phrase around it is one of the
- *   uses listed as kept, each with its reason.
- * - TITLES, names and quotations keep their own spelling: KEEP lists each
- *   one with its reason (none at present).
  * Music vocabulary is not spelling and stays as the app has it (quarter note,
  * half step, measure, neighbour TONE). Values the app runs or compares (lesson
  * queries, ids, search keywords, Drill graded answers) are not text and are
  * not read here.
  */
 import { describe, expect, it } from 'vitest';
-import { EN_UNITS, overlayEntries } from '../content/__tests__/overlayEntries';
+import { existsSync } from 'node:fs';
+import { AMBIGUOUS_AMERICAN } from '../../data/exercises/__tests__/respelling';
+import {
+  AMBIGUOUS, IZE_WORDS, KEEP, NAMESPACES, NOT_READ_AS_CODE, PRACTICE_NOUNS, UK_MUSIC_TERMS, WARD_ADJECTIVES,
+  americanForms, americanRule, codeFiles, englishCorpus,
+} from './britishCorpus';
 import { MODULE_INDEX } from '../../data/moduleIndex';
-import { CURRICULUM_LEVELS } from '../../core/constants/levels';
-import { CHORD_SCALE_MAP } from '../../core/constants/chordScaleRelationships';
-import { GUIDE_TEMPLATE, SHEET_TEMPLATES, UI_TEMPLATES } from '../../site/testSheet/data';
-import { renderBank } from '../../components/drill/__tests__/drillCorpus';
-import { AMBIGUOUS_AMERICAN, SPELLINGS } from '../../data/exercises/__tests__/respelling';
-
-/** The American forms of the word table (one table: data/exercises/__tests__/respelling.ts). */
-const AMERICAN = new Set(SPELLINGS.map(([us]) => us).filter((us) => !AMBIGUOUS_AMERICAN.has(us)));
-
-/** "-ward" before its noun is the adjective, the same in British English. */
-const WARD_ADJECTIVES = [
-  [/\bdownward resolution\b/, 'adjective before its noun'],
-  [/\bupward resolution\b/, 'adjective before its noun'],
-  [/\boutward resolution\b/, 'adjective before its noun'],
-  [/\bdownward-resolving\b/, 'compound adjective'],
-  [/\bdownward step\b/, 'adjective before its noun'],
-  [/\bupward leap\b/, 'adjective before its noun'],
-  [/\bupward-octave\b/, 'compound adjective'],
-  [/\bbackward versions\b/, 'adjective before its noun'],
-  [/\b[Uu]pward or downward motion\b/, 'adjectives before their noun'],
-] as const;
-
-/** American in one use only: an occurrence passes only inside one of these phrases. */
-const AMBIGUOUS: Readonly<Record<string, { british: string; kept: readonly (readonly [RegExp, string])[] }>> = {
-  practice: {
-    british: 'practise (the verb)',
-    kept: [
-      [/\bin practice\b/i, 'noun: "in practice"'],
-      [/\bcommon[- ]practice\b/i, 'noun: the common-practice period'],
-      [/\bclassical practice\b/, 'noun'],
-      [/\bAnalysis Practice\b/, 'noun: a lesson title'],
-      [/\bform practice:/, 'noun: "Sonata form practice:"'],
-      [/\bup-and-down practice\b/, 'noun'],
-      [/\bKodaly practice\b/, 'noun'],
-      [/\bwith practice\b/, 'noun'],
-      [/\bmore practice\b/, 'noun'],
-      [/\bpractice tasks?\b/i, 'noun: the lesson\'s practice tasks'],
-      [/· practice\b/, 'noun: "{{title}} · practice"'],
-      [/\bPractice answers\b/, 'noun: the practice round\'s answers'],
-    ],
-  },
-  ...Object.fromEntries(['upward', 'downward', 'outward', 'inward', 'onward', 'backward'].map((w) => [w, { british: `${w}s (the adverb)`, kept: WARD_ADJECTIVES }])),
-};
-
-/** Titles, names and quotations that keep their own spelling (none at present). */
-const KEEP: readonly (readonly [RegExp, string])[] = [];
-
-interface Offender { where: string; word: string; text: string }
-
-/** The check itself: every American form in one English text. */
-function americanForms(where: string, text: string): Offender[] {
-  const out: Offender[] = [];
-  const plain = text.replace(/\{\{[^}]*\}\}/g, (p) => ' '.repeat(p.length)); // i18n placeholders are not words
-  /** Spans of `text` matched by any of these phrases. */
-  const spans = (list: readonly (readonly [RegExp, string])[]) =>
-    list.flatMap(([re]) => [...plain.matchAll(new RegExp(re.source, `${re.flags.replace('g', '')}g`))].map((m) => [m.index ?? 0, (m.index ?? 0) + m[0].length] as const));
-  const inside = (s: readonly (readonly [number, number])[], at: number, len: number) => s.some(([a, b]) => a <= at && at + len <= b);
-  const keep = spans(KEEP);
-  for (const m of plain.matchAll(/(?<![\p{L}\p{N}])[A-Za-z]+(?![\p{L}\p{N}])/gu)) {
-    const word = m[0].toLowerCase();
-    const at = m.index ?? 0;
-    if (inside(keep, at, word.length)) continue;
-    const amb = AMBIGUOUS[word];
-    if (AMERICAN.has(word) || (amb && !inside(spans(amb.kept), at, word.length))) {
-      out.push({ where, word: m[0], text: plain.slice(Math.max(0, at - 40), at + word.length + 40).replace(/\s+/g, ' ') });
-    }
-  }
-  return out;
-}
-
-// ─── The corpus ──────────────────────────────────────────────────────────
-
-/** Keys whose values the app runs or compares, never shown as text. */
-const VALUE_KEYS = new Set(['id', 'unitId', 'levelId', 'icon', 'tryThisQuery', 'childTryThisQuery', 'query', 'prerequisites', 'track', 'rhythm']);
-
-function walk(node: unknown, path: string, out: [string, string][]) {
-  if (typeof node === 'string') out.push([path, node]);
-  else if (Array.isArray(node)) node.forEach((x, i) => walk(x, `${path}[${i}]`, out));
-  else if (node && typeof node === 'object') {
-    for (const [k, v] of Object.entries(node)) if (!VALUE_KEYS.has(k)) walk(v, `${path}.${k}`, out);
-  }
-}
-
-/** Only the English of { en, pt, es } records (the tester's sheet). */
-function walkEn(node: unknown, path: string, out: [string, string][]) {
-  if (Array.isArray(node)) node.forEach((x, i) => walkEn(x, `${path}[${i}]`, out));
-  else if (node && typeof node === 'object') {
-    for (const [k, v] of Object.entries(node)) {
-      if (k === 'en') walk(v, `${path}.en`, out);
-      else if (k !== 'pt' && k !== 'es') walkEn(v, `${path}.${k}`, out);
-    }
-  }
-}
-
-const NAMESPACES = import.meta.glob<{ default: unknown }>(['../locales/en.json', '../*/en.json', '../*/*.en.json'], { eager: true });
-
-function englishCorpus(): [string, string][] {
-  const out: [string, string][] = [];
-  for (const e of overlayEntries()) out.push([e.key, e.en]); // curriculum, exercises, templates, songs, level cards
-  for (const [n, units] of Object.entries(EN_UNITS)) walk(units, `curriculumL${n}`, out); // + completion texts
-  for (const m of MODULE_INDEX) out.push([`moduleIndex:${m.id}.title`, m.title], [`moduleIndex:${m.id}.subtitle`, m.subtitle]);
-  for (const l of CURRICULUM_LEVELS) out.push([`levels:${l.id}.title`, l.title], [`levels:${l.id}.description`, l.description], [`levels:${l.id}.difficultyLabel`, l.difficultyLabel]);
-  for (const [q, list] of Object.entries(CHORD_SCALE_MAP)) list.forEach((s, i) => s.context && out.push([`chordScale:${q}[${i}]`, s.context]));
-  for (const [file, mod] of Object.entries(NAMESPACES)) walk(mod.default, file.replace('../', 'i18n/'), out);
-  walkEn({ ui: UI_TEMPLATES, sheets: SHEET_TEMPLATES, guide: GUIDE_TEMPLATE }, 'testSheet', out);
-  for (const r of renderBank('en')) out.push([`drill:${r.id}`, [r.question, ...r.choices, r.explanation, r.answer].join(' | ')]);
-  return out;
-}
 
 describe('English is spelt the British way (the owner\'s ruling, 18 November 2026)', () => {
   const corpus = englishCorpus();
+  const words = new Set(corpus.flatMap(([, t]) => (t.match(/[A-Za-z]+/g) ?? []).map((w) => w.toLowerCase())));
 
   it('the ambiguous words are exactly the table\'s', () => {
     expect(Object.keys(AMBIGUOUS).sort()).toEqual([...AMBIGUOUS_AMERICAN].sort());
@@ -157,22 +53,66 @@ describe('English is spelt the British way (the owner\'s ruling, 18 November 202
       '../tuner/en.json', '../tuner/mic.en.json',
     ]);
     expect(where('testSheet')).toBeGreaterThan(100);
+    // English in code: the files that hold it are read
+    const files = codeFiles();
+    expect(files.length).toBeGreaterThan(350);
+    for (const f of [
+      'src/core/constants/chords.ts', 'src/core/constants/scales.ts', 'src/core/constants/guitarChordShapes.ts', 'src/core/constants/guitarTunings.ts',
+      'src/components/learn/exercises/validateExercise.ts', 'src/utils/backupHelpers.ts', 'src/utils/exportHelpers.ts', 'src/core/utils/reverseChordParser.ts',
+      'src/core/utils/guitarVoicingGenerator.ts', 'src/core/utils/guitarTechnique.ts', 'src/components/panels/LearnMoreButton.tsx',
+    ]) expect(files, f).toContain(f);
+    expect(corpus.filter(([w]) => w.startsWith('src/')).length).toBeGreaterThan(600);
+    for (const [re, why] of NOT_READ_AS_CODE) expect(why.length, String(re)).toBeGreaterThan(4);
   });
 
   it('no American form in any English text a learner reads', () => {
     const found = corpus.flatMap(([where, text]) => americanForms(where, text));
-    expect(found.length, found.slice(0, 40).map((f) => `${f.where}: "${f.word}" in …${f.text}…`).join('\n')).toBe(0);
+    expect(found.length, found.slice(0, 40).map((f) => `${f.where}: "${f.word}" (${f.rule}) in …${f.text}…`).join('\n')).toBe(0);
   });
 
-  it('every kept phrase is still used (the list does not rot)', () => {
+  it('every kept phrase and allowed word is still used (the lists do not rot)', () => {
     const text = corpus.map(([, t]) => t).join('\n');
-    const unused = [...Object.values(AMBIGUOUS).flatMap((a) => a.kept), ...KEEP].filter(([re]) => !re.test(text)).map(([re]) => String(re));
+    const unused = [...PRACTICE_NOUNS, ...WARD_ADJECTIVES, ...KEEP].filter(([re]) => !re.test(text)).map(([re]) => String(re));
     expect([...new Set(unused)]).toEqual([]);
+    expect(Object.keys(IZE_WORDS).filter((w) => !words.has(w))).toEqual([]);
+    for (const [w, why] of Object.entries(IZE_WORDS)) expect(why.length, w).toBeGreaterThan(10);
+  });
+
+  it('the rules: the -ize family with any ending, the stems with all their endings, the words', () => {
+    for (const w of ['realizes', 'analyzes', 'harmonizes', 'organizational', 'recognizably', 'honors', 'behavioral', 'neighborhood', 'flavorful',
+      'theater', 'centerpiece', 'metered', 'catalogs', 'dialog', 'defenseless', 'modeled', 'traveling', 'counselor', 'pedaled', 'fulfillment',
+      'skillful', 'toward', 'gray', 'math', 'percent', 'judgment', 'counterclockwise', 'gotten']) expect(americanRule(w), w).not.toBeNull();
+    for (const w of ['size', 'sizes', 'prize', 'humorous', 'honorary', 'vigorous', 'laborious', 'metronome', 'parameter', 'literal', 'analogous',
+      'pedagogy', 'license', 'parallel', 'travelled', 'colourful', 'centred', 'towards', 'practise', 'semitone', 'horizon', 'citizen', 'bizarre', 'improvisation']) {
+      expect(americanRule(w), w).toBeNull();
+    }
+  });
+
+  it('the guards: the verb on a noun, an -s adverb on a noun, British-only music words', () => {
+    const rules = (t: string) => americanForms('planted', t).map((f) => `${f.word}: ${f.rule}`);
+    expect(rules('Practise Tasks · Tick the practise task · practise answers are not scored')).toEqual([
+      'Practise: the verb spelling on the noun', 'practise: the verb spelling on the noun', 'practise: the verb spelling on the noun',
+    ]);
+    expect(rules('Practise identifying the root; it resolves downwards by step')).toEqual([]);
+    expect(rules('a downwards resolution, upwards motion')).toEqual(['downwards: the adverb spelling on a noun', 'upwards: the adverb spelling on a noun']);
+    expect(rules('a crotchet, two quavers, a minim, a semibreve; a neighbour note and an auxiliary note').length).toBe(6);
+    expect(rules('a quarter note, a half step or semitone, a neighbour tone')).toEqual([]);
+    expect(rules('pitch classes 0 through 11, different than before').length).toBe(2);
+    expect(rules('pitch classes 0 to 11, from Josquin to Bach')).toEqual([]);
+    expect(UK_MUSIC_TERMS.length).toBe(3);
   });
 
   it('the check fires on planted American forms and passes the kept uses', () => {
     const planted = 'Practice identifying the color of a tonal center. In practice, the 7th resolves downward by step; a downward step; analyze it; {{color}}.';
     expect(americanForms('planted', planted).map((f) => f.word)).toEqual(['Practice', 'color', 'center', 'downward', 'analyze']);
     expect(americanForms('planted', 'Practise identifying the colour of a tonal centre; it resolves downwards; analyse it.')).toEqual([]);
+  });
+
+  it('every file left out of the code reading exists or is a whole class of files', () => {
+    for (const f of ['src/core/utils/rhythm.ts', 'src/release/releaseNotes.ts', 'src/i18n/scaleSuggestionContext.ts', 'src/i18n/chordQualityNames.ts',
+      'src/i18n/content/musicTerms.ts', 'src/data/moduleIndexI18n.ts', 'src/components/theory/chordCategoryLabel.tsx']) {
+      expect(existsSync(f), f).toBe(true);
+      expect(codeFiles()).not.toContain(f);
+    }
   });
 });

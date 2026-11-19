@@ -467,7 +467,7 @@ const l6u20m1: CurriculumModule = {
   id: 'l6u20m1',
   unitId: 'u20',
   levelId: 'l6',
-  title: 'Species Counterpoint: First through Third Species',
+  title: 'Species Counterpoint: First to Third Species',
   subtitle: 'Cantus firmus, note-against-note, 2:1, and 4:1 counterpoint',
   objectives: [
     'Write a cantus firmus following established rules (8\u201312 notes, stepwise, single climax)',
@@ -742,7 +742,7 @@ export const L6_UNITS: CurriculumUnit[] = [
     modules: [l6u20m1, l6u20m2, l6u20m3, l6u20m4],
     milestone: {
       skillsSummary: [
-        'Apply all five species of counterpoint from cantus firmus through florid writing',
+        'Apply all five species of counterpoint from cantus firmus to florid writing',
         'Understand invertible and triple counterpoint techniques used in Bach\u2019s fugues',
         'Harmonise melodies in SATB, realise figured bass, and read orchestral scores',
       ],

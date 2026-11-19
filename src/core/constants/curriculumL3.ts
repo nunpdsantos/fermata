@@ -70,7 +70,7 @@ const l3u9m2: CurriculumModule = {
   levelId: 'l3',
   title: 'Seventh Chord Inversions',
   subtitle:
-    'Four positions for every seventh chord — root position through third inversion',
+    'Four positions for every seventh chord — root position to third inversion',
   objectives: [
     'Identify and build root position and all three inversions of any seventh chord',
     'Use figured bass labels (7, 6/5, 4/3, 4/2) to name inversions',
