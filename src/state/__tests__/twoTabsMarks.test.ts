@@ -144,4 +144,43 @@ describe('mergeWrite applies the marks to its own copy (every store, and every m
     expect(JSON.parse(localStorage.getItem('k')!).state).toEqual({ a: 2, b: 3 });
     expect(tabLine('k')?.base).toEqual(JSON.parse(raw).state);
   });
+
+  // An empty list of marks — `markNext(key)` with none, as `clearOverrides([])` makes (the app's two
+  // "Reset to suggested" buttons are disabled with no override to clear, so only code calls it so) — is no marks.
+  async function wroteAlone() {
+    vi.resetModules();
+    const safe = await import('../tabSafe');
+    const storage = safe.tabSafeStorage('k', () => store, 'fields');
+    storage.getItem('k');
+    storage.setItem('k', env({ a: 1 })); // this tab wrote {a: 1}
+    localStorage.setItem('k', env({ a: 1, b: 2 })); // another tab wrote since
+    return { ...safe, storage };
+  }
+
+  it('with nothing of this tab\'s to save, an empty list of marks writes nothing (the "nothing to save" shortcut)', async () => {
+    const { storage, markNext, tabLine } = await wroteAlone();
+    const before = localStorage.getItem('k');
+    const set = vi.spyOn(Storage.prototype, 'setItem');
+    markNext('k');
+    storage.setItem('k', env({ a: 1 })); // this tab's memory as it was
+    expect(set).not.toHaveBeenCalled();
+    set.mockRestore();
+    expect(localStorage.getItem('k')).toBe(before);
+    expect(tabLine('k')?.behind).toBe(true);
+  });
+
+  it('a merging write with an empty list of marks does what one with none does: the same text, no copy made', async () => {
+    const runs: { text: string | null; parses: number }[] = [];
+    for (const empty of [false, true]) {
+      localStorage.clear();
+      const { storage, markNext } = await wroteAlone();
+      const parse = vi.spyOn(JSON, 'parse');
+      if (empty) markNext('k');
+      storage.setItem('k', env({ a: 3 })); // this tab changed a
+      runs.push({ text: localStorage.getItem('k'), parses: parse.mock.calls.length });
+      parse.mockRestore();
+    }
+    expect(runs[0].text).toBe(env({ a: 3, b: 2 }));
+    expect(runs[1]).toEqual(runs[0]);
+  });
 });

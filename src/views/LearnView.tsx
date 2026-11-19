@@ -324,7 +324,7 @@ export function LearnView() {
                   exercises={modExercises}
                   exercisesState={exercisesState}
                   onRetryExercises={retryLoads}
-                  exercisesPassed={isModuleExercisesPassed(mod.id, modExercises.length)}
+                  exercisesPassed={isModuleExercisesPassed(mod.id, modExercises.map((ex) => ex.id))}
                   levelCompletedModuleCount={getLevelCompletedModuleCount(loadedLevel)}
                   onToggleTask={toggleTask}
                   onCompleteModule={(moduleId) => {

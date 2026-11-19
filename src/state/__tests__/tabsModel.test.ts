@@ -30,11 +30,12 @@
  *   TABS_MODEL_FIRST=1 TABS_MODEL_SEEDS=6000 TABS_MODEL_STEPS=200 TABS_MODEL_TABS=4 \
  *     npx vitest run src/state/__tests__/tabsModel.test.ts --maxWorkers=1
  *   (then TABS_MODEL_SEEDS=1000 with TABS_MODEL_TABS=3, and with 5.)
- * 300 seeds was not enough: release 16 passed seeds 1–300 and failed 2213 and
- * 2215, and with the round's three Drill actions the same fault failed seed
- * 228 — a mark written into a rule's empty form (twoTabsMarks.test.ts): 14
- * of seeds 1–6000 failed at 4 tabs, about one in 430. A new action shifts
- * every seed's sequence: run the long run again after adding one.
+ * 300 seeds was not enough: release 16 passed seeds 1–300 and failed 2213,
+ * 2215 and 2857 (of 2001–3000), and with the round's three Drill actions the
+ * same fault failed seed 228 — a mark written into a rule's empty form
+ * (twoTabsMarks.test.ts): 14 of seeds 1–6000 failed at 4 tabs, about one in
+ * 430. A new action shifts every seed's sequence: run the long run again after
+ * adding one.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_METRONOME } from '../metronomeSave';
