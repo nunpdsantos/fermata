@@ -20,7 +20,11 @@ beforeAll(() => {
 // string (so composed labels — "C major chord, degree 1" — can be checked);
 // a plain key renders as the key.
 vi.mock('react-i18next', async () => {
-  const en = (await import('../../i18n/locales/en.json')).default as Record<string, unknown>;
+  const en = {
+    ...((await import('../../i18n/locales/en.json')).default as Record<string, unknown>),
+    // The fretboard's own lazy namespace (music audit 2): the open string's words.
+    fretboardWords: (await import('../../i18n/fretboardWords/en.json')).default,
+  } as Record<string, unknown>;
   const lookup = (key: string) => key.split('.').reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], en);
   const t = (key: string, opts?: Record<string, unknown>) => {
     if (!opts) return key;
@@ -229,16 +233,23 @@ describe('Fretboard accessibility', () => {
 
     // Focus the grid and press ArrowRight to initialize focus
     fireEvent.keyDown(grid, { key: 'ArrowRight' });
-    // After first arrow key press, focusedCell should be initialized
-    // Press ArrowRight again to move to the next fret
-    fireEvent.keyDown(grid, { key: 'ArrowRight' });
-
     // The aria-live region should announce the focused cell
     const liveRegion = grid.querySelector('[aria-live="polite"]');
     expect(liveRegion).not.toBeNull();
-    const announcement = liveRegion!.textContent ?? '';
-    // Announcement format: "String <n>, fret <n>, <note>"
-    expect(announcement).toMatch(/String \d, fret \d+/);
+    const announcement = () => liveRegion!.textContent ?? '';
+    // Announcement format: "String <n>, fret <n>, <note>"; the first key lands
+    // on the top string drawn (the 6th on the owner's board), at fret 1.
+    expect(announcement()).toMatch(/^String 6, fret 1, /);
+    // ArrowRight again: on the owner's board the nut is on the right, so the
+    // cell drawn there is the open string (music audit 2, M47; it stayed on
+    // fret 1 before).
+    fireEvent.keyDown(grid, { key: 'ArrowRight' });
+    expect(announcement()).toBe('String 6, open, E');
+    // ArrowLeft back across the nut, then to the next fret up.
+    fireEvent.keyDown(grid, { key: 'ArrowLeft' });
+    expect(announcement()).toMatch(/^String 6, fret 1, /);
+    fireEvent.keyDown(grid, { key: 'ArrowLeft' });
+    expect(announcement()).toMatch(/^String 6, fret 2, /);
   });
 
   it('arrow up/down moves between strings', async () => {
