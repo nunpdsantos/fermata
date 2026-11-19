@@ -25,7 +25,7 @@
  *    suggested", the score just recorded, a Sprint just finished).
  *  - Following other tabs in memory (Learn progress, Drill, fingerings) is
  *    `state/tabSync.ts`, lazy, which each of those stores loads itself
- *    (`followOtherTabsLater` there): a nicety, not needed to save. A failed
+ *    (`followSoon` in state/tabFollow.ts): a nicety, not needed to save. A failed
  *    download of it costs nothing and is tried again when the page is shown
  *    again or comes back online.
  */
