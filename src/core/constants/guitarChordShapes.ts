@@ -3134,7 +3134,15 @@ function essentialPitchClasses(chord: Chord, named = true): Set<number> {
     dominant7flat13: [8],
   };
   for (const off of DEFINING[quality as ChordQuality] ?? []) add(off);
-  if (named) for (const off of NAMED_TONES[quality as ChordQuality] ?? []) add(off);
+  // A named tone only where the chord's own notes hold it: a chord the parser
+  // builds note by note borrows the nearest quality (C9♭13 is "dominant13"),
+  // whose named 13 (A) it does not sound, and requiring it left no grip with
+  // every tone, so the board fell back to grips without the 3rd or the ♭7
+  // (found in the review fix pass, sweeping the parser's slash chords).
+  if (named) {
+    const own = new Set(chord.notes.map((n) => getPitchClass(n)));
+    for (const off of NAMED_TONES[quality as ChordQuality] ?? []) if (own.has((rootPc + off) % 12)) add(off);
+  }
 
   return required;
 }

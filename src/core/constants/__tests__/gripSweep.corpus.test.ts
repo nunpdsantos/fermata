@@ -38,7 +38,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { buildChord, CHORD_FORMULAS } from '../chords';
-import { chordShapesForCapo, gripLeavesOut } from '../guitarChordShapes';
+import { chordBelowCapo, chordShapesForCapo, gripLeavesOut, isPlayableChordShape } from '../guitarChordShapes';
 import type { ChordShape } from '../guitarChordShapes';
 import type { ChordQuality, Note } from '../../types/music';
 
@@ -73,9 +73,12 @@ interface Sweep {
   wholeAfterLeft: string[];
   altWithout: string[];
   twice: string[];
+  capoMoved: string[];
+  capoKept: number;
+  capoNothingFits: number;
   bassNoticeByClass: Record<string, number>;
 }
-const sweep: Sweep = { requests: 0, grips: 0, straightBarre: [], firstMissesBass: [], otherBass: [], noGrip: [], rootNoRootBass: [], namedSilent: [], namedSaid: [], wholeAfterLeft: [], altWithout: [], twice: [], bassNoticeByClass: {} };
+const sweep: Sweep = { requests: 0, grips: 0, straightBarre: [], firstMissesBass: [], otherBass: [], noGrip: [], rootNoRootBass: [], namedSilent: [], namedSaid: [], wholeAfterLeft: [], altWithout: [], twice: [], capoMoved: [], capoKept: 0, capoNothingFits: 0, bassNoticeByClass: {} };
 
 beforeAll(() => {
   for (const [rootPc, root] of ROOTS.entries()) {
@@ -92,6 +95,18 @@ beforeAll(() => {
           const key = `${root} ${quality} capo ${capo} ${ask.bass ? `/${ask.bass}` : `inversion ${ask.inversion}`}`;
           const { shapes, bassMatched } = chordShapesForCapo(request, ask.inversion, capo);
           if (shapes.length === 0) { sweep.noGrip.push(key); continue; }
+          // Review item 2: a capo changes where the first grip sits, never
+          // which it is — the first of the shape chord's own list at the nut
+          // that fits above the capo, moved up; only where none fits (or none
+          // there has the bass) is the neck above the capo asked again.
+          if (capo > 0) {
+            const nut = chordShapesForCapo(chordBelowCapo(request, capo), ask.inversion, 0);
+            const fits = nut.shapes.map((e) => ({ shape: e.shape, baseFret: e.baseFret + capo })).filter((e) => isPlayableChordShape(e, 15, capo));
+            if (nut.bassMatched && fits.length > 0) {
+              sweep.capoKept++;
+              if (text(fits[0]) !== text(shapes[0])) sweep.capoMoved.push(`${key}: ${text(shapes[0])}, at the nut ${text(fits[0])}`);
+            } else sweep.capoNothingFits++;
+          }
           if (!bassMatched) {
             sweep.bassNoticeByClass[ask.cls] = (sweep.bassNoticeByClass[ask.cls] ?? 0) + 1;
             if (!ask.bass && ask.inversion === 0) sweep.rootNoRootBass.push(key);
@@ -185,6 +200,14 @@ describe('the audit\'s space, swept (music audit 2, M36 M42 M43 M44 M45)', () =>
   });
   it('review item 4: a grip that leaves a named tone out never comes before one that sounds them all', () => {
     expect(sweep.wholeAfterLeft).toEqual([]);
+  });
+  it('review item 2: a capo never changes which grip comes first, only where it sits', () => {
+    expect(sweep.capoMoved).toEqual([]);
+    // 90,936 requests with a capo: in 86,493 the shape chord's first grip at
+    // the nut that fits above the capo is the first; in the rest none fits
+    // (or none at the nut has the bass) and the neck above the capo is asked.
+    expect(sweep.capoKept + sweep.capoNothingFits).toBe(90_936);
+    expect(sweep.capoKept).toBe(86_493);
   });
   it('a 7alt grip sounds at least one of its alterations (♭9 ♯9 ♯11 ♭13)', () => {
     expect(sweep.altWithout).toEqual([]);

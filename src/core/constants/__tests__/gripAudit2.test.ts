@@ -261,3 +261,49 @@ describe('M45: reachable grips the library missed', () => {
     expect(shapes.some((e) => frets(e)[2] === 10 && frets(e)[3] === 12)).toBe(true);
   });
 });
+
+describe('the review of builder K: what must not move, and a chord the parser builds', () => {
+  // The coordinator's stop condition (item 5): the first grip of the 30
+  // commonest root-position chords is the one of 153caab, frets and fingers,
+  // as the dump of that commit recorded it (_review/dumps/base.json).
+  const COMMONEST: [string, ChordQuality, string][] = [
+    ['C', 'major', 'x-3-2-0-1-0|x32010'], ['D', 'major', 'x-x-0-2-3-2|xx0132'], ['E', 'major', '0-2-2-1-0-0|023100'],
+    ['F', 'major', '1-3-3-2-1-1|bar342barbar'], ['G', 'major', '3-2-0-0-0-3|210003'], ['A', 'major', 'x-0-2-2-2-0|x01230'],
+    ['B', 'major', 'x-2-4-4-4-2|xbar234bar'], ['Bb', 'major', 'x-1-3-3-3-1|xbar234bar'], ['A', 'minor', 'x-0-2-2-1-0|x02310'],
+    ['B', 'minor', 'x-2-4-4-3-2|xbar342bar'], ['C', 'minor', 'x-3-5-5-4-3|xbar342bar'], ['D', 'minor', 'x-x-0-2-3-1|xx0231'],
+    ['E', 'minor', '0-2-2-0-0-0|023000'], ['F', 'minor', '1-3-3-1-1-1|bar34barbarbar'], ['G', 'minor', '3-5-5-3-3-3|bar34barbarbar'],
+    ['C', 'dominant7', 'x-3-2-3-1-0|x32410'], ['D', 'dominant7', 'x-x-0-2-1-2|xx0213'], ['E', 'dominant7', '0-2-0-1-0-0|020100'],
+    ['G', 'dominant7', '3-2-0-0-0-1|320001'], ['A', 'dominant7', 'x-0-2-0-2-0|x02030'], ['B', 'dominant7', 'x-2-4-2-4-2|xbar2bar3bar'],
+    ['C', 'major7', 'x-3-2-0-0-0|x32000'], ['D', 'major7', 'x-x-0-2-2-2|xx0123'], ['F', 'major7', 'x-x-3-2-1-0|xx3210'],
+    ['G', 'major7', '3-2-0-0-0-2|320001'], ['A', 'minor7', 'x-0-2-0-1-0|x02010'], ['D', 'minor7', 'x-x-0-2-1-1|xx0211'],
+    ['E', 'minor7', '0-2-0-0-0-0|020000'], ['D', 'sus4', 'x-x-0-2-3-3|xx0134'], ['A', 'sus2', 'x-0-2-2-0-0|x01200'],
+  ];
+  it.each(COMMONEST)('%s %s: its first grip is the one of 153caab', (root, quality, was) => {
+    const e = chordShapesForCapo(buildChord(N(root), quality), 0, 0).shapes[0];
+    const frets = e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
+    const fingers = e.shape.strings.map((p) => (p.fret === null ? 'x' : String(p.finger))).join('');
+    expect(`${frets}|${fingers}`).toBe(was);
+  });
+
+  it('C/B: the C shape with its low string re-fretted to B and the next string muted, x 2 x 0 1 0, offered as the C shape', () => {
+    const chord = { ...buildChord(N('C'), 'major'), bassNote: N('B') };
+    const offered = chordShapesForCapo(chord, 0, 0).shapes.map((e) => `${e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-')}|${e.shape.strings.map((p) => (p.fret === null ? 'x' : String(p.finger))).join('')}|${e.shape.shortName}`);
+    expect(offered).toContain('x-2-x-0-1-0|x2x010|C shape/B');
+  });
+
+  it('C9♭13/F with a capo on 3: the parser borrows "dominant13", whose named A the chord does not hold; every grip still sounds its 3rd and ♭7, F lowest', async () => {
+    const { chordFromParsed, parseChordSymbol } = await import('../../utils/chordParser');
+    const chord = chordFromParsed(parseChordSymbol('C9b13/F')!);
+    expect(chord.quality).toBe('dominant13');
+    expect(chord.notes.some((n) => n.natural === 'A' && n.accidental === '')).toBe(false);
+    const { shapes, bassMatched } = chordShapesForCapo(chord, 0, 3);
+    expect(bassMatched).toBe(true);
+    expect(shapes.length).toBeGreaterThan(0);
+    for (const e of shapes) {
+      const midis = e.shape.strings.flatMap((p, s) => (p.fret === null ? [] : [[40, 45, 50, 55, 59, 64][s] + e.baseFret + p.fret]));
+      const pcs = new Set(midis.map((m) => m % 12));
+      expect([pcs.has(4), pcs.has(10), Math.min(...midis) % 12]).toEqual([true, true, 5]);
+      expect(gripLeavesOut(e, chord)).toEqual([]);
+    }
+  });
+});

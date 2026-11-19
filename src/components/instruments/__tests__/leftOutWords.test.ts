@@ -63,6 +63,49 @@ describe('the degree of a tone a grip leaves out', () => {
     expect(slashWithForeignBass).toBeGreaterThan(10);
   }, 300_000);
 
+  it('a chord the parser builds note by note (its own labels), with a slash bass put first: every degree is the parser\'s for that note', () => {
+    // Cm(add11), C9♭13, C7♭9♭13… carry `algorithmicIntervalLabels` for
+    // `algorithmicNotes`; `chordFromParsed` puts a foreign bass before them.
+    // The degree must be the parser's label of that same note, never the
+    // label of the note one place on.
+    const SUFFIXES = ['m(add11)', '9b13', '7b9b13', 'maj7#9', 'm7b9', '7#9b13'];
+    const wrong: string[] = [];
+    let checked = 0;
+    let bassFirst = 0;
+    for (const suffix of SUFFIXES) {
+      for (const root of ROOTS) {
+        for (const bass of ROOTS) {
+          const parsed = parseChordSymbol(`${root}${suffix}/${bass}`)!;
+          if (!parsed?.algorithmicIntervalLabels || !parsed.algorithmicNotes) continue;
+          const chord = chordFromParsed(parsed);
+          const first = chord.notes.length === parsed.algorithmicNotes.length + 1;
+          for (const capo of [0, 3]) {
+            for (const e of chordShapesForCapo(chord, 0, capo).shapes) {
+              for (const { note, degree } of leftOutTones(e, chord)) {
+                checked++;
+                if (first) bassFirst++;
+                const at = parsed.algorithmicNotes.findIndex((x) => x.natural === note.natural && x.accidental === note.accidental);
+                if (degree !== parsed.algorithmicIntervalLabels[at]) wrong.push(`${root}${suffix}/${bass} capo ${capo}: ${note.natural}${note.accidental} named ${degree}, the parser says ${parsed.algorithmicIntervalLabels[at]}`);
+              }
+            }
+          }
+        }
+      }
+    }
+    expect(wrong).toEqual([]);
+    expect(checked).toBeGreaterThan(50);
+    expect(bassFirst).toBeGreaterThan(50);
+  }, 300_000);
+
+  it('Cm(add11)/F♯, no capo: a grip that leaves out F names it the 11', () => {
+    const chord = chordFromParsed(parseChordSymbol('Cm(add11)/F#')!);
+    expect(chord.algorithmicIntervalLabels).toEqual(['R', 'b3', '5', '11']);
+    expect(chord.notes.map((n) => `${n.natural}${n.accidental}`)).toEqual(['F#', 'C', 'Eb', 'G', 'F']);
+    const said = chordShapesForCapo(chord, 0, 0).shapes.flatMap((e) => words(e, chord));
+    expect(said.length).toBeGreaterThan(0);
+    expect(new Set(said)).toEqual(new Set(['F (11)']));
+  });
+
   it('the review\'s cases: C9♯11/A♭ and C9/A name D the 9; F♯sus2sus4/F names G♯ the 2', () => {
     for (const [sym, capo] of [['C9#11/Ab', 3], ['C9/A', 3], ['F#sus2sus4/F', 3], ['C9#11/Ab', 0], ['C9/A', 0]] as const) {
       const chord = chordFromParsed(parseChordSymbol(sym)!);
