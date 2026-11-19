@@ -59,7 +59,10 @@ export default function GuitarPractice() {
   const reason = tab === 'scales' ? ROUTE_SCALE_TYPES.includes(scale) ? 'noRoute' : 'heptatonic'
     : tab === 'walk' ? 'noWalk' : tab === 'technical' ? selected?.reason ?? 'noRoute' : tuning.id !== 'standard' ? 'standardOnly' : keyMode(scale) ? 'noGrip' : 'majorMinor';
   const routeTypes = [...EXAM_SCALE_TYPES, ...ROUTE_SCALE_TYPES.filter((s) => !EXAM_SCALE_TYPES.includes(s))];
-  const playerKey = [noteToString(root), scale, tuning.id, tab, route?.id, route?.octaves, scheme, stroke].join('|');
+  // The player starts again (step 1, its tempo) only for another route. The stroke (tirando / apoyando) and the
+  // alternating fingers (i–m / m–a) leave the left-hand route as it is, so they keep the step, the tempo and a
+  // playback that is sounding (music audit 2, M39: the stroke sent the player back to step 1 at 80 BPM).
+  const playerKey = [noteToString(root), scale, tuning.id, tab, route?.id, route?.octaves].join('|');
 
   return <div className="practice-content space-y-4">
     <div className="flex items-center justify-between gap-2 flex-wrap">

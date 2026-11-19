@@ -142,3 +142,45 @@ describe('additive route namespace, unchanged production v1 shape', () => {
     if (result.ok) expect(result.backup.data[FINGERING_STORE_KEY]).toMatchObject({ state: { overrides: { [K1]: 3, [routeKey]: 2 } } });
   });
 });
+
+describe('the Position walk\'s keys (music audit 2, M38) in the same v1 save', () => {
+  // Release 16 refused these keys, so a teacher's walk finger was never stored.
+  const walkKey = 'route:1|standard|C|major|position-walk|2|0|1|3';
+  // A save as release 16 writes it: positions, route fingers, and one the editor now calls impossible (M37:
+  // finger 3 on the E of C major's first 3rds pair, while the C holds it at another fret) — kept as saved.
+  const FROZEN = JSON.stringify({ state: { overrides: {
+    'major|standard|p5|2|4': 3, 'natural_minor|drop-d|open9|1|2': 4,
+    'route:1|standard|Bb|major|scale|2|0|1|1': 2, 'route:1|standard|C|major|thirds-together|1|0|2|2': 3,
+  }, labelMode: 'degree' }, version: 1 });
+
+  it('the walk route is accepted, the other route ids as before, and anything else still refused', () => {
+    expect(isValidFingeringKey(walkKey)).toBe(true);
+    expect(isValidFingeringKey('route:1|standard|C|major|scale|2|0|1|3')).toBe(true);
+    expect(isValidFingeringKey('route:1|standard|C|major|brokenChord-upper|1|0|1|3')).toBe(true);
+    for (const bad of ['position-walk-together', 'positionwalk', 'position-walks', 'walk', 'p-i-m-a']) {
+      expect(isValidFingeringKey(walkKey.replace('position-walk', bad))).toBe(false);
+    }
+    useFingeringStore.getState().setOverride(walkKey, 3);
+    expect(useFingeringStore.getState().overrides).toEqual({ [walkKey]: 3 });
+  });
+
+  it('a production-shaped save from release 16 loads unchanged, every override kept, and is written back byte for byte', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, FROZEN);
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides).toEqual(JSON.parse(FROZEN).state.overrides);
+    useFingeringStore.setState({ labelMode: useFingeringStore.getState().labelMode });
+    expect(localStorage.getItem(FINGERING_STORE_KEY)).toBe(FROZEN);
+  });
+
+  it('a walk finger added to it is one more key; Reset takes exactly it out again, byte for byte', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, FROZEN);
+    await useFingeringStore.persist.rehydrate();
+    useFingeringStore.getState().setOverride(walkKey, 3);
+    const withWalk = JSON.parse(localStorage.getItem(FINGERING_STORE_KEY)!);
+    expect(withWalk).toEqual({ state: { overrides: { ...JSON.parse(FROZEN).state.overrides, [walkKey]: 3 }, labelMode: 'degree' }, version: 1 });
+    await useFingeringStore.persist.rehydrate();
+    expect(useFingeringStore.getState().overrides[walkKey]).toBe(3);
+    useFingeringStore.getState().clearOverrides([walkKey]);
+    expect(localStorage.getItem(FINGERING_STORE_KEY)).toBe(FROZEN);
+  });
+});

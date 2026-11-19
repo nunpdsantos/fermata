@@ -17,7 +17,10 @@ import { SelectTrigger } from '../ui/SelectTrigger';
 import { LabelToolbar } from '../instruments/FretboardPositionSelector';
 import { StaffNotation } from '../notation/StaffNotation';
 import { PracticeNeck } from './PracticeNeck';
-import { practiceSchedule, routeFingerKey, type PracticeRoute } from './practiceModel';
+import {
+  allowedFingers, barreCues, fingerClashes, heldWith, practiceSchedule, routeFingerKey,
+  type BarreCue, type FingerClash, type PracticeRoute,
+} from './practiceModel';
 
 export function PracticePlayer({ route, root, scale, tuning, editable = true }: {
   route: PracticeRoute; root: Note; scale: ScaleType; tuning: GuitarTuning; editable?: boolean;
@@ -101,13 +104,47 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
     }
   };
   const select = (next: number) => { stop(); publish(next); };
+  // One finger cannot stop two frets at the same instant (music audit 2, M37): a finger that would is not
+  // offered — the select disables it and a tap on the neck steps past it (a refused step would hold the tap's
+  // cycle on that finger forever) — and the editor says where that finger already is.
+  const setFinger = (event: number, n: FingeredNote, finger: OverrideFinger) => {
+    if (!allowedFingers(route, event, n, fingerFor).includes(finger)) return;
+    setOverride(keyFor(event, n), finger === n.finger ? null : finger);
+  };
   const editNote = (event: number, n: FingeredNote) => {
     select(event);
     if (!editing || !editable) { void play(event); return; }
     if (!n.fret) return;
-    const finger = (fingerFor(event, n) % 4 + 1) as OverrideFinger;
-    setOverride(keyFor(event, n), finger === n.finger ? null : finger);
+    const allowed = allowedFingers(route, event, n, fingerFor);
+    const from = fingerFor(event, n);
+    const next = [1, 2, 3].map((k) => (from + k - 1) % 4 + 1).find((f) => allowed.includes(f));
+    if (next !== undefined) setFinger(event, n, next as OverrideFinger);
   };
+  const place = (n: FingeredNote) => ({ note: withGlyphs(n.note), string: 6 - n.stringIndex, fret: n.fret });
+  const barreLine = (c: BarreCue) => t('practice.barreSpan', { finger: c.finger, from: c.from, to: c.to, fret: c.fret });
+  const underBarre = (cues: readonly BarreCue[], event: number, n: FingeredNote) =>
+    n.fret > 0 && cues.some((c) => c.finger === fingerFor(event, n) && c.fret === n.fret && 6 - n.stringIndex >= c.from && 6 - n.stringIndex <= c.to);
+  const cues = barreCues(route, index, fingerFor);
+  const held = heldWith(route, index);
+  // Saved before this check existed (a release-16 save, a backup, another tab): kept as saved, said, and mended
+  // by changing either finger or by Reset.
+  const clashes = fingerClashes(held, fingerFor).filter((c) => c.a.event === index || c.b.event === index);
+  const clashText = (c: FingerClash) => {
+    const [a, b] = [c.a.note, c.b.note].sort((x, y) => x.stringIndex - y.stringIndex);
+    const both = { finger: c.finger, a: withGlyphs(a.note), aString: 6 - a.stringIndex, b: withGlyphs(b.note), bString: 6 - b.stringIndex };
+    return c.between ? t('practice.fingerClashAcross', { ...both, fret: a.fret, between: 6 - c.between.stringIndex })
+      : t('practice.fingerClash', { ...both, aFret: a.fret, bFret: b.fret });
+  };
+  /** For each note of this step, each finger it is not offered and the note held at the same time that takes it. */
+  const busy = editing ? current.notes.filter((n) => n.fret > 0).flatMap((n) => {
+    const allowed = allowedFingers(route, index, n, fingerFor);
+    return [1, 2, 3, 4].filter((f) => !allowed.includes(f)).map((f) => {
+      const clash = fingerClashes(held, (e, m) => (m === n ? f : fingerFor(e, m))).find((c) => c.a.note === n || c.b.note === n)!;
+      const other = clash.a.note === n ? clash.b.note : clash.a.note;
+      const target = { finger: f, target: withGlyphs(n.note), targetString: 6 - n.stringIndex, ...place(other) };
+      return clash.between ? t('practice.fingerAcross', { ...target, between: 6 - clash.between.stringIndex }) : t('practice.fingerBusy', target);
+    });
+  }) : [];
   const shifts = current.notes.filter((n, i) => n.shift && !current.notes.slice(0, i).some((m) => JSON.stringify(m.shift) === JSON.stringify(n.shift)));
   const guideText = (n: FingeredNote) => n.shift?.kind === 'guide' ? t('practice.guide', {
     finger: n.shift.finger, string: 6 - n.shift.stringIndex,
@@ -144,8 +181,10 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           {current.notes.map((n, j) => <p key={j}>
             <strong>{current.rh[j]} · {withGlyphs(n.note)}</strong>{' · '}{t('practice.finger', { finger: fingerFor(index, n) })}
             {' · '}{t('explore.readout.stringFret', { string: 6 - n.stringIndex, fret: n.fret })}
-            {n.barre && ` · ${t('practice.barre')}`}{n.reach && ` · ${t('practice.reach')}`}
+            {underBarre(cues, index, n) && ` · ${t('practice.barre')}`}{n.reach && ` · ${t('practice.reach')}`}
           </p>)}
+          {cues.map((c) => <p key={`${c.finger}:${c.fret}`} data-testid="practice-barre">{barreLine(c)}</p>)}
+          {clashes.map((c, j) => <p key={j} data-testid="practice-clash">{clashText(c)}</p>)}
           {route.stops && <p>{t('fretboard.positionTitle', { numeral: toRomanNumeral(current.notes[0].position!), fret: current.notes[0].position })}</p>}
           {shifts.map((n, j) => <p key={j} data-testid="practice-shift">{guideText(n) || t(`practice.shift.${n.shift!.kind}`, {
             from: toRomanNumeral(n.shift!.fromPosition), to: toRomanNumeral(n.shift!.toPosition),
@@ -153,18 +192,22 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
         </div>
       </div>
       <PracticeNeck route={route} index={index} tuning={tuning} fingerFor={fingerFor}
-        edited={(event, n) => editable && overrides[keyFor(event, n)] !== undefined} onNote={editNote} />
+        edited={(event, n) => editable && overrides[keyFor(event, n)] !== undefined} onNote={editNote}
+        barreAt={(event, n) => underBarre(event === index ? cues : barreCues(route, event, fingerFor), event, n)} />
       {editable && <>
         <LabelToolbar part="edit" labelMode="finger" onLabelMode={() => {}} positionView editing={editing}
           onToggleEdit={() => { stop(); setEditing(!editing); }} onResetFingering={() => clearOverrides(keys)} hasOverrides={keys.some((k) => overrides[k] !== undefined)} />
         {editing && <div className="flex flex-wrap gap-2">
-          {current.notes.filter((n) => n.fret > 0).map((n) => <label key={n.stringIndex} className="flex items-center gap-2 text-ui">
-            {t('practice.fingerFor', { note: withGlyphs(n.note), string: 6 - n.stringIndex })}
-            <SelectTrigger value={fingerFor(index, n)} onChange={(e) => {
-              const value = Number(e.target.value) as OverrideFinger;
-              setOverride(keyFor(index, n), value === n.finger ? null : value);
-            }}>{[1, 2, 3, 4].map((f) => <option key={f} value={f}>{f}</option>)}</SelectTrigger>
-          </label>)}
+          {current.notes.filter((n) => n.fret > 0).map((n) => {
+            const allowed = allowedFingers(route, index, n, fingerFor);
+            return <label key={n.stringIndex} className="flex items-center gap-2 text-ui">
+              {t('practice.fingerFor', { note: withGlyphs(n.note), string: 6 - n.stringIndex })}
+              <SelectTrigger value={fingerFor(index, n)} onChange={(e) => setFinger(index, n, Number(e.target.value) as OverrideFinger)}>
+                {[1, 2, 3, 4].map((f) => <option key={f} value={f} disabled={!allowed.includes(f)}>{f}</option>)}
+              </SelectTrigger>
+            </label>;
+          })}
+          {busy.map((line) => <p key={line} className="text-caption w-full" data-testid="practice-finger-busy">{line}</p>)}
           <p className="text-caption">{t('practice.overrideHint')}</p>
         </div>}
       </>}
@@ -177,7 +220,8 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           }}
           onClick={() => select(i)} data-guide={event.notes.some((n) => n.shift?.kind === 'guide') || undefined}
           title={event.notes.map(guideText).filter(Boolean).join(' ')}
-          aria-label={[t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') }), ...event.notes.map(guideText)].filter(Boolean).join('. ')}>
+          aria-label={[t('practice.event', { number: i + 1, notes: event.notes.map((n) => noteToString(n.note)).join(' + ') }), ...event.notes.map(guideText),
+            ...barreCues(route, i, fingerFor).map(barreLine)].filter(Boolean).join('. ')}>
           <span className="text-caption">{event.rh.join('+')}</span>
           <span>{event.notes.map((n) => withGlyphs(n.note)).join('+')}</span>
           <span className="text-caption">{event.notes.map((n) => fingerFor(i, n)).join('+')}{event.notes.some((n) => n.shift) ? ` ${shiftArrow(event.notes.find((n) => n.shift)!.shift)}` : ''}</span>
