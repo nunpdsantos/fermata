@@ -1155,23 +1155,27 @@ test.describe('review B-1', () => {
   });
 
   test('the tour ended with "Stay here": the entry follows the view it ended on, and Back goes on from there', async ({ browser }) => {
-    test.setTimeout(90_000);
-    const { context, page } = await open(browser, MODES[0]);
+    test.setTimeout(120_000);
+    // From Learn, which the tour always leaves (its first steps are Explore's, its last Drill's).
+    const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } });
+    await expect(overview(page)).toBeVisible();
     await page.getByTestId('app-menu').getByRole('button').first().click();
     await page.getByRole('menuitem', { name: 'Show me around' }).click();
     await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+    const caption = page.getByTestId('tour-caption');
     for (let i = 0; i < 16 && !(await page.getByTestId('tour-stay').count()); i++) {
-      const next = page.getByTestId('tour-next');
-      if (!(await next.count())) break;
-      await next.click();
-      await page.waitForTimeout(500);
+      // Let the step finish what it shows (a view it opens) before moving on.
+      await page.waitForTimeout(1200);
+      const before = (await caption.textContent()) ?? '';
+      await page.getByTestId('tour-next').click();
+      await expect(caption).not.toHaveText(before, { timeout: 15_000 });
     }
     const view = await page.locator('[role="tab"][data-tab][aria-selected="true"]').getAttribute('data-tab');
     await page.getByTestId('tour-stay').click();
     await expect(page.getByTestId('tour-bar')).toHaveCount(0);
-    expect(view).not.toBe('explore');
+    expect(view, 'the tour ended away from where it began').not.toBe('learn');
     expect((await entry(page))!.v).toBe(view);
-    await expectView(page, view as 'learn' | 'drill');
+    await expectView(page, view as 'explore' | 'drill');
     await context.close();
   });
 });
