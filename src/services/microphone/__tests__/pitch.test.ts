@@ -23,6 +23,12 @@ const RATES = [44100, 48000, 88200, 96000, 192000];
 const DETUNE = [-20, 0, 20];
 /** The frame the microphone hands the detector at this rate. */
 const frameAt = (rate: number) => analysisFrameSize(rate);
+/**
+ * The grids are heavy at the high rates (a 16,384-sample frame at 192 kHz): measured alone with coverage,
+ * 0.4–0.9 s a grid at 44.1 / 48 kHz and up to 3.3 s at 192 kHz; under the whole suite on a loaded machine one
+ * took 7.8 s, past vitest's 5 s default. Each multi-note test has this budget instead.
+ */
+const GRID_MS = 30_000;
 
 /** Seeded noise (mulberry32), so a failure can be reproduced. */
 function rng(seed: number) {
@@ -108,7 +114,7 @@ describe('detectPitch: one note, E2 to C6', () => {
           }
         }
         expect(misses).toEqual([]);
-      });
+      }, GRID_MS);
     }
   }
 
@@ -139,7 +145,7 @@ describe('detectPitch: one note, E2 to C6', () => {
         }
       }
       expect(misses).toEqual([]);
-    });
+    }, GRID_MS);
   }
 
   it('the frame holds the same stretch of time at every rate (85 to 93 ms), never a 4,096-sample frame at 192 kHz', () => {
@@ -161,7 +167,7 @@ describe('detectPitch: one note, E2 to C6', () => {
         expect(Math.abs(got!.cents + 15)).toBeLessThanOrEqual(5);
       }
     }
-  });
+  }, GRID_MS);
 
   it('the bottom of the range, C2 and C♯2 (CLAUDE.md: C2–C7): sine and plucked, in tune and ±20 cents', () => {
     for (const midi of [36, 37]) {
@@ -175,7 +181,7 @@ describe('detectPitch: one note, E2 to C6', () => {
         }
       }
     }
-  });
+  }, GRID_MS);
 
   it('nearestNote names a note from A4 = 440 Hz (a reading of 440 Hz is A4, 0 cents)', () => {
     expect(nearestNote(440)).toEqual({ midi: 69, cents: 0 });
@@ -206,7 +212,7 @@ describe('detectPitch: one note, E2 to C6', () => {
       }
     }
     expect(misses).toEqual([]);
-  });
+  }, GRID_MS);
 
   it('up to C7 the note is still right (sine)', () => {
     for (let midi = C6; midi <= 96; midi++) {
@@ -215,7 +221,7 @@ describe('detectPitch: one note, E2 to C6', () => {
         expect(got?.midi, `midi ${midi} at ${rate}`).toBe(midi);
       }
     }
-  });
+  }, GRID_MS);
 });
 
 describe('detectPitch: nothing that is not one note', () => {
@@ -247,7 +253,7 @@ describe('detectPitch: nothing that is not one note', () => {
         expect(b === null || b.clarity < SURE_CLARITY, `brown ${seed}: ${JSON.stringify(b)}`).toBe(true);
       }
     }
-  });
+  }, GRID_MS);
 
   // Two notes at once (not an octave, which is heard as its lower note):
   // nothing, or a clarity under "sure" — never a sure note.
