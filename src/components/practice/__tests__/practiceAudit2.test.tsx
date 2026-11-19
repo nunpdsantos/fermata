@@ -13,7 +13,8 @@ import { useFocusNoteStore } from '../../../state/focusNoteStore';
 import { cancelScheduledAudio, playTimedNotes, resumeAudio, type TimedNote } from '../../../core/services/audio';
 import { TUNING_STANDARD } from '../../../core/constants/guitarTunings';
 import type { Note } from '../../../core/types/music';
-import { positionWalkPractice, rightHandPractice, routeFingerKey, technicalSet } from '../practiceModel';
+import { positionWalkPractice, rightHandPractice, routeFingerKey, technicalSet, type PracticeRoute } from '../practiceModel';
+import { PracticePlayer } from '../PracticePlayer';
 
 vi.mock('../../../core/services/audio', () => ({
   SYNTH_PRESETS: {}, resumeAudio: vi.fn().mockResolvedValue(undefined), cancelScheduledAudio: vi.fn(), playTimedNotes: vi.fn(),
@@ -298,5 +299,40 @@ describe('M41: the barré cue, printed and spoken', () => {
     fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.rightHand') }));
     fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p+a-i-m-i' } });
     expect(screen.getByTestId('practice-barre').textContent).toBe(line);
+  });
+});
+
+describe('M37: a finger laid across a string that sounds lower, in words', () => {
+  // A ringing group of three (as a broken chord's), built by hand: E on string 4 fret 2 (finger 1), the open G,
+  // and a note on string 2 at fret 2 (finger 2). The pitches are placeholders: only the places matter here.
+  const n = (stringIndex: number, fret: number, finger: number, natural: string) => ({
+    midi: [40, 45, 50, 55, 59, 64][stringIndex] + fret, note: { natural, accidental: '' }, pitched: { natural, accidental: '', octave: 3 },
+    stringIndex, fret, finger, position: null, frame: null, segment: 0, shift: null, reach: null, barre: false,
+  }) as PracticeRoute['events'][number]['notes'][number];
+  const route: PracticeRoute = { id: 'brokenChord', octaves: 1, overRinging: true, events: [
+    { notes: [n(2, 2, 1, 'E')], degrees: [3], rh: ['p'] },
+    { notes: [n(3, 0, 0, 'G')], degrees: [5], rh: ['i'] },
+    { notes: [n(4, 2, 2, 'C')], degrees: [1], rh: ['m'] },
+  ] };
+  const key = (i: number) => routeFingerKey(C, 'major', TUNING_STANDARD, route, i, route.events[i].notes[0]);
+
+  it('the editor does not offer finger 1 to the 2nd string: laid over from the 4th it would stop the open G too', () => {
+    render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const select = screen.getByRole('combobox', { name: /Finger for C, string 2/ }) as HTMLSelectElement;
+    expect(['1', '2', '3', '4'].map((v) => optionDisabled(select, v))).toEqual([true, false, false, false]);
+    expect(screen.getAllByTestId('practice-finger-busy').map((p) => p.textContent)).toEqual([
+      'Finger 1 is not offered for C on string 2: laid across from E on string 4, fret 2, it would also stop string 3, which is played open or at a lower fret at the same time.',
+    ]);
+  });
+
+  it('saved so (finger 1 on both), it is named with the string between', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, JSON.stringify({ state: { overrides: { [key(2)]: 1 }, labelMode: 'finger' }, version: 1 }));
+    await useFingeringStore.persist.rehydrate();
+    render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+    expect(screen.getByTestId('practice-clash').textContent).toBe(
+      'Finger 1 is on E on string 4 and on C on string 2, at fret 2: laid across, it would also stop string 3, which is played open or at a lower fret at the same time. Change one of them.');
   });
 });
