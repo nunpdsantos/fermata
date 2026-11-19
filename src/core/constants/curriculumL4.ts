@@ -243,19 +243,20 @@ const l4u12m5: CurriculumModule = {
       title: 'Third Inversion (V4/2)',
       explanation:
         'V4/2 places the chordal 7th in the bass. Since the 7th is a tendency tone that must resolve down by step, V4/2 almost always resolves to I6 (first-inversion tonic). In G7, the 7th is F; F must step down to E, giving C/E (I6) as the resolution. This constraint is absolute in strict voice leading \u2014 V4/2 to root-position I would leave the bass 7th unresolved.',
-      tryThisQuery: 'G7/F',
-      tryThisLabel: 'Play G7/F to hear V4/2 bass motion (F → E as the 7th resolves)',
+      // V4/2 and its resolution, so the bass is heard falling F → E (audit A27).
+      tryThisQuery: 'chords: G7/F C/E',
+      tryThisLabel: 'Hear G7/F resolve to C/E: the bass falls from F to E as the 7th resolves',
     },
   ],
   tasks: [
     {
       id: 'l4u12m5t1',
-      instruction: "Type 'G7' \u2014 root position, bass is G. The bass drops a 5th to C when resolving to I. This is the strongest, most emphatic V7-I bass motion",
+      instruction: "Tap 'G7' \u2014 root position, bass is G. The bass drops a 5th to C when resolving to I. This is the strongest, most emphatic V7-I bass motion",
       query: 'G7',
     },
     {
       id: 'l4u12m5t2',
-      instruction: "Type 'G7/B' \u2014 this is V6/5 with the leading tone B in the bass. B must step up to C, giving smooth stepwise bass motion into the tonic. Compare the effect with root-position G7",
+      instruction: "Tap 'G7/B' \u2014 this is V6/5 with the leading tone B in the bass. B must step up to C, giving smooth stepwise bass motion into the tonic. Compare the effect with root-position G7",
       query: 'G7/B',
     },
     {
@@ -735,7 +736,7 @@ const l4u14m4: CurriculumModule = {
   tasks: [
     {
       id: 'l4u14m4t1',
-      instruction: "Type 'C/E' \u2014 this is C major in first inversion (I6 in C major). The bass note is E, but the chord is still C major. Practice identifying the root, not just the lowest note",
+      instruction: "Tap 'C/E' \u2014 this is C major in first inversion (I6 in C major). The bass note is E, but the chord is still C major. Practice identifying the root, not just the lowest note",
       query: 'C/E',
     },
     {
@@ -744,7 +745,7 @@ const l4u14m4: CurriculumModule = {
     },
     {
       id: 'l4u14m4t3',
-      instruction: "Add an inversion: C-Dm/F-G7-C becomes I-ii6-V7-I. The ii chord in first inversion puts F in the bass, creating a smooth stepwise bass line: C-F-G-C. Inversions are a tool for controlling bass voice leading",
+      instruction: "Add an inversion: C-Dm/F-G7-C becomes I-ii6-V7-I. The ii chord in first inversion puts F in the bass, the same bass note as IV: the bass line C–F–G–C leaps a 4th up to F, steps up to G, and leaps a 4th up (or a 5th down) to C. Inversions are a tool for controlling bass voice leading",
     },
   ],
   prerequisites: ['l4u14m3'],
@@ -779,7 +780,7 @@ const l4u14m5: CurriculumModule = {
     {
       title: 'The Fluid Minor System',
       explanation:
-        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor III-VII cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analyzing real music, where minor-key harmony rarely stays within a single scale form throughout.',
+        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor VII-i cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analyzing real music, where minor-key harmony rarely stays within a single scale form throughout.',
       tryThisQuery: 'A harmonic minor scale',
       tryThisLabel: 'Compare with natural minor above',
     },
@@ -787,12 +788,12 @@ const l4u14m5: CurriculumModule = {
   tasks: [
     {
       id: 'l4u14m5t1',
-      instruction: "Type 'A natural minor scale' then 'A harmonic minor scale' \u2014 the only difference is G vs. G\u266F. That single raised note changes the v chord to V and the VII chord to vii\u00B0, transforming the harmonic possibilities",
+      instruction: "Tap 'A natural minor scale' then 'A harmonic minor scale' \u2014 the only difference is G vs. G\u266F. That single raised note changes the v chord to V and the VII chord to vii\u00B0, transforming the harmonic possibilities",
       query: 'A natural minor scale',
     },
     {
       id: 'l4u14m5t2',
-      instruction: "Play 'Am' then 'E major chord' (V-i with harmonic minor's leading tone G\u266F). Now play 'Am' then 'Em' (v-i with natural minor's G natural). Hear how the major V creates a much stronger resolution to the tonic",
+      instruction: "Play 'E major chord' then 'Am' (V-i with harmonic minor's leading tone G\u266F, which rises a half step to A). Now play 'Em' then 'Am' (v-i with natural minor's G natural, a whole step below A). Hear how the major V creates a much stronger resolution to the tonic",
     },
     {
       id: 'l4u14m5t3',

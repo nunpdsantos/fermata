@@ -49,7 +49,7 @@ const l1u1m2: CurriculumModule = {
   objectives: [
     'Understand ledger lines as extensions above or below the staff',
     'Know that the grand staff combines treble and bass clefs connected by a brace',
-    'Locate middle C as the ledger line between the two staves',
+    'Locate middle C between the two staves, on a ledger line below the treble staff or above the bass staff',
   ],
   concepts: [
     {
@@ -62,13 +62,13 @@ const l1u1m2: CurriculumModule = {
     {
       title: 'The Grand Staff',
       explanation:
-        "Piano music uses the grand staff — a treble staff on top and a bass staff on the bottom, joined by a brace and connected by a shared middle-C ledger line. The right hand typically reads treble clef; the left reads bass clef. Together they cover most of the piano's range. This is why pianists learn both clefs from the start.",
+        "Piano music uses the grand staff — a treble staff on top and a bass staff on the bottom, joined at the left by a brace and a line. Middle C sits between them, but no line is drawn there for good: it is written on a short ledger line of its own, either just below the treble staff or just above the bass staff, wherever the note is needed. The right hand typically reads treble clef; the left reads bass clef. Together they cover most of the piano's range. This is why pianists learn both clefs from the start.",
       tryThisQuery: 'key of C',
       tryThisLabel: 'Explore C on the full keyboard',
     },
   ],
   tasks: [
-    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano — it sits between the two halves of the grand staff' },
+    { id: 'l1u1m2t1', instruction: 'Find middle C on the piano, or on the guitar at fret 1 of the B string (the second thinnest) — it sits between the two halves of the grand staff' },
     { id: 'l1u1m2t2', instruction: 'Play notes below and above middle C to hear how the grand staff spans both registers' },
   ],
   prerequisites: ['l1u1m1'],
@@ -300,7 +300,7 @@ const l1u3m2: CurriculumModule = {
     {
       title: 'What Is a Key Signature?',
       explanation:
-        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#. This saves clutter and tells you the key at a glance.",
+        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#, unless a natural sign (♮) written in front of an F cancels the sharp, from that note to the end of the measure. This saves clutter and shows at a glance which notes the key uses.",
       tryThisQuery: 'key of G',
       tryThisLabel: "See G's key signature — one sharp",
     },
@@ -314,15 +314,15 @@ const l1u3m2: CurriculumModule = {
     {
       title: 'Scale vs. Key',
       explanation:
-        "A scale is a pattern of notes in order. A key is the musical context that uses those notes, with one note as 'home.' When you are 'in the key of G major,' the G major scale provides your notes, G is home, and the key signature tells you F is always sharp.",
+        "A scale is a pattern of notes in order. A key is the musical context that uses those notes, with one note as 'home.' When you are 'in the key of G major,' the G major scale provides your notes, G is home, and the key signature tells you to play F as F# unless a natural sign (♮) says otherwise. The same one-sharp signature also belongs to E minor, a key with the same notes and E as home: the signature gives the notes, and the music tells you which one is home.",
       tryThisQuery: 'key of F',
       tryThisLabel: "See F's key signature — one flat",
     },
   ],
   tasks: [
-    { id: 'l1u3m2t1', instruction: "Type 'key of G' — how many sharps does the key signature show?" },
-    { id: 'l1u3m2t2', instruction: "Type 'key of D' — which new sharp was added beyond G major's F#?" },
-    { id: 'l1u3m2t3', instruction: "Type 'key of F' — this is the first flat key. Which note is flatted?" },
+    { id: 'l1u3m2t1', instruction: "Tap 'key of G' — how many sharps does the key signature show?" },
+    { id: 'l1u3m2t2', instruction: "Tap 'key of D' — which new sharp was added beyond G major's F#?" },
+    { id: 'l1u3m2t3', instruction: "Tap 'key of F' — this is the first flat key. Which note is flatted?" },
   ],
   prerequisites: ['l1u3m1'],
 };

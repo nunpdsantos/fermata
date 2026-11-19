@@ -1,7 +1,7 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RhythmPattern } from '../../../core/types/exercise';
-import { cancelScheduledAudio, playChordVoiced, playScale, playTimedNotes, resumeAudio } from '../../../core/services/audio';
+import { cancelScheduledAudio, playChordVoiced, playPitchedArpeggio, playScale, playTimedNotes, resumeAudio } from '../../../core/services/audio';
 import { getSynthConfig } from '../../../services/synthConfig';
 import { executeTheoryQuery } from '../../../utils/queryExecutor';
 import { showLessonQuery, keepLessonInstrument } from '../../../services/lessonInstrument';
@@ -14,7 +14,7 @@ import { StaffNotationSkeleton } from '../../notation/StaffNotationSkeleton';
 import { accentText } from '../../../design/tokens/learnColors';
 import { tryThisPicture } from './tryThisPicture';
 import { useNoteLabel } from '../../../hooks/useSolfege';
-import { chordListSounds } from '../../../utils/queryExecutorChords';
+import { chordListOctave, chordListSounds } from '../../../utils/queryExecutorChords';
 import { withGlyphs } from '../../../core/utils/accidentalGlyphs';
 
 const StaffNotation = lazy(() =>
@@ -39,6 +39,8 @@ interface InlineTryThisProps {
    * Mi beside them when that setting is on).
    */
   names?: boolean;
+  /** A scale heard and written from the top down (the concept's `descending`, audit A22). */
+  descending?: boolean;
 }
 
 /**
@@ -48,12 +50,12 @@ interface InlineTryThisProps {
  * Explore" keeps the old executor behaviour (jump to Explore with it
  * selected) for anyone who wants the full workbench.
  */
-export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false, names = false }: InlineTryThisProps) {
+export function InlineTryThis({ query, label, accent, rhythm, compact = false, prompt, clefs = false, names = false, descending = false }: InlineTryThisProps) {
   const { t } = useTranslation();
   const noteLabel = useNoteLabel();
   const instrument = useAppStore((s) => s.instrument);
   const currentKey = useAppStore((s) => s.selectedKey);
-  const picture = useMemo(() => (rhythm ? { kind: 'none' as const } : tryThisPicture(query, currentKey)), [query, rhythm, currentKey]);
+  const picture = useMemo(() => (rhythm ? { kind: 'none' as const } : tryThisPicture(query, currentKey, { descending })), [query, rhythm, currentKey, descending]);
 
   const hear = async () => {
     if (rhythm) {
@@ -72,6 +74,10 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
           pitches.map((note) => ({ note, at, duration, volume: volume / (1 + 0.2 * (pitches.length - 1)) }))),
         cfg,
       );
+    } else if (picture.kind === 'scale' && picture.descending) {
+      // From the top down, exactly the pitches the staff writes, at the
+      // scale's own pace (playScale has no form that starts on the upper tonic).
+      playPitchedArpeggio(picture.pitches, 0.35, undefined, undefined, cfg);
     } else if (picture.kind === 'scale') playScale(picture.notes, picture.pitches[0]?.octave ?? 4, true, false, 0.35, undefined, undefined, cfg);
     else playChordVoiced(picture.notes, 4, 1.4, cfg, picture.bass);
   };
@@ -88,7 +94,8 @@ export function InlineTryThis({ query, label, accent, rhythm, compact = false, p
     if (!entry) return;
     cancelScheduledAudio();
     await resumeAudio();
-    playChordVoiced(entry.chord.notes, 3, 1.2, getSynthConfig('piano'), entry.chord.bassNote);
+    // The same voicing as in the list ("Hear it"): its bass in octave 3.
+    playChordVoiced(entry.chord.notes, chordListOctave(entry.chord), 1.2, getSynthConfig('piano'), entry.chord.bassNote);
   };
 
   const openInExplore = () => {

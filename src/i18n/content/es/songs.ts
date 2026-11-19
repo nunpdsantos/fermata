@@ -102,8 +102,7 @@ const overlay: SongOverlay = {
   // ---- L2U6: Compás Compuesto y Síncopa ----
 
   'l2u6m1': [
-    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario, donde cada uno de los dos tiempos principales se subdivide en grupos de tres corcheas (algunas ediciones lo escriben en 12/8; la sensación de compás compuesto binario es la misma).',
-    'El verso está en 6/8 antes de que el estribillo cambie de sensación — un contraste entre compás compuesto y simple.',
+    'El acompañamiento arpegiado en compás 6/8 demuestra el compás compuesto binario: dos tiempos principales por compás, cada uno subdividido en un grupo de tres corcheas. Un compás de 12/8 contaría cuatro de esos tiempos; en ambos, cada tiempo se divide en tres.',
     'Alterna entre 6/8 y 3/4 — las mismas seis corcheas reagrupadas, la hemiolia clásica entre compás compuesto y simple.',
   ],
   'l2u6m2': [
@@ -192,8 +191,8 @@ const overlay: SongOverlay = {
     'Rica en notas extrañas al acorde — retardos, apoyaturas y notas de paso crean su cualidad onírica.',
   ],
   'l3u11m5': [
-    'La línea melódica ornamentada está construida sobre cadenas de retardos y notas de paso sobre un bajo simple.',
-    'La melodía ornamentada entrelaza notas de paso cromáticas y notas auxiliares en torno a las notas estructurales del acorde.',
+    'En su arreglo para violín de 1871, August Wilhelmj transportó esta aria de la Suite orquestal n.º 3 de Bach de D mayor a C mayor, para que toda la melodía pudiera tocarse en la cuerda más grave del violín, la cuerda G. Marcó la parte «en la cuerda G», y esa indicación dio nombre al arreglo.',
+    'La canción suena en F mayor, pero Paul McCartney afinó la guitarra un tono más grave y la tocó con posiciones de acordes de G mayor: la afinación transpuso cada acorde una 2.ª mayor hacia abajo, como hace una trompeta en Bb con cada nota escrita.',
   ],
 
   // =========================================================================

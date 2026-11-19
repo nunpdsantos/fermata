@@ -131,7 +131,7 @@ const l8u25m3: CurriculumModule = {
     {
       title: 'Strict Canon and Canonic Intervals',
       explanation:
-        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes up a perfect fifth. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. Canons at the unison and the octave are generally the most straightforward to write; at other intervals the follower\'s notes take on different roles in the key, and some interval qualities change, which adds constraints.',
+        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes it a fifth higher or lower. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. Canons at the unison and the octave are generally the most straightforward to write; at other intervals the follower\'s notes take on different roles in the key, and some interval qualities change, which adds constraints.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See the scale — the melodic raw material of a canon',
     },
@@ -159,7 +159,7 @@ const l8u25m3: CurriculumModule = {
     {
       id: 'l8u25m3t2',
       instruction:
-        'Listen to the canon from Bach\'s Goldberg Variations (every third variation is a canon). Compare Canon at the Unison (Var. 3), Canon at the Second (Var. 6), and Canon at the Third (Var. 9). How does the canonic interval affect the character?',
+        'Listen to the canons in Bach\'s Goldberg Variations: every third variation from No. 3 to No. 27 is a canon, each at a wider interval, from the unison to the ninth; No. 30, where a tenth canon would fall, is a quodlibet instead. Compare Canon at the Unison (Var. 3), Canon at the Second (Var. 6), and Canon at the Third (Var. 9). How does the canonic interval affect the character?',
     },
     {
       id: 'l8u25m3t3',

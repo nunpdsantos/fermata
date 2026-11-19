@@ -438,10 +438,11 @@ describe('L9 — ear training', () => {
     expect(c).toMatch(/Love Story is the classic descending example/); // source: Wikipedia "Interval recognition"
   });
 
-  it('descending-5th cue names both sourced songs in EN/PT/ES (W6-02)', () => {
-    expect(mod(L9_UNITS, 'l9u30m4').concepts[1].explanation).toMatch(/"Feelings" \(Feel-ings\) or of the Flintstones theme/);
-    expect(ovText(ptL9 as Ov, 'l9u30m4')).toMatch(/Feelings.*Flintstones/);
-    expect(ovText(esL9 as Ov, 'l9u30m4')).toMatch(/Feelings.*Picapiedra/);
+  it('descending-5th cue names the Flintstones theme in EN/PT/ES (W6-02; "Feelings" cut in the audit fix pass of 18 November 2026: it is in neither interval list read, Wikipedia "Interval recognition" and Musicca\'s chart)', () => {
+    expect(mod(L9_UNITS, 'l9u30m4').concepts[1].explanation).toMatch(/descending P5 = the first two notes of the Flintstones theme \(Flint-stones\)/);
+    expect(ovText(ptL9 as Ov, 'l9u30m4')).toMatch(/5P descendente = as duas primeiras notas do tema dos Flintstones/);
+    expect(ovText(esL9 as Ov, 'l9u30m4')).toMatch(/5J descendente = las dos primeras notas del tema de Los Picapiedra/);
+    for (const text of [mod(L9_UNITS, 'l9u30m4').concepts[1].explanation, ovText(ptL9 as Ov, 'l9u30m4'), ovText(esL9 as Ov, 'l9u30m4')]) expect(text).not.toMatch(/Feelings/);
   });
 
   it('a 9th is an octave plus a major 2nd above the root (W5-60)', () => {
