@@ -10,7 +10,7 @@
  * circle's recorded rules (horizontal labels, the 36 px targets) are untouched.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, cleanup, fireEvent, screen } from '@testing-library/react';
+import { render, cleanup, fireEvent, screen, act } from '@testing-library/react';
 import type { Note, ScaleType } from '../../../core/types/music';
 import { useAppStore } from '../../../state/store';
 import i18n from '../../../i18n';
@@ -116,3 +116,78 @@ describe('A8: every wedge whose label and destination differ, every key of every
     }, 120_000);
   }
 });
+
+// Fix pass (independent review, item 7): the sweep above read the destination
+// from the wedge's own data-key, the same source as its name. Here the name is
+// read as a learner hears it ("… — select F minor"), the wedge is ACTIVATED —
+// clicked, and with Enter from the keyboard — and the store must then hold
+// exactly that key; focused in PT and ES, the caption says where it leads.
+describe('A8: a wedge selects exactly the key its name says (click and keyboard)', () => {
+  const ACTION = { en: { select: 'select', major: 'major', minor: 'minor', opens: 'Opens' }, pt: { select: 'escolher', major: 'maior', minor: 'menor', opens: 'Abre' }, es: { select: 'elegir', major: 'mayor', minor: 'menor', opens: 'Abre' } } as const;
+  const ASCII: Record<string, string> = { '♯': '#', '♭': 'b', '𝄪': '##', '𝄫': 'bb' };
+  /** The key a name says the wedge selects: "… — select F♯ minor" → F#, natural_minor. */
+  function said(label: string, lang: keyof typeof ACTION) {
+    const a = ACTION[lang];
+    const m = label.match(new RegExp(`— ${a.select} ([A-G])([♯♭𝄪𝄫]?) (${a.major}|${a.minor})$`));
+    if (!m) return null;
+    return { note: `${m[1]}${ASCII[m[2]] ?? ''}`, scale: m[3] === a.major ? 'major' : 'natural_minor' };
+  }
+  const state = () => { const s = useAppStore.getState(); return { note: `${s.selectedKey.natural}${s.selectedKey.accidental}`, scale: s.selectedScale }; };
+
+  async function sweep(lang: keyof typeof ACTION, types: string[], how: 'click' | 'enter') {
+    await i18n.changeLanguage(lang);
+    const bad: string[] = [];
+    let activations = 0;
+    for (const type of types) {
+      for (let pc = 0; pc < 12; pc++) {
+        const root = preferredRootSpelling(pc, type as ScaleType);
+        act(() => select(root, type as ScaleType));
+        const { container } = render(<CircleOfFifths />);
+        for (let i = 0; i < 24; i++) {
+          act(() => select(root, type as ScaleType));
+          const g = container.querySelectorAll('g[role="button"]')[i];
+          const label = g.getAttribute('aria-label')!;
+          const want = said(label, lang);
+          if (!want) { bad.push(`${root.natural}${root.accidental} ${type}: "${label}" names no key`); continue; }
+          if (how === 'click') fireEvent.click(g);
+          else { fireEvent.focus(g); fireEvent.keyDown(g, { key: 'Enter' }); }
+          activations++;
+          const got = state();
+          if (got.note !== want.note || got.scale !== want.scale) bad.push(`${root.natural}${root.accidental} ${type}: "${label}" selected ${got.note} ${got.scale}`);
+        }
+        cleanup();
+      }
+    }
+    return { bad, activations };
+  }
+
+  it('EN, click: every wedge of every key of every picker scale', async () => {
+    const types = SCALE_GROUPS.flatMap((g) => g.options);
+    const { bad, activations } = await sweep('en', types, 'click');
+    expect(activations).toBe(37 * 12 * 24);
+    expect(bad.slice(0, 10), `${bad.length} wedges`).toEqual([]);
+  }, 300_000);
+
+  it('EN, Enter from the keyboard: every wedge of every major and minor key, and of the modes', async () => {
+    const { bad, activations } = await sweep('en', ['major', 'natural_minor', 'dorian', 'lydian', 'harmonic_minor'], 'enter');
+    expect(activations).toBe(5 * 12 * 24);
+    expect(bad.slice(0, 10), `${bad.length} wedges`).toEqual([]);
+  }, 300_000);
+
+  for (const lang of ['pt', 'es'] as const) {
+    it(`${lang}, click and focus: every wedge of every major and minor key; focused, a chord wedge says where it leads`, async () => {
+      const { bad, activations } = await sweep(lang, ['major', 'natural_minor'], 'click');
+      expect(activations).toBe(2 * 12 * 24);
+      expect(bad.slice(0, 10), `${bad.length} wedges`).toEqual([]);
+      // F♯ major's E♯° (vii°): focused, "Abre F menor".
+      select({ natural: 'F', accidental: '#' }, 'major');
+      const { container } = render(<CircleOfFifths />);
+      const g = [...container.querySelectorAll('g[role="button"]')].find((x) => x.querySelector('[data-name]')!.textContent === 'E♯°')!;
+      fireEvent.focus(g);
+      expect(container.querySelector('.cof-caption')!.textContent).toContain(`${ACTION[lang].opens} F ${ACTION[lang].minor}`);
+      fireEvent.keyDown(g, { key: 'Enter' });
+      expect(state()).toEqual({ note: 'F', scale: 'natural_minor' });
+    }, 300_000);
+  }
+});
+
