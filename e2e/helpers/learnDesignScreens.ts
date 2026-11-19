@@ -241,6 +241,10 @@ export async function learnScreens(browser: Browser, v: Viewport, theme: string,
     await expect(page.getByTestId('check-reread')).toBeVisible();
     await expect(page.getByTestId('check-reread')).toContainText(w.pattern);
     await expect(page.getByTestId('check-position')).toHaveText(position!);
+    // The same settle as before 'check-pointer': on GitHub's Linux run of 19 November 2026 the audit read the
+    // answer in the frame it turned final, still in the selected option's ink (#181208 on the night's #142b1a,
+    // 1.24:1), and passed on retry.
+    await page.waitForTimeout(300);
     await check(page, v, combo, 'check-final-reread-expanded');
     await page.reload();
     await expect(page.getByTestId('check-position')).toHaveText(position!);
