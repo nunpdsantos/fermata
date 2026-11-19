@@ -96,16 +96,13 @@ describe('M42: a request called matched has the asked bass as its lowest PITCH (
   });
 
   it('Am11 first inversion: 8-0-5-5-0-0 (open A2 under C3) is never offered as a C-bass grip', () => {
-    // At 153caab no grip has C lowest, and the board says so (bassMatched
-    // false: "No shape here has C in the bass"); a grip offered as matching
-    // must have C lowest.
+    // At 153caab no grip had C lowest and the board said so; since the review
+    // of builder K the neck is searched, and every grip offered has C3 lowest.
     const { shapes, bassMatched } = chordShapesForCapo(request('A', 'minor11', null), 1, 0);
-    if (bassMatched) {
-      expect(lowestPc(shapes[0])).toBe(0);
-      expect(shapes.map(fretText)).not.toContain('8-0-5-5-0-0');
-    } else {
-      expect(shapes.length).toBeGreaterThan(0);
-    }
+    expect(bassMatched).toBe(true);
+    expect(fretText(shapes[0])).toBe('x-3-0-2-0-3');
+    expect(shapes.map((e) => Math.min(...midis(e)))).toEqual(shapes.map(() => 48));
+    expect(shapes.map(fretText)).not.toContain('8-0-5-5-0-0');
   });
 });
 
@@ -113,7 +110,9 @@ describe('M43: a grip offered for an asked bass has that bass lowest', () => {
   it('C major, first inversion: every grip has E lowest; the C shape x-3-2-0-1-0 is not among them', () => {
     const { shapes, bassMatched } = chordShapesForCapo(request('C', 'major', null), 1, 0);
     expect(bassMatched).toBe(true);
-    expect(fretText(shapes[0])).toBe('x-x-2-0-1-0');
+    // The board's order (review item 5): at one position, more strings first for an asked bass.
+    expect(fretText(shapes[0])).toBe('0-3-2-0-1-0');
+    expect(shapes.map(fretText)).toContain('x-x-2-0-1-0');
     expect(shapes.map(lowestPc)).toEqual(shapes.map(() => 4));
     expect(shapes.map(fretText)).not.toContain('x-3-2-0-1-0');
   });

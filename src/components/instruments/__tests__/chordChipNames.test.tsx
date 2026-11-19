@@ -77,9 +77,9 @@ describe('every chip the board can offer carries a learner\'s name (Q1)', () => 
         }
       }
       expect([...bad]).toEqual([]);
-      // 11,017 since music audit 2 (M43: only grips with the asked bass are
-      // offered when one has it); 23,699 before, with the bound at 20,000.
-      expect(named).toBeGreaterThan(9000);
+      // 29,616 after the review of builder K (every way of giving the asked
+      // bass, and the neck searched); 11,017 at its head, 23,699 at 153caab.
+      expect(named).toBeGreaterThan(29_000);
     }, 120_000);
   }
 

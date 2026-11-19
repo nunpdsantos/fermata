@@ -238,21 +238,23 @@ describe('stepping and the bass with a capo', () => {
   });
 
   it('a requested bass no grip above the capo can put lowest: the board says so', () => {
-    // E°7 over D♭ (third inversion), capo 2: the one bass grip would need fret 16.
-    reset({ selectedChord: buildChord(N('E'), 'diminished7'), chordInversion: 3, capoFret: 2 });
+    // G7♯9 over A♭, capo 5. (E°7 over D♭ at capo 2 did until the review of
+    // builder K: the frets above the capo are now searched and give x 4 2 3 2 3.)
+    reset({ selectedChord: { ...buildChord(N('G'), 'dominant7sharp9'), bassNote: N('A', 'b') }, capoFret: 5 });
     render(<Fretboard />);
     expect(screen.getByText(/in the bass, so the shapes are shown as they are/)).toBeTruthy();
-    expect(voicing()).toEqual({ 2: 14, 3: 15, 4: 14, 5: 15 });
+    expect(voicing()).toEqual({ 0: 7, 1: 5, 2: 5, 3: 7, 4: 6, 5: 6 });
   });
 
   it('a grip with its bass on the capo names its anchor fret above the capo', () => {
-    // F♯m/A, capo 5: C♯m's Am-shape barre (fret 4) with the open E bass, moved
-    // up: the bass rings at the capo (fret 5), the barre is on fret 9.
+    // F♯m/A, capo 5: the bass rings at the capo (string 6, fret 5); the board's
+    // order (review of builder K) now opens on 5 x 7 6 7 5, whose lowest
+    // stopped fret above the capo is 6.
     reset({ selectedChord: buildChord(N('F', '#'), 'minor'), chordInversion: 1, capoFret: 5 });
     render(<Fretboard />);
-    expect(voicing()[0]).toBe(5);
+    expect(voicing()).toEqual({ 0: 5, 2: 7, 3: 6, 4: 7, 5: 5 });
     // (The zoomed window's own "5fr" in the open column is not the anchor.)
-    expect(grid().querySelector('[data-term="anchorFret"]')!.textContent).toBe('9fr');
+    expect(grid().querySelector('[data-term="anchorFret"]')!.textContent).toBe('6fr');
   });
 });
 

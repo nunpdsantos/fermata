@@ -86,24 +86,35 @@ describe('M43: every grip offered for an asked bass has that bass lowest', () =>
     }
   });
 
-  it('where no grip has the asked bass, the board says so (C7♯5♯9, root position)', async () => {
-    await board({ selectedChord: chord('C', 'dominant7sharp5sharp9'), chordInversion: 0 });
-    expect(notice()).toContain('No shape here has C in the bass, so the shapes are shown as they are.');
+  it('where no grip has the asked bass, the board says so, and offers every grip of the chord (C7♯5♭9 over B)', async () => {
+    const { chordShapesForCapo, getChordShapesWithFallback } = await import('../../../core/constants/guitarChordShapes');
+    const asked = chord('C', 'dominant7sharp5flat9', 'B');
+    await board({ selectedChord: asked, chordInversion: 0 });
+    expect(notice()).toContain('No shape here has B in the bass, so the shapes are shown as they are.');
+    // Every grip: the chord's own, one chip each, none left out for want of the bass.
+    const frets = (e: { shape: { strings: { fret: number | null }[] }; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
+    const offered = chordShapesForCapo(asked, 0, 0);
+    expect(offered.bassMatched).toBe(false);
+    expect(new Set(offered.shapes.map(frets))).toEqual(new Set(getChordShapesWithFallback(chord('C', 'dominant7sharp5flat9')).map(frets)));
+    expect(chips()).toHaveLength(offered.shapes.length);
   });
 });
 
 describe('M44: a shape that leaves out a tone the chord\'s name carries says which', () => {
+  // (C9 first inversion did until the review of builder K: the neck is now
+  // searched, and 0 1 0 0 1 0 sounds the 9 with E lowest. B♭m9 over B has no
+  // grip a hand can play that sounds the 9 with B lowest: x 2 x 3 2 4.)
   const cases = [
-    ['en', 'This shape leaves out D (9).'],
-    ['pt', 'Esta forma deixa de fora D (9).'],
-    ['es', 'Esta forma deja fuera D (9).'],
+    ['en', 'This shape leaves out C (9).'],
+    ['pt', 'Esta forma deixa de fora C (9).'],
+    ['es', 'Esta forma deja fuera C (9).'],
   ] as const;
   for (const [lang, line] of cases) {
-    it(`${lang}: C9, first inversion (E lowest, the D-shape C7 above it): "${line}"`, async () => {
+    it(`${lang}: B♭m9 over B (B lowest, no C): "${line}"`, async () => {
       await i18n.changeLanguage(lang);
-      const { container } = await board({ selectedChord: chord('C', 'dominant9'), chordInversion: 1 });
-      expect(Math.min(...gripMidis(container)) % 12).toBe(4);
-      expect(gripMidis(container).some((m) => m % 12 === 2)).toBe(false);
+      const { container } = await board({ selectedChord: chord('Bb', 'minor9', 'B'), chordInversion: 0 });
+      expect(Math.min(...gripMidis(container)) % 12).toBe(11);
+      expect(gripMidis(container).some((m) => m % 12 === 0)).toBe(false);
       expect(notice()).toContain(line);
     });
   }

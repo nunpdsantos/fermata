@@ -111,17 +111,24 @@ describe('the central promise: capo 1–9 × the 24 major and minor triads', () 
     // The bass is lowest on the first grip: F (pc 5).
     expect(lowestPc(placed.shapes[0])).toBe(5);
     expect(absFrets(placed.shapes[0])).toEqual([null, 8, 5, 7, 6, 7]);
-    expect(chordShapesForCapo(buildChord(N('A', '#'), 'dominant7'), 3, 7).bassMatched).toBe(false);
+    // A bass no grip above the capo can carry: G7♯9 over A♭ at capo 5 (the board says so).
+    expect(chordShapesForCapo({ ...buildChord(N('G'), 'dominant7sharp9'), bassNote: N('A', 'b') }, 0, 5).bassMatched).toBe(false);
   });
 
-  it('the bass is judged on the grips left once they are moved up: none can take it, so the board says so', () => {
-    // E°7 / D♭ (third inversion: E G B♭ D♭), capo 2: the only bass grip needs fret 16,
-    // so it is dropped, and what remains does not put the bass lowest.
+  it('the bass is judged on the grips left once they are moved up; where none of those fits, the frets above the capo are searched', () => {
+    // E°7 / D♭ (third inversion: E G B♭ D♭), capo 2: the no-capo bass grip
+    // needs fret 16, so it is dropped; within the frets left above the capo
+    // the board then finds x 4 2 3 2 3 (the capo stops strings 4 and 2).
     const e7 = buildChord(N('E'), 'diminished7');
     const placed = chordShapesForCapo(e7, 3, 2);
-    expect(placed.bassMatched).toBe(false);
-    expect(placed.shapes.map((e) => absFrets(e))).toEqual([[null, null, 14, 15, 14, 15]]);
-    for (const e of placed.shapes) expect(isPlayableChordShape(e, 15, 2)).toBe(true);
+    expect(placed.bassMatched).toBe(true);
+    expect(absFrets(placed.shapes[0])).toEqual([null, 4, 2, 3, 2, 3]);
+    for (const e of placed.shapes) {
+      expect(isPlayableChordShape(e, 15, 2)).toBe(true);
+      const frets = absFrets(e);
+      const low = frets.findIndex((f) => f !== null);
+      expect((OPEN_PCS[low] + frets[low]!) % 12).toBe(1);
+    }
   });
 });
 
@@ -182,10 +189,15 @@ describe('inversions and the bass with a capo', () => {
   });
 });
 
-describe('no capo: exactly the pipeline the board always used', () => {
-  // Since music audit 2 (M43, 2026-11-19) root position asks for the root, and
-  // when some grip has the asked bass lowest only those are offered (a triad
-  // has no named extension, so M44's second pass never applies here).
+describe('no capo: exactly the pipeline the board uses', () => {
+  // Since music audit 2: root position asks for the root (M43), only grips
+  // with the asked bass are offered when one has it, one chip per grip, and
+  // the board's order (the review of builder K, item 5), written here from
+  // its rule: four strings or more first, then the lowest fretted fret, then
+  // (for an asked bass other than the root) more strings, then as found.
+  const fretsOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
+  const sounding = (e: { shape: ChordShape }) => e.shape.strings.filter((p) => p.fret !== null).length;
+  const lowestFretted = (e: { shape: ChordShape; baseFret: number }) => Math.min(Infinity, ...e.shape.strings.flatMap((p) => (p.fret === null || e.baseFret + p.fret === 0 ? [] : [e.baseFret + p.fret])));
   it('all 24 triads, root position and both inversions', () => {
     for (const chord of TRIADS) {
       for (const inversion of [0, 1, 2]) {
@@ -196,10 +208,14 @@ describe('no capo: exactly the pipeline the board always used', () => {
           pcOf(bass),
           inversion > 0 ? `${bass.natural}${bass.accidental}` : '',
         );
-        const expected = arranged.bassMatched ? arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass)) : arranged.shapes;
+        expect(arranged.bassMatched).toBe(true);
+        const seen = new Set<string>();
+        const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass) && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
+        const rank = (e: (typeof offered)[number]) => [/^(C|G)-shape Barre$/.test(e.shape.name) ? 1 : 0, sounding(e) <= 3 ? 1 : 0, lowestFretted(e) === Infinity ? 0 : lowestFretted(e), inversion > 0 ? -sounding(e) : 0];
+        const expected = offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2] || a.r[3] - b.r[3] || a.i - b.i).map((x) => x.e);
         const got = chordShapesForCapo(chord, inversion, 0);
-        expect(got.shapes).toEqual(expected);
-        expect(got.bassMatched).toBe(arranged.bassMatched);
+        expect(got.shapes.map(fretsOf), `${chord.root.natural}${chord.root.accidental} ${chord.quality} inv ${inversion}`).toEqual(expected.map(fretsOf));
+        expect(got.bassMatched).toBe(true);
         expect(got.shapeChord).toBe(chord);
       }
     }

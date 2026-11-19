@@ -3672,14 +3672,20 @@ function searchedAcrossTheNeck(
           if (found.has(key)) return;
           const strings = fingersFor(frets, maxFret);
           if (!strings) return;
+          // Stored as the generator stores its own: from the lowest stopped
+          // fret (an open string a negative offset), "open" only with nothing
+          // stopped, named "Pos N" — so the chip reads "Fret N" (or "Open"),
+          // and the Progression panel's "open grip" means what it always has.
+          const stopped = frets.filter((f): f is number => f !== null && f > 0);
+          const baseFret = stopped.length > 0 ? Math.min(...stopped) : 0;
+          const relative = strings.map((p) => ({ ...p, fret: p.fret === null ? null : (p.fret as number) - baseFret })) as ChordShape['strings'];
           const bars = strings.flatMap((p, i) => (p.finger === 'bar' ? [i] : []));
-          const barre = bars.length > 1 ? { fret: strings[bars[0]].fret as number, fromString: 6 - bars[0], toString: 6 - bars[bars.length - 1] } : undefined;
+          const barre = bars.length > 1 ? { fret: (strings[bars[0]].fret as number) - baseFret, fromString: 6 - bars[0], toString: 6 - bars[bars.length - 1] } : undefined;
           const shape: ChordShape = {
-            name: 'Search', shortName: `Fret ${w}`, type: 'open', cagedShape: 'C', rootString: 6, rootFretOffset: 0, strings,
+            name: 'Search', shortName: `Pos ${baseFret}`, type: baseFret === 0 ? 'open' : 'barre', cagedShape: 'C', rootString: 6, rootFretOffset: 0, strings: relative,
             ...(barre ? { barreInfo: barre } : {}),
           };
-          // Named as the generator names its own ("Pos 5"), so the chip reads "Fret 5".
-          const placed = { shape: { ...shape, shortName: `Pos ${w}`, ...(bassLabel ? withBassName({ ...shape, shortName: `Pos ${w}` }, bassLabel) : {}) }, baseFret: 0 };
+          const placed = { shape: { ...shape, ...withBassName(shape, bassLabel) }, baseFret };
           if (isPlayableChordShape(placed, maxFret)) found.set(key, placed);
           return;
         }
@@ -3691,6 +3697,34 @@ function searchedAcrossTheNeck(
     if (found.size > 0) break;
   }
   return boardOrder([...found.values()], !!bassLabel).slice(0, 4);
+}
+
+/**
+ * A grip given a bass from an open shape stays "open" (the Progression
+ * panel's "open grip", `hasOpenGrip`) only while every stopped fret is within
+ * the open position and its stretch — frets 1–4 and the little finger up to
+ * fret 5, as the scale positions have it (`guitarPositions`): Cmaj7/A
+ * 5 3 2 0 0 0 stays open, Em7/C 8 x 0 0 0 0 — the open Em7 with its low
+ * string re-fretted to fret 8 — is not an open grip (review of builder K).
+ */
+function inOpenPositionOrNot(entry: { shape: ChordShape; baseFret: number }): { shape: ChordShape; baseFret: number } {
+  if (entry.shape.type !== 'open') return entry;
+  const stopped = entry.shape.strings.every((p) => p.fret === null || entry.baseFret + p.fret <= 5);
+  return stopped ? entry : { shape: { ...entry.shape, type: 'barre' }, baseFret: entry.baseFret };
+}
+
+/**
+ * A 7alt grip sounds at least one of its alterations (♭9 ♯9 ♯11 ♭13): the
+ * required set names each tone a grip must sound, and cannot say "one of",
+ * so a grip a bass is given by muting, re-fretting or a search could sound
+ * only R 3 ♭7, a C7 under the name C7alt (round one's walk caught it). Every
+ * other chord: true.
+ */
+function keepsItsAlteration(entry: { shape: ChordShape; baseFret: number }, chord: Chord): boolean {
+  if (chord.quality !== 'dominant7alt') return true;
+  const root = getPitchClass(chord.root);
+  const sounding = new Set(shapeSoundingPitchClasses(entry.shape, entry.baseFret));
+  return [1, 3, 6, 8].some((o) => sounding.has((root + o) % 12));
 }
 
 /**
@@ -3727,9 +3761,9 @@ export function arrangeShapesForBass(
     ...tier((e) => withBassAdded(e, bassPc, bassLabel, maxFret)),
     ...tier((e) => withLowestRefretted(e, bassPc, required, bassLabel, maxFret)),
     ...searchedForBass(chord, bassPc, required, bassLabel, maxFret),
-  ];
+  ].filter((e) => keepsItsAlteration(e, chord)).map(inOpenPositionOrNot);
   if (found.length > 0) return { shapes: [...found, ...shapes], bassMatched: true };
-  const searched = searchedAcrossTheNeck(chord, bassPc, required, bassLabel, maxFret);
+  const searched = searchedAcrossTheNeck(chord, bassPc, required, bassLabel, maxFret).filter((e) => keepsItsAlteration(e, chord));
   if (searched.length > 0) return { shapes: [...searched, ...shapes], bassMatched: true };
   return { shapes, bassMatched: false };
 }

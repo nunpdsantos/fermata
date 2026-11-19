@@ -70,9 +70,12 @@ interface Sweep {
   rootNoRootBass: string[];
   namedSilent: string[];
   namedSaid: string[];
+  wholeAfterLeft: string[];
+  altWithout: string[];
+  twice: string[];
   bassNoticeByClass: Record<string, number>;
 }
-const sweep: Sweep = { requests: 0, grips: 0, straightBarre: [], firstMissesBass: [], otherBass: [], noGrip: [], rootNoRootBass: [], namedSilent: [], namedSaid: [], bassNoticeByClass: {} };
+const sweep: Sweep = { requests: 0, grips: 0, straightBarre: [], firstMissesBass: [], otherBass: [], noGrip: [], rootNoRootBass: [], namedSilent: [], namedSaid: [], wholeAfterLeft: [], altWithout: [], twice: [], bassNoticeByClass: {} };
 
 beforeAll(() => {
   for (const [rootPc, root] of ROOTS.entries()) {
@@ -93,8 +96,12 @@ beforeAll(() => {
             sweep.bassNoticeByClass[ask.cls] = (sweep.bassNoticeByClass[ask.cls] ?? 0) + 1;
             if (!ask.bass && ask.inversion === 0) sweep.rootNoRootBass.push(key);
           }
+          let leftSeen = false;
+          const seen = new Set<string>();
           for (const [index, e] of shapes.entries()) {
             sweep.grips++;
+            if (seen.has(text(e))) sweep.twice.push(`${key}: ${text(e)}`);
+            seen.add(text(e));
             const f = frets(e);
             const fingers = e.shape.strings.map((p, s) => (f[s] === null ? null : f[s] === capo ? 0 : p.finger === 'bar' ? 1 : p.finger));
             const midis = f.flatMap((x, s) => (x === null ? [] : [OPEN[s] + x]));
@@ -110,7 +117,10 @@ beforeAll(() => {
             // Root position only, as the audit counts it (an inversion or a
             // slash bass may take the place of a named tone's string: then it
             // too must say so, checked here for every request).
+            if (quality === 'dominant7alt' && ![1, 3, 6, 8].some((d) => pcs.has((rootPc + d) % 12))) sweep.altWithout.push(`${key}: ${text(e)}`);
             const missing = (NAMED[quality] ?? []).filter((d) => !pcs.has((rootPc + d) % 12));
+            if (missing.length) leftSeen = true;
+            else if (leftSeen) sweep.wholeAfterLeft.push(`${key}: ${text(e)}`);
             if (missing.length) {
               const said = gripLeavesOut(e, request).map(pcOf);
               if (missing.some((d) => !said.includes((rootPc + d) % 12))) sweep.namedSilent.push(`${key}: ${text(e)}`);
@@ -169,6 +179,15 @@ describe('the audit\'s space, swept (music audit 2, M36 M42 M43 M44 M45)', () =>
   });
   it('M45: every request has a grip', () => {
     expect(sweep.noGrip).toEqual([]);
+  });
+  it('review item 3: no list holds one grip twice', () => {
+    expect(sweep.twice).toEqual([]);
+  });
+  it('review item 4: a grip that leaves a named tone out never comes before one that sounds them all', () => {
+    expect(sweep.wholeAfterLeft).toEqual([]);
+  });
+  it('a 7alt grip sounds at least one of its alterations (♭9 ♯9 ♯11 ♭13)', () => {
+    expect(sweep.altWithout).toEqual([]);
   });
   it('the bass notice ("No shape here has X in the bass"), by chord quality and asked bass', () => {
     if (RECORD) return;

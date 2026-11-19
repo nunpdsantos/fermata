@@ -82,9 +82,8 @@ describe('the degree of a tone a grip leaves out', () => {
       const frets = e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
       return `${frets}: ${words(e, chord).join(', ')}`;
     };
-    expect(first('C9/Db', 3)).toBe('x-4-x-5-5-6: D (9)');
-    expect(first('D9/Bb', 0)).toBe('x-1-0-2-1-2: E (9)');
-    expect(first('Db9/D', 0)).toBe('x-x-0-4-2-1: Eb (9)');
+    expect(first('Bbm9/B', 0)).toBe('x-2-x-3-2-4: C (9)');
+    expect(first('C13', 9)).toBe('x-x-10-9-11-10: A (13)');
   });
 
   it('two tones, each with its own degree (Cmaj9♯11 held as C E B: the 9 and the ♯11)', () => {
