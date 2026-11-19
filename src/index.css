@@ -3194,3 +3194,63 @@ html[data-metro-room] .learn-scroll {
 @media (min-width: 640px) {
   .chord-shapes-line { flex: 1 1 0; max-width: max-content; }
 }
+
+/* App behaviour stream (builder A), audit 2 P10, 19 November 2026: a printed
+   LESSON is its text, staves, rhythms, song references and tasks — not the
+   screen's furniture. On top of the print rules above (top bar, dock, toasts,
+   menus and sheets hidden; light tokens): the section rail or picker, Back,
+   each Try This's buttons (Hear it, Show on the piano / guitar, Open in
+   Explore — a chord list's chords stay, as words), the check's card ("Start
+   the check"), a track's closing card, Previous / Next and "Found a mistake?"
+   go; the rail's grid becomes one column; Learn's scroller prints whole; the
+   level and status colours print as their day ink (the Night block names
+   them too), so every printed word is ≥ 4.5:1 on the paper. Checked at A4
+   width and from a laptop's screen in e2e/lesson-print.spec.ts. */
+@media print {
+  :root.fermata-night {
+    --success-text: #006045;
+    --danger-text: #9f0712;
+    --warning-text: #973c00;
+    --level-text-l1: #235591;
+    --level-text-l2: #005c82;
+    --level-text-l3: #006440;
+    --level-text-l4: #006356;
+    --level-text-l5: #785200;
+    --level-text-l6: #8a4200;
+    --level-text-l7: #8d3063;
+    --level-text-l8: #5d4697;
+    --level-text-l9: #943135;
+  }
+  .learn-scroll {
+    overflow: visible !important;
+    height: auto !important;
+    padding-bottom: 0 !important;
+  }
+  [data-learn-scroll] div:has(> aside > [data-testid="section-rail"]) {
+    display: block !important;
+  }
+  aside:has(> [data-testid="section-rail"]),
+  [data-testid="section-picker"],
+  [data-section="intro"] > div:first-child > button,
+  [data-testid="inline-try-this"] button:not([data-testid="try-this-chords"] button),
+  [data-section="check"],
+  [data-section="check"] ~ * {
+    display: none !important;
+  }
+  [data-testid="try-this-chords"] button {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  /* A task's tick box is named by its instruction, and the rule above that
+     hides the dock (aria-label ending "instrument") caught every task ending
+     "… on your instrument": each task prints its box. */
+  [data-section="tasks"] button[aria-pressed] {
+    display: flex !important;
+  }
+  [data-testid="inline-try-this"],
+  [data-section="songs"] {
+    break-inside: avoid;
+  }
+}
