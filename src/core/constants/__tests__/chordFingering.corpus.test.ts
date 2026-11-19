@@ -32,7 +32,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildChord, CHORD_FORMULAS } from '../chords';
 import { rightHandStudy, RIGHT_HAND_PATTERNS } from '../../utils/rightHandPatterns';
-import { CHORD_SHAPE_LIBRARY, chordShapesForCapo, getChordShapes, isPlayableChordShape, type ChordShape } from '../guitarChordShapes';
+import { arrangeShapesForBass, CHORD_SHAPE_LIBRARY, chordShapesForCapo, getChordShapes, isPlayableChordShape, type ChordShape } from '../guitarChordShapes';
 import type { Chord, ChordQuality, Note } from '../../types/music';
 
 const MAX_FRET = 15;
@@ -304,6 +304,17 @@ beforeAll(() => {
     }
   }
 }, 900_000);
+
+describe('muting strings below the bass checks the PITCH left lowest (review of a611beb)', () => {
+  it('D major 5 9 0 7 7 x asked for F♯: the first F♯ string is A9, but the open D (D3) sounds lower, so no "/F♯" grip and the notice', () => {
+    const strings = [{ fret: 5, finger: 1 }, { fret: 9, finger: 4 }, { fret: 0, finger: 0 }, { fret: 7, finger: 2 }, { fret: 7, finger: 3 }, { fret: null, finger: 0 }] as ChordShape['strings'];
+    const entry: Placed = { shape: { name: 'planted', shortName: 'E shape', type: 'barre', cagedShape: 'E', rootString: 6, rootFretOffset: 0, strings }, baseFret: 0 };
+    expect(fingeringFaults(entry), 'a hand can play it').toEqual([]);
+    const got = arrangeShapesForBass([entry], buildChord(toNote('D'), 'major'), 6, 'F#');
+    for (const e of got.shapes) if (e.shape.shortName.includes('/')) expect(lowestPitch(e) % 12, grip(e)).toBe(6);
+    expect(got.bassMatched).toBe(false);
+  });
+});
 
 describe('every grip the board can offer (Q1, the whole class; the review of a611beb)', () => {
   it('walks every request: 21 spellings x every quality x every inversion, slash chords, capo 0-9', () => {
