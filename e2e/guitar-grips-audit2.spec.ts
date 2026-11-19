@@ -87,7 +87,12 @@ test.describe('M47: the arrow keys reach the open strings', () => {
     ['the owner\'s neck (nut right)', {}, 'ArrowRight', 'ArrowLeft'],
     ['the tab view (nut left, thin string on top)', TAB_NECK, 'ArrowLeft', 'ArrowRight'],
   ] as const) {
-    test(`${name}: from fret 1 toward the nut is the open string; Enter plays it; and back`, async ({ browser }) => {
+    // What Enter does is seen on both servers: the note it plays stays the
+    // pinned focus note once the keyboard leaves the board, where moving onto
+    // the cell alone leaves nothing lit. Its SOUND is checked on the dev
+    // server only (the voice is replaced through its modules); a build cannot
+    // be listened to here.
+    test(`${name}: from fret 1 toward the nut is the open string; Enter plays it (stays lit; heard on the dev server only); and back`, async ({ browser }) => {
       const { context, page } = await open(browser, LAPTOP, { guitarScalePosition: 'all', ...neck });
       try {
         const recording = await recordVoice(page);
@@ -103,9 +108,21 @@ test.describe('M47: the arrow keys reach the open strings', () => {
         expect(await ring.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
         await page.keyboard.press(toNut); // nothing past the open string
         await expect(live(page)).toHaveText(`String ${top}, open, E`);
+        const lit = page.locator('[role="grid"] [data-open-string][data-focus-note]');
+        const leave = () => page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+        // Not played yet: with the keyboard gone, nothing stays lit.
+        await leave();
+        await expect(lit).toHaveCount(0);
+        await grid.focus();
+        await expect(ring).toHaveCount(1);
         await page.keyboard.press('Enter');
         // Played as a tap plays it: the read-out names the open string…
         await expect(page.getByTestId('dock-readout')).toContainText(`string ${top} open`);
+        // …and it stays lit, the pinned note, once the keyboard leaves.
+        await leave();
+        await expect(lit).toHaveCount(1);
+        await expect(page.getByTestId('dock-readout')).toContainText(`string ${top} open`);
+        await grid.focus();
         // …and, on the dev server, the voice is asked for that one pitch.
         if (recording) await expect.poll(async () => (await voiceLog(page)).filter((c) => c.op !== 'stop').map((c) => c.midi)).toEqual([top === 6 ? 40 : 64]);
         // All six strings, along the open column.

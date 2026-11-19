@@ -177,6 +177,45 @@ describe('M46: the scale-position notice names every pitch it cannot reach, and 
     expect(notice()).toBe(`In this tuning two strings are a 5th apart, so F3 and G♭3, between them, are out of the hand's reach in this position. You will find F3 in ${name(at[0])} and G♭3 in ${name(at[1])}.`);
   });
 
+  it('a tie goes to the lower position: C major, Drop D, position VII skips A2; VI and VIII both play it, VI is named', async () => {
+    const at = (p: number) => getGuitarPosition(N('C'), 'major', p, dropD, GUITAR_MAX_FRET, 0);
+    const missing = at(7).skippedMidi;
+    expect(missing).toHaveLength(1);
+    const playsIt = (p: number) => at(p).notes.some((x) => x.midi === missing[0]);
+    // Worked out here: the two nearest positions both play it.
+    expect([playsIt(6), playsIt(8)]).toEqual([true, true]);
+    await board({ selectedKey: N('C'), guitarTuningId: 'drop-d', guitarScalePosition: 7 });
+    expect(notice()).toMatch(/You will find it in position VI\.$/);
+  });
+
+  it('the Open position in PT and ES: C major, Drop D, position I skips A2, which the Open position plays', async () => {
+    expect(getGuitarPosition(N('C'), 'major', 0, dropD, GUITAR_MAX_FRET, 0).notes.some((x) => x.midi === 45)).toBe(true);
+    for (const [lang, end] of [['en', 'You will find it in the Open position.'], ['pt', 'Encontra-la na posição aberta.'], ['es', 'La encuentras en la posición abierta.']] as const) {
+      await i18n.changeLanguage(lang);
+      const { unmount } = await board({ selectedKey: N('C'), guitarTuningId: 'drop-d', guitarScalePosition: 1 });
+      expect(notice(), lang).toMatch(/ A2[, ]/);
+      expect(notice().endsWith(` ${end}`), `${lang}: ${notice()}`).toBe(true);
+      unmount();
+    }
+  });
+
+  it('each pitch where it is, in PT and ES (E Lydian, Open G, capo 9, position X: A♯3 in XI, B3 in the Open position)', async () => {
+    const openG = getTuningById('open-g');
+    const reach = (await import('../../../core/utils/guitarPositionReach')).skippedReach(N('E'), 'lydian', 10, openG, 9);
+    expect(reach.playedIn).toBeNull();
+    expect(reach.notes.map((x) => [x.midi, x.playedIn])).toEqual([[58, 11], [59, 0]]);
+    for (const [lang, end] of [
+      ['en', 'You will find A♯3 in position XI and B3 in the Open position.'],
+      ['pt', 'Encontras A♯3 na posição XI e B3 na posição aberta.'],
+      ['es', 'Encuentras A♯3 en la posición XI y B3 en la posición abierta.'],
+    ] as const) {
+      await i18n.changeLanguage(lang);
+      const { unmount } = await board({ selectedKey: N('E'), selectedScale: 'lydian', guitarTuningId: 'open-g', guitarScalePosition: 10, capoFret: 9 });
+      expect(notice().endsWith(` ${end}`), `${lang}: ${notice()}`).toBe(true);
+      unmount();
+    }
+  });
+
   it('PT and ES name the same two pitches', async () => {
     await i18n.changeLanguage('pt');
     const { unmount } = await board({ selectedKey: N('D'), guitarTuningId: 'drop-d', guitarScalePosition: 12 });

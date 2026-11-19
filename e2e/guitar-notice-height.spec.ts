@@ -4,25 +4,32 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  * The guitar dock's notice line (the review of builder K, item 8, from the
  * Explore builder): at 1440×900 in an alternate tuning with a chord selected
  * the notice took a line of its own and made the dock 26 px taller (321 →
- * 347 px), pushing Explore's circle column past the fold. The notice now
- * shares the controls row where it fits on one line.
+ * 347 px), pushing Explore's circle column past the fold. From 1024 px the
+ * notice now shares the controls row's line (the chord chips give up width
+ * and scroll sideways, the selected chip kept in view).
  *
  * Measured with and without the notice in the same run (the notice hidden by
- * a style on the page, nothing else changed): with it, the dock is no taller,
- * at 1280×720, 1366×768, 1440×900 and 1536×864, in EN / PT / ES, in standard
+ * a style on the page, nothing else changed), at 1280×720, 1366×768, 1440×900
+ * and 1536×864, in EN / PT / ES. A CHORD's notice adds no height: standard
  * tuning (a bass the neck cannot give; a grip that leaves out a named tone)
- * and in Open G (a chord: shapes are for standard tuning only; a scale
- * position with a note out of reach). The notice's words are never cut: it
+ * and Open G (shapes are for standard tuning only).
+ *
+ * A SCALE POSITION's notice in Open G (a note out of reach) cannot: on one
+ * line it is 882 / 981 / 1,035 px (EN / PT / ES) and the row's controls leave
+ * 108–546 px beside them; on two lines it is 40.6 px tall, more than the
+ * row's 36 px line. So it keeps its own line, as before: 26.3 px — pinned as
+ * that, so it can grow no further. Its words are never cut: every notice
  * stays visible, whole, inside the dock.
  */
 
 const SIZES = [{ w: 1280, h: 720 }, { w: 1366, h: 768 }, { w: 1440, h: 900 }, { w: 1536, h: 864 }];
 const LANGS = ['en', 'pt', 'es'] as const;
 const CASES = [
-  { name: 'standard, no grip has the bass (C7♯5♯9)', state: {}, url: '/?chord=C7%235%239&inst=guitar' },
-  { name: 'standard, the grip leaves out the 9 (C9/D♭)', state: {}, url: '/?chord=C9/Db&inst=guitar' },
-  { name: 'Open G, a chord', state: { guitarTuningId: 'open-g' }, url: '/?chord=C&inst=guitar' },
-  { name: 'Open G, a note out of reach (G major, position III)', state: { guitarTuningId: 'open-g', selectedKey: { natural: 'G', accidental: '' }, guitarScalePosition: 3 }, url: '/' },
+  { name: 'standard, no grip has the bass (C7♯5♭9/B)', state: {}, url: '/?chord=C7%235b9/B&inst=guitar', adds: 0 },
+  { name: 'standard, the grip leaves out the 9 (B♭m9/B)', state: {}, url: '/?chord=Bbm9/B&inst=guitar', adds: 0 },
+  { name: 'Open G, a chord', state: { guitarTuningId: 'open-g' }, url: '/?chord=C&inst=guitar', adds: 0 },
+  // One line of text-ui (20.3 px) and the row's gap (6 px): it does not fit beside the controls.
+  { name: 'Open G, a note out of reach (G major, position III)', state: { guitarTuningId: 'open-g', selectedKey: { natural: 'G', accidental: '' }, guitarScalePosition: 3 }, url: '/', adds: 26.3 },
 ] as const;
 
 async function open(browser: Browser, size: { w: number; h: number }, lang: string, state: Record<string, unknown>, url: string) {
@@ -46,7 +53,8 @@ const dockHeight = (page: Page) => page.getByTestId('instrument-dock').evaluate(
 for (const c of CASES) {
   for (const size of SIZES) {
     for (const lang of LANGS) {
-      test(`${c.name}, ${size.w}×${size.h} ${lang}: the notice adds no height to the dock`, async ({ browser }) => {
+      const claim = c.adds === 0 ? 'the notice adds no height to the dock' : 'the notice takes one line of its own and no more (it does not fit beside the controls)';
+      test(`${c.name}, ${size.w}×${size.h} ${lang}: ${claim}`, async ({ browser }) => {
         const { context, page } = await open(browser, size, lang, c.state, c.url);
         try {
           const notice = page.getByTestId('instrument-dock').getByRole('status');
@@ -60,11 +68,19 @@ for (const c of CASES) {
           expect(box.x).toBeGreaterThanOrEqual(dock.x - 0.5);
           expect(box.x + box.width).toBeLessThanOrEqual(dock.x + dock.width + 0.5);
           expect(await notice.evaluate((el) => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+          // The chord chips give up width, never the selected chip: it stays in view.
+          const chip = page.getByTestId('instrument-dock').locator('.chip-row-scroll [aria-checked="true"]');
+          if ((await chip.count()) > 0) {
+            const at = (await chip.boundingBox())!;
+            const row = (await page.getByTestId('instrument-dock').locator('.chip-row-scroll').first().boundingBox())!;
+            expect(at.x).toBeGreaterThanOrEqual(row.x - 0.5);
+            expect(at.x + at.width).toBeLessThanOrEqual(row.x + row.width + 0.5);
+          }
           await notice.evaluate((el) => { (el as HTMLElement).style.display = 'none'; });
           await settled(page);
           const without = await dockHeight(page);
           console.log(`notice height: ${c.name} ${size.w}x${size.h} ${lang}: with ${withIt.toFixed(1)} px, without ${without.toFixed(1)} px`);
-          expect(withIt, `with the notice ${withIt}, without ${without}`).toBeLessThanOrEqual(without + 0.5);
+          expect(withIt, `with the notice ${withIt}, without ${without}`).toBeLessThanOrEqual(without + c.adds + 0.5);
         } finally {
           await context.close();
         }

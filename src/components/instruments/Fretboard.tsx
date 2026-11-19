@@ -953,8 +953,13 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
           {scaleView && mode === 'position' && <PositionLegend />}
 
+          {/* From 1024 px the notice keeps its own width and shares the row's
+              line where it fits (the chord chips give up width and scroll), so
+              it adds no height to the dock (the review of builder K, item 8:
+              +26 px at 1440×900, pushing Explore's circle past the fold); where
+              it cannot fit it takes a line, as it always has below 1024 px. */}
           {notices.length > 0 && (
-            <p role="status" className="w-full text-ui" style={{ color: 'var(--text-muted)' }}>
+            <p role="status" className="w-full min-[1024px]:w-auto min-[1024px]:max-w-full min-[1024px]:flex-[0_1_auto] text-ui" style={{ color: 'var(--text-muted)' }}>
               {notices.join(' ')}
             </p>
           )}

@@ -36,6 +36,7 @@ describe('M46: the notice names every pitch a position skips, and a position tha
     const nowhere: string[] = [];
     const allApart: string[] = [];
     let positions = 0;
+    let ties = 0;
     for (const [r, root] of ROOTS.entries()) {
       for (const [scale, formula] of Object.entries(SCALE_FORMULAS)) {
         const included = new Set(formula.map((i) => (r + i) % 12));
@@ -65,6 +66,18 @@ describe('M46: the notice names every pitch a position skips, and a position tha
                 const there = new Set(getGuitarPosition(N(root), scale as ScaleType, p, tuning, GUITAR_MAX_FRET, capo).notes.map((n) => n.midi));
                 return capoPositions(capo).includes(p) && p !== frame.position && midis.every((m) => there.has(m));
               };
+              // The NEAREST position that plays them, a tie to the lower,
+              // worked out here over every position the capo leaves.
+              const nearest = (midis: number[]) => {
+                const ok = capoPositions(capo).filter((p) => plays(p, midis));
+                if (ok.length === 0) return null;
+                const d = Math.min(...ok.map((p) => Math.abs(p - frame.position)));
+                const near = ok.filter((p) => Math.abs(p - frame.position) === d);
+                if (near.length > 1) ties++;
+                return Math.min(...near);
+              };
+              if (reach.playedIn !== nearest(actual)) wrong.push(`${where}: named ${reach.playedIn}, the nearest is ${nearest(actual)}`);
+              for (const x of reach.notes) if (x.playedIn !== nearest([x.midi])) wrong.push(`${where}: ${x.midi} named in ${x.playedIn}, the nearest is ${nearest([x.midi])}`);
               if (reach.playedIn !== null) {
                 if (!plays(reach.playedIn, actual)) wrong.push(`${where}: position ${reach.playedIn} does not play ${actual}`);
                 continue;
@@ -90,6 +103,9 @@ describe('M46: the notice names every pitch a position skips, and a position tha
     // both pitches: their notice names a position per pitch.
     expect(allApart).toHaveLength(485);
     expect(allApart.every((w) => / capo [789] /.test(w))).toBe(true);
+    // Ties were met (two positions equally near, both playing it: 41,454
+    // times, counting each whole notice and each pitch), each settled to the lower.
+    expect(ties).toBe(41_454);
   }, 300_000);
 
   it('D major, Drop D, position XII: F♯3 and G3', () => {
