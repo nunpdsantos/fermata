@@ -62,7 +62,7 @@ describe('the public pages\' doors carry the door (A19)', () => {
       edit(pages);
       return { pages, sitemap: site.sitemap, home: indexHtml, files: new Set(['/', STYLESHEET, ...publicFiles]) };
     };
-    const problems = (f: SiteFiles) => checkSite(f, { lessons: 136 }).problems;
+    const problems = (f: SiteFiles) => checkSite(f, { lessons: 136, slugs: registry as SlugRegistry }).problems;
     expect(problems(files())).toEqual([]);
     const planted = (from: string, to: string) => problems(files((pages) => {
       const html = pages.get('/pt/')!;

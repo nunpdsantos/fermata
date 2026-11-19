@@ -50,7 +50,7 @@ export function verifyDist(dist: string, slugs: SlugRegistry): CheckReport {
       home: readFileSync(path.join(dist, 'index.html'), 'utf8'),
       files,
     },
-    { lessons: siteLessons('en').length, forbidden },
+    { lessons: siteLessons('en').length, slugs, forbidden },
   );
 }
 

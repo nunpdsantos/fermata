@@ -9,7 +9,9 @@
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
 import { SITE_LANGS, appText, siteLessons, type SiteLang } from './content';
-import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, START_DOOR_IDS, appUrl, type PageKind } from './render';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, START_DOOR_IDS, appUrl, sitePath, type PageKind } from './render';
+import type { SlugRegistry } from './slugs';
+import { esc } from './html';
 import { LANGUAGE_NAMES, newText } from './strings';
 
 export interface SiteFiles {
@@ -25,6 +27,8 @@ export interface SiteFiles {
 export interface CheckExpect {
   /** Lessons per language. */
   lessons: number;
+  /** The frozen slug registry (scripts/pages/slugs.json): which lesson each lesson page's address belongs to. */
+  slugs: SlugRegistry;
   /** Per page path, raw strings that must not appear in its text (a task's quoted-query tokens). */
   forbidden?: ReadonlyMap<string, readonly string[]>;
 }
@@ -218,30 +222,75 @@ export const HOME_FALLBACK_ANIMATION = `animation:boot-links ${HOME_FALLBACK_FAD
 export const HOME_FALLBACK_KEYFRAMES = '@keyframes boot-links{from{visibility:hidden;opacity:0}}';
 /** With scripts off: the links at once, without the "taking a while" lines (nothing is loading). */
 export const HOME_FALLBACK_NOSCRIPT = '<noscript><style>#boot-links{animation:none}#boot-links p{display:none}</style></noscript>';
+/**
+ * The whole style of the home's way on, exactly as index.html's head writes
+ * it (2026-11-19, review: checked whole, not by parts — a second rule, a
+ * second <style> or an `!important` undid the delay unseen). Upright text
+ * throughout: the italic face is another file (src/index.css: the upright
+ * `Source Serif 4` is one variable file per character range for every weight
+ * from 300 to 700, the italic separate files), which index.html does not
+ * preload; asked for while the app loads, it delayed the app's first drawing
+ * by about 600 ms on a slow connection (measured 2026-11-18). The `h1` is
+ * kept upright and regular by name, whatever the app's stylesheet does.
+ */
+export const HOME_FALLBACK_STYLE = `<style>#boot-links{box-sizing:border-box;max-width:32rem;margin:0 auto;padding:48px 16px;font-size:16px;line-height:1.5;${HOME_FALLBACK_ANIMATION}}#root:not(:empty)+#boot-links{display:none}#boot-links h1{margin:0 0 16px;font-size:28px;font-style:normal;font-weight:400}#boot-links ul{margin:0;padding:0;list-style:none}#boot-links li{display:flex;flex-wrap:wrap;column-gap:24px}#boot-links p{flex-basis:100%;margin:16px 0 0}#boot-links a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent-text,#8f4a1e);text-decoration:underline;text-underline-offset:3px}${HOME_FALLBACK_KEYFRAMES}</style>`;
 
 /**
- * What is wrong with the home's way on: #root empty and the links its next
- * element (index.html's entry script may follow them; the build moves it to
- * the head); hidden once #root has content; shown at once with scripts off,
- * without the lines; with scripts on after the delay and fade above; the
- * name, the links, their words and languages; each language's line (its
- * words `bootSlow`, src/site/strings.ts) first in its item; upright regular
- * text only; no script among them.
+ * The block's markup, generated from its links (`homeFallbackLinks`) and
+ * lines (`bootSlow`): index.html must carry exactly this right after #root,
+ * whitespace between tags aside — tag for tag, attribute for attribute.
+ * `data-nosnippet`: the block is in the home page's raw text, lines
+ * included, and Google reads the attribute on a div, span or section
+ * (developers.google.com/search/docs/crawling-indexing/robots-meta-tag, read
+ * 19 November 2026), so "Fermatina is taking a while to start" is never shown
+ * as the site's snippet in search results.
+ */
+export function homeFallbackMarkup(): string {
+  const links = homeFallbackLinks();
+  const items = SITE_LANGS.map((lang) => {
+    const own = links.filter((l) => l.lang === lang).map((l) => `<a href="${esc(l.href)}">${esc(l.text)}</a>`).join('');
+    return `<li lang="${htmlLangFor(lang)}"><p>${esc(newText(lang, 'bootSlow'))}</p>${own}</li>`;
+  }).join('');
+  return `<div id="boot-links" data-nosnippet><h1>${esc(appText('en', 'nav.musicTheory'))}</h1><ul>${items}</ul></div>`;
+}
+
+/** Markup with the whitespace between tags taken out. */
+const tight = (html: string) => html.replace(/>\s+</g, '><').trim();
+/** Where two texts first differ, shown with a little of each around it. */
+function differsAt(found: string, want: string): string {
+  let i = 0;
+  while (i < found.length && i < want.length && found[i] === want[i]) i++;
+  const at = (s: string) => JSON.stringify(s.slice(Math.max(0, i - 24), i + 48));
+  return `at character ${i}, found ${at(found)}, expected ${at(want)}`;
+}
+
+/**
+ * What is wrong with the home's way on: #root empty and the block its next
+ * element (index.html's entry script may follow it; the build moves it to the
+ * head); then its parts (data-nosnippet, no script, the name, the links,
+ * their words and languages, each language's line first in its item; the
+ * rule hiding it once #root has content, the no-script style, the delay and
+ * fade, upright text), each with its own message; and when no part explains
+ * a difference, the whole: the markup equal to `homeFallbackMarkup()`, the
+ * document's style that names `boot-links` exactly `HOME_FALLBACK_STYLE` and
+ * the no-script style, and no style attribute anywhere naming it.
  */
 export function homeFallbackProblems(home: string): string[] {
   const problems: string[] = [];
   const root = home.match(/<div id="root">([\s\S]*?)<\/div>/);
   if (!root) return ['no <div id="root">'];
   if (root[1] !== '') problems.push('#root is not empty in the initial HTML: the app\'s tests and the rule that hides the links read an empty #root');
-  const box = home.slice((root.index ?? 0) + root[0].length).match(/^\s*<div id="boot-links"( data-nosnippet)?>([\s\S]*?)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
+  const box = home.slice((root.index ?? 0) + root[0].length).match(/^\s*<div id="boot-links"([^>]*)>([\s\S]*)<\/div>\s*(?:<script\b[^>]*>\s*<\/script>\s*)*<\/body>/);
   if (!box) return [...problems, 'no <div id="boot-links"> right after #root, the last thing in the body: no way on when the app does not start (audit A18)'];
-  const links = box[2];
+  const [, tagAttrs, links] = box;
+
+  // The markup, by its parts.
+  const markupFrom = problems.length;
   // The block is in the home page's raw text, lines included: without `data-nosnippet` (which Google reads on a
   // div, span or section: developers.google.com/search/docs/crawling-indexing/robots-meta-tag, read 19 November
   // 2026) "Fermatina is taking a while to start" could be shown as the site's snippet in search results.
-  if (!box[1]) problems.push('#boot-links is not marked data-nosnippet: its "taking a while to start" lines could become the home page\'s snippet in search results');
+  if (!/(?:^|\s)data-nosnippet(?=[\s=]|$)/.test(tagAttrs)) problems.push('#boot-links is not marked data-nosnippet: its "taking a while to start" lines could become the home page\'s snippet in search results');
   if (/<script\b/i.test(links)) problems.push('#boot-links holds a script');
-  if (!/#root:not\(:empty\)\+#boot-links\{display:none\}/.test(home)) problems.push('no style hiding #boot-links once the app has put anything into #root');
   const name = appText('en', 'nav.musicTheory');
   if (textOf(links.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '') !== name) problems.push(`#boot-links is not headed by the name "${name}"`);
   const found = [...links.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => ({ href: attrs(m[1]).href ?? '', text: textOf(m[2]) }));
@@ -257,14 +306,34 @@ export function homeFallbackProblems(home: string): string[] {
     if (line === undefined || decode(line) !== newText(lang, 'bootSlow')) problems.push(`#boot-links <li lang="${htmlLangFor(lang)}"> does not open on its line "${newText(lang, 'bootSlow')}"`);
   }
   if ((links.match(/<p\b/g) ?? []).length !== SITE_LANGS.length) problems.push(`#boot-links holds ${(links.match(/<p\b/g) ?? []).length} <p>: one line per language`);
+  const upright = '#boot-links is not upright text throughout: the italic face is another file, which index.html does not preload (asked for while the app loads, it delayed the app); every weight from 300 to 700 is the one upright file';
+  if (/<(?:em|i|cite|dfn|var|address)\b/i.test(links)) problems.push(upright);
+  // The markup, whole.
+  if (problems.length === markupFrom) {
+    const block = tight(`<div id="boot-links"${tagAttrs}>${links}</div>`);
+    if (block !== homeFallbackMarkup()) problems.push(`#boot-links is not the markup generated from its links and lines (homeFallbackMarkup): ${differsAt(block, homeFallbackMarkup())}`);
+  }
+
+  // The style, by its parts.
+  const styleFrom = problems.length;
+  if (!/#root:not\(:empty\)\+#boot-links\{display:none\}/.test(home)) problems.push('no style hiding #boot-links once the app has put anything into #root');
   if (!home.includes(HOME_FALLBACK_NOSCRIPT)) problems.push(`no <noscript> style showing #boot-links at once, without its lines, when scripts are off: ${HOME_FALLBACK_NOSCRIPT}`);
-  const style = home.match(/<style>(#boot-links\{[\s\S]*?)<\/style>/)?.[1] ?? '';
-  const rule = style.match(/^#boot-links\{([^}]*)\}/)?.[1] ?? '';
+  const first = home.match(/<style>(#boot-links\{[\s\S]*?)<\/style>/)?.[1] ?? '';
+  const rule = first.match(/^#boot-links\{([^}]*)\}/)?.[1] ?? '';
   if (!rule.split(';').includes(HOME_FALLBACK_ANIMATION) || (rule.match(/animation/g) ?? []).length !== 1) problems.push(`#boot-links does not wait ${HOME_FALLBACK_DELAY} and fade in over ${HOME_FALLBACK_FADE}: expected "${HOME_FALLBACK_ANIMATION}" in "#boot-links{${rule}}"`);
-  if (!style.includes(HOME_FALLBACK_KEYFRAMES)) problems.push(`no ${HOME_FALLBACK_KEYFRAMES}`);
-  // Upright regular text only: a face index.html does not preload (the italic, a bold) would be fetched beside the app's script.
-  if (/italic|oblique/.test(style) || /<(?:em|i|b|strong|cite|dfn)\b/.test(links) || [...style.matchAll(/font-weight:\s*([^;}]*)/g)].some((m) => m[1].trim() !== '400') || !/#boot-links h1\{[^}]*font-style:normal;font-weight:400/.test(style)) {
-    problems.push('#boot-links is not upright regular text throughout (an italic or bold face would be fetched early, delaying the app)');
+  if (!first.includes(HOME_FALLBACK_KEYFRAMES)) problems.push(`no ${HOME_FALLBACK_KEYFRAMES}`);
+  if (/italic|oblique/i.test(first)) problems.push(upright);
+  // The style, whole: every <style> that names the block, in order, and nothing else.
+  if (problems.length === styleFrom) {
+    const styles = [...home.matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi)].map((m) => m[0]).filter((t) => t.includes('boot-links'));
+    const noscriptStyle = HOME_FALLBACK_NOSCRIPT.slice('<noscript>'.length, -'</noscript>'.length);
+    const expected = [HOME_FALLBACK_STYLE, noscriptStyle];
+    if (styles.join('\n') !== expected.join('\n') || home.split(HOME_FALLBACK_NOSCRIPT).length !== 2) {
+      problems.push(`the document's style for #boot-links is not exactly HOME_FALLBACK_STYLE and the no-script style (${styles.length} <style> name it): ${differsAt(styles.join('\n'), expected.join('\n'))}`);
+    }
+  }
+  for (const m of home.matchAll(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi)) {
+    if (m[1].includes('boot-links')) problems.push(`a style attribute names boot-links: ${m[0].trim()}`);
   }
   return problems;
 }
@@ -346,6 +415,9 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
   let links = 0;
   const titles = new Map<string, string>();
   const descriptions = new Map<string, string>();
+  // Which lesson owns each lesson page's address: the registry, never the page itself.
+  const lessonAt = new Map<string, string>();
+  for (const [id, slug] of Object.entries(expect.slugs)) for (const lang of SITE_LANGS) if (slug[lang]) lessonAt.set(sitePath.lesson(lang, slug[lang]), id);
 
   for (const [path, html] of site.pages) {
     const where = (msg: string) => problems.push(`${path}: ${msg}`);
@@ -447,18 +519,26 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       where(`the foot says "${openWords}" without one ordinary link to ${appUrl(kind.lang)} (${JSON.stringify(openLinks)})`);
     }
 
-    // A lesson's tasks (2026-11-19): a task that says to tap ‘C major scale’
-    // can be tapped on the page too — every quoted phrase is an ordinary link
-    // to the address of the page's own "Open this lesson in Fermatina".
-    // Read structurally: in the task list, every ‘…’ is the whole text of an
+    // A lesson page opens the app on ITS lesson (2026-11-19): the lesson the
+    // slug registry gives this address, in the page's language, in both
+    // "Open this lesson in Fermatina" buttons and every other link into the
+    // app (Try This, the tasks' phrases); the foot's link to the app's home
+    // is the only other one. Checked against the registry, so a page that
+    // names another lesson everywhere alike is still caught.
+    // A task that says to tap ‘C major scale’ can be tapped on the page too:
+    // read structurally, in the task list every ‘…’ is the whole text of an
     // <a class="query" href> and nothing else; no other mark of a phrase is left.
     if (kind.kind === 'lesson') {
-      const ownRaw = html.match(/<p class="open"><a class="button" href="([^"]*)"/)?.[1];
-      const own = ownRaw === undefined ? null : decode(ownRaw);
-      if (own === null) where('no "open this lesson" button');
+      const id = lessonAt.get(path);
+      const own = id ? appUrl(kind.lang, id) : null;
+      if (!own) where('no lesson of the slug registry has this address');
+      const buttons = [...html.matchAll(/<p class="open"><a class="button" href="([^"]*)"/g)].map((m) => decode(m[1]));
+      if (buttons.length !== 2) where(`${buttons.length} "Open this lesson" button(s): exactly two, at the top and at the foot of the lesson`);
+      const wrong = new Map<string, number>();
+      for (const href of p.hrefs) if (href.startsWith(`${ORIGIN}/?`) && href !== own && href !== appUrl(kind.lang)) wrong.set(href, (wrong.get(href) ?? 0) + 1);
+      for (const [href, n] of wrong) where(`${n} link(s) open the app on ${href}, not on this page's lesson ${own}`);
       const tasks = html.match(/<ul class="tasks">([\s\S]*?)<\/ul>/)?.[1] ?? '';
-      const PHRASE = /<a class="query" href="([^"]*)">‘[^‘’<]*’<\/a>/g;
-      for (const m of tasks.matchAll(PHRASE)) if (decode(m[1]) !== own) where(`a task's quoted phrase links to ${decode(m[1])}, not to this lesson in the app (${own})`);
+      const PHRASE = /<a class="query" href="[^"]*">‘[^‘’<]*’<\/a>/g;
       const left = tasks.replace(PHRASE, '').match(/<[^>]*\bclass="query"[^>]*>[^<]*|‘[^’<]*’?/);
       if (left) where(`a task's quoted phrase is not an ordinary link to this lesson in the app: ${left[0]}`);
       if ((html.match(/class="query"/g) ?? []).length !== (tasks.match(/class="query"/g) ?? []).length) where('a quoted phrase\'s mark outside the task list');

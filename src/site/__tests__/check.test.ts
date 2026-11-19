@@ -24,7 +24,7 @@ function files(edit: (pages: Map<string, string>, rest: { sitemap: string; home:
   edit(pages, rest);
   return { pages, ...rest };
 }
-const problems = (f: SiteFiles, forbidden?: Map<string, string[]>) => checkSite(f, { lessons: 136, forbidden }).problems;
+const problems = (f: SiteFiles, forbidden?: Map<string, string[]>) => checkSite(f, { lessons: 136, slugs: registry as SlugRegistry, forbidden }).problems;
 const replaceIn = (pages: Map<string, string>, path: string, from: string | RegExp, to: string) => {
   const html = pages.get(path)!;
   const next = html.replace(from, to);
