@@ -318,8 +318,8 @@ for (const lang of LANGS) {
   }
 }
 
-test('Q14: in the dock bar of a piano check on a short screen, every octave is reachable (568×320 touch, 844×390 mouse)', async ({ browser }) => {
-  for (const viewport of [{ w: 568, h: 320, touch: true }, { w: 844, h: 390 }]) {
+test('Q14: in the dock bar of a piano check on a short screen, the octaves stay in the bar and every one is reachable (480 / 568×320 touch, 844×390 mouse)', async ({ browser }) => {
+  for (const viewport of [{ w: 480, h: 320, touch: true }, { w: 568, h: 320, touch: true }, { w: 844, h: 390 }]) {
     const { context, page } = await open(browser, viewport);
     try {
       const dev = await page.request.get('/src/state/store.ts');
@@ -329,21 +329,24 @@ test('Q14: in the dock bar of a piano check on a short screen, every octave is r
         m.useAppStore.setState({ exerciseInputActive: true });
       });
       await expect(page.locator('.dock-piano-tools .piano-octave-row')).toBeVisible();
-      const row = await page.locator('.dock-piano-tools .piano-octave-row').evaluate((el) => {
-        const r = el.getBoundingClientRect();
-        const bar = el.closest('.dock-piano-tools')!.getBoundingClientRect();
-        return { inBar: r.right <= bar.right + 0.5 && r.left >= bar.left - 0.5 };
-      });
-      expect(row.inBar, `${viewport.w}: the octave row stays inside the bar`).toBe(true);
+      await page.waitForTimeout(300);
       const g = page.locator('.dock-piano-tools .chip-group').first();
+      const rest = await g.evaluate((el, width) => {
+        const bar = el.closest('.dock-piano-tools')!.getBoundingClientRect();
+        const box = el.getBoundingClientRect();
+        // The scroller inside the bar (its 2 px focus padding aside), and the page no wider than the screen.
+        return { inBar: box.right <= bar.right + 2.5, page: document.documentElement.scrollWidth <= width + 0.5 };
+      }, viewport.w);
+      expect(rest.inBar, `${viewport.w}: the octave chips stay inside the bar`).toBe(true);
+      expect(rest.page, `${viewport.w}: no sideways page scroll`).toBe(true);
       await g.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
       await page.waitForTimeout(150);
-      const end = await g.evaluate((el) => {
-        const box = el.getBoundingClientRect();
+      const end = await g.evaluate((el, width) => {
+        const bar = el.closest('.dock-piano-tools')!.getBoundingClientRect();
         const last = el.querySelector('.chip:last-child')!.getBoundingClientRect();
-        return last.right <= box.right + 0.5 && last.right <= innerWidth + 0.5;
-      });
-      expect(end, `${viewport.w}: the last octave is reachable`).toBe(true);
+        return last.right <= bar.right + 2.5 && last.right <= width + 0.5;
+      }, viewport.w);
+      expect(end, `${viewport.w}: the last octave is reachable inside the bar`).toBe(true);
     } finally {
       await context.close();
     }
