@@ -14,7 +14,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { buildChord } from '../chords';
-import { chordShapesForCapo, gripLeavesOut } from '../guitarChordShapes';
+import { arrangeShapesForBass, chordShapesForCapo, gripLeavesOut } from '../guitarChordShapes';
 import type { ChordShape } from '../guitarChordShapes';
 import type { Chord, ChordQuality, Note } from '../../types/music';
 import evidence from './fixtures/audit2-explore-guitar.json';
@@ -178,6 +178,46 @@ describe('M44: a grip sounds the tone that names the chord', () => {
   });
 });
 
+describe('M44: each name carries its tone (one row at a time; the review of builder K)', () => {
+  // The offsets above the root each name spells out (written here, not read
+  // from the app): a grip on the root alone must be said to leave each out.
+  const NAMED: [string, number[]][] = [
+    ['power', [7]], ['sus2sus4', [2]], ['dominant9', [2]], ['major9', [2]], ['minor9', [2]], ['dominant9sus4', [2]],
+    ['dominant11', [5]], ['major11', [5]], ['minor11', [5]], ['dominant13', [9]], ['major13', [9]], ['minor13', [9]],
+    ['dominant13flat9', [9]], ['dominant9sharp11', [2]], ['major9sharp11', [2]],
+  ];
+  const rootAlone: Placed = {
+    shape: { name: 'root', shortName: 'root', type: 'open', cagedShape: 'C', rootString: 5, rootFretOffset: 0, strings: [{ fret: null }, { fret: 3, finger: 3 }, { fret: null }, { fret: null }, { fret: null }, { fret: null }] },
+    baseFret: 0,
+  };
+  it.each(NAMED)('%s: a grip without it is said to leave it out', (quality, offsets) => {
+    const chord = request('C', quality, null);
+    const said = gripLeavesOut(rootAlone, chord).map((n) => pcOf(`${n.natural}${n.accidental}`));
+    for (const o of offsets) expect(said, `${quality} names ${o} semitones above C`).toContain(o % 12);
+  });
+});
+
+describe('the re-fretted bass (review of builder K, item 4)', () => {
+  it('never takes the lowest string from under the index barre: C major\'s A shape written with its index on string 5, asked for D', () => {
+    // x 3 5 5 5 3, the index ('bar') on strings 5 and 1 at fret 3, the ring over 4–2 at fret 5, no drawn barre.
+    const built: Placed = {
+      shape: { name: 'built', shortName: 'built', type: 'barre', cagedShape: 'A', rootString: 5, rootFretOffset: 0,
+        strings: [{ fret: null, finger: 0 }, { fret: 0, finger: 'bar' }, { fret: 2, finger: 3 }, { fret: 2, finger: 3 }, { fret: 2, finger: 3 }, { fret: 0, finger: 'bar' }] },
+      baseFret: 3,
+    };
+    const out = arrangeShapesForBass([built], request('C', 'major', null), 2, 'D');
+    // Without the rule the re-fret gives x 5 5 5 5 3 ("built/D"), the string pulled from under the index.
+    expect(out.shapes.filter((e) => e.shape.shortName === 'built/D').map(fretText)).toEqual([]);
+  });
+
+  it('may lay the index across the lowest string where the index is already down at that fret: G/F♯ 2 2 0 0 0 3', () => {
+    const { shapes, bassMatched } = chordShapesForCapo(request('G', 'major', 'F#'), 0, 0);
+    expect(bassMatched).toBe(true);
+    expect(fretText(shapes[0])).toBe('2-2-0-0-0-3');
+    expect(fingers(shapes[0], 0)).toEqual([1, 1, 0, 0, 0, 3]);
+  });
+});
+
 describe('M45: reachable grips the library missed', () => {
   const em7G = (e: Placed) => {
     expect(fretText(e)).toBe('3-2-0-0-0-0');
@@ -202,10 +242,14 @@ describe('M45: reachable grips the library missed', () => {
     em7G(e!);
   });
 
-  it('a re-fretted bass never puts a finger behind fingers it cannot pass: A/C is not x 3 2 2 2 0 (little finger on string 5 behind three on fret 2)', () => {
+  it('a re-fretted bass never puts a finger behind fingers it cannot pass: A/C x 3 2 2 2 0 is fingered with the index across fret 2, never the little finger on string 5 behind three fingers on fret 2', () => {
     const { shapes, bassMatched } = chordShapesForCapo(request('A', 'major', 'C'), 0, 0);
-    expect(shapes.map(fretText)).not.toContain('x-3-2-2-2-0');
-    expect(bassMatched).toBe(false);
+    expect(bassMatched).toBe(true);
+    const e = shapes.find((x) => fretText(x) === 'x-3-2-2-2-0');
+    expect(e).toBeDefined();
+    expect(fingers(e!, 0)).toEqual([null, 2, 1, 1, 1, 0]);
+    // The open A shape re-fretted (its own fingers 1 2 3 on fret 2) would need the little finger there.
+    expect(shapes.filter((x) => x.shape.shortName.startsWith('A shape')).map((x) => `${fretText(x)} ${fingers(x, 0).join('')}`)).toEqual([]);
   });
 
   it('C5 with capo 9: a grip above the capo, strings 4 and 3 at frets 10 and 12 (C4 and G4)', () => {

@@ -84,10 +84,18 @@ describe.each(COMBOS)('nut %s, %s string on top', (nut, top) => {
         expect(before(r.name, r.cells[0])).toBe(!sideOfNut);
         // What is said describes the instrument: "string 6" is the thick one.
         // A cell of the grip or a position dot then says what its dot shows
-        // (music audit 2, M48): "…, string 6, in the chord, finger 1, barre".
-        expect(r.cells[0].getAttribute('aria-label')).toMatch(
-          new RegExp(`, string ${6 - r.string}(?:, in the chord(?:, finger [1-4]|, finger 1, barre)?|, finger [1-4](?:, stretch)?)?$`),
-        );
+        // (music audit 2, M48), every cell, exactly: the grip's "in the chord"
+        // and the finger its dot prints (a barre's index prints 1); a position
+        // dot its finger, and "stretch" where its ring is dashed; any other
+        // cell nothing more.
+        for (const cell of r.cells) {
+          const voicing = cell.querySelector<HTMLElement>('[data-dot="voicing"]');
+          const dot = cell.querySelector<HTMLElement>('[data-dot="position"]');
+          const tail = voicing
+            ? voicing.textContent === '1' ? ', in the chord, finger 1(?:, barre)?' : `, in the chord, finger ${voicing.textContent}`
+            : dot ? `, finger ${/^[1-4]$/.test(dot.textContent ?? '') ? dot.textContent : '[1-4]'}${dot.style.outline.includes('dashed') ? ', stretch' : ''}` : '';
+          expect(cell.getAttribute('aria-label'), `string ${r.string} fret ${cell.dataset.fret}`).toMatch(new RegExp(`, string ${6 - r.string}${tail}$`));
+        }
       }
       // Fret numbers rise away from the nut, in the same order as the cells.
       expect(fretNumbers(root)).toEqual(rows[0].frets);

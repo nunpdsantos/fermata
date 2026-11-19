@@ -209,18 +209,29 @@ describe('M47: the arrow keys reach the open strings', () => {
     });
   }
 
-  it('a chord: the open column of the grip window; a muted string says so and plays nothing', async () => {
-    await board({ selectedChord: chord('C', 'major') });
-    const grid = screen.getByRole('grid');
-    const live = () => grid.querySelector('[aria-live]')!.textContent;
-    fireEvent.keyDown(grid, { key: 'ArrowDown' }); // string 6, nut-end fret of the window
-    fireEvent.keyDown(grid, { key: 'ArrowRight' }); // owner's view: the nut is on the right
-    expect(live()).toBe('String 6 muted');
-    fireEvent.keyDown(grid, { key: 'Enter' });
-    expect(noteOn).not.toHaveBeenCalled();
-    fireEvent.keyDown(grid, { key: 'ArrowDown' }); fireEvent.keyDown(grid, { key: 'ArrowDown' }); fireEvent.keyDown(grid, { key: 'ArrowDown' });
-    expect(live()).toBe('String 3, open, G, in the chord');
-  });
+  for (const [nut, top, toNut, down] of [['right', 'low', 'ArrowRight', 'ArrowDown'], ['left', 'high', 'ArrowLeft', 'ArrowUp']] as const) {
+    it(`a chord, nut ${nut}: the open column of the grip window; a muted string says so, and neither Enter nor Space plays it`, async () => {
+      await board({ selectedChord: chord('C', 'major'), neckNutSide: nut, neckTopString: top });
+      const grid = screen.getByRole('grid');
+      const live = () => grid.querySelector('[aria-live]')!.textContent;
+      fireEvent.keyDown(grid, { key: 'ArrowDown' }); // the top string drawn, nut-end fret of the window
+      // Walk to string 6 (drawn on top in the owner's view, at the bottom in the tab view).
+      if (top === 'high') for (let i = 0; i < 5; i++) fireEvent.keyDown(grid, { key: 'ArrowDown' });
+      fireEvent.keyDown(grid, { key: toNut });
+      expect(live()).toBe('String 6 muted');
+      fireEvent.keyDown(grid, { key: 'Enter' });
+      fireEvent.keyDown(grid, { key: ' ' });
+      expect(noteOn).not.toHaveBeenCalled();
+      // String 5's open column (A, not in this grip) does play: the guard is the mute, not the column.
+      fireEvent.keyDown(grid, { key: down === 'ArrowDown' ? 'ArrowDown' : 'ArrowUp' });
+      expect(live()).toBe('String 5, open, A');
+      fireEvent.keyDown(grid, { key: ' ' });
+      expect(noteOn).toHaveBeenCalledTimes(1);
+      fireEvent.keyDown(grid, { key: down === 'ArrowDown' ? 'ArrowDown' : 'ArrowUp' });
+      fireEvent.keyDown(grid, { key: down === 'ArrowDown' ? 'ArrowDown' : 'ArrowUp' });
+      expect(live()).toBe('String 3, open, G, in the chord');
+    });
+  }
 
   it('with a capo the frets behind it stay out of play: toward the nut stops at the capo', async () => {
     await board({ guitarScalePosition: 'all', capoFret: 2 });
@@ -268,14 +279,46 @@ describe('M48: a cell of the grip says it is the chord\'s, and the finger its do
     expect(cell.getAttribute('aria-label')).toBe('A, fret 5, string 6, finger 1');
   });
 
-  it('PT and ES', async () => {
+  const openCells = (container: HTMLElement) => [...container.querySelectorAll('[data-open-string]')].map((c) => c.getAttribute('aria-label'));
+  it('PT: the grip, the barre, the open string in the chord, and the keyboard\'s open string', async () => {
     await i18n.changeLanguage('pt');
     const { container, unmount } = await board({ selectedChord: chord('C', 'major') });
     expect(container.querySelector('[data-string-row="1"][data-fret="3"]')!.getAttribute('aria-label')).toBe('C, traste 3, corda 5, no acorde, dedo 3');
+    expect(openCells(container)[3]).toBe('G, corda solta, no acorde');
+    const grid = screen.getByRole('grid');
+    fireEvent.keyDown(grid, { key: 'ArrowDown' });
+    fireEvent.keyDown(grid, { key: 'ArrowDown' });
+    fireEvent.keyDown(grid, { key: 'ArrowRight' });
+    expect(grid.querySelector('[aria-live]')!.textContent).toBe('Corda 5, solta, A');
     unmount();
+    const f = await board({ selectedChord: chord('F', 'major') });
+    expect(f.container.querySelector('[data-string-row="0"][data-fret="1"]')!.getAttribute('aria-label')).toBe('F, traste 1, corda 6, no acorde, dedo 1, pestana');
+  });
+
+  it('ES: the grip, the barre, the open string in the chord, and the keyboard\'s open string', async () => {
     await i18n.changeLanguage('es');
-    const es = await board({ selectedChord: chord('F', 'major') });
-    expect(es.container.querySelector('[data-string-row="0"][data-fret="1"]')!.getAttribute('aria-label')).toBe('F, traste 1, cuerda 6, en el acorde, dedo 1, cejilla');
+    const { container, unmount } = await board({ selectedChord: chord('F', 'major') });
+    expect(container.querySelector('[data-string-row="0"][data-fret="1"]')!.getAttribute('aria-label')).toBe('F, traste 1, cuerda 6, en el acorde, dedo 1, cejilla');
+    unmount();
+    const c = await board({ selectedChord: chord('C', 'major') });
+    expect(openCells(c.container)[3]).toBe('G, cuerda al aire, en el acorde');
+    const grid = screen.getByRole('grid');
+    fireEvent.keyDown(grid, { key: 'ArrowDown' });
+    fireEvent.keyDown(grid, { key: 'ArrowDown' });
+    fireEvent.keyDown(grid, { key: 'ArrowRight' });
+    expect(grid.querySelector('[aria-live]')!.textContent).toBe('Cuerda 5, al aire, A');
+  });
+
+  it('a position dot with the learner\'s own finger says so, in EN, PT and ES', async () => {
+    const { fingeringKey } = await import('../../../core/utils/guitarPositions');
+    // Position V of C major: string 6 fret 5 (A) is the index's; the learner gave it finger 2.
+    useFingeringStore.setState({ overrides: { [fingeringKey('major', 'standard', 5, 0, 0, 5)]: 2 }, labelMode: 'finger' });
+    for (const [lang, name] of [['en', 'A, fret 5, string 6, finger 2, your fingering'], ['pt', 'A, traste 5, corda 6, dedo 2, a tua dedilhação'], ['es', 'A, traste 5, cuerda 6, dedo 2, tu digitación']] as const) {
+      await i18n.changeLanguage(lang);
+      const { container, unmount } = await board({ guitarScalePosition: 5 });
+      expect(container.querySelector('[data-string-row="0"][data-fret="5"]')!.getAttribute('aria-label')).toBe(name);
+      unmount();
+    }
   });
 });
 

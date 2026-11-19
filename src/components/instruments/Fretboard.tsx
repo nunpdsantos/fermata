@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { getTuningById, getTuningPitchClasses, getTuningStringLabels, GUITAR_TUNINGS, hasChordShapes } from '../../core/constants/guitarTunings.ts';
 import type { GuitarTuning } from '../../core/constants/guitarTunings.ts';
 import { midiToNote } from '../../core/utils/pianoLayout.ts';
-import { chordShapesForCapo, gripLeavesOut } from '../../core/constants/guitarChordShapes.ts';
+import { chordShapesForCapo } from '../../core/constants/guitarChordShapes.ts';
 import type { FingerNumber } from '../../core/constants/guitarChordShapes.ts';
-import { getChordShortIntervalLabels } from '../../core/constants/chords.ts';
+import { leftOutTones } from './leftOutWords.ts';
 // The board's own words (music audit 2): a lazy namespace, loaded with this chunk.
 import '../../i18n/fretboardWords';
 import { chordChipLabel } from './chordChipLabel.ts';
@@ -817,15 +817,10 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
   const listOf = (items: string[]) => new Intl.ListFormat(i18n.language, { style: 'long', type: 'conjunction' }).format(items);
   // A grip that leaves out a tone the chord's name carries says which (music
   // audit 2, M44), by the degree the chord's formula shows ("F (11)").
-  const leftOut = mode === 'chord' && currentShape && selectedChord ? gripLeavesOut(currentShape, selectedChord) : [];
-  const leavesOutNotice = leftOut.length > 0 && selectedChord
+  const leftOut = mode === 'chord' && currentShape && selectedChord ? leftOutTones(currentShape, selectedChord) : [];
+  const leavesOutNotice = leftOut.length > 0
     ? t('fretboardWords.leavesOut', {
-        tones: listOf(leftOut.map((n) => {
-          const degrees = selectedChord.algorithmicIntervalLabels ?? getChordShortIntervalLabels(selectedChord.quality);
-          const at = selectedChord.notes.findIndex((x) => x.natural === n.natural && x.accidental === n.accidental);
-          const degree = degrees[at];
-          return degree ? `${withGlyphs(noteToString(n))} (${withGlyphs(degree)})` : withGlyphs(noteToString(n));
-        })),
+        tones: listOf(leftOut.map(({ note, degree }) => (degree ? `${withGlyphs(noteToString(note))} (${withGlyphs(degree)})` : withGlyphs(noteToString(note))))),
       })
     : null;
   // Positions in tunings with strings a 5th apart skip the notes the hand
