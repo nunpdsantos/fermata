@@ -122,8 +122,11 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
   };
   const place = (n: FingeredNote) => ({ note: withGlyphs(n.note), string: 6 - n.stringIndex, fret: n.fret });
   const barreLine = (c: BarreCue) => t('practice.barreSpan', { finger: c.finger, from: c.from, to: c.to, fret: c.fret });
-  const underBarre = (cues: readonly BarreCue[], event: number, n: FingeredNote) =>
-    n.fret > 0 && cues.some((c) => c.finger === fingerFor(event, n) && c.fret === n.fret && 6 - n.stringIndex >= c.from && 6 - n.stringIndex <= c.to);
+  /** The barré a note lies under, if any. */
+  const barreOver = (cues: readonly BarreCue[], event: number, n: FingeredNote) =>
+    n.fret > 0 ? cues.find((c) => c.finger === fingerFor(event, n) && c.fret === n.fret && 6 - n.stringIndex >= c.from && 6 - n.stringIndex <= c.to) : undefined;
+  /** "Partial barré", or "Full barré" across all six strings (a right-hand bar's E-shape grip). */
+  const barreWord = (c: BarreCue) => t(c.from === 1 && c.to === 6 ? 'practice.barreFull' : 'practice.barre');
   const cues = barreCues(route, index, fingerFor);
   const held = heldWith(route, index);
   // Saved before this check existed (a release-16 save, a backup, another tab): kept as saved, said, and mended
@@ -181,7 +184,7 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
           {current.notes.map((n, j) => <p key={j}>
             <strong>{current.rh[j]} · {withGlyphs(n.note)}</strong>{' · '}{t('practice.finger', { finger: fingerFor(index, n) })}
             {' · '}{t('explore.readout.stringFret', { string: 6 - n.stringIndex, fret: n.fret })}
-            {underBarre(cues, index, n) && ` · ${t('practice.barre')}`}{n.reach && ` · ${t('practice.reach')}`}
+            {barreOver(cues, index, n) && ` · ${barreWord(barreOver(cues, index, n)!)}`}{n.reach && ` · ${t('practice.reach')}`}
           </p>)}
           {cues.map((c) => <p key={`${c.finger}:${c.fret}`} data-testid="practice-barre">{barreLine(c)}</p>)}
           {clashes.map((c, j) => <p key={j} data-testid="practice-clash">{clashText(c)}</p>)}
@@ -193,7 +196,10 @@ export function PracticePlayer({ route, root, scale, tuning, editable = true }: 
       </div>
       <PracticeNeck route={route} index={index} tuning={tuning} fingerFor={fingerFor}
         edited={(event, n) => editable && overrides[keyFor(event, n)] !== undefined} onNote={editNote}
-        barreAt={(event, n) => underBarre(event === index ? cues : barreCues(route, event, fingerFor), event, n)} />
+        barreAt={(event, n) => {
+          const c = barreOver(event === index ? cues : barreCues(route, event, fingerFor), event, n);
+          return c ? barreWord(c) : null;
+        }} />
       {editable && <>
         <LabelToolbar part="edit" labelMode="finger" onLabelMode={() => {}} positionView editing={editing}
           onToggleEdit={() => { stop(); setEditing(!editing); }} onResetFingering={() => clearOverrides(keys)} hasOverrides={keys.some((k) => overrides[k] !== undefined)} />

@@ -265,6 +265,20 @@ describe('M41: the barré cue, printed and spoken', () => {
     expect(screen.queryAllByTestId('practice-barre')).toHaveLength(0);
   });
 
+  it('across all six strings it is a full barré, not a partial one (C♯ major p i m a, step 5: the V7 on the E shape at fret 4)', () => {
+    useAppStore.setState({ selectedKey: { natural: 'C', accidental: '#' } });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Right hand' }));
+    goTo(5);
+    expect(current()).toContain('5 of 12 · V7');
+    expect(current()).toContain('Left hand 1 · string 6 fret 4 · Full barré');
+    expect(current()).not.toContain('Partial');
+    expect(screen.getByTestId('practice-barre').textContent).toBe('Barré: finger 1 across strings 1 to 6, fret 4');
+    const titles = [...screen.getByTestId('practice-neck').querySelectorAll('[data-dot="position"]')].map((d) => d.getAttribute('title'));
+    expect(titles).toContain('Left hand 1 · Full barré');
+    expect(titles).not.toContain('Left hand 1 · Partial barré');
+  });
+
   it('a pattern that plucks one string under the index needs no cue (B major p i m)', () => {
     useAppStore.setState({ selectedKey: B });
     render(<GuitarPractice />);

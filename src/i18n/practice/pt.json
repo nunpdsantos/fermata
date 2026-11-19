@@ -70,6 +70,7 @@
   "finger": "Mão esquerda {{finger}}",
   "fingerFor": "Dedo para {{note}}, corda {{string}}",
   "barre": "Pestana parcial",
+  "barreFull": "Pestana completa",
   "barreSpan": "Pestana: dedo {{finger}} sobre as cordas {{from}} a {{to}}, traste {{fret}}",
   "fingerBusy": "O dedo {{finger}} não está disponível para {{target}} na corda {{targetString}}: ao mesmo tempo, já está em {{note}}, na corda {{string}}, traste {{fret}}, e um dedo não pode estar em dois trastes.",
   "fingerAcross": "O dedo {{finger}} não está disponível para {{target}} na corda {{targetString}}: deitado desde {{note}}, na corda {{string}}, traste {{fret}}, prenderia também a corda {{between}}, que se toca solta ou num traste mais baixo ao mesmo tempo.",
