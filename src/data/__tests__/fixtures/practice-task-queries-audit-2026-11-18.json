@@ -1,0 +1,158 @@
+{
+  "l4u14m5": {
+    "en": [
+      [
+        "A natural minor scale",
+        "A harmonic minor scale"
+      ],
+      [
+        "E major chord",
+        "Am",
+        "Em",
+        "Am"
+      ],
+      [
+        "G major chord",
+        "C major chord"
+      ]
+    ],
+    "pt": [
+      [
+        "A natural minor scale",
+        "A harmonic minor scale"
+      ],
+      [
+        "E major chord",
+        "Am",
+        "Em",
+        "Am"
+      ],
+      [
+        "G major chord",
+        "C major chord"
+      ]
+    ],
+    "es": [
+      [
+        "A natural minor scale",
+        "A harmonic minor scale"
+      ],
+      [
+        "E major chord",
+        "Am",
+        "Em",
+        "Am"
+      ],
+      [
+        "G major chord",
+        "C major chord"
+      ]
+    ]
+  },
+  "l7u21m5": {
+    "en": [
+      [
+        "C7",
+        "F7",
+        "G7"
+      ],
+      [
+        "F7",
+        "F#dim7",
+        "C7/G"
+      ],
+      [
+        "Ab7",
+        "G7",
+        "Cm7"
+      ]
+    ],
+    "pt": [
+      [
+        "C7",
+        "F7",
+        "G7"
+      ],
+      [
+        "F7",
+        "F#dim7",
+        "C7/G"
+      ],
+      [
+        "Ab7",
+        "G7",
+        "Cm7"
+      ]
+    ],
+    "es": [
+      [
+        "C7",
+        "F7",
+        "G7"
+      ],
+      [
+        "F7",
+        "F#dim7",
+        "C7/G"
+      ],
+      [
+        "Ab7",
+        "G7",
+        "Cm7"
+      ]
+    ]
+  },
+  "l7u23m3": {
+    "en": [
+      [
+        "C melodic minor",
+        "F lydian dominant",
+        "B altered scale"
+      ],
+      [
+        "C altered scale",
+        "Db melodic minor"
+      ],
+      [
+        "C lydian dominant",
+        "C7#11",
+        "C altered scale",
+        "C7alt"
+      ]
+    ],
+    "pt": [
+      [
+        "C melodic minor",
+        "F lydian dominant",
+        "B altered scale"
+      ],
+      [
+        "C altered scale",
+        "Db melodic minor"
+      ],
+      [
+        "C lydian dominant",
+        "C7#11",
+        "C altered scale",
+        "C7alt"
+      ]
+    ],
+    "es": [
+      [
+        "C melodic minor",
+        "F lydian dominant",
+        "B altered scale"
+      ],
+      [
+        "C altered scale",
+        "Db melodic minor"
+      ],
+      [
+        "C lydian dominant",
+        "C7#11",
+        "C altered scale",
+        "C7alt"
+      ]
+    ]
+  }
+}

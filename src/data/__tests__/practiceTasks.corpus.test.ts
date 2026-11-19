@@ -31,19 +31,12 @@ import { chordBelowCapo } from '../../core/constants/guitarChordShapes';
 import { parseChordSymbol } from '../../core/utils/chordParser';
 import { EN_UNITS, curriculumOverlay, LANGS } from '../../i18n/content/__tests__/overlayEntries';
 import baseline from './fixtures/practice-task-queries-6de6c0e.json';
+import auditChanges from './fixtures/practice-task-queries-audit-2026-11-18.json';
+import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 type Lang = 'en' | (typeof LANGS)[number];
 const ALL: readonly Lang[] = ['en', ...LANGS];
-
-/**
- * The thirteen modules another stream (builder G) rewrites in the same round.
- * Their tasks still say "Type" on this branch: the seat REMOVES this list when
- * the two branches are integrated, and the typing check then covers every module.
- */
-const SKIPPED_UNTIL_INTEGRATION: ReadonlySet<string> = new Set([
-  'l9u30m4', 'l4u14m5', 'l3u11m5', 'l7u23m3', 'l7u21m2', 'l4u12m5', 'l4u14m4',
-  'l7u21m5', 'l1u3m2', 'l9u30m3', 'l1u1m2', 'l2u6m1', 'l8u25m3',
-]);
 
 /**
  * A verb of typing (type, write, key in, enter …, any person or the gerund)
@@ -143,17 +136,10 @@ describe('practice tasks: nothing is typed (Q5)', () => {
 
   it.each(ALL)('%s: no task tells the learner to type, write or search for a quoted query', (lang) => {
     const faults = allTasks()
-      .filter((t) => !SKIPPED_UNTIL_INTEGRATION.has(t.module))
       .map((t) => [t.id, typingFaults(t.text[lang] ?? '', lang)] as const)
       .filter(([, f]) => f.length > 0)
       .map(([id, f]) => `${id}: ${f.join(', ')}`);
     expect(faults).toEqual([]);
-  });
-
-  it('the skipped modules are exactly the thirteen of the other stream, and each exists', () => {
-    const modules = new Set(allTasks().map((t) => t.module));
-    expect(SKIPPED_UNTIL_INTEGRATION.size).toBe(13);
-    for (const id of SKIPPED_UNTIL_INTEGRATION) expect(modules.has(id), id).toBe(true);
   });
 });
 
@@ -223,7 +209,7 @@ describe('practice tasks: true on the instrument the learner holds (Q5)', () => 
 
   it('EN: no task sends the learner to one instrument only, outside the listed exceptions', () => {
     const one = allTasks()
-      .filter((t) => !SKIPPED_UNTIL_INTEGRATION.has(t.module) && !(t.id in ONE_INSTRUMENT_ALLOWED))
+      .filter((t) => !(t.id in ONE_INSTRUMENT_ALLOWED))
       .filter((t) => oneInstrument(t.text.en!))
       .map((t) => `${t.id}: ${t.text.en}`);
     expect(one).toEqual([]);
@@ -240,7 +226,6 @@ describe('practice tasks: true on the instrument the learner holds (Q5)', () => 
 
   it.each(LANGS)('%s names the same instruments as the English in every task', (lang) => {
     const drift = allTasks()
-      .filter((t) => !SKIPPED_UNTIL_INTEGRATION.has(t.module))
       .filter((t) => PIANO[lang].test(t.text[lang]!) !== PIANO.en.test(t.text.en!) || GUITAR[lang].test(t.text[lang]!) !== GUITAR.en.test(t.text.en!))
       .map((t) => `${t.id}: ${t.text.en} | ${t.text[lang]}`);
     expect(drift).toEqual([]);
@@ -308,10 +293,45 @@ describe('practice tasks: the queries the app runs are unchanged (Q5)', () => {
     expect(now).toEqual(Object.fromEntries(Object.entries(recorded).map(([m, r]) => [m, r.ids])));
   });
 
-  it.each(ALL)('%s: every task quotes exactly the queries it quoted on 6de6c0e, byte for byte, in order', (lang) => {
+  /**
+   * The audit of 18 November 2026 changed some queries ON PURPOSE, all in the
+   * thirteen modules of its lesson corrections (A23: E then Am; A25: one parent
+   * scale; A29: C7/G …). They are recorded apart, module by module, so every
+   * other task is still held to 6de6c0e byte for byte. `RECORD_TASK_QUERY_CHANGES=1`
+   * re-records that file (a deliberate content change only).
+   */
+  const changed = auditChanges as Record<string, Record<Lang, string[][]>>;
+  const AUDIT_MODULES = new Set([
+    'l9u30m4', 'l4u14m5', 'l3u11m5', 'l7u23m3', 'l7u21m2', 'l4u12m5', 'l4u14m4',
+    'l7u21m5', 'l1u3m2', 'l9u30m3', 'l1u1m2', 'l2u6m1', 'l8u25m3',
+  ]);
+  const queriesNow = (lang: Lang) => {
     const now: Record<string, string[][]> = {};
     for (const t of allTasks()) (now[t.module] ??= []).push(queriesOf(t.text[lang]));
-    expect(now).toEqual(Object.fromEntries(Object.entries(recorded).map(([m, r]) => [m, r[lang]])));
+    return now;
+  };
+
+  it.runIf(process.env.RECORD_TASK_QUERY_CHANGES === '1')('RECORD: the modules whose queries differ from 6de6c0e', () => {
+    const out: Record<string, Record<string, string[][]>> = {};
+    for (const lang of ALL) {
+      const now = queriesNow(lang);
+      for (const [m, r] of Object.entries(recorded)) {
+        if (JSON.stringify(now[m]) !== JSON.stringify(r[lang])) (out[m] ??= {})[lang] = now[m];
+      }
+    }
+    for (const m of Object.keys(out)) for (const lang of ALL) out[m][lang] ??= queriesNow(lang)[m];
+    writeFileSync(resolve(process.cwd(), 'src/data/__tests__/fixtures/practice-task-queries-audit-2026-11-18.json'), `${JSON.stringify(out, null, 2)}\n`);
+  });
+
+  it.each(ALL)('%s: every task quotes exactly the queries it quoted on 6de6c0e, byte for byte, in order (the audit\'s recorded changes apart)', (lang) => {
+    expect(queriesNow(lang)).toEqual(Object.fromEntries(Object.entries(recorded).map(([m, r]) => [m, changed[m]?.[lang] ?? r[lang]])));
+  });
+
+  it('the queries changed on purpose are all in the audit\'s thirteen modules, and each really differs from 6de6c0e', () => {
+    for (const [m, byLang] of Object.entries(changed)) {
+      expect(AUDIT_MODULES.has(m), m).toBe(true);
+      expect(ALL.some((lang) => JSON.stringify(byLang[lang]) !== JSON.stringify(recorded[m][lang])), m).toBe(true);
+    }
   });
 
   it('the comparison fires on a planted change to one query', () => {
