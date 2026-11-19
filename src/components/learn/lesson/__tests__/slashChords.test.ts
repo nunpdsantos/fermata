@@ -9,8 +9,9 @@
  * the root-position chord over a second copy of the bass an octave down —
  * G7/B doubled its leading note, G7/F its 7th, and C/E, F/A, G7/F, Dm7/C
  * hung three ledger lines under the staff. (A bass outside the chord, C/D,
- * is a true slash chord and keeps its bass under the chord; no lesson opens
- * one today.)
+ * is a true slash chord and keeps its bass under the chord, sounding it ONCE:
+ * the same round's M58 fix stopped the piano voicing it a second time and
+ * pushing the chord up an octave. No lesson opens one today.)
  */
 import { describe, it, expect } from 'vitest';
 import { L1_UNITS } from '../../../../core/constants/curriculumL1';
@@ -57,11 +58,11 @@ describe('every slash chord a lesson opens', () => {
     expect(slash.every(([, c]) => slashChordInversion(c) !== null)).toBe(true);
   });
 
-  it('a bass that is not a chord tone (C/D) stays under the whole chord in a Try This picture, as before', () => {
+  it('a bass that is not a chord tone (C/D) stays under the whole chord in a Try This picture, sounded once (M58)', () => {
     const picture = tryThisPicture('C/D', C);
     expect(picture.kind).toBe('chord');
     if (picture.kind !== 'chord') return;
-    expect(picture.pitches.map((p) => `${p.natural}${p.accidental}${p.octave}`).join(' ')).toBe('D3 D4 C5 E5 G5');
+    expect(picture.pitches.map((p) => `${p.natural}${p.accidental}${p.octave}`).join(' ')).toBe('D3 C4 E4 G4');
     expect(picture.bass).toEqual({ natural: 'D', accidental: '' });
   });
 

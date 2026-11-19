@@ -122,8 +122,9 @@ describe('parseChordListQuery', () => {
     expect(voicing('chords: G7/F C/E')).toEqual(['F3 G3 B3 D4', 'E3 G3 C4']);
     // F7 → F♯dim7 → C7/G: root position as before, C7/G in second inversion (was G3 C4 E4 G4 B♭4).
     expect(voicing('chords: F7 F#dim7 C7/G')[2]).toBe('G3 Bb3 C4 E4');
-    // A bass that is not a chord tone still stands under the whole chord, as before.
-    expect(voicing('chords: C C/D')[1]).toBe('D3 D4 C5 E5 G5');
+    // A bass that is not a chord tone still stands under the whole chord, sounded once (the same round's M58:
+    // it was D3 D4 C5 E5 G5, the bass twice and the chord an octave up).
+    expect(voicing('chords: C C/D')[1]).toBe('D3 C4 E4 G4');
     expect(slashChordInversion(parseChordListQuery('chords: C C/E')![1].chord)).toBe(1);
     expect(slashChordInversion(parseChordListQuery('chords: C C/D')![1].chord)).toBeNull();
     expect(slashChordInversion(parseChordListQuery('chords: C G')![1].chord)).toBeNull();
