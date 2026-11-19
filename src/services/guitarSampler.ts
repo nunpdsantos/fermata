@@ -29,7 +29,7 @@ const SAMPLE_BASE_URL = '/samples/guitar';
 // filename (F#3 → Fs3). Explicit because the set is irregular: the four upstream
 // gaps (F#2=42, G#2=44, A#2=46, C#3=49, D#3=51, G#4=68) are absent and pitch-shifted from a
 // neighbour at playback time. Do NOT replace with a generator loop.
-const LADDER: ReadonlyArray<{ file: string; midi: number }> = [
+export const LADDER = [
   { file: 'E2', midi: 40 },
   { file: 'F2', midi: 41 },
   { file: 'G2', midi: 43 },
@@ -69,7 +69,10 @@ const LADDER: ReadonlyArray<{ file: string; midi: number }> = [
   { file: 'As5', midi: 82 },
   { file: 'B5', midi: 83 },
   { file: 'C6', midi: 84 },
-];
+] as const satisfies ReadonlyArray<{ file: string; midi: number }>;
+
+/** A recorded sample's name; `guitarSampleTuning.ts` has one row for each, and only these (the compiler holds it). */
+export type LadderFile = (typeof LADDER)[number]['file'];
 
 interface Voice {
   source: AudioBufferSourceNode;
@@ -111,7 +114,7 @@ function getContext(): AudioContext {
  * sounds at its pitch (audit M60, `guitarSampleTuning.ts`).
  */
 export function resolveSample(midi: number): { file: string; rate: number } {
-  let best = LADDER[0];
+  let best: (typeof LADDER)[number] = LADDER[0];
   let bestDist = Math.abs(midi - best.midi);
   for (const entry of LADDER) {
     const dist = Math.abs(midi - entry.midi);
@@ -120,7 +123,7 @@ export function resolveSample(midi: number): { file: string; rate: number } {
       bestDist = dist;
     }
   }
-  return { file: best.file, rate: 2 ** ((midi - best.midi) / 12 - (GUITAR_SAMPLE_CENTS[best.file] ?? 0) / 1200) };
+  return { file: best.file, rate: 2 ** ((midi - best.midi) / 12 - GUITAR_SAMPLE_CENTS[best.file] / 1200) };
 }
 
 /** Fetch + decode the full ladder once. Safe to call repeatedly. */

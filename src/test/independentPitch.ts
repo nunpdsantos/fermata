@@ -14,20 +14,38 @@
  *     then for k = 2, 4, 8 … while k·p ≤ n / 4: the highest r within
  *           ±p/4 of k·p, refined the same way, and p = that lag / k;
  *     the window's pitch = rate / p.
- *   the sound's pitch = the median of its windows (min and max are given too:
- *   a plucked string glides, sharper while it is loud).
+ *   the sound's pitch = the median of the windows within 20 dB of the
+ *   loudest one (min and max of those are given too: a plucked string glides,
+ *   sharper while it is loud).
  *
- * SELF-CONTAINED on purpose — no import, no module-level helper — so a
- * browser test can hand this very function to `page.evaluate` and run it on
- * what Chromium rendered.
+ * Why 20 dB (fix pass, 19 November 2026, after the review): the figure is
+ * meant to be the part of the note a learner hears and tunes to. Below 20 dB
+ * under its loudest moment (a tenth of the amplitude) a guitar sample is in
+ * its decayed tail, where the estimates drift (B4 reads +13.8 loud and 8.4 /
+ * 6.6 at −27 / −36 dB), and a plain median over 2.5 s let the tail decide
+ * (B4's figure was 11.9). It is the tightest round gate that still leaves at
+ * least two windows of every file to take a median of: at −15 dB B5 and C6
+ * keep only their first window, the attack.
+ *
+ * Used in Node: by the unit tests, and by e2e/tuner-reference.spec.ts on the
+ * samples Chromium rendered (handed over from the page as bytes).
  */
 export interface IndependentPitch {
-  /** Cents from `expectedHz`, the median of the windows. */
+  /** Cents from `expectedHz`: the median of the windows within GATE_DB of the loudest. */
   cents: number;
+  /** The lowest and highest of those windows. */
   min: number;
   max: number;
+  /** Every window's cents, in order (kept or not). */
   windows: number[];
+  /** Every window's level, dB below the loudest (0 for the loudest). */
+  levels: number[];
+  /** How many windows the figure is the median of. */
+  kept: number;
 }
+
+/** Windows quieter than this many dB under the loudest are the note's tail: not counted. */
+export const GATE_DB = 20;
 
 export function independentPitch(
   samples: ArrayLike<number>,
@@ -102,27 +120,38 @@ export function independentPitch(
     return best + (d === 0 ? 0 : (0.5 * (y0 - y2)) / d);
   };
 
-  const windowPitch = (start: number, n: number): number => {
+  const windowPitch = (start: number, n: number): [cents: number, rms: number] => {
     const x = new Float64Array(n);
     let mean = 0;
     for (let i = 0; i < n; i++) mean += samples[start + i];
     mean /= n;
-    for (let i = 0; i < n; i++) x[i] = samples[start + i] - mean;
+    let energy = 0;
+    for (let i = 0; i < n; i++) {
+      x[i] = samples[start + i] - mean;
+      energy += x[i] * x[i];
+    }
     const r = autocorrelation(x);
     const period = rate / expectedHz;
     const spread = 2 ** (0.7 / 12);
     let p = peak(r, period / spread, period * spread);
     for (let k = 2; k * p <= n / 4; k *= 2) p = peak(r, k * p - p / 4, k * p + p / 4) / k;
-    return 1200 * Math.log2(rate / p / expectedHz);
+    return [1200 * Math.log2(rate / p / expectedHz), Math.sqrt(energy / n)];
   };
 
   const n = Math.round(WINDOW_S * rate);
   const last = Math.min(samples.length, Math.round(to * rate)) - n;
   const windows: number[] = [];
-  for (let start = Math.round(from * rate); start <= last; start += Math.round(HOP_S * rate)) windows.push(windowPitch(start, n));
-  if (windows.length === 0) return { cents: NaN, min: NaN, max: NaN, windows };
-  const sorted = [...windows].sort((a, b) => a - b);
+  const rms: number[] = [];
+  for (let start = Math.round(from * rate); start <= last; start += Math.round(HOP_S * rate)) {
+    const [c, level] = windowPitch(start, n);
+    windows.push(c);
+    rms.push(level);
+  }
+  if (windows.length === 0) return { cents: NaN, min: NaN, max: NaN, windows, levels: [], kept: 0 };
+  const loudest = Math.max(...rms);
+  const levels = rms.map((v) => 20 * Math.log10(v / loudest));
+  const sorted = windows.filter((_, i) => levels[i] >= -GATE_DB).sort((a, b) => a - b);
   const mid = sorted.length >> 1;
   const cents = sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-  return { cents, min: sorted[0], max: sorted[sorted.length - 1], windows };
+  return { cents, min: sorted[0], max: sorted[sorted.length - 1], windows, levels, kept: sorted.length };
 }

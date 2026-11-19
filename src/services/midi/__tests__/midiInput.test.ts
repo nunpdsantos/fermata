@@ -320,9 +320,8 @@ describe('notes', () => {
     expect(offs()).toEqual([]);
   });
 
-  // p. 20: "Messages 123 through 127 also function as All Notes Off messages"; p. A-4: "Mode messages with a
-  // second byte greater than 124 should be treated in the same way as the All Notes Off message". So the pedal
-  // keeps their notes too, until it is lifted.
+  // p. 20: "Messages 123 through 127 also function as All Notes Off messages" (124 included; p. A-4 says the same of
+  // the mode messages "with a second byte greater than 124"). So the pedal keeps their notes too, until it is lifted.
   for (const [cc, name] of [[124, 'Omni Off'], [125, 'Omni On'], [126, 'Mono On'], [127, 'Poly On']] as const) {
     it(`${name} (CC ${cc}) is an All Notes Off: with no pedal that channel's keys end at once; another channel's go on`, () => {
       key([0x91, 60, 80]);
@@ -347,6 +346,65 @@ describe('notes', () => {
       expect([...offs()].sort((a, b) => a - b)).toEqual([60, 64]);
     });
   }
+
+  it('running status: B0 40 7F 7B 00 (the pedal down, then All Notes Off, in one message) — the key held goes on until the pedal lifts', () => {
+    key(NOTE_ON(60, 80));
+    key([0xb0, 0x40, 0x7f, 0x7b, 0x00]);
+    expect(sounding()).toEqual([60]);
+    expect(offs()).toEqual([]);
+    key([0xb0, 0x40, 0x00]);
+    expect(sounding()).toEqual([]);
+  });
+
+  it('running status: B0 40 7F 78 00 (the pedal down, then All Sound Off) — the key ends at once, and the pedal is still down', () => {
+    key(NOTE_ON(60, 80));
+    key([0xb0, 0x40, 0x7f, 0x78, 0x00]);
+    expect(sounding()).toEqual([]);
+    key(NOTE_ON(61, 80));
+    key(NOTE_OFF(61));
+    expect(sounding()).toEqual([61]);
+    key(PEDAL(false));
+    expect(sounding()).toEqual([]);
+  });
+
+  it('All Notes Off (and All Sound Off) whatever their value byte: 7B 7F and 78 7F act as 7B 00 and 78 00', () => {
+    key(PEDAL(true));
+    key(NOTE_ON(60, 80));
+    key([0xb0, 123, 127]);
+    expect(sounding()).toEqual([60]);
+    key(PEDAL(false));
+    expect(sounding()).toEqual([]);
+    key(NOTE_ON(62, 80));
+    key([0xb0, 120, 127]);
+    expect(sounding()).toEqual([]);
+  });
+
+  it('one pitch held on two channels, All Notes Off on one (no pedal): the note goes on while the other channel holds it', () => {
+    key(NOTE_ON(60, 80));
+    key(NOTE_ON(60, 80, 1)); // struck again on the other channel: it ends and starts again (one note per pitch)
+    const before = heard.length;
+    key([0xb0, 123, 0]);
+    expect(sounding()).toEqual([60]);
+    expect(heard.slice(before)).toEqual([]);
+    key(NOTE_OFF(60, 1));
+    expect(sounding()).toEqual([]);
+    expect(heard.slice(before)).toEqual([{ midi: 60, on: false, source: 'midi' }]);
+  });
+
+  it('the pedal down on two channels, All Notes Off on one: each channel\'s notes end with its own pedal', () => {
+    key(PEDAL(true));
+    key(PEDAL(true, 1));
+    key(NOTE_ON(60, 80));
+    key(NOTE_ON(64, 80, 1));
+    key([0xb0, 123, 0]);
+    expect(sounding()).toEqual([60, 64]);
+    key([0xb1, 123, 0]);
+    expect(sounding()).toEqual([60, 64]);
+    key(PEDAL(false));
+    expect(sounding()).toEqual([64]);
+    key(PEDAL(false, 1));
+    expect(sounding()).toEqual([]);
+  });
 
   it('two keyboards holding one pitch make one note, which ends when the last lets go', () => {
     const second = access.plug('in-2', 'Pad');

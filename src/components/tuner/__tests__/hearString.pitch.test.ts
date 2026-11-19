@@ -7,9 +7,13 @@
  * at every rate a device may run its audio at; the buffer it builds is
  * measured by an estimate that shares no code with the app's detector
  * (`src/test/independentPitch.ts`: a long-window autocorrelation) and must be
- * within ±2 cents of equal temperament at A4 = 440 Hz, and the app's own
+ * within ±0.2 cent of equal temperament at A4 = 440 Hz, and the app's own
  * detector, framed and smoothed as the tuner frames and smooths, must read it
- * in tune. The sampled guitar is measured in the browser, where its files can
+ * within ±0.2 and in tune. The claim is ±2 cents; the bound is what is true
+ * with room to spare (fix pass after the review: the worst measured over the
+ * 16 strings at the five rates is 0.022 cent by the estimate and 0.029 by the
+ * detector, a synthetic, harmonic tone; a loop delay off by a tenth of a
+ * sample is 1.2 cents at E4 and must fail here, which ±2 let through). The sampled guitar is measured in the browser, where its files can
  * be decoded: `e2e/tuner-reference.spec.ts`.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -24,6 +28,8 @@ import { independentPitch } from '../../../test/independentPitch';
 const RATES = [44100, 48000, 88200, 96000, 192000];
 const OPEN_STRINGS = [...new Set(GUITAR_TUNINGS.flatMap((t) => t.strings.map(stringMidi)))].sort((a, b) => a - b);
 const et = (midi: number) => 440 * 2 ** ((midi - 69) / 12);
+/** Cents: see the header (the worst measured is 0.029). */
+const BOUND = 0.2;
 
 interface Played {
   buffer: { data: Float32Array; sampleRate: number } | null;
@@ -102,7 +108,7 @@ describe('"Hear" with the samples not yet decoded (the Karplus-Strong pluck)', (
   });
 
   for (const rate of RATES) {
-    it(`at ${rate / 1000} kHz every reference string of every tuning is within ±2 cents (independent estimate) and the tuner reads it in tune`, () => {
+    it(`at ${rate / 1000} kHz every reference string of every tuning is within ±0.2 cent (independent estimate) and the tuner reads it within ±0.2, in tune`, () => {
       stubAudio(rate);
       const misses: string[] = [];
       for (const midi of OPEN_STRINGS) {
@@ -117,8 +123,8 @@ describe('"Hear" with the samples not yet decoded (the Karplus-Strong pluck)', (
         const x = source.buffer!.data;
         const independent = independentPitch(x, rate, et(midi), 0.1, 1.35);
         const app = appReading(x, rate, midi);
-        if (!(Math.abs(independent.cents) <= 2)) misses.push(`${midi}: ${independent.cents.toFixed(2)} cents (independent)`);
-        if (app.frames < 10 || !(Math.abs(app.median) <= 5) || tuneState(app.shown ?? NaN) !== 'inTune') {
+        if (!(Math.abs(independent.cents) <= BOUND)) misses.push(`${midi}: ${independent.cents.toFixed(3)} cents (independent)`);
+        if (app.frames < 10 || !(Math.abs(app.median) <= BOUND) || tuneState(app.shown ?? NaN) !== 'inTune') {
           misses.push(`${midi}: the tuner reads ${app.median?.toFixed(2)} (shown ${app.shown?.toFixed(2)}, ${app.frames} frames)`);
         }
       }

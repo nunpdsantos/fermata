@@ -65,8 +65,12 @@ const SPEC: Row[] = [
 // the soft pedal are not the damper; 119 is not "all sound off"; 122, local control, is ignored). The channel mode
 // messages are each sampled with 0, and 121, 122 and 126 with a second value too (127, 127, 4): the value changes
 // nothing of what Fermata makes of them.
+// 120 and 123 are sampled with a value other than 0 too (127, 5): the specification gives 0 ("ccccccc = 120: All Sound
+// Off, vvvvvvv = 0", the same for 123: MIDI 1.0 Detailed Specification 4.2.1, Table IV, p. T-5), and Fermata reads the
+// message whatever its value, as it reads the other mode messages: a sender that puts another value there still means it.
 const DATA_SAMPLES: [number, number][] = [
   [60, 100], [0, 0], [127, 127], [64, 63], [64, 64], [120, 0], [123, 0], [1, 1],
+  [120, 127], [123, 127], [123, 5],
   [63, 127], [65, 127], [66, 127], [67, 127], [119, 0], [122, 0],
   [121, 0], [121, 127], [122, 127], [124, 0], [125, 0], [126, 0], [126, 4], [127, 0],
 ];
@@ -126,6 +130,22 @@ describe('running status', () => {
       { type: 'noteOn', channel: 0, note: 60, velocity: 100 },
       { type: 'noteOn', channel: 0, note: 62, velocity: 101 },
     ]);
+  });
+
+  it('running status through the controllers: the pedal down, then All Notes Off or All Sound Off, in one message', () => {
+    expect(createMidiParser().push([0xb0, 0x40, 0x7f, 0x7b, 0x00])).toEqual([
+      { type: 'sustain', channel: 0, down: true },
+      { type: 'allNotesOff', channel: 0 },
+    ]);
+    expect(createMidiParser().push([0xb3, 0x40, 0x7f, 0x78, 0x00])).toEqual([
+      { type: 'sustain', channel: 3, down: true },
+      { type: 'allSoundOff', channel: 3 },
+    ]);
+    // Split across events, as a driver may deliver it.
+    const p = createMidiParser();
+    expect(p.push([0xb0, 0x40])).toEqual([]);
+    expect(p.push([0x7f, 0x7b])).toEqual([{ type: 'sustain', channel: 0, down: true }]);
+    expect(p.push([0x00])).toEqual([{ type: 'allNotesOff', channel: 0 }]);
   });
 
   it('a system common message cancels running status', () => {

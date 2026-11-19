@@ -1,6 +1,7 @@
 import { test, expect, type Browser, type Page } from '@playwright/test';
 import { GUITAR_TUNINGS } from '../src/core/constants/guitarTunings';
 import { GUITAR_SAMPLE_CENTS } from '../src/services/guitarSampleTuning';
+import { LADDER } from '../src/services/guitarSampler';
 import { analysisFrameSize, centsFrom, detectPitch, SURE_CLARITY } from '../src/services/microphone/pitch';
 import { createSmoother, stringMidi, tuneState } from '../src/components/tuner/tunerReading';
 import { independentPitch } from '../src/test/independentPitch';
@@ -17,9 +18,10 @@ import { independentPitch } from '../src/test/independentPitch';
  * rate in an OfflineAudioContext at 44.1 and at 48 kHz (Chromium's own MP3
  * decoding and resampling). The rendered sound is then measured in Node by
  * an estimate that shares no code with the app's detector
- * (`src/test/independentPitch.ts`: a 0.5 s autocorrelation, median of its
- * windows through the sustained part, from 0.1 s to the end of the 2.5 s
- * reference) — within ±2 cents of equal temperament, A4 = 440 Hz — and by the
+ * (`src/test/independentPitch.ts`: a 0.5 s autocorrelation every 0.25 s from
+ * 0.1 s to the end of the 2.5 s reference, the median of the windows within
+ * 20 dB of the loudest — the part of the note a learner hears, not its decayed
+ * tail) — within ±2 cents of equal temperament, A4 = 440 Hz — and by the
  * app's own detector and smoothing (`services/microphone/pitch.ts`,
  * `components/tuner/tunerReading.ts`, the same code the tuner runs), framed as
  * the microphone frames it: in tune (±5). Every row is logged ("[M60] …") for
@@ -194,12 +196,15 @@ test.describe('the tuner\'s reference strings (audit M60)', () => {
     await context.close();
   });
 
-  test('every recorded sample: its measured pitch is the one the voice corrects for (within 0.5 cent)', async ({ browser, baseURL }) => {
+  test('every recorded sample: its pitch where it sounds (windows within 20 dB of its loudest) is the one the voice corrects for, within 0.5 cent', async ({ browser, baseURL }) => {
     test.setTimeout(120_000);
     const { context, page } = await openApp(browser, baseURL!, {});
-    const files = ['E2', 'F2', 'G2', 'A2', 'B2', 'C3', 'D3', 'E3', 'F3', 'Fs3', 'G3', 'Gs3', 'A3', 'As3', 'B3', 'C4', 'Cs4', 'D4', 'Ds4', 'E4', 'F4', 'Fs4', 'G4', 'A4', 'As4', 'B4', 'C5', 'Cs5', 'D5', 'Ds5', 'E5', 'F5', 'Fs5', 'G5', 'Gs5', 'A5', 'As5', 'B5', 'C6'];
+    // Every file of the voice's ladder; each file's name read independently as its note, which must be the ladder's.
+    const files = LADDER.map((e) => e.file);
+    expect(files).toHaveLength(39);
     const LETTER: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
     const midiOf = (file: string) => 12 * (Number(file.at(-1)) + 1) + LETTER[file[0]] + (file[1] === 's' ? 1 : 0);
+    for (const e of LADDER) expect(midiOf(e.file), e.file).toBe(e.midi);
     const misses: string[] = [];
     const measured: string[] = [];
     for (const file of files) {
@@ -213,8 +218,8 @@ test.describe('the tuner\'s reference strings (audit M60)', () => {
         return { b64: btoa(s), endS: Math.min(seconds, buffer.duration) };
       }, [file, REFERENCE_S] as const);
       const ind = independentPitch(samples(d.b64), 44100, et(midiOf(file)), 0.1, d.endS);
-      measured.push(`${file}: ${ind.cents.toFixed(1)}`);
-      console.log(`[M60] sample ${file} (midi ${midiOf(file)}): ${f2(ind.cents)} cents (${f2(ind.min)}..${f2(ind.max)}); corrected for ${GUITAR_SAMPLE_CENTS[file]}`);
+      measured.push(`${file}: ${ind.cents.toFixed(2)}`);
+      console.log(`[M60] sample ${file} (midi ${midiOf(file)}): ${f2(ind.cents)} cents (${f2(ind.min)}..${f2(ind.max)}, ${ind.kept} of ${ind.windows.length} windows); corrected for ${GUITAR_SAMPLE_CENTS[file]}`);
       if (!(Math.abs(ind.cents - (GUITAR_SAMPLE_CENTS[file] ?? NaN)) <= 0.5)) misses.push(`${file}: measured ${ind.cents.toFixed(2)}, the table says ${GUITAR_SAMPLE_CENTS[file]}`);
     }
     console.log(`[M60] measured: ${measured.join(', ')}`);

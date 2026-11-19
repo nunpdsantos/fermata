@@ -3,8 +3,10 @@
  * same numbers as the direct sum, r[τ] = Σ_{j=0}^{n−1−τ} x[j]·x[j+τ], up to
  * rounding (pinned against it in `autocorrelation.test.ts`), in O(n log n)
  * instead of O(n × lags). The detector's window grows with the sample rate,
- * so the direct sum's cost grew with its square: 1.0 ms a frame at 48 kHz,
- * 17.4 ms at 192 kHz on the builder's Mac, for a frame every 30 ms.
+ * so the direct sum's cost grows with its square: with the window scaled it
+ * alone would take 17.4 ms a frame at 192 kHz on the builder's Mac (an M4),
+ * for a frame every 30 ms; this takes 0.7 ms there. The whole detector's
+ * cost: see pitch.ts.
  *
  * Method: x zero-padded to a power of two N ≥ 2n (so the circular
  * correlation has no wrap-around), X = FFT(x), r = IFFT(|X|²) / N.
@@ -71,13 +73,21 @@ function fft(re: Float64Array, im: Float64Array, sign: 1 | -1): void {
   }
 }
 
-/** r[0 … count − 1] of `x` (count ≤ x.length). */
+/** The two working arrays of the last size asked for, reused (a frame allocates nothing large). */
+let work: { re: Float64Array; im: Float64Array } | null = null;
+
+/**
+ * r[0 … count − 1] of `x` (count ≤ x.length). The array returned is this
+ * module's working memory: read it before the next call, which overwrites it.
+ */
 export function autocorrelate(x: Float64Array, count: number): Float64Array {
   const n = x.length;
   let size = 1;
   while (size < 2 * n) size <<= 1;
-  const re = new Float64Array(size);
-  const im = new Float64Array(size);
+  if (!work || work.re.length !== size) work = { re: new Float64Array(size), im: new Float64Array(size) };
+  const { re, im } = work;
+  re.fill(0);
+  im.fill(0);
   re.set(x);
   fft(re, im, -1);
   for (let i = 0; i < size; i++) {
@@ -85,7 +95,7 @@ export function autocorrelate(x: Float64Array, count: number): Float64Array {
     im[i] = 0;
   }
   fft(re, im, 1);
-  const out = new Float64Array(Math.min(count, n));
-  for (let t = 0; t < out.length; t++) out[t] = re[t] / size;
+  const out = re.subarray(0, Math.min(count, n));
+  for (let t = 0; t < out.length; t++) out[t] /= size;
   return out;
 }

@@ -145,13 +145,16 @@ function midiFromFrequency(frequency: number): number {
  * Generate a Karplus-Strong plucked string waveform with physical modeling.
  *
  * Algorithm:
- * 1. Create a circular delay line whose length = sampleRate / frequency
+ * 1. Create a circular delay line of a whole number of samples N, chosen so
+ *    that N − 1, the averaging's half sample, the stiffness allpass and the
+ *    tuning allpass (4d) add up to exactly sampleRate / frequency (see C)
  * 2. Fill it with brightness-filtered noise shaped by a half-sine window (excitation)
  * 3. Apply a pick-position comb filter to remove the harmonic at the pick point
  * 4. Loop with:
  *    a. Frequency-dependent damping (high notes decay faster)
- *    b. One-pole allpass for string stiffness (inharmonicity)
- *    c. Standard KS lossy averaging
+ *    b. Standard KS lossy averaging (half a sample of delay)
+ *    c. One-pole allpass for string stiffness (inharmonicity)
+ *    d. One-pole tuning allpass: the fraction of a sample the line cannot hold
  * 5. Blend ~20% body resonance (2-pole bandpass at ~200 Hz)
  */
 export function generateKSBuffer(
