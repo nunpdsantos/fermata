@@ -5,7 +5,7 @@ import type { CurriculumModule, CurriculumUnit, CurriculumLevel } from '../../co
 import type { ExerciseDefinition } from '../../core/types/exercise';
 import { getNextModuleInLevel, getPreviousModuleInLevel } from '../../data/curriculumLoader';
 import { findQuotedQueries } from '../../utils/theoryQuery';
-import { queryLabel } from '../../utils/queryLabel';
+import { queryLabel, taskText } from '../../utils/queryLabel';
 import { useNoteLabel } from '../../hooks/useSolfege';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { Button, IconButton } from '../ui/Button';
@@ -623,7 +623,7 @@ export function ModuleView({
                         <button
                           type="button"
                           aria-pressed={done}
-                          aria-label={task.instruction}
+                          aria-label={taskText(task.instruction, phraseLabel)}
                           onClick={(e) => {
                             e.stopPropagation();
                             onToggleTask(module.id, task.id);

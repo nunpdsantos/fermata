@@ -174,6 +174,18 @@ describe('in the lesson: the button reads and is named by the label, and runs th
       }
       // Its accessible name is its label (a screen reader hears the words, not the token).
       expect(screen.getAllByRole('button', { name: want[0] }).length).toBeGreaterThan(0);
+      // The tick box beside it is named by the task as the learner reads it: the same words (review of bd14071, item 1).
+      const ticks = within(section).getAllByRole('button').filter((b) => b.hasAttribute('aria-pressed'));
+      expect(ticks).toHaveLength(tasks.length);
+      const faults: string[] = [];
+      ticks.forEach((tick, i) => {
+        const name = tick.getAttribute('aria-label')!;
+        for (const q of findQuotedQueries(tasks[i].instruction)) {
+          if (!name.includes(`‘${queryLabel(q.query, appNames(lang))}’`)) faults.push(`${tasks[i].id}: no ‘${queryLabel(q.query, appNames(lang))}’ in "${name}"`);
+          if (queryLabel(q.query, appNames(lang)) !== q.query && name.includes(q.query)) faults.push(`${tasks[i].id}: the token ‘${q.query}’ in "${name}"`);
+        }
+      });
+      expect(faults).toEqual([]);
       // Tapped, it opens the token's panel, which repeats the label.
       const first = buttons.find((b) => b.textContent === (lang === 'pt' ? '‘C maior’' : '‘C mayor’'))!;
       act(() => fireEvent.click(first));

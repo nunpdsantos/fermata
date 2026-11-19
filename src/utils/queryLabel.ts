@@ -24,7 +24,7 @@
  * `appText`), so the lesson pages (src/site/html.ts `instructionHtml`) print
  * what the app prints.
  */
-import { resolveTheoryReadings } from './theoryQuery';
+import { findQuotedQueries, resolveTheoryReadings } from './theoryQuery';
 import { chordFromParsed, parseChordSymbol } from '../core/utils/chordParser';
 import { withGlyphs } from '../core/utils/accidentalGlyphs';
 import { qualityName } from './qualityName';
@@ -75,4 +75,20 @@ export function queryLabel(query: string, names: QueryLabelNames): string {
     default:
       return query;
   }
+}
+
+/**
+ * A task's instruction as the learner reads it: each quoted token as
+ * ‘its words’ (`label`, usually `queryLabel`), the rest as written — what the
+ * lesson draws, and so what names its tick box for a screen reader (review of
+ * bd14071: the box still spoke the English token beside ‘C maior’).
+ */
+export function taskText(instruction: string, label: (query: string) => string): string {
+  let out = '';
+  let last = 0;
+  for (const { index, length, query } of findQuotedQueries(instruction)) {
+    out += `${instruction.slice(last, index)}‘${label(query)}’`;
+    last = index + length;
+  }
+  return out + instruction.slice(last);
 }

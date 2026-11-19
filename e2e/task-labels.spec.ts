@@ -96,3 +96,26 @@ test('en: the phrases are the tokens, as before', async ({ browser }) => {
   for (const w of ['‘C major chord’', '‘E major chord’', '‘G major chord’', '‘A natural minor scale’', '‘A harmonic minor scale’']) expect(shown).toContain(w);
   await context.close();
 });
+
+// Review of bd14071, item 1: the tick box beside a phrase is named by the task as the learner reads it.
+const tickNames = (page: Page) => page.locator('[data-section="tasks"] button[aria-pressed]').evaluateAll((bs) => bs.map((b) => b.getAttribute('aria-label') ?? ''));
+for (const [lang, key, chord, scale] of [
+  ['pt', 'Abre ‘C maior’ e nomeia cada grau da escala pelo seu nome funcional, da tónica à sensível', '‘E Maior’', '‘A menor natural’'],
+  ['es', 'Abre ‘C mayor’ y nombra cada grado de la escala por su nombre funcional, de la tónica a la sensible', '‘E Mayor’', '‘A menor natural’'],
+] as const) {
+  test(`${lang}: each tick box is named with the same words as its phrases (a key, a chord, a scale) — never the token`, async ({ browser }) => {
+    let { context, page } = await lesson(browser, lang, 'l2u4m2');
+    let names = await tickNames(page);
+    expect(names[0]).toBe(key);
+    await context.close();
+    ({ context, page } = await lesson(browser, lang, 'l4u14m5'));
+    names = await tickNames(page);
+    expect(names.some((n) => n.includes(chord))).toBe(true);
+    expect(names.some((n) => n.includes(scale))).toBe(true);
+    for (const n of names) expect(n, n).not.toMatch(/major chord|minor scale|major scale|key of/i);
+    // The phrase button and the tick box say the same words.
+    const phraseTexts = (await phrases(page)).map((p) => p.text);
+    for (const p of phraseTexts) expect(names.some((n) => n.includes(p)), p).toBe(true);
+    await context.close();
+  });
+}
