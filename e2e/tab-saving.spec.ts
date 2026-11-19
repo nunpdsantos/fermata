@@ -116,8 +116,8 @@ test.describe('nothing comes back from the dead (A1)', () => {
     });
     await cdp.send('Page.setWebLifecycleState', { state: 'active' });
     await tasks(b).nth(1).click();
-    const saved = await read(b, PROGRESS);
-    expect(saved.state.progress.moduleProgress).toEqual({ l1u34m1: ['l1u34m1t2'] });
+    // (A write in a tab's first moments waits for the merging chunk, then lands: poll briefly.)
+    await expect.poll(async () => (await read(b, PROGRESS))?.state.progress.moduleProgress, { timeout: 5000 }).toEqual({ l1u34m1: ['l1u34m1t2'] });
     await openLesson(a); // the reset reloads the app; the lesson opened again
     await expect(counter(a)).toHaveText('1/2');
     await expect(tasks(a).nth(0)).toHaveAttribute('aria-pressed', 'false');
@@ -143,9 +143,8 @@ test.describe('nothing comes back from the dead (A1)', () => {
     ]);
     await cdp.send('Page.setWebLifecycleState', { state: 'active' });
     await tasks(b).nth(1).click();
-    const saved = await read(b, PROGRESS);
-    expect(saved.state.progress.completedModules).toEqual(['l1u1m1']);
-    expect(saved.state.progress.moduleProgress).toEqual({ l1u1m1: ['l1u1m1t1'], l1u34m1: ['l1u34m1t2'] });
+    await expect.poll(async () => (await read(b, PROGRESS))?.state.progress.moduleProgress, { timeout: 5000 }).toEqual({ l1u1m1: ['l1u1m1t1'], l1u34m1: ['l1u34m1t2'] });
+    expect((await read(b, PROGRESS)).state.progress.completedModules).toEqual(['l1u1m1']);
     await context.close();
   });
 
@@ -165,8 +164,8 @@ test.describe('nothing comes back from the dead (A1)', () => {
 // ─── The other saved stores, through the app's own store instances (dev server) ───
 
 async function devOnly(page: Page) {
-  const res = await page.request.get('/src/state/tabSafe.ts');
-  test.skip(!res.ok() || !(await res.text()).includes('tabSafeStorage'), 'needs the dev server\'s /src modules');
+  const res = await page.request.get('/src/state/store.ts');
+  test.skip(!res.ok() || !(await res.text()).includes('useAppStore'), 'needs the dev server\'s /src modules');
 }
 
 test.describe('every other saved store (A1)', () => {
@@ -228,15 +227,14 @@ test.describe('every other saved store (A1)', () => {
       page.evaluate(`import('/src/state/fingeringStore.ts').then((m) => m.useFingeringStore.getState().setOverride('${key}', ${finger}))`);
     await fingering(a, 'major|standard|p2|0|1', 2);
     await fingering(b, 'major|standard|p2|1|0', 1);
-    expect((await read(a, 'fermata-fingering-v1')).state.overrides).toEqual({ 'major|standard|p2|0|1': 2, 'major|standard|p2|1|0': 1 });
+    await expect.poll(async () => (await read(a, 'fermata-fingering-v1'))?.state.overrides, { timeout: 5000 }).toEqual({ 'major|standard|p2|0|1': 2, 'major|standard|p2|1|0': 1 });
     // Both tabs in Learn (its store loads with Learn); a check under way in A; B then opens another lesson: A's check stays saved.
     const learn = (page: Page, call: string) => page.evaluate(`import('/src/state/learnSessionStore.ts').then((m) => { ${call} })`);
     for (const p of [a, b]) await learn(p, '');
     await learn(a, `m.useLearnSessionStore.getState().setCheck({ moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: { l1u1m1e1: 'f' }, run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() })`);
     await learn(b, `m.useLearnSessionStore.getState().setScreen({ type: 'module', levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m1', section: null, at: Date.now() })`);
-    const session = (await read(a, 'fermata-learn-session-v1')).state;
-    expect(session.check?.moduleId).toBe('l1u1m1');
-    expect(session.screen?.moduleId).toBe('l1u34m1');
+    await expect.poll(async () => (await read(a, 'fermata-learn-session-v1'))?.state.screen?.moduleId, { timeout: 5000 }).toBe('l1u34m1');
+    expect((await read(a, 'fermata-learn-session-v1')).state.check?.moduleId).toBe('l1u1m1');
     await context.close();
   });
 });
