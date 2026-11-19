@@ -29,25 +29,26 @@ export const THEMES = [
   { name: 'day', mode: 'fermata' },
   { name: 'night', mode: 'fermata-night' },
 ] as const;
-type Viewport = (typeof VIEWPORTS)[number];
+type Viewport = { readonly name: string; readonly viewport: { readonly width: number; readonly height: number }; readonly touch: boolean };
 const OUT = process.env.DESIGN_AUDIT_OUT;
 
 const WORDS = {
-  en: { minor: 'Natural Minor Scale', pattern: 'W-H-W-W-H-W-W', pointer: 'Look again at', build: 'Check Answer', start: 'Start the check', submit: 'Submit', cont: 'Continue', show: 'Show on the piano', unlock: 'Unlock anyway', staff: 'The Staff and Clefs', values: 'Note Values and Rests', dictation: 'Melodic Dictation: Diatonic', chromatic: 'The Chromatic Scale', level3: 'Harmony Foundations' },
-  pt: { minor: 'Escala menor natural', pattern: 'T-mT-T-T-mT-T-T', pointer: 'Volta a ver', build: 'Verificar resposta', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', unlock: 'Desbloquear mesmo assim', staff: 'A pauta e as claves', values: 'Figuras rítmicas e pausas', dictation: 'Ditado melódico: diatónico', chromatic: 'A escala cromática', level3: 'Fundamentos de harmonia' },
-  es: { minor: 'Escala menor natural', pattern: 'T-S-T-T-S-T-T', pointer: 'Vuelve a mirar', build: 'Comprobar respuesta', start: 'Empezar la comprobación', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar en el piano', unlock: 'Desbloquear de todos modos', staff: 'El pentagrama y las claves', values: 'Figuras rítmicas y silencios', dictation: 'Dictado melódico: diatónico', chromatic: 'La escala cromática', level3: 'Fundamentos de armonía' },
+  en: { exit: 'Exit the check', minor: 'Natural Minor Scale', pattern: 'W-H-W-W-H-W-W', pointer: 'Look again at', build: 'Check Answer', start: 'Start the check', submit: 'Submit', cont: 'Continue', show: 'Show on the piano', unlock: 'Unlock anyway', staff: 'The Staff and Clefs', values: 'Note Values and Rests', dictation: 'Melodic Dictation: Diatonic', chromatic: 'The Chromatic Scale', level3: 'Harmony Foundations' },
+  pt: { exit: 'Sair da verificação', minor: 'Escala menor natural', pattern: 'T-mT-T-T-mT-T-T', pointer: 'Volta a ver', build: 'Verificar resposta', start: 'Começar a verificação', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar no piano', unlock: 'Desbloquear mesmo assim', staff: 'A pauta e as claves', values: 'Figuras rítmicas e pausas', dictation: 'Ditado melódico: diatónico', chromatic: 'A escala cromática', level3: 'Fundamentos de harmonia' },
+  es: { exit: 'Salir de la comprobación', minor: 'Escala menor natural', pattern: 'T-S-T-T-S-T-T', pointer: 'Vuelve a mirar', build: 'Comprobar respuesta', start: 'Empezar la comprobación', submit: 'Enviar', cont: 'Continuar', show: 'Mostrar en el piano', unlock: 'Desbloquear de todos modos', staff: 'El pentagrama y las claves', values: 'Figuras rítmicas y silencios', dictation: 'Dictado melódico: diatónico', chromatic: 'La escala cromática', level3: 'Fundamentos de armonía' },
 } as const;
 type Lang = keyof typeof WORDS;
 
-async function open(browser: Browser, v: Viewport, theme: string, lang: Lang, progress?: object) {
+async function open(browser: Browser, v: Viewport, theme: string, lang: Lang, progress?: object, extra: Record<string, string> = {}) {
   const context = await browser.newContext({ viewport: v.viewport, isMobile: v.touch, hasTouch: v.touch, reducedMotion: 'reduce', serviceWorkers: 'block' });
-  await context.addInitScript(([blob, prog]) => {
+  await context.addInitScript(([blob, prog, more]) => {
     if (sessionStorage.getItem('__seeded')) return;
     localStorage.clear();
     localStorage.setItem('music-theory-app', blob);
     if (prog) localStorage.setItem('music-theory-progress', prog);
+    for (const [k, val] of Object.entries(JSON.parse(more) as Record<string, string>)) localStorage.setItem(k, val);
     sessionStorage.setItem('__seeded', '1');
-  }, [JSON.stringify({ state: { themeMode: theme, language: lang, lastView: 'learn', instrument: 'piano' }, version: 6 }), progress ? JSON.stringify(progress) : ''] as const);
+  }, [JSON.stringify({ state: { themeMode: theme, language: lang, lastView: 'learn', instrument: 'piano' }, version: 6 }), progress ? JSON.stringify(progress) : '', JSON.stringify(extra)] as const);
   const page = await context.newPage();
   await page.goto('/');
   await expect(page.locator('#root')).not.toBeEmpty();
@@ -86,12 +87,26 @@ async function openLesson(page: Page, title: string) {
   await page.waitForTimeout(700);
 }
 
+/**
+ * Start the lesson's check. Each screen is audited from a known state: a run
+ * left with an answer in it would be KEPT (the Back stream, 19 November 2026),
+ * and starting another lesson's check then asks first (the choice, audited on
+ * its own below) — so a sweep leaves every run as a learner would (✕ Exit,
+ * `exitCheck`) before it starts the next, and stops here if it did not.
+ */
 async function startCheck(page: Page, lang: Lang) {
   const start = page.getByRole('button', { name: WORDS[lang].start });
   await start.scrollIntoViewIfNeeded();
   await start.click();
-  await expect(page.getByTestId('focused-check')).toBeVisible();
+  await expect(page.getByTestId('focused-check').or(page.getByTestId('kept-choice'))).toBeVisible();
+  await expect(page.getByTestId('kept-choice'), 'an earlier run is still kept: leave it (exitCheck) before starting another').toHaveCount(0);
   await page.waitForTimeout(400);
+}
+
+/** Leave the check as a learner does, by its ✕: the run ends (nothing kept), the lesson shows. */
+export async function exitCheck(page: Page, lang: Lang) {
+  await page.getByRole('button', { name: WORDS[lang].exit, exact: true }).click();
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
 }
 
 /** Miss the current question twice (or once, for two options) and move on. */
@@ -264,6 +279,7 @@ export async function learnScreens(browser: Browser, v: Viewport, theme: string,
     await expect(page.getByTestId('ear-reference')).toBeVisible();
     await page.waitForTimeout(800);
     await check(page, v, combo, 'check-melody');
+    await exitCheck(page, lang);
     await openLesson(page, w.values);
     await page.locator('[data-section="c0"] [data-testid="rhythm-staff"] svg').scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
@@ -294,3 +310,173 @@ export async function learnScreens(browser: Browser, v: Viewport, theme: string,
   }
 }
 
+// ── What a check left under way says (the Back stream, 19 November 2026) ───────────────────────────
+
+/** The longest lesson title in all three languages (curriculum l3u10m2; src/data/moduleTitles.*.ts). */
+const LONG = {
+  en: 'Forbidden Parallels and Voice Motion (in Common-Practice Style)',
+  pt: 'Quintas e oitavas paralelas proibidas e movimento de vozes (no estilo da prática comum)',
+  es: 'Quintas y octavas paralelas prohibidas y movimiento de voces (en el estilo de la práctica común)',
+} as const;
+const KEPT_WORDS = {
+  en: { checkKept: /Your check is kept: question \d+ of \d+\./, cont: 'Continue', cancel: 'Cancel', sprintKept: 'Your Sprint is paused, with the time it had left.', endSession: 'End session' },
+  pt: { checkKept: /A tua verificação ficou guardada: pergunta \d+ de \d+\./, cont: 'Continuar', cancel: 'Cancelar', sprintKept: 'O teu sprint está em pausa, com o tempo que lhe restava.', endSession: 'Terminar sessão' },
+  es: { checkKept: /Tu comprobación se ha guardado: pregunta \d+ de \d+\./, cont: 'Continuar', cancel: 'Cancelar', sprintKept: 'Tu sprint está en pausa, con el tiempo que le quedaba.', endSession: 'Terminar sesión' },
+} as const;
+
+/** A run kept by Back, as the Learn session saves it (the shipped v1 fixture's run: question 2 of 3, one answer). */
+function keptSession(kind: 'check' | 'review' | 'practice', lang: Lang): string {
+  const check = {
+    moduleId: 'l3u10m2', kind, lang, fingerprints: { l3u10m2e1: 'a', l3u10m2e2: 'b', l3u10m2e3: 'c' },
+    run: { order: ['l3u10m2e2', 'l3u10m2e1', 'l3u10m2e3'], index: 1, scores: [1], items: [{ id: 'l3u10m2e2', answers: ['x'], score: 1, answer: 'x' }], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null },
+    finished: false, at: Date.now(), away: true,
+  };
+  return JSON.stringify({ state: { screen: null, check }, version: 1 });
+}
+
+/**
+ * Wait until nothing moves (design-system.spec.ts' own rule): no running Web
+ * Animation, every opacity and transform the same for 300 ms, no entrance
+ * waiting at an inline opacity of 0 — an audit mid fade-in reads blended text.
+ */
+async function settle(page: Page) {
+  const snapshot = () => page.evaluate(() => {
+    const running = document.getAnimations().filter((a) => a.playState === 'running' || a.pending).length;
+    let sig = '';
+    let waiting = 0;
+    for (const el of Array.from(document.querySelectorAll('body *'))) {
+      const cs = getComputedStyle(el);
+      if (cs.opacity !== '1' || cs.transform !== 'none') sig += `${cs.opacity}|${cs.transform};`;
+      if ((el as HTMLElement).style?.opacity === '0') waiting++;
+    }
+    return { running, sig, waiting };
+  });
+  const start = Date.now();
+  let prev = await snapshot();
+  let quietSince = Date.now();
+  while (Date.now() - start < 5000) {
+    await page.waitForTimeout(60);
+    const now = await snapshot();
+    if (now.running > 0 || now.sig !== prev.sig) quietSince = Date.now();
+    prev = now;
+    const quiet = Date.now() - quietSince;
+    if ((quiet >= 300 && now.waiting === 0) || quiet >= 1500) return;
+  }
+  throw new Error('the page never stopped moving (5 s)');
+}
+
+/** The choice is on screen, its first button focused with a visible ring, its Cancel a full tap; then the audit. */
+async function auditChoice(page: Page, v: Viewport, combo: string, screen: string, lang: Lang) {
+  const choice = page.getByTestId('kept-choice');
+  await expect(choice).toBeVisible();
+  await expect(choice).toContainText(LONG[lang]);
+  await expect(page.getByTestId('kept-back')).toBeFocused();
+  // Reached from the keyboard, the focus is shown (:focus-visible draws the ring).
+  expect.soft(await page.getByTestId('kept-back').evaluate((b) => b.matches(':focus-visible') && getComputedStyle(b).outlineStyle !== 'none'), `${combo} ${screen}: the first button's focus is not visible`).toBe(true);
+  const tap = v.touch ? 44 : 36;
+  for (const id of ['kept-back', 'kept-start', 'kept-cancel']) {
+    const box = (await page.getByTestId(id).boundingBox())!;
+    expect.soft(Math.min(box.width, box.height), `${combo} ${screen}: ${id} ${box.width}×${box.height} < ${tap}`).toBeGreaterThanOrEqual(tap - 0.5);
+  }
+  await expect(page.getByTestId('kept-cancel')).toHaveText(KEPT_WORDS[lang].cancel);
+  await choice.scrollIntoViewIfNeeded();
+  await settle(page);
+  await check(page, v, combo, screen);
+}
+
+/** A toast that names what was kept, with Continue: on screen, its buttons full taps, then the audit. */
+async function auditKeptToast(page: Page, v: Viewport, combo: string, screen: string, lang: Lang, text: string | RegExp) {
+  const toast = page.locator('.toast-card').filter({ hasText: text });
+  await expect(toast).toBeVisible();
+  await expect(toast.getByRole('button', { name: KEPT_WORDS[lang].cont })).toBeVisible();
+  await settle(page);
+  const vp = page.viewportSize()!;
+  const t = (await toast.boundingBox())!;
+  expect.soft(t.y >= 0 && t.x >= 0 && t.y + t.height <= vp.height + 0.5 && t.x + t.width <= vp.width + 0.5, `${combo} ${screen}: the toast is on screen ${JSON.stringify(t)}`).toBe(true);
+  const tap = v.touch ? 44 : 36;
+  for (const b of await toast.getByRole('button').all()) {
+    const box = (await b.boundingBox())!;
+    expect.soft(Math.min(box.width, box.height), `${combo} ${screen}: toast button ${await b.textContent()} ${box.width}×${box.height}`).toBeGreaterThanOrEqual(tap - 0.5);
+  }
+  await check(page, v, combo, screen);
+}
+
+/**
+ * The screens a check left under way brings (the Back stream, 19 November
+ * 2026), none of which the sweeps above meet: the lesson card's "kept" line
+ * with Continue; the choice before another check or a review would replace a
+ * kept run — over a kept check, a kept practice round and a kept review, with
+ * the longest lesson title there is; the "kept" toast (the active tab left a
+ * check) and the "paused" toast (Back left a Sprint).
+ */
+export async function keptScreens(browser: Browser, v: Viewport, theme: string, combo: string, lang: Lang) {
+  const w = WORDS[lang];
+  // A real run of the long lesson's check, one answer given.
+  {
+    const { context, page } = await open(browser, v, theme, lang);
+    await openLesson(page, LONG[lang]);
+    await startCheck(page, lang);
+    const answers = page.getByTestId('check-answers');
+    if (await answers.count()) {
+      await answers.locator('button[data-state="open"]').last().click();
+      await page.getByRole('button', { name: w.submit }).click();
+    } else {
+      await skipQuestion(page, lang);
+    }
+    await page.waitForTimeout(400);
+    // The active Learn tab leaves it: Learn's first screen, and the toast that says it is kept.
+    await page.locator('[role="tab"][data-tab="learn"]').click();
+    await auditKeptToast(page, v, combo, 'kept-toast-check', lang, KEPT_WORDS[lang].checkKept);
+    await page.locator('.toast-card').getByRole('button').last().click().catch(() => undefined);
+    // Its lesson again: the card's line, and Continue.
+    await openLesson(page, LONG[lang]);
+    await expect(page.getByTestId('check-kept')).toBeVisible();
+    await expect(page.getByTestId('check-continue')).toBeVisible();
+    await page.getByTestId('check-card').scrollIntoViewIfNeeded();
+    await settle(page);
+    await check(page, v, combo, 'kept-card');
+    // Another lesson's check, started from the keyboard: the choice.
+    await openLesson(page, w.values);
+    const start = page.getByTestId('check-start');
+    await start.scrollIntoViewIfNeeded();
+    await start.focus();
+    await page.keyboard.press('Enter');
+    await auditChoice(page, v, combo, 'kept-choice-check', lang);
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('check-start')).toBeFocused();
+    await context.close();
+  }
+  // A kept practice round, then a due review opened; a kept review, then a lesson's check.
+  {
+    const now = Date.now();
+    const day = 86_400_000;
+    const progress = { state: { progress: { completedModules: ['l1u2m1'], moduleProgress: {}, exerciseResults: {}, reviewSchedules: { l1u2m1: { completedAt: now - 3 * day, nextReviewAt: now - day, intervalLevel: 0, reviewCount: 0, lastReviewedAt: now - 3 * day } } } }, version: 2 };
+    const { context, page } = await open(browser, v, theme, lang, progress, { 'fermata-learn-session-v1': keptSession('practice', lang) });
+    const row = page.locator('#learn-panel').getByRole('button', { name: new RegExp(w.values) }).first();
+    await row.scrollIntoViewIfNeeded();
+    await row.focus();
+    await page.keyboard.press('Enter');
+    await auditChoice(page, v, combo, 'kept-choice-review-over-practice', lang);
+    await page.evaluate((raw) => localStorage.setItem('fermata-learn-session-v1', raw), keptSession('review', lang));
+    await openLesson(page, w.values);
+    const start = page.getByTestId('check-start');
+    await start.scrollIntoViewIfNeeded();
+    await start.focus();
+    await page.keyboard.press('Enter');
+    await auditChoice(page, v, combo, 'kept-choice-check-over-review', lang);
+    await context.close();
+  }
+}
+
+/** The "paused" toast: a Sprint left by Back. A real save, its facts known (review), so a Sprint can run. */
+export async function pausedToast(browser: Browser, v: Viewport, theme: string, combo: string, lang: Lang, drillSave: string) {
+  const { context, page } = await open(browser, v, theme, lang, undefined, { 'fermata-drill-v1': drillSave });
+  await page.locator('[role="tab"][data-tab="drill"]').click();
+  const panel = page.locator('#drill-panel');
+  await panel.getByRole('button', { name: KEPT_WORDS[lang].endSession }).click();
+  await panel.getByRole('button', { name: 'Sprint', exact: true }).click();
+  await expect(panel.getByText(/^\d+s$/)).toBeVisible();
+  await page.goBack();
+  await auditKeptToast(page, v, combo, 'paused-toast-sprint', lang, KEPT_WORDS[lang].sprintKept);
+  await context.close();
+}

@@ -8,6 +8,7 @@ import { test, expect } from '@playwright/test';
  * (/assets/LearnView-<hash>.js).
  */
 test('Learn recovers from a failed download via "Try again"', async ({ page }) => {
+  test.setTimeout(60_000);
   await page.goto('/');
   await expect(page.locator('#root')).not.toBeEmpty();
 
@@ -21,7 +22,12 @@ test('Learn recovers from a failed download via "Try again"', async ({ page }) =
   // the app reloads to fetch current files (this also proves Chromium's
   // error wording is recognised as a failed download).
   await page.context().unroute(/LearnView[^/]*\.(js|tsx)(\?.*)?$/);
-  const reloaded = page.waitForEvent('load', { timeout: 10_000 });
+  // The reload may wait for the service worker: on a first visit (this test's) one may still be installing,
+  // and "Try again" (hooks/usePWA.ts applyUpdateOrReload) asks the server for an update (up to
+  // UPDATE_CHECK_TIMEOUT_MS, 5 s) and lets an installing worker finish (up to INSTALL_WAIT_MS, 8 s) before
+  // it reloads. Under a loaded machine that took longer than the 10 s this waited before (the merged
+  // branch's whole-suite run, 19 November 2026; measured at 7–8 s with the precache slowed, at 153caab too).
+  const reloaded = page.waitForEvent('load', { timeout: 20_000 });
   await tryAgain.click();
   await reloaded;
 

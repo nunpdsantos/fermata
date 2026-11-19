@@ -452,19 +452,32 @@ async function openLessonBySearch(page: Page, title: string) {
 /** The check's words in each language (en.json / pt.json / es.json). W4b: the
  *  exercises run in a focused check opened from the lesson's Check section. */
 const EXERCISE_WORDS = {
-  en: { start: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer' },
-  pt: { start: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar resposta' },
-  es: { start: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar respuesta' },
+  en: { start: 'Start the check', submit: 'Submit', next: /^(Continue|Next)$/, check: 'Check Answer', exit: 'Exit the check' },
+  pt: { start: 'Começar a verificação', submit: 'Enviar', next: /^(Continuar|Seguinte)$/, check: 'Verificar resposta', exit: 'Sair da verificação' },
+  es: { start: 'Empezar la comprobación', submit: 'Enviar', next: /^(Continuar|Siguiente)$/, check: 'Comprobar respuesta', exit: 'Salir de la comprobación' },
 } as const;
 type Lang = keyof typeof EXERCISE_WORDS;
 
-/** Open the lesson's check (W4b: a focused check, started from the Check section). */
+/**
+ * Open the lesson's check (W4b: a focused check, started from the Check
+ * section), from a known state: a run left with an answer in it is KEPT (the
+ * Back stream, 19 November 2026) and another lesson's check then asks first,
+ * so every sweep leaves a run as a learner would (✕ Exit, `exitCheck`) before
+ * it starts the next one, and stops here if it did not.
+ */
 async function startCheck(page: Page, lang: Lang = 'en') {
   const start = learnScreen(page).getByRole('button', { name: EXERCISE_WORDS[lang].start });
   await start.scrollIntoViewIfNeeded();
   await start.click();
-  await expect(page.getByTestId('focused-check')).toBeVisible();
+  await expect(page.getByTestId('focused-check').or(page.getByTestId('kept-choice'))).toBeVisible();
+  await expect(page.getByTestId('kept-choice'), 'an earlier run is still kept: leave it (exitCheck) before starting another').toHaveCount(0);
   await page.waitForTimeout(300);
+}
+
+/** Leave the check as a learner does, by its ✕: the run ends (nothing kept), the lesson shows. */
+async function exitCheck(page: Page, lang: Lang = 'en') {
+  await page.getByRole('button', { name: EXERCISE_WORDS[lang].exit, exact: true }).click();
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
 }
 
 /** Answer the current choice question (a second try after a miss — D-09: no answer is shown) and move on. */
@@ -572,6 +585,7 @@ async function questionScreens(page: Page, lang: Lang, onScreen: (screen: string
     await staff.scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
     await onScreen(name);
+    await exitCheck(page, lang);
   }
 
   await openLessonBySearch(page, q.step.lesson);
@@ -579,12 +593,14 @@ async function questionScreens(page: Page, lang: Lang, onScreen: (screen: string
   await until(choiceUp(new RegExp(`^${q.step.choice}$`)), 'a half / whole step question');
   await page.waitForTimeout(400);
   await onScreen('learn-exercise-step');
+  await exitCheck(page, lang);
 
   await openLessonBySearch(page, q.number.lesson);
   await toExercises();
   await until(choiceUp(q.number.choice), 'an interval-number question');
   await page.waitForTimeout(400);
   await onScreen('learn-exercise-interval-number');
+  await exitCheck(page, lang);
 }
 
 // Level 1 finished but for its last REQUIRED module. Optional guitar lessons
@@ -1071,7 +1087,7 @@ for (const v of VIEWPORTS) {
         await checkAnswer.scrollIntoViewIfNeeded();
         await page.waitForTimeout(400);
         await check(page, v, combo, 'learn-exercise-instrument');
-        await page.getByRole('button', { name: 'Exit the check' }).click();
+        await exitCheck(page);
         await openLessonBySearch(page, 'Pitch Matching and Direction');
         await startCheck(page);
         // Exercise order is shuffled: answer until an ear-training one is up.
