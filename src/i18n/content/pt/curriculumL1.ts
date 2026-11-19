@@ -210,7 +210,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'A pauta dupla',
           explanation:
-            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas à esquerda por uma chaveta e uma linha. O C central fica entre as duas, mas não há uma linha permanente para ele: escreve-se numa pequena linha suplementar só sua, logo abaixo da pauta de clave de sol ou logo acima da pauta de clave de fá, onde a nota for precisa. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
+            'A música para piano usa a pauta dupla — uma pauta de clave de sol em cima e uma pauta de clave de fá em baixo, unidas à esquerda por uma chaveta e uma linha. O C central fica entre elas, mas não há uma linha permanente para ele: escreve-se numa pequena linha suplementar só sua, logo abaixo da pauta de clave de sol ou logo acima da pauta de clave de fá, onde a nota for necessária. A mão direita lê tipicamente a clave de sol; a esquerda lê a clave de fá. Juntas, cobrem a maior parte da extensão do piano. É por isso que os pianistas aprendem ambas as claves desde o início.',
           tryThisLabel: 'Explora o C em todo o teclado',
         },
       ],
@@ -444,7 +444,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'O que é uma armação de clave?',
           explanation:
-            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#, a menos que um bequadro (♮) escrito antes de um F lhe anule o sustenido. Isto poupa espaço e mostra de relance que notas a tonalidade usa.',
+            'Uma armação de clave é uma abreviatura — em vez de escrever um sustenido ou bemol junto de cada nota afetada, listam-se uma vez no início. A armação de clave de G maior tem um sustenido (F#), o que significa que todos os F na peça são tocados como F#, a menos que um bequadro (♮) escrito antes de um F lhe anule o sustenido, desde essa nota até ao fim do compasso. Isto poupa espaço e mostra de relance que notas a tonalidade usa.',
           tryThisLabel: 'Vê a armação de G — um sustenido',
         },
         {

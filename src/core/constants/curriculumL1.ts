@@ -300,7 +300,7 @@ const l1u3m2: CurriculumModule = {
     {
       title: 'What Is a Key Signature?',
       explanation:
-        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#, unless a natural sign (♮) written in front of an F cancels the sharp. This saves clutter and shows at a glance which notes the key uses.",
+        "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#, unless a natural sign (♮) written in front of an F cancels the sharp, from that note to the end of the measure. This saves clutter and shows at a glance which notes the key uses.",
       tryThisQuery: 'key of G',
       tryThisLabel: "See G's key signature — one sharp",
     },

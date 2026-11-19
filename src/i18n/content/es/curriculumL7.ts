@@ -287,7 +287,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Añade el acorde de paso del jazz blues: toca «F7», luego «F#dim7», luego «C7/G» (C7 con su quinta, G, en el bajo). El acorde disminuido enlaza el IV7 con el I7 mediante una subida cromática del bajo (F-F#-G). Este es el movimiento emblemático del jazz blues.',
+            'Añade el acorde de paso del jazz blues: pulsa «F7», «F#dim7» y «C7/G» (C7 con su quinta, G, en el bajo) para ver cada acorde; después, en Jazz blues (arriba), pulsa Escuchar para oír los tres seguidos: el acorde disminuido enlaza el IV7 con el I7 mediante una subida cromática del bajo (F-F#-G). Este es el movimiento emblemático del jazz blues.',
         },
         {
           instruction:
@@ -701,7 +701,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La escala madre menor melódica',
           explanation:
-            'En el jazz, esta forma ascendente se usa en ambos sentidos. En Explorar, la práctica al subir y al bajar se identifica como menor melódica clásica, cuyo descenso usa la menor natural. La escala menor melódica ascendente eleva tanto la sexta como la séptima del menor natural, creando una escala con tercera menor pero sexta y séptima mayores. Su patrón de intervalos (T-S-T-T-T-T-S) genera siete modos, cada uno con un carácter distinto y aplicación en el jazz. El modo 1 (la propia menor jazz) se empareja con acordes menor-mayor 7 — el sonido m(maj7). Como los modos de la escala mayor, los siete modos de una escala menor melódica comparten todos sus notas; aun así, cada uno tiene su propio sabor cromático, lo que los hace esenciales para navegar la armonía jazz alterada.',
+            'En el jazz, esta forma ascendente se usa en ambos sentidos. En Explorar, la práctica al subir y al bajar se identifica como menor melódica clásica, cuyo descenso usa la menor natural. La escala menor melódica ascendente eleva tanto la sexta como la séptima del menor natural, creando una escala con tercera menor pero sexta y séptima mayores. Su patrón de intervalos (T-S-T-T-T-T-S) genera siete modos, cada uno con un carácter distinto y aplicación en el jazz. El modo 1 (la propia menor jazz) se empareja con acordes menor-mayor 7 — el sonido m(maj7). Como los modos de la escala mayor, los siete modos de una escala menor melódica comparten todas sus notas; aun así, cada uno tiene su propio sabor cromático, lo que los hace esenciales para navegar la armonía jazz alterada.',
           tryThisLabel: 'Observa C menor melódica — la escala madre de 7 modos',
         },
         {
@@ -713,7 +713,7 @@ const curriculumL7: CurriculumLevelOverlay = {
         {
           title: 'La escala alterada (superlocria)',
           explanation:
-            'El modo 7 de la menor melódica es la escala alterada, también llamada superlocria. Su fórmula desde la fundamental: S-T-S-T-T-T-T. Contiene todas las alteraciones posibles de un acorde dominante: b9, #9, b5 (#11) y #5 (b13). La escala alterada se empareja exclusivamente con acordes 7alt y ES el sonido esencial para dominantes que resuelven a menor con tensión máxima. El atajo: la escala alterada en cualquier fundamental equivale a la escala menor melódica comenzando un semitono más arriba (C alterada = Db menor melódica). El locrio natural 2 (modo 6) es la escala estándar para acordes semidisminuidos.',
+            'El modo 7 de la menor melódica es la escala alterada, también llamada superlocria. Su fórmula desde la fundamental: S-T-S-T-T-T-T. Contiene todas las alteraciones posibles de un acorde dominante: b9, #9, b5 (#11) y #5 (b13). La escala alterada se empareja con acordes 7alt — contiene las cuatro alteraciones que pueden llevar — y ES el sonido esencial para dominantes que resuelven a menor con tensión máxima. El atajo: la escala alterada en cualquier fundamental equivale a la escala menor melódica comenzando un semitono más arriba (C alterada = Db menor melódica). El locrio natural 2 (modo 6) es la escala estándar para acordes semidisminuidos.',
           tryThisLabel: 'Observa la escala alterada — modo 7 de la menor melódica',
         },
       ],

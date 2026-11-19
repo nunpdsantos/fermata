@@ -102,8 +102,7 @@ const overlay: SongOverlay = {
   // ---- L2U6: Compasso Composto e Síncopa ----
 
   'l2u6m1': [
-    'O acompanhamento arpejado em compasso 6/8 demonstra o compasso composto binário, em que cada um dos dois tempos principais se subdivide em grupos de três colcheias. Algumas edições escrevem-no em 12/8, que conta quatro tempos por compasso em vez de dois (um compasso de 12/8 contém dois de 6/8). A música pode soar igual escrita de uma ou de outra forma: o que as duas partilham é a divisão de cada tempo em três; o que muda é quantos tempos conta um compasso escrito.',
-    'O verso está em 6/8 antes de o refrão mudar de sensação — um contraste entre compasso composto e simples.',
+    'O acompanhamento arpejado em compasso 6/8 demonstra o compasso composto binário: dois tempos principais por compasso, cada um subdividido num grupo de três colcheias. Um compasso de 12/8 contaria quatro desses tempos; em ambos, cada tempo divide-se em três.',
     'Alterna entre 6/8 e 3/4 — as mesmas seis colcheias reagrupadas, a hemíola clássica entre compasso composto e simples.',
   ],
   'l2u6m2': [
@@ -192,7 +191,7 @@ const overlay: SongOverlay = {
     'Rica em notas estranhas ao acorde — retardos, apogiaturas e notas de passagem criam a sua qualidade onírica.',
   ],
   'l3u11m5': [
-    'No seu arranjo para violino de 1871, August Wilhelmj passou esta ária da Suite Orquestral n.º 3 de Bach de D maior para C maior, suficientemente grave para toda a melodia se tocar na corda mais grave do violino, a corda G. Foi uma transposição que deu nome à peça.',
+    'No seu arranjo para violino de 1871, August Wilhelmj transpôs esta ária da Suite Orquestral n.º 3 de Bach de D maior para C maior, para que toda a melodia se pudesse tocar na corda mais grave do violino, a corda G. Marcou a parte «na corda G», e foi essa indicação que deu nome ao arranjo.',
     'A canção soa em F maior, mas Paul McCartney afinou a guitarra um tom abaixo e tocou-a com formas de acordes de G maior: a afinação transpôs cada acorde uma 2.ª maior abaixo, como um trompete em Bb faz com cada nota escrita.',
   ],
 

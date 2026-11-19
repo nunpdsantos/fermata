@@ -12,9 +12,10 @@
  *  - A27 (l4u12m5, "Third Inversion (V4/2)"): the bass must be heard falling
  *    from F to E, so G7/F must be followed by C/E, both chords shown.
  *  - A29 (l7u21m5): the task promises the bass F–F♯–G under F7 → F♯dim7 →
- *    C7; a plain C7 has C in the bass. Every chord the task names, tapped,
- *    has the promised lowest note, and the jazz-blues Try This plays the three
- *    in a row with the lowest notes one half step apart, rising.
+ *    C7; a plain C7 has C in the bass. The task now names C7/G; its three
+ *    links, tapped one after another, are a look at each chord (F4, F♯4, G3:
+ *    not a line), and it sends the learner to the jazz-blues Try This, which
+ *    plays the three in a row over F3, F♯3, G3.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, act, within } from '@testing-library/react';
@@ -175,23 +176,30 @@ describe('A27 — V4/2: the bass falls from F to E, G7/F → C/E', () => {
 });
 
 describe('A29 — jazz blues: F7 → F♯dim7 → C7/G over the bass F–F♯–G', () => {
-  it('the task names C7 with G in the bass, and every chord it names, tapped, has the promised lowest note', async () => {
+  // Real pitches, never pitch classes: an octave is what tells a climb from a fall.
+  it('the task\'s three links are a look at each chord: tapped one after another their lowest notes are F4, F♯4, G3 (not a line), so the task sends the learner to the Try This to hear the climb', async () => {
     renderLesson(L7_UNITS, 'l7u21m5');
     // The task's own row: its tick box is named by the instruction.
-    const task = screen.getByRole('button', { name: /jazz blues passing chord/i }).parentElement!.parentElement!;
-    const promised: [string, string][] = [['F7', 'F'], ['F#dim7', 'F#'], ['C7/G', 'G']];
-    for (const [chord, bass] of promised) {
+    const toggle = screen.getByRole('button', { name: /jazz blues passing chord/i });
+    const task = toggle.parentElement!.parentElement!;
+    const lowest: number[] = [];
+    for (const chord of ['F7', 'F#dim7', 'C7/G']) {
       const button = within(task).getByRole('button', { name: `‘${chord}’` });
       await act(async () => { fireEvent.click(button); });
       const panel = within(task).getByTestId('inline-try-this');
       expect(within(panel).getByText(`‘${chord}’`), chord).toBeTruthy();
       const played = await hear(panel);
       expect(played, chord).toHaveLength(1);
-      expect(Math.min(...played[0]) % 12, chord).toBe(midi(`${bass}4`) % 12);
+      lowest.push(Math.min(...played[0]));
     }
+    // Each chord in the app's own single-chord voicing: the bass falls eleven half steps from F♯4 to G3.
+    expect(lowest).toEqual([midi('F4'), midi('F#4'), midi('G3')]);
+    // So the task promises the ascent only where it is heard: under Jazz Blues, Hear it.
+    expect(toggle.getAttribute('aria-label')).toMatch(/to see each chord, then, under Jazz Blues above, press Hear it to hear the three in a row/);
+    expect(screen.getByRole('heading', { name: 'Jazz Blues' })).toBeTruthy();
   });
 
-  it('the jazz-blues Try This plays the three in a row, the lowest notes rising F3, F♯3, G3', async () => {
+  it('the jazz-blues Try This the task points to plays the three in a row, the lowest notes rising F3, F♯3, G3', async () => {
     renderLesson(L7_UNITS, 'l7u21m5');
     const played = await hear(conceptPanel(1));
     expect(played.map((ms) => Math.min(...ms))).toEqual([midi('F3'), midi('F#3'), midi('G3')]);

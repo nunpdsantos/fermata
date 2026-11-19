@@ -194,7 +194,7 @@ const curriculumL9: CurriculumLevelOverlay = {
         },
         {
           instruction:
-            'Carrega em "C7" — encontra o trítono (E a Bb). Este é o intervalo mais instável. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
+            'Carrega em "C7" — encontra o trítono (E a Bb). Este é um dos intervalos mais instáveis. Contrasta-o com a 5.ª perfeita (C a G) em "C major chord". Estável vs. tenso — ouve a diferença',
         },
       ],
     },
@@ -213,13 +213,13 @@ const curriculumL9: CurriculumLevelOverlay = {
         {
           title: 'Associações com canções: intervalos amplos',
           explanation:
-            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6m vs. 6M, 7m vs. 7M.',
+            'Continuando a abordagem mnemónica para a metade superior da oitava. 6.ª menor = The Entertainer (ascendente: o salto de E para C que se segue às notas iniciais D-D#-E; o tema "Where Do I Begin" de Love Story é o exemplo descendente clássico). 6.ª maior = My Bonnie (my-bon). 7.ª menor = Somewhere (West Side Story). 7.ª maior = Take On Me (as duas primeiras notas do refrão, take-on). Oitava = Somewhere Over the Rainbow. Intervalos amplos são mais difíceis de identificar porque parecem "grandes saltos" e as diferenças de tamanho entre eles são proporcionalmente menores. As sextas e sétimas são particularmente árduas — são inversões de terças e segundas, portanto o seu carácter está relacionado mas é mais largo. Treina contrastando pares: 6m vs. 6M, 7m vs. 7M.',
           tryThisLabel: 'Ouve o intervalo de 7.ª maior (C a B)',
         },
         {
           title: 'Intervalos amplos descendentes',
           explanation:
-            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas de "Feelings" (Feel-ings) ou do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
+            'Os intervalos descendentes soam diferentes dos ascendentes mesmo que a distância seja igual. Uma 5.ª perfeita descendente (G descendo para C) soa como resolução ou aterragem. Uma 6.ª maior descendente soa quente e nostálgica. Sétimas descendentes soam dramáticas e amplas. Treina intervalos descendentes separadamente — muitos estudantes que dominam intervalos ascendentes debatem-se com os descendentes. Usa associações com canções descendentes: 5P descendente = as duas primeiras notas do tema dos Flintstones (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Constrói o conjunto descendente como competência própria.',
           tryThisLabel:
             'Toca C maior descendente — ouve os intervalos ao contrário',
         },

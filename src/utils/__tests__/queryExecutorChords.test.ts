@@ -14,6 +14,15 @@ import { clearProgressionRequest, getProgressionRequest } from '../../state/prog
 import { useAppStore } from '../../state/store';
 import { getPitchClass } from '../../core/constants/notes';
 import { looksLikeChordSymbol } from '../../core/utils/chordParser';
+import { L1_UNITS } from '../../core/constants/curriculumL1';
+import { L2_UNITS } from '../../core/constants/curriculumL2';
+import { L3_UNITS } from '../../core/constants/curriculumL3';
+import { L4_UNITS } from '../../core/constants/curriculumL4';
+import { L5_UNITS } from '../../core/constants/curriculumL5';
+import { L6_UNITS } from '../../core/constants/curriculumL6';
+import { L7_UNITS } from '../../core/constants/curriculumL7';
+import { L8_UNITS } from '../../core/constants/curriculumL8';
+import { L9_UNITS } from '../../core/constants/curriculumL9';
 
 beforeEach(() => {
   clearProgressionRequest();
@@ -66,6 +75,29 @@ describe('parseChordListQuery', () => {
     });
     expect(lowest('chords: F7 F#dim7 C7/G')).toEqual(['F3', 'F#3', 'G3']);
     expect(lowest('chords: G7/F C/E')).toEqual(['F3', 'E3']);
+    // The known limit: a written line that crosses between B and C is heard
+    // the other way round (B3 → C3, a major 7th down, for a half step up).
+    expect(lowest('chords: G7/B C')).toEqual(['B3', 'C3']);
+    // Every chord list the lessons ship: a bass that moves by a half or whole
+    // step (pitch classes 1 or 2 apart) is heard as that step, except where
+    // it crosses B–C. The one list that does is root-position and unchanged
+    // since wave 2 (the track's chords of G in scale order): it is listed, so
+    // a new crossing fails here.
+    const midiOf = (p: { octave: number }, pc: number) => 12 * (p.octave + 1) + pc;
+    const lists = [L1_UNITS, L2_UNITS, L3_UNITS, L4_UNITS, L5_UNITS, L6_UNITS, L7_UNITS, L8_UNITS, L9_UNITS]
+      .flat().flatMap((u) => u.modules).flatMap((m) => m.concepts.map((c) => [m.id, c.tryThisQuery] as const))
+      .filter(([, q]) => parseChordListQuery(q) !== null);
+    expect(lists.length).toBeGreaterThanOrEqual(24);
+    const broken: string[] = [];
+    for (const [id, q] of lists) {
+      const basses = chordListSounds(parseChordListQuery(q)!).map((s) => Math.min(...s.pitches.map((p) => midiOf(p, getPitchClass(p)))));
+      for (let i = 1; i < basses.length; i++) {
+        const up = (((basses[i] - basses[i - 1]) % 12) + 12) % 12;
+        const step = up <= 2 ? up : up >= 10 ? up - 12 : null;
+        if (step !== null && step !== 0 && basses[i] - basses[i - 1] !== step) broken.push(`${id} ${q}: ${basses[i - 1]} → ${basses[i]}`);
+      }
+    }
+    expect(broken).toEqual(['l1u35m3 chords: G Am Bm C D Em: 59 → 48']);
     // Root position, as before: open voicing from the root in octave 3.
     expect(chordListSounds(parseChordListQuery('chords: G C')!).map((s) => s.pitches.map((p) => `${p.natural}${p.octave}`).join(' '))).toEqual(['G3 D4 B4', 'C3 G3 E4']);
   });

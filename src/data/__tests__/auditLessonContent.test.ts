@@ -19,13 +19,16 @@ import { stringToNote, type Note } from '../../core/types/music';
 import { parseChordSymbol, chordFromParsed } from '../../core/utils/chordParser';
 import { findQuotedQueries, resolveTheoryQuery } from '../../utils/theoryQuery';
 import { getSongReferences } from '../songReferences';
-import { EN_UNITS, curriculumOverlay, songOverlay, exerciseOverlay, type Lang } from '../../i18n/content/__tests__/overlayEntries';
+import { EN_UNITS, curriculumOverlay, songOverlay, exerciseOverlay, overlayEntries, type Lang } from '../../i18n/content/__tests__/overlayEntries';
 import { TUNING_STANDARD } from '../../core/constants/guitarTunings';
 import exercisesL7 from '../exercises/exercisesL7';
 import templatesL7 from '../exercises/templatesL7';
 import enGlossary from '../../i18n/glossary/en.json';
 import ptGlossary from '../../i18n/glossary/pt.json';
 import esGlossary from '../../i18n/glossary/es.json';
+import enLocale from '../../i18n/locales/en.json';
+import ptLocale from '../../i18n/locales/pt.json';
+import esLocale from '../../i18n/locales/es.json';
 
 type AnyLang = 'en' | Lang;
 const LANGS: AnyLang[] = ['en', 'pt', 'es'];
@@ -87,8 +90,12 @@ describe('nothing is typed: a quoted query in a task is a link the learner taps'
   it('every task that asked to type now says tap, in all three languages, with the same quoted queries', () => {
     const tapped = MODULES.flatMap((id) => enModule(id).tasks.map((t, i) => [id, i, t.instruction] as const)).filter(([, , t]) => TAP.en.test(t));
     // The fourteen tasks that said "Type '…'" on 6de6c0e (l4u14m5 t1, l7u23m3 t1–t3,
-    // l7u21m2 t1–t2, l4u12m5 t1–t2, l4u14m4 t1, l1u3m2 t1–t3, l9u30m3 t1 and t3).
-    expect(tapped.length).toBe(14);
+    // l7u21m2 t1–t2, l4u12m5 t1–t2, l4u14m4 t1, l1u3m2 t1–t3, l9u30m3 t1 and t3),
+    // and l7u21m5 t2, whose links are taps to see each chord since the fix pass.
+    expect(tapped.map(([id, i]) => `${id}t${i + 1}`).sort()).toEqual([
+      'l1u3m2t1', 'l1u3m2t2', 'l1u3m2t3', 'l4u12m5t1', 'l4u12m5t2', 'l4u14m4t1', 'l4u14m5t1',
+      'l7u21m2t1', 'l7u21m2t2', 'l7u21m5t2', 'l7u23m3t1', 'l7u23m3t2', 'l7u23m3t3', 'l9u30m3t1', 'l9u30m3t3',
+    ]);
     for (const [id, i] of tapped) {
       for (const lang of ['pt', 'es'] as const) {
         expect(moduleIn(lang, id).tasks[i], `${lang} ${id} task ${i}`).toMatch(TAP[lang]);
@@ -411,6 +418,190 @@ describe('A35 — the Goldberg canons are Nos. 3 to 27; No. 30 is a quodlibet (l
       expect(t, lang).toMatch(/27/);
       expect(t, lang).toMatch(/30/);
       expect(t, lang).toMatch(/quodlibet/);
+    }
+  });
+});
+
+// ─── PT and ES state the facts the English states (fix pass, 18 November 2026) ───
+//
+// Every leaf this stream changed, English against Portuguese and against
+// Spanish: the same numbers (number words read as digits: "fifth" = «quinta»
+// = 5, "both" = «ambos» = 2; "one" / «um» / «uma» / «un» / «una» are left out,
+// they are also articles), the same note letters in the same order (a
+// sentence-opening "A" before a word that names no quality is the article),
+// and the same interval abbreviations under the house mapping (P5 = 5P = 5J,
+// M3 = 3M, m6 = 6m). The method is builder T's, for the tasks of the other
+// modules (src/data/__tests__/practiceTasks.corpus.test.ts on its branch,
+// section 4); it is written out again here, not imported across branches.
+const NUMBER_WORDS: Record<AnyLang, [RegExp, string][]> = (() => {
+  const w = (words: string, d: string): [RegExp, string] => [new RegExp(`(?<!\\p{L})(?:${words})(?!\\p{L})`, 'giu'), d];
+  return {
+    en: [w('unisons?', '1'), w('octaves?', '8'), w('first', '1'), w('seconds?', '2'), w('thirds?', '3'), w('fourths?', '4'), w('fifths?', '5'), w('sixths?', '6'), w('sevenths?', '7'),
+      w('ninths?', '9'), w('tenth', '10'), w('elevenths?', '11'), w('thirteenths?', '13'), w('both', '2'), w('threes', '3'), w('two', '2'), w('three', '3'), w('four', '4'), w('five', '5'), w('six', '6'),
+      w('seven', '7'), w('eight', '8'), w('nine', '9'), w('ten', '10'), w('eleven', '11'), w('twelve', '12')],
+    pt: [w('uníssonos?', '1'), w('oitavas?', '8'), w('primeir[oa]s?', '1'), w('segund[oa]s?', '2'), w('terceir[oa]s?|terças?', '3'),
+      w('quart[oa]s?', '4'), w('quint[oa]s?', '5'), w('sext[oa]s?', '6'), w('sétim[oa]s?', '7'), w('non[oa]s?', '9'), w('décim[oa]', '10'),
+      w('dois|duas|ambos|ambas', '2'), w('três', '3'), w('quatro', '4'), w('cinco', '5'), w('seis', '6'), w('sete', '7'), w('oito', '8'), w('nove', '9'), w('dez', '10'), w('onze', '11'), w('doze', '12')],
+    es: [w('unísonos?', '1'), w('octavas?', '8'), w('primer[oa]?s?', '1'), w('segund[oa]s?', '2'), w('tercer[oa]?s?', '3'), w('cuart[oa]s?', '4'), w('quint[oa]s?', '5'), w('sext[oa]s?', '6'),
+      w('séptim[oa]s?', '7'), w('noven[oa]s?', '9'), w('décim[oa]', '10'),
+      w('dos|ambos|ambas', '2'), w('tres', '3'), w('cuatro', '4'), w('cinco', '5'), w('seis', '6'), w('siete', '7'), w('ocho', '8'), w('nueve', '9'), w('diez', '10'), w('once', '11'), w('doce', '12')],
+  };
+})();
+// Unlike T's list, "chord" and "scale" are left out (here "A scale is…" and
+// "A chord played…" open with the article) and a hyphen ends no quality ("A
+// minor-key passage" is the article too).
+const QUALITY_WORD = /^(?:major|minor|natural|harmonic|melodic|dorian|phrygian|lydian|mixolydian|aeolian|locrian|maior|menor|mayor|harmónica|armónica|melódica)\b(?!-)/iu;
+const NOTE_LETTER = /(?<![\p{L}\d])([A-G])(♯|♭|#|b)?(?![\p{L}\d])/gu;
+const INTERVAL = /(?<![\p{L}\d.])(?:([PMmdA])(\d{1,2})|(\d{1,2})([PMmdJ]))(?![\p{L}\d])/gu;
+const numbersOf = (text: string, lang: AnyLang) => {
+  let s = text;
+  for (const [re, d] of NUMBER_WORDS[lang]) s = s.replace(re, ` ${d} `);
+  return (s.match(/\d+/g) ?? []).map(Number).sort((a, b) => a - b).join(' ');
+};
+const notesOf = (text: string) => {
+  const withoutArticles = text.replace(/(^|[.!?:;—–(]\s*)A(?= (\S+))/gu, (m, lead: string, next: string) => (QUALITY_WORD.test(next) || next.startsWith(',') ? m : `${lead}·`));
+  return [...withoutArticles.matchAll(NOTE_LETTER)].map((m) => m[1] + (m[2] === '#' || m[2] === '♯' ? '♯' : m[2] ? '♭' : '')).join(' ');
+};
+const intervalsOf = (text: string) => [...text.matchAll(INTERVAL)].map((m) => (m[1] ? m[1] + m[2] : (m[4] === 'J' ? 'P' : m[4]) + m[3])).sort().join(' ');
+type FactKind = 'numbers' | 'notes' | 'intervals';
+const FACTS: Record<FactKind, (text: string, lang: AnyLang) => string> = { numbers: numbersOf, notes: (t) => notesOf(t), intervals: (t) => intervalsOf(t) };
+const factDifferences = (en: string, tr: string, lang: Lang): FactKind[] => (Object.keys(FACTS) as FactKind[]).filter((k) => FACTS[k](en, 'en') !== FACTS[k](tr, lang));
+
+/** Every curriculum and song leaf this stream changed (both passes), by its source-hash key. */
+const CHANGED_KEYS = [
+  'cur:l1u1m2.objectives[2]', 'cur:l1u1m2.concepts[1].explanation', 'cur:l1u1m2.tasks[0]',
+  'cur:l1u3m2.concepts[0].explanation', 'cur:l1u3m2.concepts[2].explanation', 'cur:l1u3m2.tasks[0]', 'cur:l1u3m2.tasks[1]', 'cur:l1u3m2.tasks[2]',
+  'cur:l3u11m5.concepts[1].explanation',
+  'cur:l4u12m5.concepts[2].tryThisLabel', 'cur:l4u12m5.tasks[0]', 'cur:l4u12m5.tasks[1]',
+  'cur:l4u14m4.tasks[0]', 'cur:l4u14m4.tasks[2]',
+  'cur:l4u14m5.concepts[2].explanation', 'cur:l4u14m5.tasks[0]', 'cur:l4u14m5.tasks[1]',
+  'cur:l7u21m2.concepts[1].explanation', 'cur:l7u21m2.concepts[1].tryThisLabel', 'cur:l7u21m2.tasks[0]', 'cur:l7u21m2.tasks[1]',
+  'cur:l7u21m5.objectives[3]', 'cur:l7u21m5.concepts[1].tryThisLabel', 'cur:l7u21m5.tasks[1]',
+  'cur:l7u23m3.concepts[0].explanation', 'cur:l7u23m3.concepts[2].explanation', 'cur:l7u23m3.tasks[0]', 'cur:l7u23m3.tasks[1]', 'cur:l7u23m3.tasks[2]',
+  'cur:l8u25m3.concepts[0].explanation', 'cur:l8u25m3.tasks[1]',
+  'cur:l9u30m3.concepts[0].explanation', 'cur:l9u30m3.tasks[0]', 'cur:l9u30m3.tasks[1]', 'cur:l9u30m3.tasks[2]',
+  'cur:l9u30m4.concepts[0].explanation', 'cur:l9u30m4.concepts[1].explanation', 'cur:l9u30m4.tasks[1]',
+  'song:l2u6m1[0]', 'song:l2u6m1[1]', 'song:l3u11m5[0]', 'song:l3u11m5[1]',
+];
+const GLOSSARY_IDS = ['arpeggio', 'keySignature'] as const;
+
+/** Where a language says the same thing another way: `<key> <lang> <kind>` and why. */
+const FACT_EXCEPTIONS: Readonly<Record<string, string>> = {
+  'cur:l1u3m2.tasks[1] pt notes': 'possessive order: "G major\'s F#" is «o F# de G maior» (builder T lists the same task)',
+  'cur:l1u3m2.tasks[1] es notes': 'possessive order: "G major\'s F#" is «el F# de G mayor» (builder T lists the same task)',
+  'cur:l7u23m3.concepts[0].explanation pt numbers': '"raises both the 6th and 7th" is «eleva tanto a sexta como a sétima» (no word for both)',
+  'cur:l7u23m3.concepts[0].explanation es numbers': '"raises both the 6th and 7th" is «eleva tanto la sexta como la séptima» (no word for both)',
+};
+
+describe('PT and ES state the numbers, notes and intervals the English states, in every leaf this stream changed', () => {
+  const leaves = (() => {
+    const byKey = new Map(overlayEntries().map((e) => [e.key, e]));
+    const out = CHANGED_KEYS.map((key) => {
+      const e = byKey.get(key);
+      expect(e, key).toBeDefined();
+      return { key, en: e!.en, tr: e!.tr };
+    });
+    for (const id of GLOSSARY_IDS) {
+      out.push({ key: `glossary:${id}`, en: enGlossary.entries[id].plain, tr: { pt: ptGlossary.entries[id].plain, es: esGlossary.entries[id].plain } });
+    }
+    return out;
+  })();
+
+  it('the reader fires on a changed number, a changed interval and notes out of order, and passes the house forms', () => {
+    const en = 'C7alt plays all four (b9, #9) over C, E and Bb; F# in C major becomes C# in G major (P5, M3).';
+    expect(factDifferences(en, 'C7alt toca as quatro (b9, #9) sobre C, E e Bb; F# em C maior torna-se C# em G maior (5P, 3M).', 'pt')).toEqual([]);
+    expect(factDifferences(en, 'C7alt toca las cuatro (b9, #9) sobre C, E y Bb; F# en C mayor se convierte en C# en G mayor (5J, 3M).', 'es')).toEqual([]);
+    expect(factDifferences(en, 'C7alt toca as três (b9, #9) sobre C, E e Bb; F# em C maior torna-se C# em G maior (5P, 3M).', 'pt')).toEqual(['numbers']);
+    expect(factDifferences(en, 'C7alt toca las cuatro (b9, #9) sobre C, E y Bb; F# en C mayor se convierte en C# en G mayor (4J, 3M).', 'es')).toEqual(['numbers', 'intervals']);
+    expect(factDifferences(en, 'C7alt toca as quatro (b9, #9) sobre C, E e Bb; F# em C maior torna-se G# em C maior (5P, 3M).', 'pt')).toEqual(['notes']);
+  });
+
+  it('covers every changed leaf: 42 curriculum and song leaves and two glossary entries', () => {
+    expect(leaves).toHaveLength(44);
+  });
+
+  it.each(['pt', 'es'] as const)('%s: every changed leaf, outside the listed exceptions', (lang) => {
+    const bad = leaves.flatMap((l) => factDifferences(l.en, l.tr[lang]!, lang)
+      .filter((k) => !(`${l.key} ${lang} ${k}` in FACT_EXCEPTIONS))
+      .map((k) => `${l.key} ${k}: [${FACTS[k](l.en, 'en')}] vs [${FACTS[k](l.tr[lang]!, lang)}] | ${l.tr[lang]}`));
+    expect(bad).toEqual([]);
+  });
+
+  it('every listed exception still differs (a stale entry fails)', () => {
+    for (const key of Object.keys(FACT_EXCEPTIONS)) {
+      const [leafKey, lang, kind] = key.split(' ') as [string, Lang, FactKind];
+      const l = leaves.find((x) => x.key === leafKey);
+      expect(l, key).toBeDefined();
+      expect(factDifferences(l!.en, l!.tr[lang]!, lang), key).toContain(kind);
+    }
+  });
+});
+
+describe('fix pass of 18 November 2026: the reviewer\'s items', () => {
+  const pick = <T,>(m: Record<AnyLang, T>, lang: AnyLang) => m[lang];
+  it('item 2 — the l7u21m5 task sends the learner to the Try This, by its own title and the button\'s own word', () => {
+    const HEAR: Record<AnyLang, string> = { en: enLocale.lesson.hearIt, pt: ptLocale.lesson.hearIt, es: esLocale.lesson.hearIt };
+    for (const lang of LANGS) {
+      const title = lang === 'en' ? enModule('l7u21m5').concepts[1].title : curriculumOverlay(lang, 7).modules.l7u21m5.concepts[1].title;
+      const t = moduleIn(lang, 'l7u21m5').tasks[1];
+      expect(t, lang).toContain(title);
+      expect(t, lang).toContain(HEAR[lang]);
+    }
+  });
+  it('item 4 — the Air\'s name comes from Wilhelmj\'s marking, not from "a transposition"', () => {
+    const NAME: Record<AnyLang, RegExp> = { en: /that marking gave the arrangement its name/, pt: /foi essa indicação que deu nome ao arranjo/, es: /esa indicación dio nombre al arreglo/ };
+    const OLD: Record<AnyLang, RegExp> = { en: /A transposition gave the piece its name/, pt: /Foi uma transposição que deu nome/, es: /Una transposición le dio nombre/ };
+    for (const lang of LANGS) {
+      const c = songContexts(lang, 'l3u11m5')[0];
+      expect(c, lang).toMatch(NAME[lang]);
+      expect(c, lang).not.toMatch(OLD[lang]);
+    }
+  });
+  it('item 5 — the House of the Rising Sun note makes no claim about editions', () => {
+    for (const lang of LANGS) expect(songContexts(lang, 'l2u6m1')[0], lang).not.toMatch(/edition|ediç|edicion/i);
+  });
+  it('item 6 — a natural sign lasts to the end of its measure (l1u3m2)', () => {
+    const END: Record<AnyLang, RegExp> = { en: /from that note to the end of the measure/, pt: /desde essa nota até ao fim do compasso/, es: /desde esa nota hasta el final del compás/ };
+    for (const lang of LANGS) expect(moduleIn(lang, 'l1u3m2').concepts[0].explanation, lang).toMatch(END[lang]);
+  });
+  it('item 7 — PT / ES wording: "todas as suas notas", "todas sus notas", "necessária"', () => {
+    expect(moduleIn('pt', 'l7u23m3').concepts[0].explanation).toMatch(/partilham todas as suas notas/);
+    expect(moduleIn('es', 'l7u23m3').concepts[0].explanation).toMatch(/comparten todas sus notas/);
+    expect(moduleIn('pt', 'l1u1m2').concepts[1].explanation).toMatch(/onde a nota for necessária/);
+  });
+  it('item 8 — the key signature (glossary) names the signs that change it, to the end of the measure', () => {
+    const ks = { en: enGlossary.entries.keySignature.plain, pt: ptGlossary.entries.keySignature.plain, es: esGlossary.entries.keySignature.plain };
+    const END: Record<AnyLang, RegExp> = { en: /to the end of the measure/, pt: /até ao fim do compasso/, es: /hasta el fin del compás/ };
+    for (const lang of LANGS) {
+      expect(pick(ks, lang), lang).toMatch(/♮, ♯ o[ur]? ♭/);
+      expect(pick(ks, lang), lang).toMatch(END[lang]);
+      expect(pick(ks, lang).length, lang).toBeLessThanOrEqual(220);
+    }
+  });
+  it('item 8 — a canon at the fifth goes above or below; the tritone is one of the most unstable; the altered scale is not exclusive; no III–VII cadence', () => {
+    const FIFTH: Record<AnyLang, RegExp> = { en: /canon at the fifth transposes it a fifth higher or lower/, pt: /cânone à quinta transpõe-na uma quinta acima ou abaixo/, es: /canon a la quinta la transpone una quinta por encima o por debajo/ };
+    const ONE_OF: Record<AnyLang, RegExp> = { en: /one of the most unstable intervals/, pt: /um dos intervalos mais instáveis/, es: /uno de los intervalos más inestables/ };
+    for (const lang of LANGS) {
+      expect(moduleIn(lang, 'l8u25m3').concepts[0].explanation, lang).toMatch(FIFTH[lang]);
+      expect(moduleIn(lang, 'l9u30m3').tasks[2], lang).toMatch(ONE_OF[lang]);
+      expect(moduleIn(lang, 'l7u23m3').concepts[2].explanation, lang).not.toMatch(/exclusiv/i);
+      expect(moduleIn(lang, 'l4u14m5').concepts[2].explanation, lang).not.toMatch(/III-VII/);
+      expect(moduleIn(lang, 'l4u14m5').concepts[2].explanation, lang).toMatch(/VII-i/);
+    }
+  });
+  it('item 8 — "We Are the Champions" is cut (no source for its meter change); the songs of l2u6m1 still line up in three languages', () => {
+    const en = getSongReferences('l2u6m1');
+    expect(en.map((s) => s.song)).toEqual(['House of the Rising Sun', 'America']);
+    for (const lang of ['pt', 'es'] as const) expect(songOverlay(lang).l2u6m1, lang).toHaveLength(2);
+    expect(songOverlay('pt').l2u6m1[1]).toMatch(/^Alterna entre 6\/8 e 3\/4/);
+    expect(songOverlay('es').l2u6m1[1]).toMatch(/^Alterna entre 6\/8 y 3\/4/);
+  });
+  it('item 9 — l9u30m4: "Feelings" is gone (in neither interval list read); Take On Me names its pair', () => {
+    const TAKE: Record<AnyLang, RegExp> = { en: /Take On Me \(the first two notes of its chorus, take-on\)/, pt: /Take On Me \(as duas primeiras notas do refrão, take-on\)/, es: /Take On Me \(las dos primeras notas del estribillo, take-on\)/ };
+    for (const lang of LANGS) {
+      const m = moduleIn(lang, 'l9u30m4');
+      expect(m.concepts[1].explanation, lang).not.toMatch(/Feelings/);
+      expect(m.concepts[0].explanation, lang).toMatch(TAKE[lang]);
     }
   });
 });

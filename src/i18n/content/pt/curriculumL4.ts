@@ -722,7 +722,7 @@ const curriculumL4: CurriculumLevelOverlay = {
         {
           title: 'O sistema menor fluido',
           explanation:
-            'Ao contrário do modo maior (uma escala, um conjunto fixo de acordes diatónicos), o menor é fluido — o 6.º e 7.º graus são variáveis. Esta variabilidade é uma característica, não um defeito. Uma passagem em modo menor pode usar uma cadência III-VII da menor natural numa frase e uma cadência V-i da menor harmónica na seguinte, extraindo livremente de toda a paleta. Compreender esta fluidez é essencial para analisar música real, onde a harmonia em modo menor raramente se mantém dentro de uma única forma de escala ao longo de toda a peça.',
+            'Ao contrário do modo maior (uma escala, um conjunto fixo de acordes diatónicos), o menor é fluido — o 6.º e 7.º graus são variáveis. Esta variabilidade é uma característica, não um defeito. Uma passagem em modo menor pode usar uma cadência VII-i da menor natural numa frase e uma cadência V-i da menor harmónica na seguinte, extraindo livremente de toda a paleta. Compreender esta fluidez é essencial para analisar música real, onde a harmonia em modo menor raramente se mantém dentro de uma única forma de escala ao longo de toda a peça.',
           tryThisLabel: 'Compara com a menor natural acima',
         },
       ],

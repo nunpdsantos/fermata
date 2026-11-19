@@ -66,12 +66,18 @@ export interface ChordListSound {
 
 /**
  * The octave a chord of a list is voiced from, chosen so that EVERY chord's
- * lowest note sits in octave 3 and a list's bass line is heard as it is
- * written: a root-position chord is voiced from its root in octave 3 (open
- * voicing, as an ear-training progression sounds); a slash chord is voiced
- * as a slash chord sounds in any lesson Try This (`chordVoicingPitches` from
- * octave 4, its bass one octave lower: octave 3). F7 → F♯dim7 → C7/G thus
- * climbs F3, F♯3, G3, and G7/F → C/E falls F3 to E3.
+ * lowest note sits in octave 3 (C3 to B3): a root-position chord is voiced
+ * from its root in octave 3 (open voicing, as an ear-training progression
+ * sounds); a slash chord is voiced as a slash chord sounds in any lesson Try
+ * This (`chordVoicingPitches` from octave 4, its bass one octave lower:
+ * octave 3). So a bass that moves by a half or whole step is heard as that
+ * step only while both notes lie between C and B: F7 → F♯dim7 → C7/G climbs
+ * F3, F♯3, G3, and G7/F → C/E falls F3 to E3, but a step across B–C jumps the
+ * other way (G7/B → C sounds B3 then C3, a major 7th down for a half step up:
+ * pinned in queryExecutorChords.test.ts as the known limit). That test also
+ * walks every chord list in the lessons: the slash-chord lists keep their
+ * steps; one root-position list, unchanged since wave 2, crosses B–C
+ * (l1u35m3, G Am Bm C D Em: Bm → C sounds B3 → C3) and is listed there.
  */
 export function chordListOctave(chord: Chord): number {
   return chord.bassNote ? 4 : 3;

@@ -271,7 +271,7 @@ const l7u21m5: CurriculumModule = {
     {
       id: 'l7u21m5t2',
       instruction:
-        "Add the jazz blues passing chord: play 'F7' then 'F#dim7' then 'C7/G' (C7 with its 5th, G, in the bass). The diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G). This is the signature jazz blues move.",
+        "Add the jazz blues passing chord: tap 'F7', 'F#dim7' and 'C7/G' (C7 with its 5th, G, in the bass) to see each chord, then, under Jazz Blues above, press Hear it to hear the three in a row: the diminished chord connects IV7 to I7 with a chromatic bass ascent (F-F#-G). This is the signature jazz blues move.",
     },
     {
       id: 'l7u21m5t3',
@@ -773,7 +773,7 @@ const l7u23m3: CurriculumModule = {
     {
       title: 'The Altered Scale (Super Locrian)',
       explanation:
-        'Mode 7 of melodic minor is the altered scale, also called Super Locrian. Its formula from the root: H-W-H-W-W-W-W. It contains every possible alteration of a dominant chord: b9, #9, b5 (#11), and #5 (b13). The altered scale pairs exclusively with 7alt chords and is THE essential sound for dominant chords resolving to minor with maximum tension. The shortcut: the altered scale on any root equals the melodic minor scale starting a half step above (C altered = Db melodic minor). Locrian natural 2 (mode 6) is the standard half-diminished scale.',
+        'Mode 7 of melodic minor is the altered scale, also called Super Locrian. Its formula from the root: H-W-H-W-W-W-W. It contains every possible alteration of a dominant chord: b9, #9, b5 (#11), and #5 (b13). The altered scale pairs with 7alt chords — it holds all four of their alterations — and is THE essential sound for dominant chords resolving to minor with maximum tension. The shortcut: the altered scale on any root equals the melodic minor scale starting a half step above (C altered = Db melodic minor). Locrian natural 2 (mode 6) is the standard half-diminished scale.',
       tryThisQuery: 'C altered scale',
       tryThisLabel: 'See the altered scale — mode 7 of melodic minor',
     },

@@ -17,7 +17,7 @@
     },
     "keySignature": {
       "title": "Key signature",
-      "plain": "The sharps or flats written once at the start of each line of music; they apply to every note with that letter. Any other sharp or flat is written beside its note, and some scales have no key signature of their own.",
+      "plain": "Sharps or flats written once at the start of each line of music. They apply to every note with that letter, unless a ♮, ♯ or ♭ beside a note changes it to the end of the measure. Some scales have none of their own.",
       "example": "{{key}}: {{signature}}."
     },
     "sharpFlat": {
@@ -260,7 +260,7 @@
     },
     "arpeggio": {
       "title": "Arpeggio",
-      "plain": "A chord played one note at a time instead of all together, going up or down: for a C chord, both C, E, G and G, E, C are arpeggios.",
+      "plain": "A chord played one note at a time instead of all together, going up or down: for a C chord, C, E, G is an arpeggio, and so is G, E, C.",
       "example": "{{chord}}: {{notes}}."
     },
     "compatibleScales": {

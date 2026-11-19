@@ -210,7 +210,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: 'El sistema de pentagramas',
           explanation:
-            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos a la izquierda por una llave y una línea. El C central queda entre ambos, pero no hay una línea fija para él: se escribe en una pequeña línea adicional propia, justo por debajo del pentagrama de clave de sol o justo por encima del pentagrama de clave de fa, donde haga falta la nota. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
+            'La música para piano usa el sistema de pentagramas — un pentagrama de clave de sol arriba y un pentagrama de clave de fa abajo, unidos a la izquierda por una llave y una línea. El C central queda entre ellos, pero no hay una línea fija para él: se escribe en una pequeña línea adicional propia, justo por debajo del pentagrama de clave de sol o justo por encima del pentagrama de clave de fa, donde haga falta la nota. La mano derecha lee típicamente la clave de sol; la izquierda lee la clave de fa. Juntos, cubren la mayor parte de la extensión del piano. Por eso los pianistas aprenden ambas claves desde el principio.',
           tryThisLabel: 'Explora el C en todo el teclado',
         },
       ],
@@ -444,7 +444,7 @@ const curriculumL1: CurriculumLevelOverlay = {
         {
           title: '¿Qué es una armadura de clave?',
           explanation:
-            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de G mayor tiene un sostenido (F#), lo que significa que todos los F en la pieza se tocan como F#, salvo que un becuadro (♮) escrito delante de un F anule el sostenido. Esto ahorra espacio y muestra de un vistazo qué notas usa la tonalidad.',
+            'Una armadura de clave es una abreviatura — en lugar de escribir un sostenido o bemol junto a cada nota afectada, se listan una vez al comienzo. La armadura de clave de G mayor tiene un sostenido (F#), lo que significa que todos los F en la pieza se tocan como F#, salvo que un becuadro (♮) escrito delante de un F anule el sostenido, desde esa nota hasta el final del compás. Esto ahorra espacio y muestra de un vistazo qué notas usa la tonalidad.',
           tryThisLabel: 'Observa la armadura de G — un sostenido',
         },
         {

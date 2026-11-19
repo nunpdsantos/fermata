@@ -103,8 +103,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
 
   // L2U6: Compound Meter and Syncopation
   'l2u6m1': [
-    { song: 'House of the Rising Sun', artist: 'Traditional (The Animals)', context: 'The arpeggiated accompaniment in 6/8 time demonstrates compound-duple meter, where each of the two main beats subdivides into groups of three eighth notes. Some editions notate it in 12/8, which counts four beats to the bar instead of two (one bar of 12/8 holds two of 6/8). The music can sound the same written either way: what the two share is each beat dividing into three; what differs is how many beats a written bar counts.' },
-    { song: 'We Are the Champions', artist: 'Queen', context: 'The verse is in 6/8 before the chorus shifts feel — a contrast between compound and simple meter.' },
+    { song: 'House of the Rising Sun', artist: 'Traditional (The Animals)', context: 'The arpeggiated accompaniment in 6/8 time demonstrates compound-duple meter: two main beats to the bar, each subdividing into a group of three eighth notes. A bar of 12/8 would count four such beats; in both, every beat divides into three.' },
     { song: 'America', artist: 'Leonard Bernstein (West Side Story)', context: 'Alternates between 6/8 and 3/4 meter — the same six eighth notes regrouped, the classic compound-vs-simple hemiola.' },
   ],
   'l2u6m2': [
@@ -192,7 +191,7 @@ const SONG_REFERENCES: Record<string, SongReference[]> = {
     // 1871 arrangement, D major down to C major, the melody on the G string) and
     // "Yesterday (Beatles song)" (F major; guitar tuned down a whole step, the
     // chords played as if in G), both read 2026-11-18.
-    { song: 'Air on the G String', artist: 'J.S. Bach (arr. August Wilhelmj)', context: "In his 1871 violin arrangement, August Wilhelmj moved this Air from Bach's Orchestral Suite No. 3 down from D major to C major, low enough for the whole melody to be played on the violin's lowest string, the G string. A transposition gave the piece its name." },
+    { song: 'Air on the G String', artist: 'J.S. Bach (arr. August Wilhelmj)', context: "In his 1871 violin arrangement, August Wilhelmj transposed this Air from Bach's Orchestral Suite No. 3 from D major down to C major, so that the whole melody could be played on the violin's lowest string, the G string. He marked the part 'on the G string', and that marking gave the arrangement its name." },
     { song: 'Yesterday', artist: 'The Beatles', context: 'The song sounds in F major, but Paul McCartney tuned his guitar down a whole step and played it with G major chord shapes: the tuning transposed every chord down a major second, as a Bb trumpet does with every written note.' },
   ],
 

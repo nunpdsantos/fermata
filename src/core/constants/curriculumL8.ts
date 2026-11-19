@@ -131,7 +131,7 @@ const l8u25m3: CurriculumModule = {
     {
       title: 'Strict Canon and Canonic Intervals',
       explanation:
-        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes up a perfect fifth. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. Canons at the unison and the octave are generally the most straightforward to write; at other intervals the follower\'s notes take on different roles in the key, and some interval qualities change, which adds constraints.',
+        'In a strict canon, a leader voice (dux) presents a melody and a follower (comes) replicates it exactly after a fixed time delay, transposed by some interval. Canon at the unison repeats at the same pitch; canon at the octave shifts by an octave; canon at the fifth transposes it a fifth higher or lower. The compositional challenge is profound: the leader must generate a melody that produces valid counterpoint against a time-delayed copy of itself. Canons at the unison and the octave are generally the most straightforward to write; at other intervals the follower\'s notes take on different roles in the key, and some interval qualities change, which adds constraints.',
       tryThisQuery: 'C major scale',
       tryThisLabel: 'See the scale — the melodic raw material of a canon',
     },

@@ -780,7 +780,7 @@ const l4u14m5: CurriculumModule = {
     {
       title: 'The Fluid Minor System',
       explanation:
-        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor III-VII cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analyzing real music, where minor-key harmony rarely stays within a single scale form throughout.',
+        'Unlike major (one scale, one fixed set of diatonic chords), minor is fluid \u2014 the 6th and 7th degrees are variable. This variability is a feature, not a flaw. A minor-key passage might use a natural-minor VII-i cadence in one phrase and a harmonic-minor V-i cadence in the next, drawing freely from the full palette. Understanding this fluidity is essential for analyzing real music, where minor-key harmony rarely stays within a single scale form throughout.',
       tryThisQuery: 'A harmonic minor scale',
       tryThisLabel: 'Compare with natural minor above',
     },
