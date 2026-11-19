@@ -147,8 +147,11 @@ export function staffStemDirections(notes: readonly PitchedNote[], clef: 'treble
   });
 }
 
+/** A clef's octave sign: the 8 above (sounds an octave higher than written) or below (an octave lower). */
+export type ClefAnnotation = '8va' | '8vb';
+
 export interface StaffInkOptions {
-  annotation?: '8vb';
+  annotation?: ClefAnnotation;
   /** Matches StaffNotation's default. Explore and Drill use stemless wholes. */
   duration?: string;
   keySignature?: string;
@@ -168,6 +171,9 @@ function accidentalInk(accidental: StaffAccidental): { top: number; bottom: numb
  * (bass). Bounds rounded OUT from the bundled font's 1000 units/em outlines:
  * gClef y=[-658.215,1098], gClef8vb=[-878,1098];
  * fClef y=[-635,262], fClef8vb=[-744,262]. The 8 is part of the glyph.
+ * The 8va forms (measured in the browser from the loaded font, 19 November
+ * 2026: canvas actualBoundingBoxAscent at 40px): gClef8va 52.8 px above its
+ * anchor, fClef8va 19.8 px.
  * Staff lines run from 40.5 to 80.5, including a 1px stroke: [40,81].
  */
 export function staffInkBounds(
@@ -176,8 +182,8 @@ export function staffInkBounds(
   options: StaffInkOptions = {},
 ): { top: number; bottom: number } {
   const clefBounds = clef === 'treble'
-    ? { top: 26, bottom: options.annotation ? 106 : 97 }
-    : { top: 39, bottom: options.annotation ? 80 : 76 };
+    ? { top: options.annotation === '8va' ? 17 : 26, bottom: options.annotation === '8vb' ? 106 : 97 }
+    : { top: options.annotation === '8va' ? 30 : 39, bottom: options.annotation === '8vb' ? 80 : 76 };
   let top = Math.min(40, clefBounds.top);
   let bottom = Math.max(81, clefBounds.bottom);
   // VexFlow's signature order, measured down from the top staff line.
@@ -223,11 +229,51 @@ export function staffLayout(
 }
 
 /**
- * The notes as WRITTEN on a staff: under a treble-8vb clef (the guitar) every
- * note is written an octave above where it sounds; otherwise unchanged.
+ * The notes as WRITTEN on a staff: under an 8vb clef (the guitar's treble,
+ * the piano's lowest octaves in bass) every note is written an octave above
+ * where it sounds, under an 8va clef an octave below; otherwise unchanged.
  */
-export function writtenStaffNotes(notes: readonly PitchedNote[], annotation?: '8vb'): PitchedNote[] {
-  return annotation === '8vb' ? notes.map((n) => ({ ...n, octave: n.octave + 1 })) : [...notes];
+export function writtenStaffNotes(notes: readonly PitchedNote[], annotation?: ClefAnnotation): PitchedNote[] {
+  const shift = annotation === '8vb' ? 1 : annotation === '8va' ? -1 : 0;
+  return shift ? notes.map((n) => ({ ...n, octave: n.octave + shift })) : [...notes];
+}
+
+/** Ledger lines the written notes need on `clef`: below the lowest note's line plus above the highest's. */
+function ledgerLines(written: readonly PitchedNote[], clef: 'treble' | 'bass'): number {
+  if (written.length === 0) return 0;
+  const lines = written.map((n) => staffLine(n, clef));
+  return Math.floor(Math.max(0, 1 - Math.min(...lines))) + Math.floor(Math.max(0, Math.max(...lines) - 5));
+}
+
+/** In this order: an equal count of ledger lines takes the earlier one. */
+const REGISTER_CLEFS: { clef: 'treble' | 'bass'; annotation?: ClefAnnotation; cost: number }[] = [
+  { clef: 'treble', cost: 0 },
+  { clef: 'bass', cost: 0 },
+  // An octave clef is harder to read than a ledger line or two: it is taken
+  // only where it saves more than two (the piano's C0, C1, C6, C7 octaves).
+  { clef: 'treble', annotation: '8va', cost: 2 },
+  { clef: 'bass', annotation: '8vb', cost: 2 },
+];
+
+/**
+ * The clef that draws these SOUNDING pitches with the fewest ledger lines
+ * (audit M59, 19 November 2026: Explore's piano staves now follow the
+ * piano's octave, C0 to C7). Treble wins a tie, so every scale from octave 4
+ * — the default, and the only register these staves drew before — stays on
+ * the plain treble staff; C3–C4 goes to the bass clef (one ledger line
+ * instead of four); the outer octaves take the 8va treble or 8vb bass clef.
+ */
+export function registerClef(notes: readonly PitchedNote[]): { clef: 'treble' | 'bass'; annotation?: ClefAnnotation } {
+  let best = REGISTER_CLEFS[0];
+  let bestCost = Infinity;
+  for (const option of REGISTER_CLEFS) {
+    const cost = ledgerLines(writtenStaffNotes(notes, option.annotation), option.clef) + option.cost;
+    if (cost < bestCost) {
+      best = option;
+      bestCost = cost;
+    }
+  }
+  return best.annotation ? { clef: best.clef, annotation: best.annotation } : { clef: best.clef };
 }
 
 /**
@@ -237,14 +283,19 @@ export function writtenStaffNotes(notes: readonly PitchedNote[], annotation?: '8
  * notes are written an octave above where they sound. AUTHORED notation (Learn
  * exercises: "the note on the first line", "two ledger lines below") is never
  * transposed for the instrument — it keeps its own notes and clef, so the
- * picture always matches the prompt. Off unless asked for.
+ * picture always matches the prompt. Off unless asked for. With the piano
+ * (audit M59) such a staff follows the piano's octave, so its clef is the
+ * one that register needs (`registerClef`; treble for every octave-4 scale,
+ * as before).
  */
 export function resolveStaffClef(
   instrument: string,
   requested: 'treble' | 'bass' | undefined,
   followInstrument: boolean = false,
-): { clef: 'treble' | 'bass'; annotation?: '8vb' } {
+  notes: readonly PitchedNote[] = [],
+): { clef: 'treble' | 'bass'; annotation?: ClefAnnotation } {
   if (followInstrument && instrument === 'guitar') return { clef: 'treble', annotation: '8vb' };
+  if (followInstrument && !requested) return registerClef(notes);
   return { clef: requested ?? 'treble' };
 }
 
@@ -254,8 +305,8 @@ export function staffPlan(
   requested: 'treble' | 'bass' | undefined,
   instrument: string,
   followInstrument: boolean = false,
-): { clef: 'treble' | 'bass'; annotation?: '8vb'; written: PitchedNote[]; keys: string[] } {
-  const { clef, annotation } = resolveStaffClef(instrument, requested, followInstrument);
+): { clef: 'treble' | 'bass'; annotation?: ClefAnnotation; written: PitchedNote[]; keys: string[] } {
+  const { clef, annotation } = resolveStaffClef(instrument, requested, followInstrument, notes);
   const written = writtenStaffNotes(notes, annotation);
   return { clef, annotation, written, keys: written.map(pitchedNoteToVexKey) };
 }

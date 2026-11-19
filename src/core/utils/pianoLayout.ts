@@ -315,6 +315,23 @@ function getOpenVoicedChordNotes(notes: Note[], startOctave: number): PitchedNot
   return result;
 }
 
+/**
+ * The notes voiced ABOVE a slash chord's bass: `ordered` (the chord's notes in
+ * the inversion shown) without the bass, wherever an inversion chip has moved
+ * it, when that bass is not one of the chord's own tones — the parser lists
+ * it first among them (C/D → D C E G), so it is told apart by `chord.notes`,
+ * not by the rotated order (review of the second round, 19 November 2026: C/D
+ * on 1st Inv sounded D3 C4 E4 G4 D5). A bass that is a chord tone, kept as
+ * written (Simple view), stays doubled, as designed.
+ */
+export function slashChordNotesAbove(chord: { root: Note; notes: Note[]; bassNote?: Note }, ordered: Note[]): Note[] {
+  const bass = chord.bassNote;
+  if (!bass || chord.notes.length < 2) return ordered;
+  const bassPc = getPitchClass(bass);
+  const outside = getPitchClass(chord.notes[0]) === bassPc && getPitchClass(chord.root) !== bassPc;
+  return outside ? ordered.filter((n) => getPitchClass(n) !== bassPc) : ordered;
+}
+
 /** Lowest and highest MIDI numbers on the 88-key piano (A0, C8). */
 export const PIANO_MIDI_RANGE = { low: 21, high: 108 } as const;
 
@@ -336,18 +353,28 @@ export function octaveFitsKeyboard(scaleNotes: Note[], octave: number, octaves: 
 /** Whether a chord voiced from `octave` (plus a slash bass an octave below) stays on the keys. */
 export function chordFitsKeyboard(chordNotes: Note[], octave: number, bassNote?: Note): boolean {
   if (chordNotes.length === 0) return true;
-  const midis = getVoicedChordNotes(chordNotes, octave).map((p) => getMidiNumber(p, p.octave));
-  if (bassNote) midis.push(getMidiNumber(bassNote, octave - 1));
-  return midis.every((m) => m >= PIANO_MIDI_RANGE.low && m <= PIANO_MIDI_RANGE.high);
+  return chordVoicingPitches(chordNotes, octave, bassNote)
+    .map((p) => getMidiNumber(p, p.octave))
+    .every((m) => m >= PIANO_MIDI_RANGE.low && m <= PIANO_MIDI_RANGE.high);
 }
 
 /**
  * The exact pitches of a chord as the app both LIGHTS and PLAYS it: the
  * voicing above from `octave`, plus a slash-chord bass an octave below
  * (always under the voicing). One function for keys and sound, so what you
- * see is what you hear (audit W2-07 review).
+ * see is what you hear (audit W2-07 review) — and, in Explore, what the
+ * staff draws and the arpeggio plays (audit M58, 19 November 2026).
+ *
+ * A slash bass that is not one of the chord's own tones also arrives as the
+ * FIRST of `notes` (the parser lists every pitch class that sounds: C/D →
+ * D C E G). It sounds once, as the bass: voiced again at the foot of the
+ * chord above it, it doubled the bass and pushed the whole chord up an
+ * octave (Dm7/G from C4 was G3 G4 D5 F5 A5 C6; now G3 D4 F4 A4 C5).
  */
 export function chordVoicingPitches(notes: Note[], octave: number, bassNote?: Note): PitchedNote[] {
-  const voiced = notes.length > 0 ? getVoicedChordNotes(notes, octave) : [];
+  // (The notes of an inversion chip come rotated, the bass no longer first:
+  // `slashChordNotesAbove` takes it out by pitch class for those.)
+  const above = bassNote && notes.length > 1 && getPitchClass(notes[0]) === getPitchClass(bassNote) ? notes.slice(1) : notes;
+  const voiced = above.length > 0 ? getVoicedChordNotes(above, octave) : [];
   return bassNote ? [{ ...bassNote, octave: octave - 1 }, ...voiced] : voiced;
 }

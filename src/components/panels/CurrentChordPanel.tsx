@@ -19,17 +19,14 @@ function alpha(color: string, hex: string): string {
   return `color-mix(in srgb, ${color} ${pct}%, transparent)`;
 }
 import {
-  playChordVoiced,
   playPitchedNotes,
   playPitchedArpeggio,
-  playArpeggioAscending,
   cancelScheduledAudio,
   resumeAudio,
 } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
-import { exploreRegister } from '../explore/exploreRegister';
+import { exploreChordVoicing } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
-import { buildAscendingMidi } from '../../utils/midiHelpers.ts';
 import { getMidiNumber, midiToNote } from '../../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { SCALE_FORMULAS, getScaleDegreeFunctionKey } from '../../core/constants/scales.ts';
@@ -45,10 +42,14 @@ import { LearnMoreButton } from './LearnMoreButton.tsx';
 import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { Menu } from '../ui/Menu.tsx';
 
-import { landChordDetail } from './chordScrollLanding';
+import { coveredFoot, landChordDetail } from './chordScrollLanding';
 import { fitScaleChips } from './fitScaleChips';
 
 import { getKeyScaleSuggestions } from '../../core/constants/chordScaleRelationships.ts';
+import { SCALE_GROUPS } from '../navigation/keyChoice.ts';
+
+/** The Scale picker's scales in its teaching order: where no listed scale holds a chord, those that do. */
+const CATALOGUE = SCALE_GROUPS.flatMap((g) => g.options);
 import { Term } from '../../glossary/Term.tsx';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { functionTermId, qualityTermId, scaleTermId } from '../../glossary/termIds.ts';
@@ -132,11 +133,8 @@ function roomAbove(detail: HTMLElement): number {
   }
   const actions = detail.querySelector('.chord-detail-actions');
   const need = actions ? actions.getBoundingClientRect().bottom - detail.getBoundingClientRect().top : 0;
-  return Math.round(Math.max(BASE, Math.min(cover - viewTop + BASE, scroller.clientHeight - need - BASE)));
-}
-
-function computeVoicedMidi(notes: Note[], startOctave: number): number[] {
-  return buildAscendingMidi(notes, startOctave).midi;
+  // Clamped to the room the learner sees: above the metronome's bar where it covers the view's foot.
+  return Math.round(Math.max(BASE, Math.min(cover - viewTop + BASE, scroller.clientHeight - coveredFoot(scroller) - need - BASE)));
 }
 
 // Reuses DEGREE_COLORS 1/2/3 deliberately — "primary fit" reads as tonic,
@@ -211,6 +209,13 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
 
   const maxInversion = chord.notes.length - 1;
   const notesForPlayback = invertedNotes.length > 0 ? invertedNotes : chord.notes;
+  // The one voicing (audit M58): ▶ Chord, ▶ Arpeggio (from the bottom up),
+  // the keys lit while they sound, the tone buttons and the small staff
+  // (ChordsCard) — slash bass and the piano's octave included.
+  const voicing = useMemo(
+    () => exploreChordVoicing(instrument, baseOctave, chord, invertedNotes),
+    [instrument, baseOctave, chord, invertedNotes],
+  );
 
   // Real interval labels from core
   const intervalLabels = useMemo(
@@ -222,7 +227,7 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
   const scaleSuggestions = useMemo(
     () => {
       const priority = { primary: 0, secondary: 1, color: 2 };
-      return [...getKeyScaleSuggestions(chord, scale)].sort((a, b) =>
+      return [...getKeyScaleSuggestions(chord, scale, CATALOGUE)].sort((a, b) =>
         Number(!!b.keyNotes) - Number(!!a.keyNotes) || priority[a.fit] - priority[b.fit]);
     },
     [chord, scale],
@@ -244,17 +249,12 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
     const config = getSynthConfig(synthPreset);
     const duration = 1.5;
     // Sound and lit keys share one voicing (bass lowest; slash bass below).
-    const midiNumbers = exploreRegister(instrument, baseOctave).chordPitches(notesForPlayback, chord.bassNote)
-      .map((p) => getMidiNumber(p, p.octave));
+    const midiNumbers = voicing.map((p) => getMidiNumber(p, p.octave));
     for (const m of midiNumbers) lightKey(m);
-    if (instrument === 'guitar') {
-      playPitchedNotes(exploreRegister(instrument).chordPitches(notesForPlayback, chord.bassNote), duration, config);
-    } else {
-      playChordVoiced(notesForPlayback, baseOctave, duration, config, chord.bassNote);
-    }
+    playPitchedNotes(voicing, duration, config);
     const t = setTimeout(() => unlightKeys(midiNumbers), duration * 1000);
     timeoutsRef.current.push(t);
-  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, chord.bassNote, instrument]);
+  }, [voicing, synthPreset, lightKey, unlightKeys, stopVisuals]);
 
   const handlePlayArpeggio = useCallback(async () => {
     await resumeAudio();
@@ -262,11 +262,10 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
     stopVisuals();
     const config = getSynthConfig(synthPreset);
     const noteDuration = 0.35;
-    const guitarPitches = instrument === 'guitar'
-      ? exploreRegister(instrument).chordPitches(notesForPlayback, chord.bassNote) : null;
-    const midiNumbers = guitarPitches
-      ? guitarPitches.map((p) => getMidiNumber(p, p.octave))
-      : computeVoicedMidi(notesForPlayback, baseOctave);
+    // The chord's own voicing, one note at a time from the bottom up: the
+    // first note heard is the bass ▶ Chord sounds and the staff draws lowest.
+    const pitches = [...voicing].sort((a, b) => getMidiNumber(a, a.octave) - getMidiNumber(b, b.octave));
+    const midiNumbers = pitches.map((p) => getMidiNumber(p, p.octave));
     const litNotes: number[] = [];
     const onNotePlay = (noteIndex: number) => {
       const midi = midiNumbers[noteIndex];
@@ -281,12 +280,8 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
       const t = setTimeout(() => unlightKeys(litNotes), noteDuration * 1000);
       timeoutsRef.current.push(t);
     };
-    if (guitarPitches) {
-      playPitchedArpeggio(guitarPitches, noteDuration, onNotePlay, onComplete, config);
-    } else {
-      playArpeggioAscending(notesForPlayback, baseOctave, noteDuration, onNotePlay, onComplete, config);
-    }
-  }, [notesForPlayback, synthPreset, baseOctave, lightKey, unlightKeys, stopVisuals, instrument, chord.bassNote]);
+    playPitchedArpeggio(pitches, noteDuration, onNotePlay, onComplete, config);
+  }, [voicing, synthPreset, lightKey, unlightKeys, stopVisuals]);
 
   // The chord's place in the key: "V · dominant" when it is a diatonic chord.
   // Each part is a word to tap: the numeral, the degree's name.
@@ -308,12 +303,12 @@ export function CurrentChordPanel({ chord, aside, sourceTab, simple = false }: C
   // tone made the focus note lights that exact key on the piano.
   const toneMidi = useMemo(() => {
     const m = new Map<number, number>();
-    for (const p of exploreRegister(instrument, baseOctave).chordPitches(notesForPlayback, chord.bassNote)) {
+    for (const p of voicing) {
       const pc = getPitchClass(p);
       if (!m.has(pc)) m.set(pc, getMidiNumber(p, p.octave));
     }
     return m;
-  }, [notesForPlayback, baseOctave, chord.bassNote, instrument]);
+  }, [voicing]);
   const toneFocus = (note: Note): FocusNote => {
     const pc = getPitchClass(note);
     return { pc, midi: toneMidi.get(pc), source: 'chord' };

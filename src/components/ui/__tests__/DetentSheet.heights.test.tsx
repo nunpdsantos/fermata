@@ -153,3 +153,47 @@ describe('DetentSheet — sized to its content', () => {
     expect(sheetHeight()).toBe(254);
   });
 });
+
+// Review of the second round (P5): the rows are read from the sheet's own
+// content — `data-dock-row="frets"` is the fret numbers, which stay with the
+// strings (375×667: Half showed six strings and no fret numbers).
+describe('DetentSheet — the fret numbers stay with the strings', () => {
+  const rect = Object.getOwnPropertyDescriptor(Element.prototype, 'getBoundingClientRect')!;
+  beforeAll(() => {
+    Object.defineProperty(Element.prototype, 'getBoundingClientRect', {
+      configurable: true,
+      value(this: Element) {
+        const top = Number(this.getAttribute('data-top') ?? 0);
+        const h = Number(this.getAttribute('data-h') ?? 0);
+        return { top, bottom: top + h, left: 0, right: 100, width: h ? 100 : 0, height: h, x: 0, y: top, toJSON() {} } as DOMRect;
+      },
+    });
+  });
+  afterAll(() => {
+    Object.defineProperty(Element.prototype, 'getBoundingClientRect', rect);
+  });
+
+  function Board({ frets = 'frets' }: { frets?: string }) {
+    return (
+      <DetentSheet detent="half" onDetent={() => {}} available={611} fullGap={76} handleLabel="Panel" detentLabels={{ peek: 'Peek', half: 'Half', full: 'Full' }} bar={null} testId="sheet">
+        <div data-top={0} data-h={296}>
+          {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} data-dock-row="string" data-top={30 + i * 32} data-h={32} />)}
+          <div data-dock-row={frets} data-top={226} data-h={18} />
+          <div className="fretboard-controls"><div data-top={252} data-h={44} /></div>
+        </div>
+      </DetentSheet>
+    );
+  }
+  const sheetHeight = () => parseFloat(screen.getByTestId('sheet').style.height);
+
+  it('Half that would stop above the fret numbers takes them in (72 + 244), as long as the view keeps its room', () => {
+    // 611 px of room: Half aims at 306, inside the numbers' row (226–244 under the head).
+    render(<Board />);
+    expect(sheetHeight()).toBe(HEAD + 244);
+  });
+
+  it('known positive: the same rows without the frets marker stop above them (72 + 226)', () => {
+    render(<Board frets="other" />);
+    expect(sheetHeight()).toBe(HEAD + 226);
+  });
+});

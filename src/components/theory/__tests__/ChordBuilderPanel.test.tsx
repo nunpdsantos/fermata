@@ -16,6 +16,8 @@ const audioLog: string[] = [];
 vi.mock('../../../core/services/audio.ts', () => ({
   resumeAudio: vi.fn(() => Promise.resolve()),
   playChordVoiced: vi.fn(() => { audioLog.push('play'); }),
+  // The builder plays the selected chord's own voicing (audit M58, 19 November 2026).
+  playPitchedNotes: vi.fn(() => { audioLog.push('play'); }),
   cancelScheduledAudio: vi.fn(() => { audioLog.push('cancel'); }),
 }));
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CHORD_QUALITY_NAMES } from '../../core/constants/chords';
-import { CHORD_SCALE_MAP } from '../../core/constants/chordScaleRelationships';
+import { CHORD_SCALE_MAP, HOLDS_EVERY_NOTE } from '../../core/constants/chordScaleRelationships';
 import { CHORD_QUALITY_NAMES_ES, CHORD_QUALITY_NAMES_PT } from '../chordQualityNames';
 import { chordQualityLabel, translateChordQuality } from '../content/musicTerms';
 import { SCALE_CONTEXT_ES, SCALE_CONTEXT_PT, scaleContext, withAccidentalSymbols } from '../scaleSuggestionContext';
@@ -37,9 +37,11 @@ describe('chord-quality names in PT / ES (D-17, W11-A review)', () => {
 });
 
 describe('scale-suggestion notes (chord panel tooltips) in PT / ES', () => {
-  const contexts = new Set(
-    Object.values(CHORD_SCALE_MAP).flatMap((list) => list.map((s) => s.context).filter((c): c is string => !!c)),
-  );
+  const contexts = new Set([
+    ...Object.values(CHORD_SCALE_MAP).flatMap((list) => list.map((s) => s.context).filter((c): c is string => !!c)),
+    // The one sentence of the scales offered where no listed one holds a chord (review of the second round).
+    HOLDS_EVERY_NOTE,
+  ]);
 
   it('every note has a PT and an ES translation, and no translation is stale', () => {
     expect(contexts.size).toBeGreaterThan(50);

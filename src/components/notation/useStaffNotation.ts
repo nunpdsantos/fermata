@@ -8,7 +8,7 @@
  */
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadVexFlow } from '../../utils/vexflowLoader';
-import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan, staffStemDirections } from '../../utils/notationHelpers';
+import { pitchedNoteToVexKey, vexAccidentals, staffLayout, staffPlan, staffStemDirections, type ClefAnnotation } from '../../utils/notationHelpers';
 import { useAppStore } from '../../state/store';
 import { useResolvedTheme } from '../../hooks/useTheme';
 import type { PitchedNote } from '../../core/types/music';
@@ -16,7 +16,7 @@ import type { PitchedNote } from '../../core/types/music';
 interface UseStaffNotationOptions {
   notes: PitchedNote[];
   clef?: 'treble' | 'bass';
-  annotation?: '8vb';
+  annotation?: ClefAnnotation;
   keySignature?: string;
   width?: number;
   minNoteStartX?: number;

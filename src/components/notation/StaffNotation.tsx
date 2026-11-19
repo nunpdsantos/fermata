@@ -4,13 +4,14 @@
  */
 import type { PitchedNote } from '../../core/types/music';
 import { useStaffNotation, type StaffLayoutInfo } from './useStaffNotation';
+import type { ClefAnnotation } from '../../utils/notationHelpers';
 import { StaffNotationSkeleton } from './StaffNotationSkeleton';
 
 export interface StaffNotationProps {
   notes: PitchedNote[];
   clef?: 'treble' | 'bass';
   /** Clef annotation for already-written notation (does not transpose notes). */
-  annotation?: '8vb';
+  annotation?: ClefAnnotation;
   keySignature?: string;
   width?: number;
   /** Reserve space before notes, e.g. for wide labels beside a clef. */
