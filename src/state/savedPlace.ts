@@ -33,7 +33,10 @@ function forgetRecord(): void {
   try {
     sessionStorage.removeItem(HISTORY_RECORD_KEY);
   } catch {
-    // Storage refused: the record is checked against the entry before it is used.
+    // Storage refused: the record stays, and the pagehide does not write it again (`forgotten`). After the
+    // reload it is still read when its row at this position agrees with the new entry — the same view and
+    // no screen (state/appHistory.ts `loadKnown`); the app's own ← may then go Back along this tab's
+    // earlier entries, which are still in the browser's history.
   }
 }
 

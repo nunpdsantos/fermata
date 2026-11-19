@@ -62,6 +62,9 @@ beforeEach(async () => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  // This tab's place and its record of entries, as every test found them (a failed assertion leaks nothing).
+  window.history.replaceState(null, '');
+  sessionStorage.clear();
   localStorage.clear();
   // Every test file starts as a learner with an old save (src/test/setup.ts).
   localStorage.setItem('music-theory-app', JSON.stringify({ state: {}, version: 6 }));
@@ -91,7 +94,6 @@ describe('a backup file as the app exports it today', () => {
     // The place is the imported save's (its Learn), at the same position; the tab's old record is gone.
     expect(window.history.state).toEqual({ fm: 1, i: 3, v: 'learn', l: 0 });
     expect(sessionStorage.getItem('fermatina-history-v1')).toBeNull();
-    window.history.replaceState(null, '');
   });
 
   it('the start screen\'s "I have a progress file": no question, every store byte for byte, no door chosen, the gate settled', async () => {
@@ -127,7 +129,6 @@ describe('a backup file as the app exports it today', () => {
     fireEvent.change(picker, { target: { files: [file(TODAYS_FILE)] } });
     await waitFor(() => expect(reloadPage).toHaveBeenCalledTimes(1));
     expect(window.history.state).toEqual({ fm: 1, i: 0, v: 'learn', l: 0 });
-    window.history.replaceState(null, '');
   });
 
   it('a file with settings only lands in the app too (left "pending", the start screen would come back)', async () => {

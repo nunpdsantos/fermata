@@ -1620,40 +1620,49 @@ test.describe('review B-2', () => {
 // ── The merged branch's whole-suite run (19 November 2026): the paths a reload takes ────────────
 
 test.describe('reloads that replace the save, and a view that will not load', () => {
-  test('Settings → Import: the app opens where the imported save was (its Learn), not where this tab stood (Explore)', async ({ browser }) => {
-    test.setTimeout(90_000);
-    const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } }, `/?lesson=${LESSON.id}`);
-    await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
-    // Its export, as Settings writes it.
-    await page.getByTestId('app-menu').getByRole('button').first().click();
-    await page.getByRole('menuitem', { name: 'Settings' }).click();
-    const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export backup' }).click()]);
-    const file = test.info().outputPath('backup.json');
-    await download.saveAs(file);
-    expect(JSON.parse(readFileSync(file, 'utf8')).data['music-theory-app'].state.lastView).toBe('learn');
-    await page.keyboard.press('Escape');
-    // The learner moves on to Explore, opens Settings there, and brings the file back in.
-    await tab(page, 'explore').click();
-    await expectView(page, 'explore');
-    await page.getByTestId('app-menu').getByRole('button').first().click();
-    await page.getByRole('menuitem', { name: 'Settings' }).click();
-    expect(await entry(page)).toMatchObject({ v: 'explore', l: 1 });
-    page.once('dialog', (d) => void d.accept());
-    const loaded = page.waitForEvent('load');
-    await page.getByTestId('backup-file-input').setInputFiles(file);
-    await loaded;
-    await historyReady(page);
-    await expectView(page, 'learn');
-    await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
-    expect(await entry(page)).toMatchObject({ v: 'learn' });
-    // Back still steps back from that same place in the tab's history (its position was kept).
-    await back(page);
-    await expect.poll(async () => (await entry(page))?.i ?? -1).toBeGreaterThanOrEqual(0);
-    await context.close();
-  });
+  // Learn and Drill (review 3, F2: a list of two views turned a Drill save into Explore, and this row only used Learn).
+  for (const kind of ['learn', 'drill'] as const) {
+    test(`Settings → Import: a save exported on ${kind === 'learn' ? 'Learn' : 'Drill'} opens there, at this tab's own position, not where this tab stood (Explore)`, async ({ browser }) => {
+      test.setTimeout(90_000);
+      const { context, page } = kind === 'learn'
+        ? await open(browser, MODES[0], { settings: { lastView: 'learn' } }, `/?lesson=${LESSON.id}`)
+        : await open(browser, MODES[0], { settings: { lastView: 'drill' }, drill: DRILL_SAVE });
+      if (kind === 'learn') await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+      else await expectView(page, 'drill');
+      // Its export, as Settings writes it.
+      await page.getByTestId('app-menu').getByRole('button').first().click();
+      await page.getByRole('menuitem', { name: 'Settings' }).click();
+      const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export backup' }).click()]);
+      const file = test.info().outputPath('backup.json');
+      await download.saveAs(file);
+      expect(JSON.parse(readFileSync(file, 'utf8')).data['music-theory-app'].state.lastView).toBe(kind);
+      await page.keyboard.press('Escape');
+      // The learner moves on to Explore, opens Settings there, and brings the file back in.
+      await tab(page, 'explore').click();
+      await expectView(page, 'explore');
+      await page.getByTestId('app-menu').getByRole('button').first().click();
+      await page.getByRole('menuitem', { name: 'Settings' }).click();
+      const before = (await entry(page))!;
+      expect(before).toMatchObject({ v: 'explore', l: 1 });
+      page.once('dialog', (d) => void d.accept());
+      const loaded = page.waitForEvent('load');
+      await page.getByTestId('backup-file-input').setInputFiles(file);
+      await loaded;
+      await historyReady(page);
+      await expectView(page, kind);
+      if (kind === 'learn') await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+      // The same position in this tab's history, naming the imported view, no layer.
+      expect(await entry(page)).toMatchObject({ i: before.i, v: kind, l: 0 });
+      // Back steps back to the entry beneath it: Explore, one position before.
+      await back(page);
+      await expectView(page, 'explore');
+      expect(await entry(page)).toMatchObject({ i: before.i - 1, v: 'explore' });
+      await context.close();
+    });
+  }
 
   for (const [view, file, other] of [['learn', 'LearnView', 'explore'], ['drill', 'DrillView', 'learn'], ['explore', 'ExploreView', 'learn']] as const) {
-    test(`a view whose file keeps failing (${view}): "Try again" reloads into the same view (its entry), which fails again; the tabs and Back still lead out, and the entry follows them`, async ({ browser }) => {
+    test(`a view whose file keeps failing (${view}): "Try again" reloads into the view its ENTRY names though the save names another, which fails again; the tabs and Back still lead out, and the entry follows them`, async ({ browser }) => {
       test.setTimeout(90_000);
       // The file fails from the first load (Explore's code is fetched at idle, so it must fail before that).
       const failing = new RegExp(`${file}[^/]*\\.(js|tsx)(\\?.*)?$`);
@@ -1666,6 +1675,8 @@ test.describe('reloads that replace the save, and a view that will not load', ()
           localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata', language: 'en', instrument: 'piano', lastView: last }, version: 6 }));
           localStorage.setItem('__seeded', '1');
         }
+        // The last view saved when this document began, before any of the app's code ran.
+        (window as unknown as { __bootLastView: unknown }).__bootLastView = (JSON.parse(localStorage.getItem('music-theory-app') ?? 'null') as { state?: { lastView?: unknown } } | null)?.state?.lastView ?? null;
         const replace = history.replaceState.bind(history);
         history.replaceState = (state: unknown, unused: string, url?: string | URL | null) => {
           if ((state as { fm?: unknown } | null)?.fm === 1) (window as unknown as { __fmWritten: boolean }).__fmWritten = true;
@@ -1680,11 +1691,19 @@ test.describe('reloads that replace the save, and a view that will not load', ()
       const tryAgain = page.getByRole('button', { name: /try again/i });
       await expect(tryAgain).toBeVisible({ timeout: 10_000 });
       expect(await entry(page)).toMatchObject({ v: view });
-      // Still failing: the reload opens the same view (its entry; the saved last view is the same) and fails again.
+      // The save names another view (the tab switch saved this one: put the other back), so only the entry
+      // can bring the reload back here (review 3, F4).
+      await page.evaluate((last) => {
+        const raw = JSON.parse(localStorage.getItem('music-theory-app')!) as { state: { lastView: string } };
+        raw.state.lastView = last;
+        localStorage.setItem('music-theory-app', JSON.stringify(raw));
+      }, other);
+      // Still failing: the reload opens the view the entry names, and it fails again.
       const loaded = page.waitForEvent('load', { timeout: 20_000 });
       await tryAgain.click();
       await loaded;
       await historyReady(page);
+      expect(await page.evaluate(() => (window as unknown as { __bootLastView: unknown }).__bootLastView), 'the save named another view at this load').toBe(other);
       await expectView(page, view);
       await expect(tryAgain).toBeVisible({ timeout: 10_000 });
       // Not stuck: another tab works, and a reload then keeps that one.
