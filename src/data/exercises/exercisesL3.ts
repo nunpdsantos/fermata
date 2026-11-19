@@ -391,7 +391,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'All types are equally effective', correct: false },
         ],
       },
-      hint: 'Contrary motion maximizes voice independence because the voices travel in opposite directions. This is the most valued type of motion in counterpoint and part writing.',
+      hint: 'Contrary motion maximises voice independence because the voices travel in opposite directions. This is the most valued type of motion in counterpoint and part writing.',
       nudge: 'Independence means each voice keeps its own shape. Which motion makes the two lines least alike, so that neither seems to shadow the other?',
     },
   ],
@@ -442,7 +442,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Each upper voice moves by leap while the bass moves by step', correct: false },
         ],
       },
-      hint: 'Smooth voice leading minimizes the distance each voice travels. Stepwise motion (or common-tone retention) is preferred over leaps, producing more singable, connected lines.',
+      hint: 'Smooth voice leading minimises the distance each voice travels. Stepwise motion (or common-tone retention) is preferred over leaps, producing more singable, connected lines.',
     },
   ],
 
@@ -602,13 +602,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A continuation that fragments and accelerates toward a cadence', correct: true },
+          { label: 'A continuation that fragments and accelerates towards a cadence', correct: true },
           { label: 'A continuation that states the basic idea a third time unchanged before the cadence', correct: false },
           { label: "A continuation that abandons the cadence and restarts the basic idea", correct: false },
           { label: 'A continuation that answers the presentation with a contrasting phrase, as in a period', correct: false },
         ],
       },
-      hint: 'The classical sentence has two parts: a presentation (basic idea + repetition) and a continuation (fragmentation + acceleration toward a cadence). The continuation drives the phrase to its conclusion.',
+      hint: 'The classical sentence has two parts: a presentation (basic idea + repetition) and a continuation (fragmentation + acceleration towards a cadence). The continuation drives the phrase to its conclusion.',
     },
   ],
 
@@ -681,7 +681,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l3u11m4e2',
       type: 'multiple_choice',
-      prompt: 'Which pattern has a neighbor tone in the middle over a held C major chord?',
+      prompt: 'Which pattern has a neighbour tone in the middle over a held C major chord?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -691,7 +691,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'E4–G4–C5', correct: false },
         ],
       },
-      hint: 'A neighbor tone (or auxiliary tone) leaves a chord tone by step (up or down) and returns to the same chord tone. It decorates a single pitch: chord tone → step away → step back.',
+      hint: 'A neighbour tone (or auxiliary tone) leaves a chord tone by step (up or down) and returns to the same chord tone. It decorates a single pitch: chord tone → step away → step back.',
       nudge: 'Over a C major chord, compare C–D–C with C–D–E: one of them is a passing tone. What does the D do in the other one?',
     },
     {

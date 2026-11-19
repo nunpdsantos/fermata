@@ -363,7 +363,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l7u22m2e2',
       type: 'multiple_choice',
-      prompt: 'What is reharmonization in jazz?',
+      prompt: 'What is reharmonisation in jazz?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -373,7 +373,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Moving each chord into another inversion under the tune", correct: false },
         ],
       },
-      hint: 'Reharmonization changes the harmonic context under a melody. Techniques include tritone substitution, chord quality changes, chromatic approaches, and constant structure movement.',
+      hint: 'Reharmonisation changes the harmonic context under a melody. Techniques include tritone substitution, chord quality changes, chromatic approaches, and constant structure movement.',
     },
     {
       id: 'l7u22m2e3',
@@ -397,7 +397,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l7u22m3e1',
       type: 'multiple_choice',
-      prompt: 'What key center movement defines "Coltrane changes" (as in Giant Steps)?',
+      prompt: 'What key centre movement defines "Coltrane changes" (as in Giant Steps)?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -407,12 +407,12 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Six equally spaced tonal homes, a whole step from one to the next", correct: false },
         ],
       },
-      hint: 'Coltrane changes cycle through three key centers a major 3rd apart (e.g., B, G, Eb). These three keys divide the octave symmetrically into three equal segments of 4 semitones each.',
+      hint: 'Coltrane changes cycle through three key centres a major 3rd apart (e.g., B, G, Eb). These three keys divide the octave symmetrically into three equal segments of 4 semitones each.',
     },
     {
       id: 'l7u22m3e2',
       type: 'multiple_choice',
-      prompt: 'In Coltrane changes, how are the key centers typically approached?',
+      prompt: 'In Coltrane changes, how are the key centres typically approached?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -467,7 +467,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         scaleType: 'phrygian',
         noteCount: 7,
       },
-      hint: 'E phrygian: E, F, G, A, B, C, D. The b2 (F natural, a half step above E) gives phrygian its dark, Spanish-flavored character. Pitch classes: 4, 5, 7, 9, 11, 0, 2.',
+      hint: 'E phrygian: E, F, G, A, B, C, D. The b2 (F natural, a half step above E) gives phrygian its dark, Spanish-flavoured character. Pitch classes: 4, 5, 7, 9, 11, 0, 2.',
     },
     {
       id: 'l7u22m4e3',
@@ -476,13 +476,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Modal harmony keeps a static center and avoids V-I resolution, letting the mode\'s color define the sound', correct: true },
+          { label: 'Modal harmony keeps a static centre and avoids V-I resolution, letting the mode\'s colour define the sound', correct: true },
           { label: "Modal harmony uses more chords than tonal harmony — all seven, one for each degree's mode", correct: false },
           { label: 'Modal harmony always uses minor scales exclusively', correct: false },
-          { label: "Modal harmony relies on strong V-I resolution, like tonal harmony, but uses the mode's own color", correct: false },
+          { label: "Modal harmony relies on strong V-I resolution, like tonal harmony, but uses the mode's own colour", correct: false },
         ],
       },
-      hint: 'In tonal harmony, chords have functions (tonic, dominant, subdominant) that drive toward resolution. In modal harmony, one mode colors a static vamp or drone, and progressions avoid V-I cadences that would establish a key.',
+      hint: 'In tonal harmony, chords have functions (tonic, dominant, subdominant) that drive towards resolution. In modal harmony, one mode colours a static vamp or drone, and progressions avoid V-I cadences that would establish a key.',
     },
   ],
 
@@ -501,7 +501,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Notes stacked in minor 2nds instead of 3rds", correct: false },
         ],
       },
-      hint: 'Quartal harmony stacks 4ths (e.g., C-F-Bb-Eb). This creates an ambiguous, open sound that avoids clear major/minor quality. McCoy Tyner popularized quartal voicings in modal jazz.',
+      hint: 'Quartal harmony stacks 4ths (e.g., C-F-Bb-Eb). This creates an ambiguous, open sound that avoids clear major/minor quality. McCoy Tyner popularised quartal voicings in modal jazz.',
     },
     {
       id: 'l7u22m5e2',
@@ -525,13 +525,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: "They keep one pitch in your ear while the colors above it can change", correct: true },
-          { label: "They usually mark subdivisions of the beat without sustaining a stable pitch center", correct: false },
-          { label: "They move the tonal center up by a semitone whenever the chord above changes", correct: false },
+          { label: "They keep one pitch in your ear while the colours above it can change", correct: true },
+          { label: "They usually mark subdivisions of the beat without sustaining a stable pitch centre", correct: false },
+          { label: "They move the tonal centre up by a semitone whenever the chord above changes", correct: false },
           { label: "They sharpen the leading tone by sustaining the tonic, making the mode major", correct: false },
         ],
       },
-      hint: 'A drone (sustained bass note or open 5th) establishes a modal center. Over a D drone, you can freely explore D dorian, D mixolydian, or other modes without the harmony pulling toward resolution.',
+      hint: 'A drone (sustained bass note or open 5th) establishes a modal centre. Over a D drone, you can freely explore D dorian, D mixolydian, or other modes without the harmony pulling towards resolution.',
     },
   ],
 
@@ -554,7 +554,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'I - bVII - IV - I', correct: false },
         ],
       },
-      hint: 'I-V-vi-IV (in C: C-G-Am-F) is one of the most common pop progressions. It loops indefinitely and supports both uplifting and melancholic melodies depending on which chord the melody emphasizes.',
+      hint: 'I-V-vi-IV (in C: C-G-Am-F) is one of the most common pop progressions. It loops indefinitely and supports both uplifting and melancholic melodies depending on which chord the melody emphasises.',
       nudge: 'Play each option in C and listen. The loop uses four different chords, all from the key, and starts on the tonic: which pattern have you heard in countless pop songs?',
     },
     {
@@ -613,13 +613,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A dramatic, cinematic shift in color — unexpected, yet smooth thanks to a shared tone', correct: true },
+          { label: 'A dramatic, cinematic shift in colour — unexpected, yet smooth thanks to a shared tone', correct: true },
           { label: 'A sense of returning home to the tonic', correct: false },
           { label: 'No noticeable effect at all, since the two chords belong to the same key and sound alike', correct: false },
           { label: 'A dissonant clash that sounds like a mistake', correct: false },
         ],
       },
-      hint: 'C major (C, E, G) and Ab major (Ab, C, Eb) share one common tone (C). The E and Eb are a half step apart, creating the smooth color shift characteristic of chromatic mediants.',
+      hint: 'C major (C, E, G) and Ab major (Ab, C, Eb) share one common tone (C). The E and Eb are a half step apart, creating the smooth colour shift characteristic of chromatic mediants.',
     },
     {
       id: 'l7u23m2e3',
@@ -763,7 +763,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l7u23m5e3',
       type: 'multiple_choice',
-      prompt: 'Which grouping correctly organizes the main chord quality families?',
+      prompt: 'Which grouping correctly organises the main chord quality families?',
       config: {
         type: 'multiple_choice',
         choices: [

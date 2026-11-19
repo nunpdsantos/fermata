@@ -35,7 +35,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         quality: 'dominant7',
         noteCount: 4,
       },
-      hint: 'V7/V in C = D7: D (2), F# (6), A (9), C (0). The added minor 7th (C) strengthens the pull toward G. The F# is the chromatic alteration.',
+      hint: 'V7/V in C = D7: D (2), F# (6), A (9), C (0). The added minor 7th (C) strengthens the pull towards G. The F# is the chromatic alteration.',
     },
     {
       id: 'l5u15m1e3',
@@ -50,7 +50,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "The chord that makes the submediant sound briefly like a local tonic", correct: false },
         ],
       },
-      hint: 'V/V means "the dominant of the dominant." In C major, V is G. The dominant of G is D major. So V/V in C = D major, a chromatic chord that temporarily tonicizes G.',
+      hint: 'V/V means "the dominant of the dominant." In C major, V is G. The dominant of G is D major. So V/V in C = D major, a chromatic chord that temporarily tonicises G.',
     },
   ],
 
@@ -96,13 +96,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'Its root rises a semitone to the root of the tonicized chord', correct: true },
-          { label: 'Its root falls a semitone to the root of the tonicized chord', correct: false },
-          { label: 'Its root falls a perfect fifth to the root of the tonicized chord', correct: false },
-          { label: 'Its root rises a perfect fifth to the root of the tonicized chord', correct: false },
+          { label: 'Its root rises a semitone to the root of the tonicised chord', correct: true },
+          { label: 'Its root falls a semitone to the root of the tonicised chord', correct: false },
+          { label: 'Its root falls a perfect fifth to the root of the tonicised chord', correct: false },
+          { label: 'Its root rises a perfect fifth to the root of the tonicised chord', correct: false },
         ],
       },
-      hint: 'vii°/V works the same way vii° works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upward to the target.',
+      hint: 'vii°/V works the same way vii° works in a key: the root is a half step below the target chord, and the diminished quality creates strong resolution drive upwards to the target.',
       nudge: 'Think of what viio does in a key: its root is the leading tone. In viio/V, whose leading tone is that root, and which way does a leading tone want to go?',
     },
     {
@@ -142,7 +142,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u15m4e1',
       type: 'multiple_choice',
-      prompt: 'What is tonicization?',
+      prompt: 'What is tonicisation?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -152,37 +152,37 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Transposing a melody and its accompaniment into a new key, so the passage is heard at a new pitch", correct: false },
         ],
       },
-      hint: 'Tonicization is fleeting: a secondary dominant or leading-tone chord briefly treats a diatonic chord as a local tonic, but the original key remains in control. Think of it as a momentary detour.',
+      hint: 'Tonicisation is fleeting: a secondary dominant or leading-tone chord briefly treats a diatonic chord as a local tonic, but the original key remains in control. Think of it as a momentary detour.',
     },
     {
       id: 'l5u15m4e2',
       type: 'multiple_choice',
-      prompt: 'How do you distinguish modulation from tonicization?',
+      prompt: 'How do you distinguish modulation from tonicisation?',
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: "Modulation establishes a new key; tonicization briefly emphasizes a chord", correct: true },
-          { label: "Tonicization establishes a new key; modulation briefly emphasizes a chord", correct: false },
-          { label: "Modulation and tonicization both establish a new key", correct: false },
-          { label: "Modulation and tonicization both briefly emphasize a chord", correct: false },
+          { label: "Modulation establishes a new key; tonicisation briefly emphasises a chord", correct: true },
+          { label: "Tonicisation establishes a new key; modulation briefly emphasises a chord", correct: false },
+          { label: "Modulation and tonicisation both establish a new key", correct: false },
+          { label: "Modulation and tonicisation both briefly emphasise a chord", correct: false },
         ],
       },
-      hint: 'The key test: does the new tonal center stick around with its own cadences and stable passages? If yes, it is a modulation. If the original key reasserts itself quickly, it is just a tonicization.',
+      hint: 'The key test: does the new tonal centre stick around with its own cadences and stable passages? If yes, it is a modulation. If the original key reasserts itself quickly, it is just a tonicisation.',
     },
     {
       id: 'l5u15m4e3',
       type: 'multiple_choice',
-      prompt: 'When a non-tonic chord is emphasized as a local tonic over several measures but no cadence confirms a new key, what is this called?',
+      prompt: 'When a non-tonic chord is emphasised as a local tonic over several measures but no cadence confirms a new key, what is this called?',
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: "An extended tonicization", correct: true },
+          { label: "An extended tonicisation", correct: true },
           { label: "A pivot chord modulation", correct: false },
           { label: "A deceptive cadence", correct: false },
           { label: "A chromatic sequence", correct: false },
         ],
       },
-      hint: 'Extended tonicizations occupy a gray area: they last longer than a quick V/x - x motion, but the new key is never confirmed with a strong cadence. The boundary between extended tonicization and modulation is subjective.',
+      hint: 'Extended tonicisations occupy a grey area: they last longer than a quick V/x - x motion, but the new key is never confirmed with a strong cadence. The boundary between extended tonicisation and modulation is subjective.',
     },
   ],
 
@@ -201,7 +201,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'In a chain of V7 chords, each target lies a minor third above its dominant', correct: false },
         ],
       },
-      hint: 'A dominant chain creates cascading tension: e.g., V7/vi - V7/ii - V7/V - V7 - I. Each dominant 7th resolves to the next link, pulling the harmony back toward the tonic through a cycle.',
+      hint: 'A dominant chain creates cascading tension: e.g., V7/vi - V7/ii - V7/V - V7 - I. Each dominant 7th resolves to the next link, pulling the harmony back towards the tonic through a cycle.',
     },
     {
       id: 'l5u15m5e2',
@@ -221,17 +221,17 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l5u15m5e3',
       type: 'multiple_choice',
-      prompt: 'What is sequential tonicization?',
+      prompt: 'What is sequential tonicisation?',
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A pattern in which the same tonicizing gesture (e.g., V7 - target) is repeated at different pitch levels', correct: true },
-          { label: "A pattern in which the same tonicizing gesture (e.g., V7 - target) is played in reverse at each new pitch level", correct: false },
-          { label: "A pattern in which the same tonicizing gesture (e.g., V7 - target) is repeated at one unchanged pitch level", correct: false },
-          { label: "A pattern in which the same tonicizing gesture (e.g., V7 - target) is replaced by unrelated chords at each pitch level", correct: false },
+          { label: 'A pattern in which the same tonicising gesture (e.g., V7 - target) is repeated at different pitch levels', correct: true },
+          { label: "A pattern in which the same tonicising gesture (e.g., V7 - target) is played in reverse at each new pitch level", correct: false },
+          { label: "A pattern in which the same tonicising gesture (e.g., V7 - target) is repeated at one unchanged pitch level", correct: false },
+          { label: "A pattern in which the same tonicising gesture (e.g., V7 - target) is replaced by unrelated chords at each pitch level", correct: false },
         ],
       },
-      hint: 'Sequential tonicization applies the same harmonic pattern (often V7 - chord) to successive scale degrees, creating a predictable but colorful chromatic motion. It is common in Baroque and jazz music.',
+      hint: 'Sequential tonicisation applies the same harmonic pattern (often V7 - chord) to successive scale degrees, creating a predictable but colourful chromatic motion. It is common in Baroque and jazz music.',
     },
   ],
 
@@ -346,10 +346,10 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: "An abrupt switch of tonal center between phrases, without a shared harmony connecting them", correct: true },
-          { label: 'A gradual switch of tonal center through a shared harmony connecting two phrases', correct: false },
-          { label: 'A brief emphasis on a chord within a phrase, with the original tonal center retained', correct: false },
-          { label: 'A gradual switch of tonal center within a phrase through a connecting chromatic sequence', correct: false },
+          { label: "An abrupt switch of tonal centre between phrases, without a shared harmony connecting them", correct: true },
+          { label: 'A gradual switch of tonal centre through a shared harmony connecting two phrases', correct: false },
+          { label: 'A brief emphasis on a chord within a phrase, with the original tonal centre retained', correct: false },
+          { label: 'A gradual switch of tonal centre within a phrase through a connecting chromatic sequence', correct: false },
         ],
       },
       hint: 'Direct modulation is the most abrupt type: one phrase ends in the old key, and the next phrase simply starts in the new key. No pivot chord or chromatic preparation bridges the gap. Common in pop and hymn tunes.',
@@ -627,7 +627,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A single melody played simultaneously with individual variations, with no chordal accompaniment beneath it', correct: false },
         ],
       },
-      hint: 'Homophony has one dominant melody with harmonic accompaniment. Most pop, rock, and classical music from the Classical era onward is homophonic. A singer with guitar chords is a clear example.',
+      hint: 'Homophony has one dominant melody with harmonic accompaniment. Most pop, rock, and classical music from the Classical era onwards is homophonic. A singer with guitar chords is a clear example.',
     },
   ],
 
@@ -677,7 +677,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "Move each voice by the same interval", correct: false },
         ],
       },
-      hint: 'Good voice leading minimizes movement: hold common tones, move other voices by step. This creates smooth, connected harmonic progressions. Guide tone lines demonstrate this principle with just the two most essential notes per chord.',
+      hint: 'Good voice leading minimises movement: hold common tones, move other voices by step. This creates smooth, connected harmonic progressions. Guide tone lines demonstrate this principle with just the two most essential notes per chord.',
     },
   ],
 };

@@ -191,7 +191,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "To close both themes with a coda", correct: false },
         ],
       },
-      hint: 'The development takes ideas from the exposition and works them through various keys, sequences, and contrapuntal techniques, building tension toward the recapitulation.',
+      hint: 'The development takes ideas from the exposition and works them through various keys, sequences, and contrapuntal techniques, building tension towards the recapitulation.',
     },
     {
       id: 'l8u26m1e3',
@@ -403,9 +403,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
         type: 'multiple_choice',
         choices: [
           { label: 'To obtain transposed, inverted and backward versions of a pitch row', correct: true },
-          { label: 'To obtain harmonized, inverted and backward versions of a pitch row', correct: false },
-          { label: 'To obtain transposed, harmonized and rhythmically augmented versions of a pitch row', correct: false },
-          { label: 'To obtain rhythmically augmented, harmonized and backward versions of a pitch row', correct: false },
+          { label: 'To obtain harmonised, inverted and backward versions of a pitch row', correct: false },
+          { label: 'To obtain transposed, harmonised and rhythmically augmented versions of a pitch row', correct: false },
+          { label: 'To obtain rhythmically augmented, harmonised and backward versions of a pitch row', correct: false },
         ],
       },
       hint: 'The matrix (or magic square) is a 12x12 grid. Rows read left-to-right give P forms, right-to-left give R, columns top-to-bottom give I, and bottom-to-top give RI.',
@@ -436,13 +436,13 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: "Several tonal centers heard together", correct: true },
-          { label: "Several tonal centers heard in succession", correct: false },
-          { label: "Several meters heard together", correct: false },
-          { label: "Several meters heard in succession", correct: false },
+          { label: "Several tonal centres heard together", correct: true },
+          { label: "Several tonal centres heard in succession", correct: false },
+          { label: "Several metres heard together", correct: false },
+          { label: "Several metres heard in succession", correct: false },
         ],
       },
-      hint: 'Polytonality layers different tonal centers at the same time. Bitonality (two keys) is the most common type. Milhaud and Stravinsky used it extensively.',
+      hint: 'Polytonality layers different tonal centres at the same time. Bitonality (two keys) is the most common type. Milhaud and Stravinsky used it extensively.',
     },
     {
       id: 'l8u27m3e3',
@@ -549,9 +549,9 @@ const exercises: Record<string, ExerciseDefinition[]> = {
       config: {
         type: 'multiple_choice',
         choices: [
-          { label: 'A tempo change made by treating a note value of the old meter as the beat unit of the new one', correct: true },
+          { label: 'A tempo change made by treating a note value of the old metre as the beat unit of the new one', correct: true },
           { label: "A regrouping of two triple groups into three duple groups while the tempo and note durations stay unchanged", correct: false },
-          { label: "A change of accents within the old meter while the tempo, beat unit and note values stay unchanged", correct: false },
+          { label: "A change of accents within the old metre while the tempo, beat unit and note values stay unchanged", correct: false },
           { label: "A gradual tempo change without a precise shared note value linking the old beat to the new one", correct: false },
         ],
       },

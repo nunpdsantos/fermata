@@ -24,7 +24,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A 4th anticipates the next chord before moving down to the 3rd', correct: false },
         ],
       },
-      hint: 'In a 4-3 suspension, the 4th above the bass is a dissonance carried over (suspended) from the previous chord. It then resolves downward by step to the consonant 3rd.',
+      hint: 'In a 4-3 suspension, the 4th above the bass is a dissonance carried over (suspended) from the previous chord. It then resolves downwards by step to the consonant 3rd.',
     },
     {
       id: 'l4u12m1e2',
@@ -107,7 +107,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Appoggiatura', correct: false },
         ],
       },
-      hint: 'A retardation is essentially a suspension that resolves upward by step rather than downward. The most common example is 7-8, where the 7th above the bass resolves up to the octave.',
+      hint: 'A retardation is essentially a suspension that resolves upwards by step rather than downwards. The most common example is 7-8, where the 7th above the bass resolves up to the octave.',
     },
   ],
 
@@ -131,7 +131,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u12m3e2',
       type: 'multiple_choice',
-      prompt: 'What is a "changing tone" (also called a neighbor group or double neighbor)?',
+      prompt: 'What is a "changing tone" (also called a neighbour group or double neighbour)?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -141,7 +141,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: "A melody leaves a chord note by leap and then returns by step", correct: false },
         ],
       },
-      hint: 'A changing tone (neighbor group) decorates a chord tone by moving to its upper neighbor, then its lower neighbor (or vice versa) before returning. For example: C-D-B-C ornaments the note C.',
+      hint: 'A changing tone (neighbour group) decorates a chord tone by moving to its upper neighbour, then its lower neighbour (or vice versa) before returning. For example: C-D-B-C ornaments the note C.',
     },
     {
       id: 'l4u12m3e3',
@@ -201,7 +201,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'The 3rd falls by half step; the 7th falls by half step', correct: false },
         ],
       },
-      hint: 'In G7 resolving to C: B (leading tone, 3rd of V7) resolves up to C; F (7th of V7) resolves down to E. The tritone B-F contracts inward to C-E. This contrary motion is the engine of tonal resolution.',
+      hint: 'In G7 resolving to C: B (leading tone, 3rd of V7) resolves up to C; F (7th of V7) resolves down to E. The tritone B-F contracts inwards to C-E. This contrary motion is the engine of tonal resolution.',
     },
   ],
 
@@ -300,7 +300,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'iii or iii7', correct: false },
         ],
       },
-      hint: 'In the standard T-PD-D-T functional model, ii (and ii7) serves a pre-dominant function. It creates harmonic momentum toward V, which then resolves to I. The ii-V-I progression is foundational in both classical and jazz.',
+      hint: 'In the standard T-PD-D-T functional model, ii (and ii7) serves a pre-dominant function. It creates harmonic momentum towards V, which then resolves to I. The ii-V-I progression is foundational in both classical and jazz.',
     },
   ],
 
@@ -349,7 +349,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Half-diminished 7th', correct: false },
         ],
       },
-      hint: 'In C major, Imaj7 = C-E-G-B. The major 7th (B) adds warmth and color to the tonic triad without undermining its stability. It is a staple sonority in jazz, bossa nova, and many pop styles.',
+      hint: 'In C major, Imaj7 = C-E-G-B. The major 7th (B) adds warmth and colour to the tonic triad without undermining its stability. It is a staple sonority in jazz, bossa nova, and many pop styles.',
     },
   ],
 
@@ -443,7 +443,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'vii° — it shares two notes with IV', correct: false },
         ],
       },
-      hint: 'In C major, IV = F-A-C and ii = D-F-A. They share F and A (two common tones) and both create pre-dominant momentum toward V. The ii chord is often preferred in four-part writing because ii-V features strong root motion by descending 5th (while ii6-V gives stepwise bass motion from degree 4 to 5).',
+      hint: 'In C major, IV = F-A-C and ii = D-F-A. They share F and A (two common tones) and both create pre-dominant momentum towards V. The ii chord is often preferred in four-part writing because ii-V features strong root motion by descending 5th (while ii6-V gives stepwise bass motion from degree 4 to 5).',
     },
   ],
 
@@ -566,23 +566,23 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'As 1+1+1+1+1 quarter-note beats', correct: false },
         ],
       },
-      hint: '5/4 is an asymmetric (or irregular) meter. It cannot be divided into equal groups, so it splits as 3+2 or 2+3. The choice of grouping affects the accent pattern and rhythmic feel.',
+      hint: '5/4 is an asymmetric (or irregular) metre. It cannot be divided into equal groups, so it splits as 3+2 or 2+3. The choice of grouping affects the accent pattern and rhythmic feel.',
     },
     {
       id: 'l4u14m2e2',
       type: 'multiple_choice',
-      prompt: 'How does 7/8 time work as an additive meter?',
+      prompt: 'How does 7/8 time work as an additive metre?',
       config: {
         type: 'multiple_choice',
         rhythm: { time: '7/8', notes: '>8 8 >8 8 >8 8 8' },
         choices: [
           { label: 'Unequal groups of eighths, e.g. 2+2+3', correct: true },
-          { label: 'Compound meter with dotted-quarter-note beats', correct: false },
-          { label: 'Seven equal main beats, as in a simple meter', correct: false },
+          { label: 'Compound metre with dotted-quarter-note beats', correct: false },
+          { label: 'Seven equal main beats, as in a simple metre', correct: false },
           { label: "Alternating measures of eighths, e.g. a 3/8 measure followed by a 4/8 measure", correct: false },
         ],
       },
-      hint: '7/8 is an additive meter: 7 eighth notes are grouped into unequal sub-beats. Common groupings are 2+2+3 (short-short-long), 3+2+2 (long-short-short), or 2+3+2. The long group feels like a slightly stretched beat.',
+      hint: '7/8 is an additive metre: 7 eighth notes are grouped into unequal sub-beats. Common groupings are 2+2+3 (short-short-long), 3+2+2 (long-short-short), or 2+3+2. The long group feels like a slightly stretched beat.',
     },
     {
       id: 'l4u14m2e3',
@@ -622,7 +622,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
     {
       id: 'l4u14m3e2',
       type: 'multiple_choice',
-      prompt: 'What is a chromatic neighbor tone?',
+      prompt: 'What is a chromatic neighbour tone?',
       config: {
         type: 'multiple_choice',
         choices: [
@@ -632,8 +632,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'A note within the key that steps between two different chord tones', correct: false },
         ],
       },
-      hint: 'A chromatic neighbor is an embellishment that moves by semitone from a chord tone and returns: e.g. E-D#-E (lower) or G-Ab-G (upper). It adds color without altering the harmonic direction, functioning as a surface decoration.',
-      nudge: "Put the two words together: what does a neighbor tone do after leaving its chord tone, and what does 'chromatic' tell you about the size of the step?",
+      hint: 'A chromatic neighbour is an embellishment that moves by semitone from a chord tone and returns: e.g. E-D#-E (lower) or G-Ab-G (upper). It adds colour without altering the harmonic direction, functioning as a surface decoration.',
+      nudge: "Put the two words together: what does a neighbour tone do after leaving its chord tone, and what does 'chromatic' tell you about the size of the step?",
     },
     {
       id: 'l4u14m3e3',
@@ -648,8 +648,8 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'Structural notes are always in the bass while embellishments are in upper voices', correct: false },
         ],
       },
-      hint: 'Chromatic embellishments (passing tones, neighbors) are surface decorations that do not affect the underlying harmony. Structural chromatic notes (like applied leading tones or borrowed chords) actually change the chord or briefly tonicize a different key.',
-      nudge: 'Try a removal test: take the chromatic note out (or restore its diatonic form) and ask what is lost — just a touch of color, or the identity of the chord itself?',
+      hint: 'Chromatic embellishments (passing tones, neighbours) are surface decorations that do not affect the underlying harmony. Structural chromatic notes (like applied leading tones or borrowed chords) actually change the chord or briefly tonicise a different key.',
+      nudge: 'Try a removal test: take the chromatic note out (or restore its diatonic form) and ask what is lost — just a touch of colour, or the identity of the chord itself?',
     },
   ],
 
@@ -743,7 +743,7 @@ const exercises: Record<string, ExerciseDefinition[]> = {
           { label: 'VII is diminished, a half step below; vii° is major, a whole step below', correct: false },
         ],
       },
-      hint: 'In A natural minor, VII = G major (G-B-D), a whole step below A. In A harmonic minor, vii° = G#-B-D (diminished), a half step below A. The raised 7th (G#) creates the leading tone that gives vii° its strong pull toward the tonic.',
+      hint: 'In A natural minor, VII = G major (G-B-D), a whole step below A. In A harmonic minor, vii° = G#-B-D (diminished), a half step below A. The raised 7th (G#) creates the leading tone that gives vii° its strong pull towards the tonic.',
       nudge: "In A minor, build the triad on the 7th degree twice: once with G (natural minor) and once with G# (harmonic minor). Check each chord's quality and how far its root lies below A.",
     },
   ],

@@ -50,7 +50,7 @@ const templates: ModuleTemplateConfig[] = [
         type: 'ear_training',
         promptTemplate: 'Listen to this interval and identify it. It is always a third — decide whether it is major or minor.',
         hintTemplate: 'Major 3rd = 4 semitones (bright, happy). Minor 3rd = 3 semitones (dark, sad). The difference is just one half step, but the character changes dramatically.',
-        nudgeTemplate: 'Listen to the colour of the two notes: a bright, open third, or a darker, more somber one? To check, sing up from the lower note by half steps and count how many it takes to reach the upper one; the darker third is one half step narrower.',
+        nudgeTemplate: 'Listen to the colour of the two notes: a bright, open third, or a darker, more sombre one? To check, sing up from the lower note by half steps and count how many it takes to reach the upper one; the darker third is one half step narrower.',
         params: {
           earMode: 'interval',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
@@ -310,7 +310,7 @@ const templates: ModuleTemplateConfig[] = [
       {
         type: 'ear_training',
         promptTemplate: 'Listen to this note and identify it. Most notes in this set are sharps.',
-        hintTemplate: 'Sharps such as C#, F# and G# lie outside C major; in a C major melody they would be chromatic notes, pulling toward a neighbouring scale note.',
+        hintTemplate: 'Sharps such as C#, F# and G# lie outside C major; in a C major melody they would be chromatic notes, pulling towards a neighbouring scale note.',
         nudgeTemplate: 'Start from the reference note you hear first and sing up one half step at a time, counting, until you reach the note. Then place it on the keyboard: a black key takes its name from the white key just below it, plus a sharp.',
         params: {
           earMode: 'note',
