@@ -109,7 +109,8 @@ export function readShareParams(search: string, hash = ''): RawShareParams | nul
 export function cleanedAddress(pathname: string, search: string, hash = ''): string {
   const { query, recovered } = joinFragment(search, hash);
   const params = new URLSearchParams(recovered ? query : search);
-  for (const k of [...SHARE_PARAM_KEYS, 'view', LANG_PARAM]) params.delete(k);
+  // `start` too (audit 2026-11-18, A19: a public page's door, state/startLink.ts) — left behind, a reload would take that door.
+  for (const k of [...SHARE_PARAM_KEYS, 'view', LANG_PARAM, 'start']) params.delete(k);
   const qs = params.toString();
   return pathname + (qs ? `?${qs}` : '') + (recovered ? '' : hash);
 }
