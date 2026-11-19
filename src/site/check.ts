@@ -9,7 +9,7 @@
 import { htmlLangFor } from '../i18n/language';
 import { REPORT_FORMS } from '../services/feedbackForms';
 import { SITE_LANGS, appText, siteLessons, type SiteLang } from './content';
-import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, START_DOOR_IDS, appUrl, sitePath, type PageKind } from './render';
+import { MAX_DESCRIPTION, ORIGIN, OG_IMAGE, PATH_WORDS, SENTENCE_END, appDoorUrl, appUrl, sitePath, type PageKind } from './render';
 import type { SlugRegistry } from './slugs';
 import { esc } from './html';
 import { LANGUAGE_NAMES, newText } from './strings';
@@ -528,6 +528,12 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
     // A task that says to tap ‘C major scale’ can be tapped on the page too:
     // read structurally, in the task list every ‘…’ is the whole text of an
     // <a class="query" href> and nothing else; no other mark of a phrase is left.
+    // A landing page's "I know some theory" door opens the app with that door
+    // chosen (audit A19): its plain entrance made the app ask again.
+    if (kind.kind === 'landing' && p.hrefs.filter((h) => h === appDoorUrl(kind.lang, 'theory')).length !== 1) {
+      where(`no "I know some theory" door with its door chosen (${appDoorUrl(kind.lang, 'theory')}): the app would ask again`);
+    }
+
     if (kind.kind === 'lesson') {
       const id = lessonAt.get(path);
       const own = id ? appUrl(kind.lang, id) : null;
@@ -562,7 +568,12 @@ export function checkSite(site: SiteFiles, expect: CheckExpect): CheckReport {
       if (href.startsWith(`${ORIGIN}/?`)) {
         const q = new URLSearchParams(href.slice(ORIGIN.length + 2));
         const keys = [...q.keys()].join(',');
-        if (!(keys === 'lang' || keys === 'lesson,lang' || keys === 'start,lang') || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!)) || (q.has('start') && !(START_DOOR_IDS as readonly string[]).includes(q.get('start')!))) where(`app link ${href}`);
+        // A door of the start screen (`start`): only "I know some theory", only on a
+        // landing page, in its language (the owner's ruling, 19 November 2026; the
+        // app takes `new` and `player` too, but the pages do not offer them).
+        const here = pageKindOf(path);
+        const theoryDoor = keys === 'start,lang' && here?.kind === 'landing' && href === appDoorUrl(here.lang, 'theory');
+        if (!(keys === 'lang' || keys === 'lesson,lang' || theoryDoor) || !SITE_LANGS.includes(q.get('lang') as SiteLang) || (q.has('lesson') && !/^l\du\d+m\d+$/.test(q.get('lesson')!))) where(`app link ${href}`);
         continue;
       }
       if (href.startsWith(ORIGIN)) target = href.slice(ORIGIN.length);
