@@ -16,8 +16,9 @@
  * the empty result "had" that score: a later answer in any lesson whose result
  * the save lacked wrote it there (the score came back after a second reset, or
  * appeared in another lesson's result), and where this tab's base lacked the
- * result, the same score saved by another tab read as one this tab had removed
- * and was erased. The fix: the marks are applied to a copy of the merged state.
+ * result, another tab's saved score for that question (whatever its value)
+ * read as one this tab had removed and was erased. The fix: the marks are
+ * applied to a copy of the merged state.
  *
  * "Reset app data" in another tab is modelled as the model does it: the key
  * removed, this tab told nothing (no storage event), unless the case says so.
