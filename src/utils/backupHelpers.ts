@@ -15,6 +15,7 @@
  */
 import { useAppStore, invalidAppStateFields } from '../state/store.ts';
 import { tabLine } from '../state/tabSafe.ts';
+import { same, savedNow } from '../state/tabMerge.ts';
 
 export const BACKUP_KEYS = [
   'music-theory-app',
@@ -227,6 +228,8 @@ export interface CheckedBackup {
   missing: BackupKey[];
   /** Damaged, and the file holds what the app could read of it (its text is in `damaged` too). */
   partly: BackupKey[];
+  /** Saved by a newer Fermatina, which this page cannot read: left out (it is not damaged, and stays in the browser). */
+  newer: BackupKey[];
 }
 
 /**
@@ -238,22 +241,28 @@ export interface CheckedBackup {
  * store's defaults; and the damaged text itself, under `damaged`. Then the
  * importer's own check (`validateBackup`) reads the assembled file exactly as
  * it will be read back; a section it still refuses is left out too. A
+ * section the check refuses because a NEWER Fermatina saved it is not
+ * damaged: it is left out and named as such (fix pass, 2026-11-19). A
  * healthy export is exactly `buildBackup`'s.
  */
 export async function buildCheckedBackup(storage: ReadableStorage): Promise<CheckedBackup> {
   const backup = buildBackup(storage);
-  const { same, savedNow } = await import('../state/tabMerge.ts');
   const damaged: Partial<Record<BackupKey, string>> = {};
   const missing: BackupKey[] = [];
   const partly: BackupKey[] = [];
+  const newer: BackupKey[] = [];
   for (const key of BACKUP_KEYS) {
     const raw = storage.getItem(key);
     const payload = backup.data[key];
     if (raw === null || (payload && !(await sectionProblem(key, payload)))) continue;
-    damaged[key] = raw;
     delete backup.data[key];
     await STORE_MODULES[key]();
     const store = tabLine(key)?.store?.();
+    if (store && typeof payload?.version === 'number' && payload.version > (store.persist.getOptions().version ?? 0)) {
+      newer.push(key);
+      continue;
+    }
+    damaged[key] = raw;
     const live = store && { state: savedNow(store), version: store.persist.getOptions().version };
     const defaults = store && savedNow(store, true);
     if (live && isPlainObject(live.state) && !same(live.state, defaults) && !(await sectionProblem(key, live as Record<string, unknown>))) {
@@ -274,7 +283,7 @@ export async function buildCheckedBackup(storage: ReadableStorage): Promise<Chec
     missing.push(key);
   }
   if (Object.keys(damaged).length > 0) backup.damaged = damaged;
-  return { backup, missing, partly };
+  return { backup, missing, partly, newer };
 }
 
 export type BackupSection = 'preferences' | 'learnProgress' | 'drillProgress' | 'guitarFingerings';

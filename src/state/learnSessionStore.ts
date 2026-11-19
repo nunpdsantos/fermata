@@ -186,7 +186,7 @@ export const useLearnSessionStore = create<LearnSessionState>()(
     {
       name: LEARN_SESSION_KEY,
       version: LEARN_SESSION_VERSION,
-      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, (): TabStore => useLearnSessionStore, learnSessionMerge)),
+      storage: createJSONStorage(() => tabSafeStorage(LEARN_SESSION_KEY, (): TabStore => useLearnSessionStore, learnSessionMerge, isValidLearnSession)),
       partialize: (s) => ({ screen: s.screen, check: s.check }),
       // No older format exists; anything from another version starts empty.
       migrate: (persisted, version) => (version === LEARN_SESSION_VERSION && isValidLearnSession(persisted) ? persisted : EMPTY) as LearnSessionState,

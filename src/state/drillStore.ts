@@ -15,8 +15,9 @@ import type {
   MasteryTier,
   SerializedCard,
 } from '../core/types/drill';
-import { applyAnswer, capHistory, migrateTierV1 } from '../services/drillScheduler';
+import { applyAnswer, migrateTierV1 } from '../services/drillScheduler';
 import { tabSafeStorage, type TabStore } from './tabSafe';
+import { followSoon } from './tabFollow';
 import type { Rule } from './tabMerge';
 import {
   composeSession,
@@ -444,23 +445,27 @@ function migrateItemsFromV1(items: Record<string, ItemSrsState>): Record<string,
 }
 
 /**
- * One fact answered in two tabs since they last agreed (A1): no answer is
- * lost — both histories, each answer once, in time order (capped as the
- * scheduler caps it) — and the card and tier are those of the tab that
- * answered last. A fact cleared in one tab and answered in the other keeps
- * the answer.
+ * A fact this tab answered while the save changed under it (A1; fix pass
+ * 2026-11-19). Only the answers this tab added since its base count: they
+ * are replayed, in time order, through the scheduler onto the fact as saved
+ * now — onto a new card when the save no longer has the fact (a reset, an
+ * import without it), so none of this tab's older answers, card or tier come
+ * back. A fact answered in both tabs thus keeps both tabs' answers, and its
+ * card is the saved card moved on by this tab's answers (an answer older
+ * than the saved card's last review is recorded at that time: the scheduler
+ * never goes backwards). A fact cleared here and answered there stays as
+ * saved; one this tab only cleared is gone.
  */
-function mergeDrillItem(_base: unknown, mine: unknown, theirs: unknown): unknown {
+function mergeDrillItem(base: unknown, mine: unknown, theirs: unknown): unknown {
   if (!isPlainObject(mine)) return theirs;
-  if (!isPlainObject(theirs)) return mine;
-  const records = [theirs.history, mine.history].flatMap((h) => (Array.isArray(h) ? h.filter(isValidAnswerRecord) : []));
-  const once = new Map(records.map((r) => [`${r.ts}|${r.sessionId}|${r.ms}|${r.correct}`, r]));
-  const lastTs = (s: Record<string, unknown>) => {
-    const h = Array.isArray(s.history) ? s.history.filter(isValidAnswerRecord) : [];
-    return h.length ? Math.max(...h.map((r) => r.ts)) : -Infinity;
-  };
-  const latest = lastTs(theirs) > lastTs(mine) ? theirs : mine;
-  return { ...latest, history: capHistory([...once.values()].sort((a, b) => a.ts - b.ts)) };
+  const answers = (s: unknown) => (isPlainObject(s) && Array.isArray(s.history) ? s.history.filter(isValidAnswerRecord) : []);
+  const key = (r: AnswerRecord) => `${r.ts}|${r.sessionId}|${r.ms}|${r.correct}`;
+  const known = new Set(answers(base).map(key));
+  let state = sanitizeItemSrsState(theirs) ?? undefined;
+  for (const r of answers(mine).filter((x) => !known.has(key(x))).sort((a, b) => a.ts - b.ts)) {
+    state = applyAnswer(state, r.correct, r.ms, r.ts, r.sessionId);
+  }
+  return state;
 }
 
 /**
@@ -673,7 +678,7 @@ export const useDrillStore = create<DrillStoreState>()(
       // way is saved (`sprint`). Older saves load as they are: no verdict
       // showing, an empty tally, no Sprint open.
       version: 3,
-      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, (): TabStore => useDrillStore, DRILL_MERGE_RULE)),
+      storage: createJSONStorage(() => tabSafeStorage(DRILL_STORE_KEY, (): TabStore => useDrillStore, DRILL_MERGE_RULE, (s) => validatePersistedShape(s) !== null)),
       // Persist every store change. SprintRunner also saves on pagehide /
       // hidden; a visible crash resumes its last save (up to 5 s earlier).
       partialize: (state) => ({
@@ -731,4 +736,4 @@ setDrillWorkStateReader(useDrillStore.getState);
 
 // Another tab's answers are never written over and show here too (A1); this
 // tab's session and Sprint under way stay its own.
-void import('./tabSync').then((m) => m.followOtherTabs(DRILL_STORE_KEY, useDrillStore, ['activeSession', 'sprint']));
+followSoon(DRILL_STORE_KEY, useDrillStore, ['activeSession', 'sprint']);

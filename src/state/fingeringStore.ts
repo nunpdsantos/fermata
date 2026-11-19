@@ -16,6 +16,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { SCALE_FORMULAS } from '../core/constants/scales.ts';
 import { tabSafeStorage, type TabStore } from './tabSafe.ts';
+import { followSoon } from './tabFollow.ts';
 
 export const FINGERING_STORE_KEY = 'fermata-fingering-v1';
 
@@ -132,4 +133,4 @@ export const useFingeringStore = create<FingeringStoreState>()(
   ),
 );
 
-void import('./tabSync.ts').then((m) => m.followOtherTabs(FINGERING_STORE_KEY, useFingeringStore));
+followSoon(FINGERING_STORE_KEY, useFingeringStore);

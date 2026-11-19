@@ -93,7 +93,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   // The file is checked by the importer's own check first; the line says what went into it (A16).
   const handleExport = () => {
     setDataNotes([]);
-    void exportAndTell(localStorage).then((lines) => setDataNotes(lines.map((text) => ({ text, tone: 'warning' }))));
+    void exportAndTell(localStorage).then(setDataNotes);
   };
 
   const handleImportFile = async (file: File) => {

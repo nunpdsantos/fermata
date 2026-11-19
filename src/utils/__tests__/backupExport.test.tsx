@@ -180,6 +180,28 @@ describe('a damaged save', () => {
     ]);
   });
 
+  it('progress saved by a NEWER Fermatina: left out, not called damaged, its text not taken; the file imports', async () => {
+    await loadApp();
+    // A tab on a newer Fermatina saves after this page loaded (on loading, older code would migrate it down).
+    const newer = JSON.stringify({ state: PROGRESS, version: 99 });
+    localStorage.setItem('music-theory-progress', newer);
+    const file = JSON.parse(await exportFromSettings());
+    expect((await validateBackup(file)).ok).toBe(true);
+    expect(file.data['music-theory-progress']).toBeUndefined();
+    expect(file.damaged).toBeUndefined();
+    expect(toasts()).toEqual([{ type: 'warning', message: i18n.t('backupFile.exportedNewer', { count: 1, sections: i18n.t('backup.section.learnProgress') }) }]);
+    expect(localStorage.getItem('music-theory-progress')).toBe(newer);
+  });
+
+  it('no file could be made: one sentence in the sheet and a toast, no "Backup downloaded"', async () => {
+    (URL as unknown as { createObjectURL: () => string }).createObjectURL = vi.fn(() => { throw new Error('blocked'); });
+    render(<SettingsSheet open onClose={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: i18n.t('backup.export') }));
+    const note = await screen.findByTestId('data-note');
+    expect(note.textContent).toBe(i18n.t('backupFile.exportFailed'));
+    expect(toasts()).toEqual([{ type: 'error', message: i18n.t('backupFile.exportFailed') }]);
+  });
+
   for (const lang of ['pt', 'es'] as const) {
     it(`${lang}: the line is in the learner's language`, async () => {
       await i18n.changeLanguage(lang);

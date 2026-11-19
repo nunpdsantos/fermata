@@ -5,5 +5,8 @@
   "exportedWithout_one": "Backup transferido, mas sem esta parte, que está danificada neste navegador e não pôde ser lida: {{sections}}.",
   "exportedWithout_other": "Backup transferido, mas sem estas partes, que estão danificadas neste navegador e não puderam ser lidas: {{sections}}.",
   "exportedPartly_one": "Backup transferido. Esta parte estava parcialmente danificada neste navegador; o ficheiro guarda o que ainda foi possível ler: {{sections}}.",
-  "exportedPartly_other": "Backup transferido. Estas partes estavam parcialmente danificadas neste navegador; o ficheiro guarda o que ainda foi possível ler: {{sections}}."
+  "exportedPartly_other": "Backup transferido. Estas partes estavam parcialmente danificadas neste navegador; o ficheiro guarda o que ainda foi possível ler: {{sections}}.",
+  "exportedNewer_one": "Backup transferido, mas sem esta parte, que uma versão mais recente da Fermatina guardou e esta página não consegue ler: {{sections}}.",
+  "exportedNewer_other": "Backup transferido, mas sem estas partes, que uma versão mais recente da Fermatina guardou e esta página não consegue ler: {{sections}}.",
+  "exportFailed": "Não foi possível criar o ficheiro de backup. Os teus dados neste navegador não foram alterados."
 }

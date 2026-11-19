@@ -23,15 +23,14 @@ const opened: { safe: Safe; key: string }[] = [];
 
 /**
  * A new tab: the module loaded again from scratch, reading what the browser
- * holds now, once its lazy parts have arrived (the merging write, and the
- * following for the stores that follow), as they do a moment after a page opens.
+ * holds now, once its lazy part (following other tabs, for the stores that
+ * follow) has arrived, as it does a moment after a page opens.
  */
 async function openTab<M>(key: string, load: () => Promise<M>): Promise<M> {
   vi.resetModules();
   const mod = await load();
   const safe = await import('../tabSafe');
-  await import('../tabMerge');
-  await import('../tabSync');
+  await import('../tabSync'); // following loads a moment after the store
   await new Promise((resolve) => setTimeout(resolve, 0));
   opened.push({ safe, key });
   return mod;
@@ -188,16 +187,18 @@ describe('fermata-drill-v1 (spaced repetition): two tabs answering lose no revie
     for (const id of ['i1', 'i2', 'i3']) expect(s.items[id].history).toHaveLength(1);
   });
 
-  it('the SAME fact answered in both tabs: both answers stay in its history, in time order; the card is the later one\'s', async () => {
+  it('the SAME fact answered in both tabs: both answers stay in its history; this tab\'s answer moves the saved card on through the scheduler (recorded no earlier than that card\'s last review)', async () => {
     const a = await drillTab();
     const b = await drillTab();
     a.useDrillStore.getState().startSession([item('i1')], 1_000_000);
     b.useDrillStore.getState().startSession([item('i1')], 1_000_050);
     b.useDrillStore.getState().recordAnswer(item('i1'), true, 700, 1_000_300);
+    const bState = saved(DRILL).state.items.i1;
     a.useDrillStore.getState().recordAnswer(item('i1'), false, 900, 1_000_100);
     const it1 = saved(DRILL).state.items.i1;
-    expect(it1.history.map((r: { ts: number; correct: boolean }) => [r.ts, r.correct])).toEqual([[1_000_100, false], [1_000_300, true]]);
-    expect(it1.card).toEqual(b.useDrillStore.getState().items.i1.card);
+    expect(it1.history.map((r: { ts: number; correct: boolean }) => [r.ts, r.correct])).toEqual([[1_000_300, true], [1_000_300, false]]);
+    const { applyAnswer } = await import('../../services/drillScheduler');
+    expect(it1).toEqual(JSON.parse(JSON.stringify(applyAnswer(bState, false, 900, 1_000_100, 's1000000'))));
   });
 
   it('with the event: the other tab\'s answers show here, but this tab\'s session under way stays its own (drillWork reads it)', async () => {
@@ -310,30 +311,7 @@ describe('music-theory-app (settings, with the optional fields)', () => {
   });
 });
 
-describe('the first moments of a tab, and what counts as this tab\'s change', () => {
-  it('before the merging write has arrived, a write after another tab\'s waits in memory, then is made on top of it: never written whole, never dropped', async () => {
-    vi.resetModules();
-    let arrive!: () => void;
-    const gate = new Promise<void>((resolve) => { arrive = resolve; });
-    vi.doMock('../tabMerge', async () => {
-      await gate;
-      return vi.importActual('../tabMerge');
-    });
-    try {
-      const b = await import('../progressStore');
-      localStorage.setItem(PROGRESS, JSON.stringify({ state: { progress: { completedModules: ['l1u1m1'], moduleProgress: { l1u1m1: ['t1'] } } }, version: 4 }));
-      b.useProgressStore.getState().toggleTask('l1u34m1', 'l1u34m1t1');
-      // Waiting: the other tab's save is untouched.
-      expect(saved(PROGRESS).state.progress).toEqual({ completedModules: ['l1u1m1'], moduleProgress: { l1u1m1: ['t1'] } });
-      arrive();
-      await vi.waitFor(() => expect(saved(PROGRESS).state.progress.moduleProgress).toEqual({ l1u1m1: ['t1'], l1u34m1: ['l1u34m1t1'] }));
-      expect(saved(PROGRESS).state.progress.completedModules).toEqual(['l1u1m1']);
-      opened.push({ safe: await import('../tabSafe'), key: PROGRESS });
-    } finally {
-      vi.doUnmock('../tabMerge');
-    }
-  });
-
+describe('what counts as this tab\'s change', () => {
   it('a tab that has not written yet: what its store\'s own guard made of the save (here the dock choice derived for an old save) is not its change, so another tab\'s choice stays', async () => {
     const old = { ...settingsV6.state } as Record<string, unknown>;
     delete old.dockChosen; // a save from before W11-B: the store derives the choice on reading
@@ -354,10 +332,10 @@ describe('fermata-learn-session-v1 (the open lesson and a check in progress)', (
   it('a check in progress in one tab survives another tab opening another lesson; the checking tab\'s next answer saves its place again', async () => {
     const a = await sessionTab();
     const b = await sessionTab();
-    const check = { moduleId: 'l1u1m1', kind: 'check' as const, lang: 'en', fingerprints: {}, run: { order: [], index: 0, scores: [], items: [], attempt: 1 as const, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() };
-    a.useLearnSessionStore.getState().setScreen(screen('l1u1m1', 'l1u1'));
+    const check = { moduleId: 'l1u1m1', kind: 'check' as const, lang: 'en', fingerprints: { l1u1m1e1: 'f' }, run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1 as const, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() };
+    a.useLearnSessionStore.getState().setScreen(screen('l1u1m1', 'u1'));
     a.useLearnSessionStore.getState().setCheck(check);
-    b.useLearnSessionStore.getState().setScreen(screen('l1u34m1', 'l1u34'));
+    b.useLearnSessionStore.getState().setScreen(screen('l1u34m1', 'u34'));
     expect(saved(SESSION).state.check).toEqual(check);
     expect(saved(SESSION).state.screen.moduleId).toBe('l1u34m1');
     a.useLearnSessionStore.getState().setCheck({ ...check, at: check.at + 1 });
@@ -367,9 +345,9 @@ describe('fermata-learn-session-v1 (the open lesson and a check in progress)', (
 
   it('Reset app data elsewhere: the other tab\'s old check is not written back', async () => {
     const a = await sessionTab();
-    a.useLearnSessionStore.getState().setCheck({ moduleId: 'l1u1m1', kind: 'check', lang: 'en', fingerprints: {}, run: { order: [], index: 0, scores: [], items: [], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() });
+    a.useLearnSessionStore.getState().setCheck({ moduleId: 'l1u1m1', kind: 'check' as const, lang: 'en', fingerprints: { l1u1m1e1: 'f' }, run: { order: ['l1u1m1e1'], index: 0, scores: [], items: [], attempt: 1 as const, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now() });
     localStorage.removeItem(SESSION);
-    a.useLearnSessionStore.getState().setScreen(screen('l1u34m1', 'l1u34'));
+    a.useLearnSessionStore.getState().setScreen(screen('l1u34m1', 'u34'));
     expect(saved(SESSION).state.check).toBeNull();
     expect(saved(SESSION).state.screen.moduleId).toBe('l1u34m1');
   });

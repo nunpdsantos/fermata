@@ -61,27 +61,39 @@ export function mountSheet(doc: Document, win: Window, opts: MountOptions = {}):
   };
   const S = stored() ?? readState(null);
   S.lang = chooseLanguage(win.location.search, S.lang, win.navigator.languages?.length ? win.navigator.languages : [win.navigator.language ?? '']);
-  /** Take the answers saved by any tab (this page keeps its language). */
+  /**
+   * A write was refused (storage full, or a browser that reads but will not
+   * save): this visit's answers are then only in this page's memory, which
+   * stays the truth for the visit — Copy and Send use it (fix pass,
+   * 2026-11-19: the page showed answers while Send said there were none).
+   */
+  let unsaved = false;
+  /** Take the answers saved by any tab (this page keeps its language), unless this visit's could not be saved. */
   const refresh = () => {
-    const now = stored();
+    const now = unsaved ? null : stored();
     if (now) Object.assign(S, { a: now.a, q: now.q });
   };
   /**
    * One change: made in this page's memory and, on what is saved NOW, written
    * back with this page's language — never this page's other answers, which
-   * may be older than another tab's.
+   * may be older than another tab's (after a refused write: all of them, as
+   * the visit's memory is then the only copy).
    */
   const commit = (change: (s: typeof S) => void) => {
     change(S);
     const now = stored();
+    if (now && unsaved) Object.assign(now, { a: { ...now.a, ...S.a }, q: { ...now.q, ...S.q } });
     if (now) change(now);
     const next = now ?? S;
     next.lang = S.lang;
     try {
       storage?.setItem(SHEET_STORAGE_KEY, JSON.stringify(next));
     } catch {
-      // storage full or blocked: the sheet still works for this visit
+      // storage full or blocked: the sheet still works for this visit, from its memory
+      unsaved = true;
+      return;
     }
+    unsaved = false;
     if (now) Object.assign(S, { a: now.a, q: now.q });
   };
   const blank = () => ({ r: '' as const, note: '', hint: false });

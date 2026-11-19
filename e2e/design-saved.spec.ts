@@ -1,4 +1,4 @@
-import { test, expect, type Browser, type Page } from '@playwright/test';
+import { test, expect, type Browser, type Page, type Route } from '@playwright/test';
 import { auditPage } from './helpers/designAudit';
 import { LOCALE, type Lang } from './helpers/wave1';
 
@@ -7,7 +7,8 @@ import { LOCALE, type Lang } from './helpers/wave1';
  * A16, A20, 2026-11-18): Settings → Your data with an export's damaged parts
  * named (two lines) and with an import the browser would not save; the start
  * screen's line by "I have a progress file"; the test sheet's empty Send
- * (build only). Phone 390×844 and 320×568, landscape 844×390, laptop
+ * (build only); the moving panel's line on the old address (fix pass,
+ * 2026-11-19: its export's result shows in the panel, which covers toasts). Phone 390×844 and 320×568, landscape 844×390, laptop
  * 1440×900, day and night, EN / PT / ES: type ≥ 12 px, tap ≥ --tap, text
  * contrast, nothing cut off, no sideways scroll, and the sentence on screen.
  */
@@ -76,6 +77,53 @@ const failWrites = (page: Page, key: string) => page.evaluate((k) => {
 const FILE = JSON.stringify({ format: 'fermata-backup', version: 1, exportedAt: '2026-11-18T10:00:00.000Z', data: {
   'music-theory-progress': { state: { progress: { completedModules: ['imported'], moduleProgress: {} } }, version: 4 },
 } });
+
+// The old address, as e2e/moved.spec.ts reaches it: the hostname mapped to this machine, every request answered by this run's own server.
+const OLD = 'https://fermata-music.vercel.app';
+test.use({ launchOptions: { args: ['--host-resolver-rules=MAP fermata-music.vercel.app 127.0.0.1, MAP fermatina.com 127.0.0.1'] } });
+async function relay(route: Route, local: string) {
+  const request = route.request();
+  const url = new URL(request.url());
+  const accept = request.headers().accept;
+  const upstream = await fetch(`${local}${url.pathname}${url.search}`, { method: request.method(), headers: accept ? { accept } : {}, redirect: 'manual' });
+  const headers: Record<string, string> = {};
+  upstream.headers.forEach((value, header) => {
+    if (!['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(header)) headers[header] = value;
+  });
+  await route.fulfill({ status: upstream.status, headers, body: Buffer.from(await upstream.arrayBuffer()) });
+}
+const MOVE = { en: 'Move my progress', pt: 'Levar o progresso', es: 'Llevar progreso' } as const;
+const MOVED_EXPORT = { en: 'Export my progress', pt: 'Exportar o meu progresso', es: 'Exportar mi progreso' } as const;
+
+for (const v of [CASES[0], CASES[3], CASES[5], CASES[9]]) {
+  test(`${name(v)}: the moving panel (old address) says which part of its export was damaged`, async ({ browser, baseURL }) => {
+    test.setTimeout(90_000);
+    const context = await browser.newContext({
+      viewport: { width: v.w, height: v.h }, isMobile: v.touch, hasTouch: v.touch, locale: LOCALE[v.lang], colorScheme: v.scheme,
+      reducedMotion: 'reduce', serviceWorkers: 'block', storageState: { cookies: [], origins: [] },
+    });
+    const local = new URL(baseURL!).origin;
+    await context.route(`${OLD}/**`, (route) => relay(route, local));
+    await context.route(/^https?:\/\/(www\.)?fermatina\.com(\/|$)/, (route) => route.abort());
+    await context.routeWebSocket(/fermata-music\.vercel\.app|fermatina\.com/, (ws) => ws.close());
+    await context.addInitScript(([settings]) => {
+      if (sessionStorage.getItem('__seeded')) return;
+      localStorage.setItem('fermata-welcome-v1', 'seen');
+      localStorage.setItem('music-theory-app', settings);
+      localStorage.setItem('music-theory-progress', '{"state":{"progress":{"completedMod');
+      sessionStorage.setItem('__seeded', '1');
+    }, [settingsSave(v)] as const);
+    const page = await context.newPage();
+    await page.goto(`${OLD}/`);
+    await page.getByTestId('toast-region').getByRole('button', { name: MOVE[v.lang] }).click();
+    await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: MOVED_EXPORT[v.lang] }).click()]);
+    const note = page.getByTestId('moved-note');
+    await expect(note).toHaveCount(1);
+    await expect(note).toHaveAttribute('role', 'alert');
+    await check(page, v, `${name(v)} moving panel`, note);
+    await context.close();
+  });
+}
 
 for (const v of CASES) {
   test(`${name(v)}: Settings → Your data says which part of an export was damaged, and that an import was not saved`, async ({ browser }) => {

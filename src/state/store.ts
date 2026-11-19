@@ -10,8 +10,9 @@ import { GUITAR_TUNINGS } from '../core/constants/guitarTunings.ts';
 import { isAppLanguage } from '../i18n/language.ts';
 import { sanitizeDockDetents, sanitizeDockChosen } from './dock.ts';
 import type { AppState } from './storeTypes.ts';
-import { progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
-import { metronomeToSave, sanitizeSavedMetronome } from './metronomeSave.ts';
+import { DEFAULT_BEATS as DEFAULT_CHORD_BEATS, DEFAULT_BPM, progressionToSave, sanitizeSavedProgression } from './progressionSave.ts';
+import { DEFAULT_METRONOME, metronomeToSave, sanitizeSavedMetronome } from './metronomeSave.ts';
+import { onEmpty, type Rule } from './tabMerge.ts';
 import { tabSafeStorage, type TabStore } from './tabSafe.ts';
 
 // Re-export types so consumers don't need to change imports
@@ -27,6 +28,20 @@ export type { AppState, ViewMode, InstrumentType, ColorMode, ThemeMode, NeckNutS
  * browser saves nothing about the neck until the learner changes it.
  */
 export const LEGACY_NECK = { neckNutSide: 'right', neckTopString: 'low' } as const;
+
+/**
+ * Settings written over another tab's (A1; fix pass 2026-11-19): field by
+ * field, records too (the metronome's tempo and beats, the dock's two
+ * detents…), except the key, which is one choice; a metronome or a
+ * progression the save no longer has gets only this tab's changes on its
+ * defaults, never this tab's older values.
+ */
+const SETTINGS_MERGE_RULE: Rule = {
+  '*': 'fields',
+  selectedKey: 'atomic',
+  metronome: onEmpty({ ...DEFAULT_METRONOME }, 'fields'),
+  progression: onEmpty({ chords: [], bpm: DEFAULT_BPM, beats: DEFAULT_CHORD_BEATS }, 'fields'),
+};
 
 // Allowed values per persisted field (audit W9-18: only types were checked,
 // so e.g. instrument 'banjo' or themeMode 'purple' passed straight through).
@@ -188,7 +203,7 @@ export const useAppStore = create<AppState>()(
       name: 'music-theory-app',
       version: 6,
       // Another tab's settings are never written over (A1): only the fields this tab changed.
-      storage: createJSONStorage(() => tabSafeStorage('music-theory-app', (): TabStore => useAppStore)),
+      storage: createJSONStorage(() => tabSafeStorage('music-theory-app', (): TabStore => useAppStore, SETTINGS_MERGE_RULE)),
       partialize: (state) => {
         // While a lesson borrows the instrument (lessonInstrument.ts, D-20)
         // the selection on screen is the lesson's; the save keeps Explore's

@@ -114,6 +114,36 @@ describe('another tab of the sheet (A5)', () => {
   });
 });
 
+describe('a browser that reads storage but refuses to save (fix pass, 2026-11-19)', () => {
+  it('the visit\'s answers stay: Copy copies them and Send sends them; it never says there is nothing to send while answers show', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true);
+    const real = Storage.prototype.setItem;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, k: string, v: string) {
+      if (k === SHEET_STORAGE_KEY) throw new DOMException('full', 'QuotaExceededError');
+      return real.call(this, k, v);
+    });
+    load('/test/#new');
+    choose('n1', 'hard');
+    type('#note-n1', 'kept for the visit');
+    choose('n2', 'ok');
+    expect($<HTMLInputElement>('#r-n1-hard').checked).toBe(true);
+    expect($('#progress').textContent).toBe('2 of 8 answered');
+    $('#copy-btn').click();
+    const text = $<HTMLTextAreaElement>('#out').value;
+    expect(text).toContain(`→ ${ui('en').find.hard}\n   kept for the visit`);
+    expect(text).toContain(`→ ${ui('en').find.ok}`);
+    $('#send-btn').click();
+    expect($('#sheet-status').textContent).not.toBe(ui('en').empty);
+    expect(open).toHaveBeenCalledTimes(1);
+    expect(decodeURIComponent((open.mock.calls[0] as [string])[0])).toContain('kept for the visit');
+    // Another tab's event does not wipe the visit's answers either.
+    window.dispatchEvent(new StorageEvent('storage', { key: SHEET_STORAGE_KEY }));
+    $('#copy-btn').click();
+    expect($<HTMLTextAreaElement>('#out').value).toContain('kept for the visit');
+  });
+});
+
 describe('"Send my answers" with nothing answered (A20)', () => {
   for (const lang of ['en', 'pt', 'es'] as const) {
     it(`${lang}: nothing opens; one line says what to do; one answer then opens the form`, () => {

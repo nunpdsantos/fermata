@@ -19,8 +19,10 @@ import type { PersistOptions } from 'zustand/middleware';
 import { tabLine } from './tabSafe';
 import { savedNow } from './tabMerge';
 
+const isObj = (v: unknown) => typeof v === 'object' && v !== null && !Array.isArray(v);
+
 /** A persisted zustand store, as `persist` makes it. */
-type Followed<S> = StoreApi<S> & {
+export type Followed<S> = StoreApi<S> & {
   getInitialState: () => S;
   persist: {
     getOptions: () => Partial<PersistOptions<S, unknown>>;
@@ -33,17 +35,29 @@ type Followed<S> = StoreApi<S> & {
 export function followOtherTabs<S extends object>(name: string, store: Followed<S>, keep: readonly (keyof S)[] = []): () => void {
   const line = tabLine(name);
   if (!line || typeof window === 'undefined') return () => {};
+  line.stop?.(); // once per store: a retried download never follows twice
   const adopt = () => {
     const current = localStorage.getItem(name);
     if (current === line.seen && !line.behind) return;
     const opts = store.persist.getOptions();
-    let version: unknown;
+    let saved: { state?: unknown; version?: unknown } | undefined;
     try {
-      version = current === null ? undefined : (JSON.parse(current) as { version?: unknown }).version;
+      saved = current === null ? undefined : JSON.parse(current);
     } catch {
-      return; // not a save: this tab's next write replaces it, as before
+      saved = undefined;
     }
-    if (typeof version === 'number' && version > (opts.version ?? 0)) return; // a newer Fermatina's save
+    if (current !== null) {
+      const version = saved?.version;
+      if (typeof version === 'number' && version > (opts.version ?? 0)) return; // a newer Fermatina's save
+      // Only a save the store's own guard accepts replaces this tab's memory (fix pass,
+      // 2026-11-19: a broken one turned memory into the defaults). Otherwise memory stays,
+      // as before the fix, and this tab's next write heals the save.
+      const state = typeof version === 'number' && version < (opts.version ?? 0) && opts.migrate ? opts.migrate(saved?.state, version) : saved?.state;
+      if (typeof version !== 'number' || !(line.valid ?? isObj)(state)) {
+        line.behind = true;
+        return;
+      }
+    }
     const merge = opts.merge ?? ((p: unknown, c: S) => ({ ...c, ...(p as object) }));
     const mem = store.getState();
     store.persist.setOptions({

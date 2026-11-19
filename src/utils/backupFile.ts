@@ -51,6 +51,8 @@ export interface ExportReport {
   missing: BackupKey[];
   /** Damaged: the file holds what could be read. */
   partly: BackupKey[];
+  /** Saved by a newer Fermatina: left out. */
+  newer: BackupKey[];
 }
 
 /**
@@ -58,7 +60,7 @@ export interface ExportReport {
  * check before anything is said (A16). Returns what went into it.
  */
 export async function downloadBackup(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportReport> {
-  const { backup, missing, partly } = await buildCheckedBackup(storage);
+  const { backup, missing, partly, newer } = await buildCheckedBackup(storage);
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -66,27 +68,40 @@ export async function downloadBackup(storage: Pick<Storage, 'getItem'> = localSt
   a.download = backupFileName(backup.exportedAt);
   a.click();
   URL.revokeObjectURL(url);
-  return { fileName: a.download, missing, partly };
-}
-
-/** What an export with a damaged part has to say (none for a whole one): the parts left out, then the parts saved as far as they could be read. */
-export function exportWarnings({ missing, partly }: Pick<ExportReport, 'missing' | 'partly'>): string[] {
-  return [
-    ...(missing.length > 0 ? [i18n.t('backupFile.exportedWithout', { count: missing.length, sections: sectionNames(missing) })] : []),
-    ...(partly.length > 0 ? [i18n.t('backupFile.exportedPartly', { count: partly.length, sections: sectionNames(partly) })] : []),
-  ];
+  return { fileName: a.download, missing, partly, newer };
 }
 
 /**
- * Export, then say what happened: "Backup downloaded" only when every part
- * went in whole; otherwise the warnings above. Returns the warnings, for a
- * sheet to show them in place (a toast is drawn under an open sheet).
+ * What an export that is not whole has to say (none for a whole one): the
+ * parts left out as damaged, the parts saved as far as they could be read,
+ * and the parts a newer Fermatina saved (not damaged; this page cannot read them).
  */
-export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<string[]> {
-  const warnings = exportWarnings(await downloadBackup(storage));
+export function exportWarnings({ missing, partly, newer = [] }: Pick<ExportReport, 'missing' | 'partly'> & Partial<Pick<ExportReport, 'newer'>>): string[] {
+  const line = (key: string, parts: BackupKey[]) => (parts.length > 0 ? [i18n.t(key, { count: parts.length, sections: sectionNames(parts) })] : []);
+  return [...line('backupFile.exportedWithout', missing), ...line('backupFile.exportedPartly', partly), ...line('backupFile.exportedNewer', newer)];
+}
+
+/** One sentence the export has for the learner, and how it reads. */
+export interface ExportNote { text: string; tone: 'warning' | 'error' }
+
+/**
+ * Export, then say what happened: "Backup downloaded" only when every part
+ * went in whole; otherwise the warnings above; and if no file could be made,
+ * that. Returns the sentences (none when whole), for a sheet to show them in
+ * place (a toast is drawn under an open sheet).
+ */
+export async function exportAndTell(storage: Pick<Storage, 'getItem'> = localStorage): Promise<ExportNote[]> {
+  let warnings: string[];
+  try {
+    warnings = exportWarnings(await downloadBackup(storage));
+  } catch {
+    const text = i18n.t('backupFile.exportFailed');
+    toast(text, 'error', LONG_TOAST_MS);
+    return [{ text, tone: 'error' }];
+  }
   if (warnings.length === 0) toast(i18n.t('backup.exported'), 'success');
   for (const line of warnings) toast(line, 'warning', LONG_TOAST_MS);
-  return warnings;
+  return warnings.map((text) => ({ text, tone: 'warning' }));
 }
 
 /** The sentence for an import the browser would not save (A15): nothing changed, or which parts now come from the file. */

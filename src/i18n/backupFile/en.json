@@ -5,5 +5,8 @@
   "exportedWithout_one": "Backup downloaded, but without this part, which is damaged in this browser and could not be read: {{sections}}.",
   "exportedWithout_other": "Backup downloaded, but without these parts, which are damaged in this browser and could not be read: {{sections}}.",
   "exportedPartly_one": "Backup downloaded. This part was partly damaged in this browser, and the file holds what could still be read: {{sections}}.",
-  "exportedPartly_other": "Backup downloaded. These parts were partly damaged in this browser, and the file holds what could still be read: {{sections}}."
+  "exportedPartly_other": "Backup downloaded. These parts were partly damaged in this browser, and the file holds what could still be read: {{sections}}.",
+  "exportedNewer_one": "Backup downloaded, but without this part, which a newer version of Fermatina saved and this page cannot read: {{sections}}.",
+  "exportedNewer_other": "Backup downloaded, but without these parts, which a newer version of Fermatina saved and this page cannot read: {{sections}}.",
+  "exportFailed": "The backup file could not be made. Your data in this browser is unchanged."
 }

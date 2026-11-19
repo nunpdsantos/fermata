@@ -15,7 +15,8 @@ import {
 } from '../services/spacedRepetition';
 import { RETIRED_EXERCISE_IDS } from './retiredExerciseIds';
 import { tabSafeStorage, type TabStore } from './tabSafe';
-import type { Rule } from './tabMerge';
+import { followSoon } from './tabFollow';
+import { mergeBy, onEmpty, type Rule } from './tabMerge';
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -105,20 +106,37 @@ export function retireChangedExerciseScores(progress: CurriculumProgress, fromVe
 }
 
 /**
- * Two tabs' progress, written together (audit A1): ticks, completions,
- * unlocks and exemptions are sets (each tab's additions and removals apply);
- * a module's attempts add up, its last attempt is the later one and "passed"
- * stays passed; a score or a review schedule is the latest tab's.
+ * Two tabs' progress, written together (audit A1; fix pass 2026-11-19): ticks,
+ * completions, unlocks and exemptions are sets (each tab's additions and
+ * removals apply); a module's result adds this tab's attempts, keeps the later
+ * last attempt, and "passed" stays passed; a score or a review schedule is the
+ * latest tab's. A module result the save no longer has (a reset, an import
+ * without it) holds only this tab's changes since its base, on a new result
+ * (`passed: false` unless passed since: the guard needs it), never its older
+ * scores. And the store's own invariant holds after any merge: a review
+ * schedule only for a completed module (it would otherwise come up for review).
  */
-export const PROGRESS_MERGE_RULE: Rule = {
+const PROGRESS_FIELDS: Rule = {
   progress: {
     completedModules: 'set',
     moduleProgress: { '*': 'set' },
     exemptedModules: 'set',
     unlockedLevels: 'set',
-    exerciseResults: { '*': { scores: { '*': 'atomic' }, totalAttempts: 'sum', lastAttemptAt: 'max', passed: 'or' } },
+    exerciseResults: {
+      '*': onEmpty({ scores: {}, totalAttempts: 0, lastAttemptAt: 0, passed: false }, { scores: { '*': 'atomic' }, totalAttempts: 'sum', lastAttemptAt: 'max', passed: 'or' }),
+    },
     reviewSchedules: { '*': 'atomic' },
   },
+};
+
+export const PROGRESS_MERGE_RULE: Rule = (base, mine, theirs) => {
+  const out = mergeBy(PROGRESS_FIELDS, base, mine, theirs) as { progress?: Partial<CurriculumProgress> } | undefined;
+  const p = out?.progress;
+  if (p && isPlainObject(p.reviewSchedules)) {
+    const done = new Set(isStringArray(p.completedModules) ? p.completedModules : []);
+    p.reviewSchedules = Object.fromEntries(Object.entries(p.reviewSchedules).filter(([id]) => done.has(id)));
+  }
+  return out;
 };
 
 interface ProgressStore {
@@ -287,7 +305,7 @@ export const useProgressStore = create<ProgressStore>()(
     {
       name: 'music-theory-progress',
       version: PROGRESS_STORE_VERSION,
-      storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', (): TabStore => useProgressStore, PROGRESS_MERGE_RULE)),
+      storage: createJSONStorage(() => tabSafeStorage('music-theory-progress', (): TabStore => useProgressStore, PROGRESS_MERGE_RULE, isValidPersistedProgress)),
       partialize: (state) => ({ progress: state.progress }),
       // Migrate from old format (raw CurriculumProgress) to wrapped { progress },
       // then retire the per-exercise scores of exercises that changed since
@@ -311,7 +329,7 @@ export const useProgressStore = create<ProgressStore>()(
 );
 
 // Another tab's progress is never written over, and this tab shows it as it is saved (A1).
-void import('./tabSync').then((m) => m.followOtherTabs('music-theory-progress', useProgressStore));
+followSoon('music-theory-progress', useProgressStore);
 
 /** The pre-W4a migration: any older saved shape → { progress } (defaults when unusable). */
 function migrateShape(persisted: unknown, version: number): { progress: CurriculumProgress } {

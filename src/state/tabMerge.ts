@@ -1,47 +1,46 @@
 /**
  * Saving with more than one tab open: the merging write (audit A1,
- * 2026-11-18). Not needed until another tab (or a direct write: an import, a
- * reset) has changed a save since this tab last read or wrote it, so it is
- * not in the entry bundle: state/tabSafe.ts loads it at once and hands it
- * those writes. It imports nothing at run time (its chunk needs no other).
+ * 2026-11-18; fix pass 2026-11-19). It runs when another tab (or a direct
+ * write: an import, a reset) has changed a save since this tab last read or
+ * wrote it. It is in the entry bundle with state/tabSafe.ts: a learner's
+ * saved work never depends on a second download.
  *
- * 1. The write (`mergeWrite`): only THIS tab's changes since `base` are
- *    written on top of what is saved now, by the store's rules (2). A tab
- *    that changed nothing writes nothing. Nothing comes back from the dead:
- *    a save that was removed (Reset app data) counts as the store's
- *    defaults, so only this tab's new change goes on them; an imported one
- *    is merged into the same way; a save in an OLDER version (an older tab
- *    wrote it) is first migrated with the store's own migration; a save in a
- *    NEWER version (another tab runs a newer Fermatina, which already
- *    migrated it) is never written over — this tab's change is dropped
- *    instead (that tab shows "Reload to finish updating" once the new
- *    version took over). A tab woken from the background with old memory is
- *    covered by the same rule: its first write sees that the save changed.
+ * 1. The write (`mergeWrite`): only THIS tab's changes since `base` (its last
+ *    read or write) are written on top of what is saved now, by the store's
+ *    rules (2). A tab that changed nothing writes nothing. A save that was
+ *    removed (Reset app data) counts as the store's defaults; an imported one
+ *    is what is saved; a save in an OLDER version (an older tab wrote it) is
+ *    first migrated with the store's own migration; a save in a NEWER version
+ *    (another tab runs a newer Fermatina, which already migrated it) is never
+ *    written over — this tab's change is dropped instead (that tab shows
+ *    "Reload to finish updating" once the new version took over); a save the
+ *    store's own guard throws away whole (broken, hand-edited) is replaced by
+ *    this tab's memory, as before the fix. A tab woken from the background
+ *    with old memory is covered by the same rule.
  *
- * 2. The rules (`mergeBy`, a store's `Rule`; without one, as for the
- *    settings, each top-level field this tab changed wins and every other
- *    field is kept): a node this tab did not change keeps the other tab's
- *    value; a node only this tab changed takes this tab's; where both changed
- *    the same node, its rule decides — lists of ids are sets (both tabs'
- *    additions and removals apply: a task ticked in each tab stays ticked),
- *    counters add both tabs' increments, "passed" stays passed, a best stays
- *    the best, and anything else takes this tab's (its latest action).
+ * 2. The rules (`mergeBy`, a store's `Rule`): a node this tab did not change
+ *    keeps the saved value; a node only this tab changed takes this tab's;
+ *    where both changed it, its rule decides — lists of ids are sets (both
+ *    tabs' additions and removals apply), counters add this tab's increment,
+ *    "passed" stays passed, a best stays the best, a record merges field by
+ *    field, anything else takes this tab's value (its latest action). A
+ *    record the save no longer has (a reset, an import without it) gets ONLY
+ *    this tab's changes since its base — new leaves, counters by their
+ *    increment, "passed" only if passed since — on the record's empty form
+ *    (`onEmpty`) where the store needs one, never this tab's older values:
+ *    nothing comes back from the dead in a record this tab touches either.
+ *    Without a rule (the settings' default, 'fields'), every record merges
+ *    field by field.
  */
 import type { TabLine } from './tabSafe';
 
-function isObj(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null && !Array.isArray(v);
-}
+/** How a node merges (2 above). */
+export type Rule = 'set' | 'sum' | 'max' | 'or' | 'atomic' | 'fields' | { [key: string]: Rule } | ((b: unknown, m: unknown, t: unknown) => unknown);
+type Store = ReturnType<NonNullable<TabLine['store']>>;
 
-/** What a store's memory (or, with `initial`, its defaults) saves, as plain JSON. */
-export function savedNow(store: ReturnType<NonNullable<TabLine['store']>>, initial?: boolean): unknown {
-  const partialize = store.persist.getOptions().partialize ?? ((s: unknown) => s);
-  return JSON.parse(JSON.stringify(partialize((initial ? store.getInitialState() : store.getState()) as never)) ?? 'null');
-}
-
-/** Equal as saved (both sides come from the same code, so key order matches). */
-export const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
-
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+const strings = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const parse = (raw: string | null | undefined): unknown => {
   try {
     return raw == null ? undefined : JSON.parse(raw);
@@ -50,13 +49,25 @@ const parse = (raw: string | null | undefined): unknown => {
   }
 };
 
-/** How a node merges (2 above); 'fields' = each top-level field this tab changed wins (the default). */
-export type Rule = 'set' | 'sum' | 'max' | 'or' | 'atomic' | 'fields' | { [key: string]: Rule } | ((b: unknown, m: unknown, t: unknown) => unknown);
+/** Equal as saved (both sides come from the same code, so key order matches). */
+export const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
-const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
-const strings = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+const asSaved = (store: Store, state: unknown): unknown =>
+  JSON.parse(JSON.stringify((store.persist.getOptions().partialize ?? ((s: unknown) => s))(state as never)) ?? 'null');
 
-/** Three-way merge of one node: base (this tab's last saved), mine (now), theirs (in storage now). */
+/** What a store's memory (or, with `initial`, its defaults) saves, as plain JSON. */
+export const savedNow = (store: Store, initial?: boolean): unknown => asSaved(store, initial ? store.getInitialState() : store.getState());
+
+/** A saved state as the store reads it: through its own guard (`merge`) from its defaults, then saved again. */
+export function readThrough(store: Store, state: unknown): unknown {
+  const merge = store.persist.getOptions().merge;
+  return asSaved(store, merge ? merge(state, store.getInitialState() as never) : { ...store.getInitialState(), ...(state as object) });
+}
+
+/** A record the save no longer has merges this tab's changes into `empty` (its form when new), never into nothing. */
+export const onEmpty = (empty: Record<string, unknown>, rule: Rule): Rule => (b, m, t) => mergeBy(rule, b, m, isObj(t) ? t : empty);
+
+/** Three-way merge of one node: base (this tab's last saved), mine (now), theirs (saved now). */
 export function mergeBy(rule: Rule, b: unknown, m: unknown, t: unknown): unknown {
   if (same(b, m)) return t;
   if (same(b, t)) return m;
@@ -70,17 +81,19 @@ export function mergeBy(rule: Rule, b: unknown, m: unknown, t: unknown): unknown
     for (const x of now) if (!was.includes(x) && !out.includes(x)) out.push(x);
     return out;
   }
-  // Counters only grow, except by a reset here, which wins (never below what this tab now says).
+  // A counter adds this tab's increment; one that went down here was reset here, and the reset wins.
   if (rule === 'sum') return num(m) < num(b) ? m : num(t) + num(m) - num(b);
   if (rule === 'max') return Math.max(num(t), num(m));
   if (rule === 'or') return t === true || m === true;
-  if (!isObj(m) || !isObj(t)) return m;
-  if (rule === 'fields') rule = {};
+  if (!isObj(m)) return m;
+  // A record: field by field, on what is saved — an empty record when the save no longer has it.
+  const r: Record<string, Rule> = rule === 'fields' ? { '*': 'fields' } : rule;
+  const to = isObj(t) ? t : {};
   const bo = isObj(b) ? b : {};
   const out: Record<string, unknown> = {};
-  for (const k of new Set([...Object.keys(t), ...Object.keys(m), ...Object.keys(bo)])) {
+  for (const k of new Set([...Object.keys(to), ...Object.keys(m), ...Object.keys(bo)])) {
     // Own keys only: a saved id such as "constructor" must never pick up an inherited member as its rule.
-    const v = mergeBy((Object.hasOwn(rule, k) ? rule[k] : rule['*']) ?? 'atomic', bo[k], m[k], t[k]);
+    const v = mergeBy((Object.hasOwn(r, k) ? r[k] : r['*']) ?? 'atomic', bo[k], m[k], to[k]);
     if (v !== undefined) out[k] = v;
   }
   return out;
@@ -89,19 +102,16 @@ export function mergeBy(rule: Rule, b: unknown, m: unknown, t: unknown): unknown
 /**
  * This tab's saved state at its last read or write. After a write it is what
  * was written. After a read with no write since, it is what the store's
- * memory saved then: the read through the store's own guard (its `merge`),
- * as hydration did — so what that guard cleaned or added never counts as
- * this tab's change. (A save the store migrated on reading was written at
- * once, so a fresh line is never in an older version.)
+ * memory saved then: the read through the store's own guard, as hydration
+ * did — so what that guard cleaned or added never counts as this tab's
+ * change. (A save the store migrated on reading was written at once, so a
+ * fresh line is never in an older version.)
  */
 export function baseOf(line: TabLine): unknown {
   if (line.base !== undefined) return line.base;
   const read = (parse(line.seen) as { state?: unknown } | undefined)?.state;
   const store = line.store?.();
-  if (!line.fresh || !store) return read;
-  const opts = store.persist.getOptions();
-  const merged = opts.merge ? opts.merge(read, store.getInitialState() as never) : { ...store.getInitialState(), ...(read as object) };
-  return JSON.parse(JSON.stringify((opts.partialize ?? ((s: unknown) => s))(merged as never)) ?? 'null');
+  return line.fresh && store ? readThrough(store, read) : read;
 }
 
 /** A write after the save changed underneath (1 above). */
@@ -115,7 +125,7 @@ export function mergeWrite(name: string, line: TabLine, raw: string): void {
   const opts = store?.persist.getOptions();
   let theirs: unknown;
   if (current === null) {
-    // Removed since (Reset app data): this tab's change goes on the defaults, never its old data.
+    // Removed since (Reset app data): this tab's changes go on the defaults, never its old data.
     theirs = store ? savedNow(store, true) : {};
   } else if (!isObj(env) || typeof env.version !== 'number') {
     theirs = undefined; // not a save at all: written over, as before
@@ -123,6 +133,8 @@ export function mergeWrite(name: string, line: TabLine, raw: string): void {
     return; // a newer Fermatina migrated this save: never write older data over it
   } else {
     theirs = env.version < mine.version && opts?.migrate ? opts.migrate(env.state, env.version) : env.state;
+    // A save the store's own guard throws away whole is no one's work: this tab's memory heals it, as before.
+    if (!(line.valid ?? isObj)(theirs)) theirs = undefined;
   }
   const out = theirs === undefined ? raw : JSON.stringify({ state: mergeBy(line.merge ?? 'fields', base, mine.state, theirs), version: mine.version });
   localStorage.setItem(name, out);

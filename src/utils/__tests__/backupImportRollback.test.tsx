@@ -107,6 +107,19 @@ describe('applyBackup: all sections or none', () => {
     expect(localStorage.getItem('fermata-fingering-v1')).toBeNull();
   });
 
+  it('a key that did not exist, WRITTEN and then rolled back, is removed again (not left holding the backup\'s version)', () => {
+    localStorage.removeItem('music-theory-progress'); // the second key in the file: written before the failure
+    const before = allStorage();
+    storageFullAt(3);
+    const spy = vi.mocked(Storage.prototype.setItem);
+    const result = applyBackup(BACKUP, localStorage);
+    // Known positive: the progress section really was written before the third write failed.
+    expect(spy.mock.calls.some(([k, v]) => k === 'music-theory-progress' && v === JSON.stringify(NEW['music-theory-progress']))).toBe(true);
+    expect(result).toMatchObject({ ok: false, restored: true });
+    expect(localStorage.getItem('music-theory-progress')).toBeNull();
+    expect(allStorage()).toEqual(before);
+  });
+
   it('when even putting the old data back fails, it says which sections could not be put back', () => {
     storageFullAt(3, ['music-theory-app']);
     const result = applyBackup(BACKUP, localStorage);
