@@ -4,7 +4,8 @@
  * when `startLinkPending` (state/startGate.ts) says the boot address needs it,
  * and renders once it has run.
  *
- *  - A19: the public pages' doors link to `/?start=new|player|theory&lang=…`.
+ *  - A19: the public pages' "I know some theory" door links to `/?start=theory&lang=…` (the other two
+ *    doors lead to reading pages: the owner's ruling of 19 November 2026); the app takes all three doors.
  *    On a visit that owes the start screen, the door is taken here through
  *    the start screen's own `chooseStartDoor`, exactly as a tap would (the
  *    same saved fields, the same first screen), before anything renders, so
