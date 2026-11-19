@@ -16,7 +16,7 @@
  *    never the token, and still runs the token; the public lesson page prints
  *    the same words.
  */
-import { describe, expect, it, vi, afterEach } from 'vitest';
+import { describe, expect, it, vi, afterEach, beforeAll } from 'vitest';
 import { render, screen, cleanup, within, fireEvent, act } from '@testing-library/react';
 import i18n from '../../i18n';
 import { queryLabel } from '../queryLabel';
@@ -77,6 +77,12 @@ function exploreName(query: string, lang: Lang, solfege = false): string | null 
   }
 }
 
+// A Try This panel a test opens draws a staff once its chunk arrives, and the staff's hook observes its own
+// size (`useStaffNotation`). jsdom has no ResizeObserver: under load the chunk landed inside a test and the
+// whole run ended on an unhandled ReferenceError although every test had passed (seen 19 November 2026).
+beforeAll(() => {
+  (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver ??= class { observe() {} unobserve() {} disconnect() {} };
+});
 afterEach(() => {
   cleanup();
   useAppStore.setState({ showSolfege: false });
