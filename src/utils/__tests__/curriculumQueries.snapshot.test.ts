@@ -166,7 +166,7 @@ function collect(): Record<string, Row> {
  * old one was wrong (`fixtures/curriculumQueries.changes.json`): `field` →
  * [old, new]. 129 are A2 — a lesson's "key of X" (no quality), which opened X
  * natural minor when the learner was in a minor key, and now opens X major,
- * the key the lesson means. 68 are the review of b94d761, item 7 — a lesson's
+ * the key the lesson means. 67 are the review of b94d761, item 7 — a lesson's
  * slash chord whose bass is a chord tone (C/E, C/G, G7/F, Dm7/C, Db/F …),
  * which opened with the bass doubled under a root-position chord and the
  * Voicing chip on Root, and now opens as that inversion (C/E = C major,

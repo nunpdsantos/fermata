@@ -10,7 +10,7 @@
  * over the selected row's `--card-hover`, 4.00:1), so Scale takes the orange
  * degree hue, the one nearest the accent. Every label is ≥ 4.5:1 on the row
  * at rest (`--bg`) and selected (`--card-hover`), day and night
- * (`searchBadgeContrast.test.ts` computes it from index.css).
+ * (`searchBadgeContrast.test.tsx` computes it from index.css).
  */
 import { DEGREE_COLORS, inkFor } from '../../design/tokens/colors.ts';
 import type { SearchResultType } from './quickSearchResults.ts';
