@@ -89,10 +89,13 @@ describe('inversions: the requested bass is the lowest note of the default shape
     // two strings across a lower one), so 10 dim7 third inversions now say so;
     // a bass may now replace the same note higher up (the D-shape E7 → E7/G♯
     // 4 x 2 4 3 x), which gives the eight maj7 first inversions a grip.
+    // Re-measured 2026-11-19 (music audit 2, M45), 51 of 276: the lowest
+    // string may now be re-fretted to the bass when the note it drops sounds
+    // elsewhere (the open Em7 0 2 0 0 0 0 → Em7/G 3 2 0 0 0 0), which gives
+    // every diminished first inversion and Em7/G a grip.
     const tally = misses.reduce<Record<string, number>>((acc, m) => ({ ...acc, [m]: (acc[m] ?? 0) + 1 }), {});
     expect(tally).toEqual({
-      'minor7 inv 1': 10,
-      'diminished inv 1': 11,
+      'minor7 inv 1': 9,
       'half_diminished7 inv 1': 11,
       'half_diminished7 inv 2': 11,
       'diminished7 inv 2': 10,

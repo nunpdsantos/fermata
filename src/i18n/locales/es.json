@@ -620,7 +620,6 @@
     "chordFret": "Traste {{fret}}",
     "chordShapesStandardOnly": "Las formas de acordes solo existen para la afinaci\u00f3n est\u00e1ndar. Se muestran las notas del acorde en todo el m\u00e1stil.",
     "noChordShape": "No hay una forma tocable para este acorde. Se muestran sus notas en todo el m\u00e1stil.",
-    "tuningGapNotice": "En esta afinaci\u00f3n dos cuerdas est\u00e1n a una quinta, as\u00ed que una nota entre ellas queda fuera del alcance de la mano en esta posici\u00f3n.",
     "bassNotice": "Ninguna forma aqu\u00ed tiene {{bass}} en el bajo, as\u00ed que las formas se muestran tal cual."
   },
   "difficulty": {

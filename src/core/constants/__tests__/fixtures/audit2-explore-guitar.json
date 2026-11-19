@@ -1,0 +1,3281 @@
+{
+"source": "fermata-programme/notes/2026-11-18-audit/evidence/explore-guitar (music audit 2, release 15 6de6c0e)",
+"rootFingerConflicts": [
+{
+"root": "C",
+"quality": "minor6",
+"shape": 2,
+"frets": "8-10-10-8-10-8",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "C",
+"quality": "dominant7",
+"shape": 4,
+"frets": "x-x-10-12-11-12",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "C",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-10-11-10-11",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "C",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-3-5-3-5-5",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "C",
+"quality": "major13",
+"shape": 1,
+"frets": "x-3-5-4-5-5",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "C",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "8-10-10-10-8-10",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "Db",
+"quality": "minor6",
+"shape": 2,
+"frets": "9-11-11-9-11-9",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "Db",
+"quality": "dominant7",
+"shape": 3,
+"frets": "x-x-11-13-12-13",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "Db",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-11-12-11-12",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "Db",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-4-6-4-6-6",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "Db",
+"quality": "major13",
+"shape": 1,
+"frets": "x-4-6-5-6-6",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "Db",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "9-11-11-11-9-11",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "D",
+"quality": "minor6",
+"shape": 2,
+"frets": "10-12-12-10-12-10",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "D",
+"quality": "dominant7",
+"shape": 4,
+"frets": "x-x-12-14-13-14",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "D",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-12-13-12-13",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "D",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-5-7-5-7-7",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "D",
+"quality": "major13",
+"shape": 1,
+"frets": "x-5-7-6-7-7",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "D",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "10-12-12-12-10-12",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "Eb",
+"quality": "minor6",
+"shape": 2,
+"frets": "11-13-13-11-13-11",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "Eb",
+"quality": "dominant7",
+"shape": 1,
+"frets": "x-x-1-3-2-3",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "Eb",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-1-2-1-2",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "Eb",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-6-8-6-8-8",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "Eb",
+"quality": "major13",
+"shape": 1,
+"frets": "x-6-8-7-8-8",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "Eb",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "11-13-13-13-11-13",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "E",
+"quality": "minor6",
+"shape": 3,
+"frets": "12-14-14-12-14-12",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "E",
+"quality": "dominant7",
+"shape": 2,
+"frets": "x-x-2-4-3-4",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "E",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-2-3-2-3",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "E",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-7-9-7-9-9",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "E",
+"quality": "major13",
+"shape": 1,
+"frets": "x-7-9-8-9-9",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "E",
+"quality": "sus2sus4",
+"shape": 2,
+"frets": "12-14-14-14-12-14",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "F",
+"quality": "minor6",
+"shape": 1,
+"frets": "1-3-3-1-3-1",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "F",
+"quality": "dominant7",
+"shape": 2,
+"frets": "x-x-3-5-4-5",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "F",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-3-4-3-4",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "F",
+"quality": "dominant13",
+"shape": 2,
+"frets": "x-8-10-8-10-10",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "F",
+"quality": "major13",
+"shape": 2,
+"frets": "x-8-10-9-10-10",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "F",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "1-3-3-3-1-3",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "F#",
+"quality": "minor6",
+"shape": 1,
+"frets": "2-4-4-2-4-2",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "F#",
+"quality": "dominant7",
+"shape": 2,
+"frets": "x-x-4-6-5-6",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "F#",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-4-5-4-5",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "F#",
+"quality": "dominant13",
+"shape": 2,
+"frets": "x-9-11-9-11-11",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "F#",
+"quality": "major13",
+"shape": 2,
+"frets": "x-9-11-10-11-11",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "F#",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "2-4-4-4-2-4",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "G",
+"quality": "minor6",
+"shape": 1,
+"frets": "3-5-5-3-5-3",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "G",
+"quality": "dominant7",
+"shape": 3,
+"frets": "x-x-5-7-6-7",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "G",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-5-6-5-6",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "G",
+"quality": "dominant13",
+"shape": 2,
+"frets": "x-10-12-10-12-12",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "G",
+"quality": "major13",
+"shape": 2,
+"frets": "x-10-12-11-12-12",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "G",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "3-5-5-5-3-5",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "Ab",
+"quality": "minor6",
+"shape": 1,
+"frets": "4-6-6-4-6-4",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "Ab",
+"quality": "dominant7",
+"shape": 2,
+"frets": "x-x-6-8-7-8",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "Ab",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-6-7-6-7",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "Ab",
+"quality": "dominant13",
+"shape": 2,
+"frets": "x-11-13-11-13-13",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "Ab",
+"quality": "major13",
+"shape": 2,
+"frets": "x-11-13-12-13-13",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "Ab",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "4-6-6-6-4-6",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "A",
+"quality": "minor6",
+"shape": 2,
+"frets": "5-7-7-5-7-5",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "A",
+"quality": "dominant7",
+"shape": 3,
+"frets": "x-x-7-9-8-9",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "A",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-7-8-7-8",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "A",
+"quality": "dominant13",
+"shape": 2,
+"frets": "x-12-14-12-14-14",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "A",
+"quality": "major13",
+"shape": 2,
+"frets": "x-12-14-13-14-14",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "A",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "5-7-7-7-5-7",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "Bb",
+"quality": "minor6",
+"shape": 2,
+"frets": "6-8-8-6-8-6",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "Bb",
+"quality": "dominant7",
+"shape": 3,
+"frets": "x-x-8-10-9-10",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "Bb",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-8-9-8-9",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "Bb",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-1-3-1-3-3",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "Bb",
+"quality": "major13",
+"shape": 1,
+"frets": "x-1-3-2-3-3",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "Bb",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "6-8-8-8-6-8",
+"fingers": "1-2-3-4-1-4"
+},
+{
+"root": "B",
+"quality": "minor6",
+"shape": 2,
+"frets": "7-9-9-7-9-7",
+"fingers": "1-3-4-1-4-1"
+},
+{
+"root": "B",
+"quality": "dominant7",
+"shape": 3,
+"frets": "x-x-9-11-10-11",
+"fingers": "x-x-1-3-2-3"
+},
+{
+"root": "B",
+"quality": "diminished7",
+"shape": 1,
+"frets": "x-x-9-10-9-10",
+"fingers": "x-x-1-2-1-2"
+},
+{
+"root": "B",
+"quality": "dominant13",
+"shape": 1,
+"frets": "x-2-4-2-4-4",
+"fingers": "x-1-3-1-3-4"
+},
+{
+"root": "B",
+"quality": "major13",
+"shape": 1,
+"frets": "x-2-4-3-4-4",
+"fingers": "x-1-3-2-3-4"
+},
+{
+"root": "B",
+"quality": "sus2sus4",
+"shape": 1,
+"frets": "7-9-9-9-7-9",
+"fingers": "1-2-3-4-1-4"
+}
+],
+"firstGripMissesBass": [
+{
+"mode": "inversion",
+"root": "C",
+"quality": "minor11",
+"capo": 3,
+"inversion": 1,
+"bass": "",
+"frets": "11-3-8-8-3-3",
+"expectedBass": "Eb"
+},
+{
+"mode": "inversion",
+"root": "C",
+"quality": "minor11",
+"capo": 3,
+"inversion": 4,
+"bass": "",
+"frets": "10-3-8-8-3-3",
+"expectedBass": "D"
+},
+{
+"mode": "inversion",
+"root": "C",
+"quality": "major9sharp11",
+"capo": 9,
+"inversion": 2,
+"bass": "",
+"frets": "15-9-9-12-13-12",
+"expectedBass": "G"
+},
+{
+"mode": "inversion",
+"root": "C",
+"quality": "major7sharp11",
+"capo": 9,
+"inversion": 2,
+"bass": "",
+"frets": "15-9-9-12-13-12",
+"expectedBass": "G"
+},
+{
+"mode": "inversion",
+"root": "Db",
+"quality": "minor11",
+"capo": 4,
+"inversion": 1,
+"bass": "",
+"frets": "12-4-9-9-4-4",
+"expectedBass": "E"
+},
+{
+"mode": "inversion",
+"root": "Db",
+"quality": "minor11",
+"capo": 4,
+"inversion": 4,
+"bass": "",
+"frets": "11-4-9-9-4-4",
+"expectedBass": "Eb"
+},
+{
+"mode": "inversion",
+"root": "D",
+"quality": "minor11",
+"capo": 5,
+"inversion": 1,
+"bass": "",
+"frets": "13-5-10-10-5-5",
+"expectedBass": "F"
+},
+{
+"mode": "inversion",
+"root": "D",
+"quality": "minor11",
+"capo": 5,
+"inversion": 4,
+"bass": "",
+"frets": "12-5-10-10-5-5",
+"expectedBass": "E"
+},
+{
+"mode": "inversion",
+"root": "Eb",
+"quality": "minor11",
+"capo": 6,
+"inversion": 1,
+"bass": "",
+"frets": "14-6-11-11-6-6",
+"expectedBass": "F#"
+},
+{
+"mode": "inversion",
+"root": "Eb",
+"quality": "minor11",
+"capo": 6,
+"inversion": 4,
+"bass": "",
+"frets": "13-6-11-11-6-6",
+"expectedBass": "F"
+},
+{
+"mode": "inversion",
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 0,
+"inversion": 2,
+"bass": "",
+"frets": "6-0-0-3-4-3",
+"expectedBass": "Bb"
+},
+{
+"mode": "inversion",
+"root": "Eb",
+"quality": "major7sharp11",
+"capo": 0,
+"inversion": 2,
+"bass": "",
+"frets": "6-0-0-3-4-3",
+"expectedBass": "Bb"
+},
+{
+"mode": "inversion",
+"root": "E",
+"quality": "minor11",
+"capo": 7,
+"inversion": 1,
+"bass": "",
+"frets": "15-7-12-12-7-7",
+"expectedBass": "G"
+},
+{
+"mode": "inversion",
+"root": "E",
+"quality": "minor11",
+"capo": 7,
+"inversion": 4,
+"bass": "",
+"frets": "14-7-12-12-7-7",
+"expectedBass": "F#"
+},
+{
+"mode": "inversion",
+"root": "E",
+"quality": "major9sharp11",
+"capo": 1,
+"inversion": 2,
+"bass": "",
+"frets": "7-1-1-4-5-4",
+"expectedBass": "B"
+},
+{
+"mode": "inversion",
+"root": "E",
+"quality": "major7sharp11",
+"capo": 1,
+"inversion": 2,
+"bass": "",
+"frets": "7-1-1-4-5-4",
+"expectedBass": "B"
+},
+{
+"mode": "inversion",
+"root": "F",
+"quality": "minor11",
+"capo": 8,
+"inversion": 4,
+"bass": "",
+"frets": "15-8-13-13-8-8",
+"expectedBass": "G"
+},
+{
+"mode": "inversion",
+"root": "F",
+"quality": "major9sharp11",
+"capo": 2,
+"inversion": 2,
+"bass": "",
+"frets": "8-2-2-5-6-5",
+"expectedBass": "C"
+},
+{
+"mode": "inversion",
+"root": "F",
+"quality": "major7sharp11",
+"capo": 2,
+"inversion": 2,
+"bass": "",
+"frets": "8-2-2-5-6-5",
+"expectedBass": "C"
+},
+{
+"mode": "inversion",
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 3,
+"inversion": 2,
+"bass": "",
+"frets": "9-3-3-6-7-6",
+"expectedBass": "Db"
+},
+{
+"mode": "inversion",
+"root": "F#",
+"quality": "major7sharp11",
+"capo": 3,
+"inversion": 2,
+"bass": "",
+"frets": "9-3-3-6-7-6",
+"expectedBass": "Db"
+},
+{
+"mode": "inversion",
+"root": "G",
+"quality": "major9sharp11",
+"capo": 4,
+"inversion": 2,
+"bass": "",
+"frets": "10-4-4-7-8-7",
+"expectedBass": "D"
+},
+{
+"mode": "inversion",
+"root": "G",
+"quality": "major7sharp11",
+"capo": 4,
+"inversion": 2,
+"bass": "",
+"frets": "10-4-4-7-8-7",
+"expectedBass": "D"
+},
+{
+"mode": "inversion",
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 5,
+"inversion": 2,
+"bass": "",
+"frets": "11-5-5-8-9-8",
+"expectedBass": "Eb"
+},
+{
+"mode": "inversion",
+"root": "Ab",
+"quality": "major7sharp11",
+"capo": 5,
+"inversion": 2,
+"bass": "",
+"frets": "11-5-5-8-9-8",
+"expectedBass": "Eb"
+},
+{
+"mode": "inversion",
+"root": "A",
+"quality": "minor11",
+"capo": 0,
+"inversion": 1,
+"bass": "",
+"frets": "8-0-5-5-0-0",
+"expectedBass": "C"
+},
+{
+"mode": "inversion",
+"root": "A",
+"quality": "minor11",
+"capo": 0,
+"inversion": 4,
+"bass": "",
+"frets": "7-0-5-5-0-0",
+"expectedBass": "B"
+},
+{
+"mode": "inversion",
+"root": "A",
+"quality": "major9sharp11",
+"capo": 6,
+"inversion": 2,
+"bass": "",
+"frets": "12-6-6-9-10-9",
+"expectedBass": "E"
+},
+{
+"mode": "inversion",
+"root": "A",
+"quality": "major7sharp11",
+"capo": 6,
+"inversion": 2,
+"bass": "",
+"frets": "12-6-6-9-10-9",
+"expectedBass": "E"
+},
+{
+"mode": "inversion",
+"root": "Bb",
+"quality": "minor11",
+"capo": 1,
+"inversion": 1,
+"bass": "",
+"frets": "9-1-6-6-1-1",
+"expectedBass": "Db"
+},
+{
+"mode": "inversion",
+"root": "Bb",
+"quality": "minor11",
+"capo": 1,
+"inversion": 4,
+"bass": "",
+"frets": "8-1-6-6-1-1",
+"expectedBass": "C"
+},
+{
+"mode": "inversion",
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 7,
+"inversion": 2,
+"bass": "",
+"frets": "13-7-7-10-11-10",
+"expectedBass": "F"
+},
+{
+"mode": "inversion",
+"root": "Bb",
+"quality": "major7sharp11",
+"capo": 7,
+"inversion": 2,
+"bass": "",
+"frets": "13-7-7-10-11-10",
+"expectedBass": "F"
+},
+{
+"mode": "inversion",
+"root": "B",
+"quality": "minor11",
+"capo": 2,
+"inversion": 1,
+"bass": "",
+"frets": "10-2-7-7-2-2",
+"expectedBass": "D"
+},
+{
+"mode": "inversion",
+"root": "B",
+"quality": "minor11",
+"capo": 2,
+"inversion": 4,
+"bass": "",
+"frets": "9-2-7-7-2-2",
+"expectedBass": "Db"
+},
+{
+"mode": "inversion",
+"root": "B",
+"quality": "major9sharp11",
+"capo": 8,
+"inversion": 2,
+"bass": "",
+"frets": "14-8-8-11-12-11",
+"expectedBass": "F#"
+},
+{
+"mode": "inversion",
+"root": "B",
+"quality": "major7sharp11",
+"capo": 8,
+"inversion": 2,
+"bass": "",
+"frets": "14-8-8-11-12-11",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "dominant7sharp9",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-1-5-5-x",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "minor11",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-8-8-3-3",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "minor11",
+"capo": 3,
+"inversion": 0,
+"bass": "D",
+"frets": "10-3-8-8-3-3",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "minor11",
+"capo": 3,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-3-8-8-3-3",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "major9sharp11",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-9-12-13-12",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "major7sharp11",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-9-12-13-12",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "dominant7sharp5sharp9",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-1-5-5-4",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "C",
+"quality": "dominant7flat5sharp9",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-10-11-11-11",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "dominant7sharp9",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-2-6-6-x",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "minor11",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-9-9-4-4",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "minor11",
+"capo": 4,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-4-9-9-4-4",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "minor11",
+"capo": 4,
+"inversion": 0,
+"bass": "E",
+"frets": "12-4-9-9-4-4",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "dominant7sharp5sharp9",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-2-6-6-5",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "Db",
+"quality": "dominant7flat5sharp9",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-11-12-12-12",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "dominant7sharp9",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-3-7-7-x",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "minor11",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-10-10-5-5",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "minor11",
+"capo": 5,
+"inversion": 0,
+"bass": "E",
+"frets": "12-5-10-10-5-5",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "minor11",
+"capo": 5,
+"inversion": 0,
+"bass": "F",
+"frets": "13-5-10-10-5-5",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "dominant7sharp5sharp9",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-3-7-7-6",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "D",
+"quality": "dominant7flat5sharp9",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-12-13-13-13",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "dominant7sharp9",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-4-8-8-x",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "minor11",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-11-11-6-6",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "minor11",
+"capo": 6,
+"inversion": 0,
+"bass": "F",
+"frets": "13-6-11-11-6-6",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "minor11",
+"capo": 6,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-6-11-11-6-6",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-0-3-4-3",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 0,
+"inversion": 0,
+"bass": "B",
+"frets": "7-0-0-0-4-x",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "add11",
+"capo": 0,
+"inversion": 0,
+"bass": "A",
+"frets": "x-x-7-0-4-4",
+"expectedBass": "A"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "major7sharp11",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-0-3-4-3",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "major7sharp11",
+"capo": 0,
+"inversion": 0,
+"bass": "B",
+"frets": "7-0-0-0-4-x",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "Eb",
+"quality": "dominant7sharp5sharp9",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-4-8-8-7",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "dominant7sharp9",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-5-9-9-x",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "minor11",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-12-12-7-7",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "minor11",
+"capo": 7,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-7-12-12-7-7",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "minor11",
+"capo": 7,
+"inversion": 0,
+"bass": "G",
+"frets": "15-7-12-12-7-7",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "major9sharp11",
+"capo": 1,
+"inversion": 0,
+"bass": "C",
+"frets": "8-1-1-1-5-x",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "major9sharp11",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-1-4-5-4",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "add11",
+"capo": 1,
+"inversion": 0,
+"bass": "Bb",
+"frets": "x-x-8-1-5-5",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "major7sharp11",
+"capo": 1,
+"inversion": 0,
+"bass": "C",
+"frets": "8-1-1-1-5-x",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "major7sharp11",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-1-4-5-4",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "E",
+"quality": "dominant7sharp5sharp9",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-5-9-9-8",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "dominant7sharp9",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-6-10-10-x",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "minor11",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-13-13-8-8",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "minor11",
+"capo": 8,
+"inversion": 0,
+"bass": "G",
+"frets": "15-8-13-13-8-8",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "major9sharp11",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-2-5-6-5",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "major9sharp11",
+"capo": 2,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-2-2-2-6-x",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "add11",
+"capo": 2,
+"inversion": 0,
+"bass": "B",
+"frets": "x-x-9-2-6-6",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "major7sharp11",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-2-5-6-5",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "major7sharp11",
+"capo": 2,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-2-2-2-6-x",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "dominant7sharp5sharp9",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-6-10-10-9",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "F",
+"quality": "dominant7flat5sharp9",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-3-4-4-4",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "dominant7sharp9",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-7-11-11-x",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "minor11",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-14-14-9-9",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-3-6-7-6",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 3,
+"inversion": 0,
+"bass": "D",
+"frets": "10-3-3-3-7-x",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "add11",
+"capo": 3,
+"inversion": 0,
+"bass": "C",
+"frets": "x-x-10-3-7-7",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "major7sharp11",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-3-6-7-6",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "major7sharp11",
+"capo": 3,
+"inversion": 0,
+"bass": "D",
+"frets": "10-3-3-3-7-x",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "dominant7sharp5sharp9",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-7-11-11-10",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "F#",
+"quality": "dominant7flat5sharp9",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-4-5-5-5",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "dominant7sharp9",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-8-12-12-x",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "major9sharp11",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-4-7-8-7",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "major9sharp11",
+"capo": 4,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-4-4-4-8-x",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "add11",
+"capo": 4,
+"inversion": 0,
+"bass": "Db",
+"frets": "x-x-11-4-8-8",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "major7sharp11",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-4-7-8-7",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "major7sharp11",
+"capo": 4,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-4-4-4-8-x",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "dominant7sharp5sharp9",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-8-12-12-11",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "G",
+"quality": "dominant7flat5sharp9",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-5-6-6-6",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "dominant7sharp9",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-9-13-13-x",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-5-8-9-8",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 5,
+"inversion": 0,
+"bass": "E",
+"frets": "12-5-5-5-9-x",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "add11",
+"capo": 5,
+"inversion": 0,
+"bass": "D",
+"frets": "x-x-12-5-9-9",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "major7sharp11",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-5-8-9-8",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "major7sharp11",
+"capo": 5,
+"inversion": 0,
+"bass": "E",
+"frets": "12-5-5-5-9-x",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "dominant7sharp5sharp9",
+"capo": 9,
+"inversion": 0,
+"bass": "G",
+"frets": "15-9-9-13-13-12",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "Ab",
+"quality": "dominant7flat5sharp9",
+"capo": 3,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-3-6-7-7-7",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "minor11",
+"capo": 0,
+"inversion": 0,
+"bass": "C",
+"frets": "8-0-5-5-0-0",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "minor11",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-5-5-0-0",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "minor11",
+"capo": 0,
+"inversion": 0,
+"bass": "B",
+"frets": "7-0-5-5-0-0",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "major9sharp11",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-6-9-10-9",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "major9sharp11",
+"capo": 6,
+"inversion": 0,
+"bass": "F",
+"frets": "13-6-6-6-10-x",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "add11",
+"capo": 6,
+"inversion": 0,
+"bass": "Eb",
+"frets": "x-x-13-6-10-10",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "major7sharp11",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-6-9-10-9",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "major7sharp11",
+"capo": 6,
+"inversion": 0,
+"bass": "F",
+"frets": "13-6-6-6-10-x",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "A",
+"quality": "dominant7flat5sharp9",
+"capo": 4,
+"inversion": 0,
+"bass": "D",
+"frets": "10-4-7-8-8-8",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "minor11",
+"capo": 1,
+"inversion": 0,
+"bass": "C",
+"frets": "8-1-6-6-1-1",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "minor11",
+"capo": 1,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-1-6-6-1-1",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "minor11",
+"capo": 1,
+"inversion": 0,
+"bass": "B",
+"frets": "7-1-6-6-1-1",
+"expectedBass": "B"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-7-10-11-10",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 7,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-7-7-7-11-x",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "add11",
+"capo": 7,
+"inversion": 0,
+"bass": "E",
+"frets": "x-x-14-7-11-11",
+"expectedBass": "E"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "major7sharp11",
+"capo": 7,
+"inversion": 0,
+"bass": "F",
+"frets": "13-7-7-10-11-10",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "major7sharp11",
+"capo": 7,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-7-7-7-11-x",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "Bb",
+"quality": "dominant7flat5sharp9",
+"capo": 5,
+"inversion": 0,
+"bass": "Eb",
+"frets": "11-5-8-9-9-9",
+"expectedBass": "Eb"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "dominant7sharp9",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-0-4-4-x",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "minor11",
+"capo": 2,
+"inversion": 0,
+"bass": "C",
+"frets": "8-2-7-7-2-2",
+"expectedBass": "C"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "minor11",
+"capo": 2,
+"inversion": 0,
+"bass": "Db",
+"frets": "9-2-7-7-2-2",
+"expectedBass": "Db"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "minor11",
+"capo": 2,
+"inversion": 0,
+"bass": "D",
+"frets": "10-2-7-7-2-2",
+"expectedBass": "D"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "major9sharp11",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-8-11-12-11",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "major9sharp11",
+"capo": 8,
+"inversion": 0,
+"bass": "G",
+"frets": "15-8-8-8-12-x",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "add11",
+"capo": 8,
+"inversion": 0,
+"bass": "F",
+"frets": "x-x-15-8-12-12",
+"expectedBass": "F"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "major7sharp11",
+"capo": 8,
+"inversion": 0,
+"bass": "F#",
+"frets": "14-8-8-11-12-11",
+"expectedBass": "F#"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "major7sharp11",
+"capo": 8,
+"inversion": 0,
+"bass": "G",
+"frets": "15-8-8-8-12-x",
+"expectedBass": "G"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "dominant7sharp5sharp9",
+"capo": 0,
+"inversion": 0,
+"bass": "Bb",
+"frets": "6-0-0-4-4-3",
+"expectedBass": "Bb"
+},
+{
+"mode": "slash",
+"root": "B",
+"quality": "dominant7flat5sharp9",
+"capo": 6,
+"inversion": 0,
+"bass": "E",
+"frets": "12-6-9-10-10-10",
+"expectedBass": "E"
+}
+],
+"firstGripOmitsNamedTone": [
+{
+"root": "C",
+"quality": "dominant9",
+"capo": 9,
+"frets": "x-x-10-12-11-12",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major11",
+"capo": 0,
+"frets": "x-3-5-4-3-3",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "C",
+"quality": "major11",
+"capo": 1,
+"frets": "x-3-5-4-3-3",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "C",
+"quality": "major11",
+"capo": 2,
+"frets": "x-3-5-4-3-3",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "C",
+"quality": "dominant9sharp11",
+"capo": 1,
+"frets": "x-3-2-3-1-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "dominant9sharp11",
+"capo": 3,
+"frets": "x-3-4-3-5-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "dominant9sharp11",
+"capo": 5,
+"frets": "8-7-5-5-7-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "dominant9sharp11",
+"capo": 8,
+"frets": "8-9-8-9-8-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "2-2-2-x-1-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "x-3-4-4-5-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "8-7-4-4-8-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "8-7-5-5-7-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "8-7-x-x-7-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "8-9-9-9-8-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "C",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "12-9-9-12-13-12",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major11",
+"capo": 0,
+"frets": "x-4-6-5-4-4",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Db",
+"quality": "major11",
+"capo": 1,
+"frets": "x-4-6-5-4-4",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Db",
+"quality": "major11",
+"capo": 2,
+"frets": "x-4-6-5-4-4",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Db",
+"quality": "major11",
+"capo": 3,
+"frets": "x-4-6-5-4-4",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Db",
+"quality": "dominant9sharp11",
+"capo": 0,
+"frets": "x-4-3-0-0-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "dominant9sharp11",
+"capo": 2,
+"frets": "x-4-3-4-2-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "dominant9sharp11",
+"capo": 4,
+"frets": "x-4-5-4-6-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "dominant9sharp11",
+"capo": 6,
+"frets": "9-8-6-6-8-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "dominant9sharp11",
+"capo": 9,
+"frets": "9-10-9-10-9-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "3-3-3-x-2-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "x-4-5-5-6-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "9-8-5-5-9-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "9-8-6-6-8-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "9-8-x-x-8-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Db",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "9-10-10-10-9-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major11",
+"capo": 0,
+"frets": "x-5-7-6-5-5",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "D",
+"quality": "major11",
+"capo": 1,
+"frets": "x-5-7-6-5-5",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "D",
+"quality": "major11",
+"capo": 2,
+"frets": "x-5-7-6-5-5",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "D",
+"quality": "major11",
+"capo": 3,
+"frets": "x-5-7-6-5-5",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "D",
+"quality": "major11",
+"capo": 4,
+"frets": "x-5-7-6-5-5",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "D",
+"quality": "dominant9sharp11",
+"capo": 1,
+"frets": "x-5-4-1-1-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "dominant9sharp11",
+"capo": 3,
+"frets": "x-5-4-5-3-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "dominant9sharp11",
+"capo": 5,
+"frets": "x-5-6-5-7-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "dominant9sharp11",
+"capo": 7,
+"frets": "10-9-7-7-9-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "4-4-4-x-3-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "x-5-6-6-7-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "10-9-6-6-10-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "10-9-7-7-9-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "D",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "10-9-x-x-9-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "dominant9",
+"capo": 0,
+"frets": "x-x-1-3-2-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 0,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 1,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 2,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 3,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 4,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "major11",
+"capo": 5,
+"frets": "x-6-8-7-6-6",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Eb",
+"quality": "dominant9sharp11",
+"capo": 2,
+"frets": "x-6-5-2-2-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "dominant9sharp11",
+"capo": 4,
+"frets": "x-6-5-6-4-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "dominant9sharp11",
+"capo": 6,
+"frets": "x-6-7-6-8-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "dominant9sharp11",
+"capo": 8,
+"frets": "11-10-8-8-10-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "3-0-0-3-4-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "5-5-5-x-4-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "x-6-7-7-8-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "11-10-7-7-11-11",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "11-10-8-8-10-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Eb",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "11-10-x-x-10-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "dominant9",
+"capo": 1,
+"frets": "x-x-2-4-3-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 0,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 1,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 2,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 3,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 4,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 5,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "major11",
+"capo": 6,
+"frets": "x-7-9-8-7-7",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "E",
+"quality": "dominant9sharp11",
+"capo": 0,
+"frets": "0-1-0-1-0-0",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "dominant9sharp11",
+"capo": 3,
+"frets": "x-7-6-3-3-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "dominant9sharp11",
+"capo": 5,
+"frets": "x-7-6-7-5-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "dominant9sharp11",
+"capo": 7,
+"frets": "x-7-8-7-9-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "dominant9sharp11",
+"capo": 9,
+"frets": "12-11-9-9-11-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "0-1-1-1-0-0",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "4-1-1-4-5-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "6-6-6-x-5-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "x-7-8-8-9-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "12-11-8-8-12-12",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "E",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "12-11-9-9-11-11",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "dominant9",
+"capo": 2,
+"frets": "x-x-3-5-4-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 1,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 2,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 3,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 4,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 5,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 6,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "major11",
+"capo": 7,
+"frets": "x-8-10-9-8-8",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F",
+"quality": "dominant9sharp11",
+"capo": 1,
+"frets": "1-2-1-2-1-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "dominant9sharp11",
+"capo": 4,
+"frets": "x-8-7-4-4-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "dominant9sharp11",
+"capo": 6,
+"frets": "x-8-7-8-6-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "dominant9sharp11",
+"capo": 8,
+"frets": "x-8-9-8-10-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "1-2-2-2-1-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "5-2-2-5-6-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "7-7-7-x-6-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "x-8-9-9-10-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "13-12-9-9-13-13",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "dominant9",
+"capo": 3,
+"frets": "x-x-4-6-5-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 2,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 3,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 4,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 5,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 6,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 7,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "major11",
+"capo": 8,
+"frets": "x-9-11-10-9-9",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "F#",
+"quality": "dominant9sharp11",
+"capo": 2,
+"frets": "2-3-2-3-2-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "dominant9sharp11",
+"capo": 5,
+"frets": "x-9-8-5-5-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "dominant9sharp11",
+"capo": 7,
+"frets": "x-9-8-9-7-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "dominant9sharp11",
+"capo": 9,
+"frets": "x-9-10-9-11-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "2-1-x-x-1-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "2-3-3-3-2-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "6-3-3-6-7-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "8-8-8-x-7-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "F#",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "x-9-10-10-11-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "dominant9",
+"capo": 4,
+"frets": "x-x-5-7-6-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 3,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 4,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 5,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 6,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 7,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 8,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "major11",
+"capo": 9,
+"frets": "x-10-12-11-10-10",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "G",
+"quality": "dominant9sharp11",
+"capo": 0,
+"frets": "3-2-0-0-2-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "dominant9sharp11",
+"capo": 3,
+"frets": "3-4-3-4-3-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "dominant9sharp11",
+"capo": 6,
+"frets": "x-10-9-6-6-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "dominant9sharp11",
+"capo": 8,
+"frets": "x-10-9-10-8-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "3-2-0-0-2-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "3-2-x-x-2-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "3-4-4-4-3-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "7-4-4-7-8-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "G",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "9-9-9-x-8-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "dominant9",
+"capo": 5,
+"frets": "x-x-6-8-7-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 4,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 5,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 6,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 7,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 8,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "major11",
+"capo": 9,
+"frets": "x-11-13-12-11-11",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Ab",
+"quality": "dominant9sharp11",
+"capo": 1,
+"frets": "4-3-1-1-3-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "dominant9sharp11",
+"capo": 4,
+"frets": "4-5-4-5-4-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "dominant9sharp11",
+"capo": 7,
+"frets": "x-11-10-7-7-11",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "dominant9sharp11",
+"capo": 9,
+"frets": "x-11-10-11-9-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "4-3-0-0-4-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "4-3-1-1-3-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "4-3-x-x-3-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "4-5-5-5-4-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "8-5-5-8-9-8",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Ab",
+"quality": "major9sharp11",
+"capo": 9,
+"frets": "10-10-10-x-9-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "dominant9",
+"capo": 6,
+"frets": "x-x-7-9-8-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major11",
+"capo": 5,
+"frets": "x-12-14-13-12-12",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "A",
+"quality": "major11",
+"capo": 6,
+"frets": "x-12-14-13-12-12",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "A",
+"quality": "major11",
+"capo": 7,
+"frets": "x-12-14-13-12-12",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "A",
+"quality": "major11",
+"capo": 8,
+"frets": "x-12-14-13-12-12",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "A",
+"quality": "major11",
+"capo": 9,
+"frets": "x-12-14-13-12-12",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "A",
+"quality": "dominant9sharp11",
+"capo": 0,
+"frets": "x-0-1-0-2-0",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "dominant9sharp11",
+"capo": 2,
+"frets": "5-4-2-2-4-3",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "dominant9sharp11",
+"capo": 5,
+"frets": "5-6-5-6-5-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "dominant9sharp11",
+"capo": 8,
+"frets": "x-12-11-8-8-12",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "x-0-1-1-2-0",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "5-4-1-1-5-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "5-4-2-2-4-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "5-4-x-x-4-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "5-6-6-6-5-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "A",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "9-6-6-9-10-9",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "dominant9",
+"capo": 7,
+"frets": "x-x-8-10-9-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major11",
+"capo": 0,
+"frets": "x-1-3-2-1-1",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Bb",
+"quality": "major11",
+"capo": 6,
+"frets": "x-13-15-14-13-13",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Bb",
+"quality": "major11",
+"capo": 7,
+"frets": "x-13-15-14-13-13",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Bb",
+"quality": "major11",
+"capo": 8,
+"frets": "x-13-15-14-13-13",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Bb",
+"quality": "major11",
+"capo": 9,
+"frets": "x-13-15-14-13-13",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "Bb",
+"quality": "dominant9sharp11",
+"capo": 1,
+"frets": "x-1-2-1-3-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "dominant9sharp11",
+"capo": 3,
+"frets": "6-5-3-3-5-4",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "dominant9sharp11",
+"capo": 6,
+"frets": "6-7-6-7-6-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "dominant9sharp11",
+"capo": 9,
+"frets": "x-13-12-9-9-13",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 1,
+"frets": "x-1-2-2-3-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "6-5-2-2-6-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "6-5-3-3-5-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "6-5-x-x-5-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 6,
+"frets": "6-7-7-7-6-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "Bb",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "10-7-7-10-11-10",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "dominant9",
+"capo": 8,
+"frets": "x-x-9-11-10-11",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major11",
+"capo": 0,
+"frets": "x-2-4-3-2-2",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "B",
+"quality": "major11",
+"capo": 1,
+"frets": "x-2-4-3-2-2",
+"evidence": "absent offsets above root 5"
+},
+{
+"root": "B",
+"quality": "dominant9sharp11",
+"capo": 0,
+"frets": "x-2-1-2-0-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "dominant9sharp11",
+"capo": 2,
+"frets": "x-2-3-2-4-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "dominant9sharp11",
+"capo": 4,
+"frets": "7-6-4-4-6-5",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "dominant9sharp11",
+"capo": 7,
+"frets": "7-8-7-8-7-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 0,
+"frets": "1-1-1-x-0-1",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 2,
+"frets": "x-2-3-3-4-2",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 3,
+"frets": "7-6-3-3-7-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 4,
+"frets": "7-6-4-4-6-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 5,
+"frets": "7-6-x-x-6-6",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 7,
+"frets": "7-8-8-8-7-7",
+"evidence": "absent offsets above root 2"
+},
+{
+"root": "B",
+"quality": "major9sharp11",
+"capo": 8,
+"frets": "11-8-8-11-12-11",
+"evidence": "absent offsets above root 2"
+}
+]
+}

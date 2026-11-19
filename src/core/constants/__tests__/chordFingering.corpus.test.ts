@@ -180,11 +180,23 @@ describe('grips that used to overreach are still offered, fingered within reach 
   const fingers = (e: Placed) => e.shape.strings.map((p) => (p.fret === null ? null : p.finger === 'bar' ? 1 : p.finger));
   const offered = (root: string, quality: ChordQuality, inversion: number) =>
     chordShapesForCapo(buildChord(toNote(root), quality), inversion, 0).shapes.map((e) => ({ frets: frets(e), fingers: fingers(e) }));
+  // Since music audit 2 (M43) a grip is offered under the inversion whose bass
+  // it has: x 0 0 4 4 1 has the open A, B7♭5♯9's seventh, lowest — the third
+  // inversion.
   it('a generated voicing: B7♭5♯9 x 0 0 4 4 1, the ring finger on G and B (the middle finger cannot reach three frets)', () => {
-    expect(offered('B', 'dominant7flat5sharp9', 0)).toContainEqual({ frets: [null, 0, 0, 4, 4, 1], fingers: [null, 0, 0, 3, 3, 1] });
+    expect(offered('B', 'dominant7flat5sharp9', 3)).toContainEqual({ frets: [null, 0, 0, 4, 4, 1], fingers: [null, 0, 0, 3, 3, 1] });
   });
+  // D♭m11 / C♭ is now offered x 2 2 x 2 2, a generated grip that already has
+  // C♭ lowest (the generator searches with the 11th required since M44), so the
+  // board no longer builds 7 4 4 4 4 0; the bass-adder's choice of finger is
+  // pinned on the same root-position grip, x 4 4 4 4 0, directly.
   it('a bass added below a barre: D♭m11 / C♭ 7 4 4 4 4 0 and F7♯9 / G♯ 4 0 1 1 1 1, the ring finger on the bass', () => {
-    expect(offered('Db', 'minor11', 3)[0]).toEqual({ frets: [7, 4, 4, 4, 4, 0], fingers: [3, 1, 1, 1, 1, 0] });
+    const dbm11 = buildChord(toNote('Db'), 'minor11');
+    const barre = chordShapesForCapo(dbm11, 0, 0).shapes.filter((e) => frets(e).join() === [null, 4, 4, 4, 4, 0].join());
+    expect(barre).toHaveLength(1);
+    const added = arrangeShapesForBass(barre, dbm11, 11, 'Cb');
+    expect(added.bassMatched).toBe(true);
+    expect({ frets: frets(added.shapes[0]), fingers: fingers(added.shapes[0]) }).toEqual({ frets: [7, 4, 4, 4, 4, 0], fingers: [3, 1, 1, 1, 1, 0] });
     expect(offered('F', 'dominant7sharp9', 4)[0]).toEqual({ frets: [4, 0, 1, 1, 1, 1], fingers: [3, 0, 1, 1, 1, 1] });
   });
 });
@@ -319,7 +331,9 @@ describe('muting strings below the bass checks the PITCH left lowest (review of 
 describe('every grip the board can offer (Q1, the whole class; the review of a611beb)', () => {
   it('walks every request: 21 spellings x every quality x every inversion, slash chords, capo 0-9', () => {
     expect(walk.requests).toBeGreaterThan(50_000);
-    expect(walk.grips).toBeGreaterThan(200_000);
+    // 120,866 since music audit 2 (M43: only grips with the asked bass are
+    // offered when one has it); 217,659 before, with the bound at 200,000.
+    expect(walk.grips).toBeGreaterThan(110_000);
   });
   it('can be played', () => {
     expect([...new Set(walk.fingering)]).toEqual([]);

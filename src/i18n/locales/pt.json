@@ -620,7 +620,6 @@
     "chordFret": "Traste {{fret}}",
     "chordShapesStandardOnly": "As formas de acordes só existem para a afinação padrão. Mostram-se as notas do acorde em todo o braço.",
     "noChordShape": "Não há uma forma tocável para este acorde. Mostram-se as suas notas em todo o braço.",
-    "tuningGapNotice": "Nesta afinação há duas cordas a uma quinta de distância, por isso uma nota entre elas fica fora do alcance da mão nesta posição.",
     "bassNotice": "Nenhuma forma aqui tem {{bass}} no baixo, por isso as formas aparecem tal como são."
   },
   "difficulty": {

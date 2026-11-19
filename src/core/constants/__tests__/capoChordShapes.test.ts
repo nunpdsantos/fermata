@@ -17,6 +17,7 @@ import {
   getChordShapes,
   getChordShapesWithFallback,
   isPlayableChordShape,
+  lowestSoundingPitchClass,
   sortShapesForDefault,
   type ChordShape,
 } from '../guitarChordShapes';
@@ -182,19 +183,23 @@ describe('inversions and the bass with a capo', () => {
 });
 
 describe('no capo: exactly the pipeline the board always used', () => {
+  // Since music audit 2 (M43, 2026-11-19) root position asks for the root, and
+  // when some grip has the asked bass lowest only those are offered (a triad
+  // has no named extension, so M44's second pass never applies here).
   it('all 24 triads, root position and both inversions', () => {
     for (const chord of TRIADS) {
       for (const inversion of [0, 1, 2]) {
-        const bass = inversion > 0 ? chord.notes[inversion % chord.notes.length] : null;
-        const expected = arrangeShapesForBass(
+        const bass = chord.notes[inversion % chord.notes.length];
+        const arranged = arrangeShapesForBass(
           sortShapesForDefault(getChordShapesWithFallback(chord)),
           chord,
-          bass ? pcOf(bass) : null,
-          bass ? `${bass.natural}${bass.accidental}` : '',
+          pcOf(bass),
+          inversion > 0 ? `${bass.natural}${bass.accidental}` : '',
         );
+        const expected = arranged.bassMatched ? arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass)) : arranged.shapes;
         const got = chordShapesForCapo(chord, inversion, 0);
-        expect(got.shapes).toEqual(expected.shapes);
-        expect(got.bassMatched).toBe(expected.bassMatched);
+        expect(got.shapes).toEqual(expected);
+        expect(got.bassMatched).toBe(arranged.bassMatched);
         expect(got.shapeChord).toBe(chord);
       }
     }

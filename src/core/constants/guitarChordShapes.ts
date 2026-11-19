@@ -3022,9 +3022,56 @@ function shapeHasOnlyChordTones(
 //     chord's identity and would make the voicing read as a plainer chord if
 //     dropped.
 //
-// Omitting the 5th, or 9/11/13 COLOUR tones on a crowded chord, is acceptable
-// and is NOT in this set. Returns the required pitch classes for `chord`.
-function essentialPitchClasses(chord: Chord): Set<number> {
+//   • the tone that NAMES the chord (music audit 2, M44, 2026-11-19): the 9 of
+//     a ninth chord, the 11 of an eleventh, the 13 of a thirteenth, the 5 of
+//     a power chord, the 2 of sus2sus4 — and every tone a name spells out
+//     besides its number (9♯11: the 9 and the ♯11; 9sus4: the 9 and the 4;
+//     13♭9: the 13 and the ♭9). A "Cmaj11" that leaves out F is Cmaj9.
+//
+// Omitting the 5th, and the tones between the 7th and the named one (the 9 of
+// an eleventh chord; the 9 and 11 of a thirteenth), is acceptable and is NOT
+// in this set: "composers and arrangers often omit chord tones from extended
+// harmonies, but generally retain at least the root, third, seventh, and
+// whatever note is the furthest extension in the chord … the fifth and notes
+// between the seventh and the highest factor can be omitted" (Toby Rush,
+// Music Theory for the 21st-Century Classroom, ch. 6,
+// https://tobyrush.com/book/text/ftt/ftt06.html); on the guitar, a 13th
+// "usually drop[s] the eleventh … the ninth and the fifth can be omitted as
+// well" (B. Milewski, Guitar Decomposed 9: Extension Chords,
+// https://bartoszmilewski.com/2020/06/11/guitar-decomposed-9-extension-chords/).
+// The 3rd of a dominant / major eleventh is already out of its formula
+// (chords.ts: it clashes with the 11th — Ithaca College, Theory III, Extended
+// Tertian Chords: "omit the third and the ninth", https://musictech.ithaca.edu/
+// MusicTech/ICTheory/OnlineText/TheoryIII/Unit4/ExTer/ExTer.html).
+// Returns the required pitch classes for `chord`.
+/**
+ * The tone each name carries (M44, above): its number, and any tone it spells
+ * out besides (9♯11: the 9; 13♭9: the 13 — their ♯11 / ♭9 are defining
+ * already). Offsets above the root.
+ */
+const NAMED_TONES: Partial<Record<ChordQuality, number[]>> = {
+  power: [7],
+  sus2sus4: [2],
+  dominant9: [2],
+  major9: [2],
+  minor9: [2],
+  dominant9sus4: [2],
+  dominant11: [5],
+  major11: [5],
+  minor11: [5],
+  dominant13: [9],
+  major13: [9],
+  minor13: [9],
+  dominant13flat9: [9],
+  dominant9sharp11: [2],
+  major9sharp11: [2],
+};
+
+/**
+ * `named` false leaves the named tones out: the set of release 16, used only
+ * where no grip that sounds them can give the asked bass (`chordShapesForCapo`).
+ */
+function essentialPitchClasses(chord: Chord, named = true): Set<number> {
   const rootPc = getPitchClass(chord.root);
   const quality = chord.quality;
   const formula = CHORD_FORMULAS[quality as ChordQuality];
@@ -3087,8 +3134,29 @@ function essentialPitchClasses(chord: Chord): Set<number> {
     dominant7flat13: [8],
   };
   for (const off of DEFINING[quality as ChordQuality] ?? []) add(off);
+  if (named) for (const off of NAMED_TONES[quality as ChordQuality] ?? []) add(off);
 
   return required;
+}
+
+/**
+ * The chord's essential tones (above) that a grip leaves out, spelled as the
+ * chord spells them, in the chord's order — empty when it sounds them all.
+ * The board names them under such a grip (M44: where no grip within a hand's
+ * reach sounds the tone that names the chord, the screen says which it
+ * leaves out). The grip's frets are the real ones (a capo already in them),
+ * so `chord` is the chord as it sounds, never the one below the capo.
+ */
+export function gripLeavesOut(entry: { shape: ChordShape; baseFret: number }, chord: Chord): Note[] {
+  const sounding = new Set(shapeSoundingPitchClasses(entry.shape, entry.baseFret));
+  const essentials = essentialPitchClasses(chord);
+  const seen = new Set<number>();
+  return chord.notes.filter((n) => {
+    const pc = getPitchClass(n);
+    if (!essentials.has(pc) || sounding.has(pc) || seen.has(pc)) return false;
+    seen.add(pc);
+    return true;
+  });
 }
 
 /** Does this shape sound every essential tone of the chord? */
@@ -3117,12 +3185,25 @@ function shapeHasEssentials(
 //   3. Else any wrong-note-free shape (hand first, then generated) — a complete
 //      voicing isn't physically reachable, so the best no-wrong-note grip wins.
 //   4. Else (only if generation fails) empty.
+// Every tier is chosen among the grips that fit below `maxFret` (with a capo
+// on fret c the hand has 15 − c frets above it): at capo 9 the hand-made C5
+// grips, moved up, were all past fret 15, so the board offered nothing while
+// the generator had one (music audit 2, M45: strings 4 and 3 at frets 10 and
+// 12). At the default, 15, the tiers are exactly as before.
 export function getChordShapesWithFallback(
-  chord: Chord
+  chord: Chord,
+  maxFret: number = GUITAR_MAX_FRET
+): { shape: ChordShape; baseFret: number }[] {
+  return shapesWithFallback(chord, maxFret, essentialPitchClasses(chord));
+}
+
+function shapesWithFallback(
+  chord: Chord,
+  maxFret: number,
+  essentials: Set<number>
 ): { shape: ChordShape; baseFret: number }[] {
   // The chord's pitch-class set — the contract every rendered shape must honour.
   const chordPitchClasses = new Set(chord.notes.map((n) => getPitchClass(n)));
-  const essentials = essentialPitchClasses(chord);
 
   // For algorithmically-built chords (those with algorithmicDisplayName),
   // their quality may not match a library key, so skip the hand library.
@@ -3131,7 +3212,7 @@ export function getChordShapesWithFallback(
   const handClean = isAlgorithmicChord
     ? []
     : getChordShapes(chord.root, chord.quality).filter(
-        (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
+        (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e, maxFret)
       );
 
   // 1. Hand shapes that are also essentials-complete.
@@ -3143,7 +3224,7 @@ export function getChordShapesWithFallback(
   //    enforce no-wrong-note on the result.
   try {
     const genEssential = generateAlgorithmicShapes(chord, undefined, essentials).filter(
-      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
+      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e, maxFret)
     );
     if (genEssential.length > 0) return genEssential;
   } catch (e) {
@@ -3154,7 +3235,7 @@ export function getChordShapesWithFallback(
   let genClean: { shape: ChordShape; baseFret: number }[] = [];
   try {
     genClean = generateAlgorithmicShapes(chord).filter(
-      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e)
+      (e) => shapeHasOnlyChordTones(e, chordPitchClasses) && isPlayableChordShape(e, maxFret)
     );
   } catch (e) {
     console.warn('Failed to generate algorithmic chord shapes:', e);
@@ -3246,12 +3327,18 @@ export function lowestSoundingPitchClass(entry: { shape: ChordShape; baseFret: n
  * (4 x 2 4 3 x): that string is muted and its finger takes the bass. Only a
  * note under its own finger, never one under the index barre.
  */
+/** A grip's name with the bass it was given ("E shape/G"); root position adds nothing. */
+function withBassName(shape: ChordShape, bassLabel: string): Pick<ChordShape, 'name' | 'shortName'> {
+  return bassLabel ? { name: `${shape.name} / ${bassLabel}`, shortName: `${shape.shortName}/${bassLabel}` } : { name: shape.name, shortName: shape.shortName };
+}
+
 function withBassAdded(
   entry: { shape: ChordShape; baseFret: number },
   bassPc: number,
-  bassLabel: string
+  bassLabel: string,
+  maxFret: number
 ): { shape: ChordShape; baseFret: number } | null {
-  const added = addBassBelow(entry, bassPc, bassLabel);
+  const added = addBassBelow(entry, bassPc, bassLabel, maxFret);
   if (added) return added;
   const { shape, baseFret } = entry;
   for (let i = 5; i >= 0; i--) {
@@ -3259,7 +3346,7 @@ function withBassAdded(
     if (p.fret === null || p.finger === 'bar' || !p.finger) continue;
     if ((OPEN_STRING_PITCH_CLASSES[i] + baseFret + p.fret + 120) % 12 !== bassPc) continue;
     const strings = shape.strings.map((q, j) => (j === i ? { fret: null, finger: 0 as FingerNumber } : { ...q })) as ChordShape['strings'];
-    const freed = addBassBelow({ shape: { ...shape, strings }, baseFret }, bassPc, bassLabel);
+    const freed = addBassBelow({ shape: { ...shape, strings }, baseFret }, bassPc, bassLabel, maxFret);
     if (freed) return freed;
   }
   return null;
@@ -3268,7 +3355,8 @@ function withBassAdded(
 function addBassBelow(
   entry: { shape: ChordShape; baseFret: number },
   bassPc: number,
-  bassLabel: string
+  bassLabel: string,
+  maxFret: number
 ): { shape: ChordShape; baseFret: number } | null {
   const { shape, baseFret } = entry;
   const lowest = shape.strings.findIndex((p) => p.fret !== null);
@@ -3282,7 +3370,7 @@ function addBassBelow(
   for (let s = lowest - 1; s >= 0; s--) {
     const first = (bassPc - OPEN_STRING_PITCH_CLASSES[s] + 12) % 12;
     for (const fret of [first, first + 12]) {
-      if (fret > GUITAR_MAX_FRET) continue;
+      if (fret > maxFret) continue;
       let finger: FingerNumber = 0;
       if (fret > 0) {
         const all = [...fretted.map((n) => n.abs), fret];
@@ -3304,15 +3392,10 @@ function addBassBelow(
       }
       const strings = shape.strings.map((p) => ({ ...p })) as ChordShape['strings'];
       strings[s] = { fret: fret - baseFret, finger };
-      const extended: ChordShape = {
-        ...shape,
-        name: `${shape.name} / ${bassLabel}`,
-        shortName: `${shape.shortName}/${bassLabel}`,
-        strings,
-      };
+      const extended: ChordShape = { ...shape, ...withBassName(shape, bassLabel), strings };
       const placed = { shape: extended, baseFret };
       // The bass must be what sounds lowest, not only the lowest string.
-      if (isPlayableChordShape(placed) && lowestSoundingPitchClass(placed) === bassPc) return placed;
+      if (isPlayableChordShape(placed, maxFret) && lowestSoundingPitchClass(placed) === bassPc) return placed;
     }
   }
   return null;
@@ -3329,7 +3412,8 @@ function withLowerStringsMuted(
   entry: { shape: ChordShape; baseFret: number },
   bassPc: number,
   required: Set<number>,
-  bassLabel: string
+  bassLabel: string,
+  maxFret: number
 ): { shape: ChordShape; baseFret: number } | null {
   const { shape, baseFret } = entry;
   const idx = shape.strings.findIndex(
@@ -3357,17 +3441,65 @@ function withLowerStringsMuted(
       for (const i of bars) strings[i] = { ...strings[i], finger: 1 };
     }
   }
-  const trimmed: ChordShape = {
-    ...shape,
-    name: `${shape.name} / ${bassLabel}`,
-    shortName: `${shape.shortName}/${bassLabel}`,
-    strings,
-    barreInfo,
-  };
+  const trimmed: ChordShape = { ...shape, ...withBassName(shape, bassLabel), strings, barreInfo };
   if (!barreInfo) delete trimmed.barreInfo;
   const placed = { shape: trimmed, baseFret };
   // The bass string's note must also be the lowest pitch left sounding.
-  return isPlayableChordShape(placed) && lowestSoundingPitchClass(placed) === bassPc ? placed : null;
+  return isPlayableChordShape(placed, maxFret) && lowestSoundingPitchClass(placed) === bassPc ? placed : null;
+}
+
+/**
+ * The bass on the lowest sounding string itself, in place of the note that
+ * string played — the way the open Em7 (0 2 0 0 0 0) becomes Em7/G
+ * (3 2 0 0 0 0): the low E goes, the high E keeps the root (music audit 2,
+ * M45). Kept only when every essential chord tone still sounds, the string
+ * rings open or a free finger takes it (in order along the neck and within
+ * reach of every finger down, as `addBassBelow` chooses), never under the
+ * index barre, and the bass is then the lowest pitch.
+ */
+function withLowestRefretted(
+  entry: { shape: ChordShape; baseFret: number },
+  bassPc: number,
+  required: Set<number>,
+  bassLabel: string,
+  maxFret: number
+): { shape: ChordShape; baseFret: number } | null {
+  const { shape, baseFret } = entry;
+  const s = shape.strings.findIndex((p) => p.fret !== null);
+  if (s < 0 || shape.strings[s].finger === 'bar') return null;
+  const fretted: { abs: number; finger: number }[] = [];
+  shape.strings.forEach((p, i) => {
+    if (i === s || p.fret === null) return;
+    const abs = baseFret + p.fret;
+    if (abs > 0) fretted.push({ abs, finger: p.finger === 'bar' ? 1 : Number(p.finger ?? 0) });
+  });
+  const first = (bassPc - OPEN_STRING_PITCH_CLASSES[s] + 12) % 12;
+  for (const fret of [first, first + 12]) {
+    if (fret > maxFret || fret === baseFret + (shape.strings[s].fret as number)) continue;
+    let finger: FingerNumber = 0;
+    if (fret > 0) {
+      const all = [...fretted.map((n) => n.abs), fret];
+      if (Math.max(...all) - Math.min(...all) > 3) continue;
+      const used = new Set(fretted.map((n) => n.finger));
+      const candidate = ([1, 2, 3, 4] as const).find(
+        (f) =>
+          !used.has(f) &&
+          fretted.every((n) =>
+            n.abs < fret ? n.finger < f && fret - n.abs <= f - n.finger + 1
+              : n.abs > fret ? n.finger > f && n.abs - fret <= n.finger - f + 1
+                : true)
+      );
+      if (candidate === undefined) continue;
+      finger = candidate;
+    }
+    const strings = shape.strings.map((p) => ({ ...p })) as ChordShape['strings'];
+    strings[s] = { fret: fret - baseFret, finger };
+    const placed = { shape: { ...shape, ...withBassName(shape, bassLabel), strings }, baseFret };
+    const sounding = new Set(shapeSoundingPitchClasses(placed.shape, baseFret));
+    if ([...required].some((pc) => !sounding.has(pc))) continue;
+    if (isPlayableChordShape(placed, maxFret) && lowestSoundingPitchClass(placed) === bassPc) return placed;
+  }
+  return null;
 }
 
 /**
@@ -3375,7 +3507,8 @@ function withLowerStringsMuted(
  * (`lowestSoundingPitchClass`, never the lowest string):
  * existing shapes with that bass first (in their given order); else shapes
  * with the strings below a bass-note string muted; else shapes extended with
- * the bass on a free lower string (slash chords). `bassMatched` is false when
+ * the bass on a free lower string (slash chords); else shapes whose lowest
+ * string is re-fretted to the bass (M45). `bassMatched` is false when
  * none of these exists — the shapes are then returned unchanged, so the
  * caller can say so instead of silently ignoring the request.
  */
@@ -3383,22 +3516,25 @@ export function arrangeShapesForBass(
   shapes: { shape: ChordShape; baseFret: number }[],
   chord: Chord,
   bassPc: number | null,
-  bassLabel: string
+  bassLabel: string,
+  { maxFret = GUITAR_MAX_FRET, required = essentialPitchClasses(chord) }: { maxFret?: number; required?: Set<number> } = {}
 ): { shapes: { shape: ChordShape; baseFret: number }[]; bassMatched: boolean } {
   if (bassPc === null) return { shapes, bassMatched: true };
   const matching = shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc);
   if (matching.length > 0) {
     return { shapes: [...matching, ...shapes.filter((e) => !matching.includes(e))], bassMatched: true };
   }
-  const required = essentialPitchClasses(chord);
-  const trimmed = shapes
-    .map((e) => withLowerStringsMuted(e, bassPc, required, bassLabel))
-    .filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
-  if (trimmed.length > 0) return { shapes: [...trimmed, ...shapes], bassMatched: true };
-  const extended = shapes
-    .map((e) => withBassAdded(e, bassPc, bassLabel))
-    .filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
-  if (extended.length > 0) return { shapes: [...extended, ...shapes], bassMatched: true };
+  const tier = (make: (e: { shape: ChordShape; baseFret: number }) => { shape: ChordShape; baseFret: number } | null) =>
+    shapes.map(make).filter((e): e is { shape: ChordShape; baseFret: number } => e !== null);
+  // Each way of giving a grip the bass, in turn; the first that gives any wins.
+  for (const made of [
+    () => tier((e) => withLowerStringsMuted(e, bassPc, required, bassLabel, maxFret)),
+    () => tier((e) => withBassAdded(e, bassPc, bassLabel, maxFret)),
+    () => tier((e) => withLowestRefretted(e, bassPc, required, bassLabel, maxFret)),
+  ]) {
+    const given = made();
+    if (given.length > 0) return { shapes: [...given, ...shapes], bassMatched: true };
+  }
   return { shapes, bassMatched: false };
 }
 
@@ -3455,23 +3591,46 @@ function renameRootAndBass(chord: Chord, root: Note, bass: Note | undefined): st
   return s;
 }
 
-/** The bass a learner asks for: a slash chord's bass, else the inversion's lowest tone, else none. */
-function requestedBassOf(chord: Chord, inversion: number): Note | null {
-  if (chord.bassNote) return chord.bassNote;
-  if (inversion > 0 && chord.notes.length > 0) return chord.notes[inversion % chord.notes.length];
-  return null;
+/**
+ * The bass a learner asks for: a slash chord's bass, else the chosen
+ * inversion's lowest tone — the ROOT in root position (music audit 2, M43:
+ * the inversion chips name a bass for every choice, "Root" included, and the
+ * staff and the sound follow it; C augmented seventh's grip with E lowest
+ * contradicted "Root"). `label` is what a grip given that bass is called
+ * after its shape ("/E"); root position adds none.
+ */
+function askedBassOf(chord: Chord, inversion: number): { note: Note; label: string } {
+  if (chord.bassNote) return { note: chord.bassNote, label: noteToString(chord.bassNote) };
+  if (inversion > 0 && chord.notes.length > 0) {
+    const note = chord.notes[inversion % chord.notes.length];
+    return { note, label: noteToString(note) };
+  }
+  return { note: chord.root, label: '' };
 }
 
 /**
  * Every grip the fretboard offers for `chord` (in `inversion`) with a capo on
- * fret `capo`, in order (the first is the default), whether one puts the
- * requested bass lowest, and the chord whose shapes they are. With no capo
- * this is exactly the pipeline the fretboard has always used
- * (`getChordShapesWithFallback` → `sortShapesForDefault` →
- * `arrangeShapesForBass`). With a capo: that pipeline for
- * `chordBelowCapo(chord, capo)` (its grips kept within the frets left above
- * the capo), each grip moved `capo` frets up and kept only if it is playable
- * with the capo as the nut.
+ * fret `capo`, in order (the first is the default), whether they put the
+ * asked bass lowest, and the chord whose shapes they are. The pipeline:
+ * `getChordShapesWithFallback` (within the frets above the capo) →
+ * `sortShapesForDefault` → `arrangeShapesForBass`, for the chord itself with
+ * no capo, and with a capo for `chordBelowCapo(chord, capo)`, each grip moved
+ * `capo` frets up and kept only if it is playable with the capo as the nut.
+ *
+ * The asked bass (`askedBassOf`) decides which grips are offered (music audit
+ * 2, M43): when some grip has it as its lowest PITCH, only those are offered
+ * — a learner who asked for C/E is never shown, as C/E, a grip with C lowest
+ * (the C shape x 3 2 0 1 0 sits under root position, where it belongs) —
+ * and `bassMatched` is true; when none has it, every grip is offered and
+ * `bassMatched` is false, so the board says no shape has that bass.
+ *
+ * The tone that names the chord (M44, `essentialPitchClasses`) is asked of
+ * every grip first. Only when no grip that sounds it can give the asked bass
+ * are grips that leave it out considered (the set of release 16), those that
+ * sound it first; the board then says which tone the grip leaves out
+ * (`gripLeavesOut`). The bass the learner chose outranks the extension: a C9
+ * first inversion with E lowest and no D is said to leave out D, where the
+ * other way round the learner would be shown C lowest under "1st Inv".
  */
 export function chordShapesForCapo(
   chord: Chord,
@@ -3479,16 +3638,28 @@ export function chordShapesForCapo(
   capo: number
 ): { shapes: { shape: ChordShape; baseFret: number }[]; bassMatched: boolean; shapeChord: Chord } {
   const shapeChord = chordBelowCapo(chord, capo);
-  const bass = requestedBassOf(shapeChord, inversion);
-  const bassPc = bass ? getPitchClass(bass) : null;
-  const sorted = sortShapesForDefault(getChordShapesWithFallback(shapeChord));
-  const reachable = capo > 0 ? sorted.filter((e) => isPlayableChordShape(e, GUITAR_MAX_FRET - capo)) : sorted;
-  const arranged = arrangeShapesForBass(reachable, shapeChord, bassPc, bass ? noteToString(bass) : '');
-  if (capo === 0) return { shapes: arranged.shapes, bassMatched: arranged.bassMatched, shapeChord };
-  const shapes = arranged.shapes
-    .map((e) => ({ shape: e.shape, baseFret: e.baseFret + capo }))
-    .filter((e) => isPlayableChordShape(e, GUITAR_MAX_FRET, capo));
-  const realBassPc = bassPc === null ? null : (bassPc + capo) % 12;
-  const bassMatched = realBassPc === null || (arranged.bassMatched && shapes.length > 0 && lowestSoundingPitchClass(shapes[0]) === realBassPc);
-  return { shapes, bassMatched, shapeChord };
+  const asked = askedBassOf(shapeChord, inversion);
+  const bassPc = getPitchClass(asked.note);
+  const realBassPc = (bassPc + capo) % 12;
+  const reach = GUITAR_MAX_FRET - capo;
+  const offer = (named: boolean) => {
+    const required = essentialPitchClasses(shapeChord, named);
+    const sorted = sortShapesForDefault(shapesWithFallback(shapeChord, reach, required));
+    const arranged = arrangeShapesForBass(sorted, shapeChord, bassPc, asked.label, { maxFret: reach, required });
+    // With a capo each grip moves up and is checked again with the capo as its nut.
+    const placed = capo === 0
+      ? arranged.shapes
+      : arranged.shapes
+        .map((e) => ({ shape: e.shape, baseFret: e.baseFret + capo }))
+        .filter((e) => isPlayableChordShape(e, GUITAR_MAX_FRET, capo));
+    return { placed, matching: placed.filter((e) => lowestSoundingPitchClass(e) === realBassPc) };
+  };
+  const strict = offer(true);
+  if (strict.matching.length > 0) return { shapes: strict.matching, bassMatched: true, shapeChord };
+  const relaxed = offer(false);
+  if (relaxed.matching.length > 0) {
+    const whole = relaxed.matching.filter((e) => gripLeavesOut(e, chord).length === 0);
+    return { shapes: [...whole, ...relaxed.matching.filter((e) => !whole.includes(e))], bassMatched: true, shapeChord };
+  }
+  return { shapes: strict.placed, bassMatched: false, shapeChord };
 }

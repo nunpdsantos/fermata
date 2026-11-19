@@ -77,7 +77,9 @@ describe('every chip the board can offer carries a learner\'s name (Q1)', () => 
         }
       }
       expect([...bad]).toEqual([]);
-      expect(named).toBeGreaterThan(20000);
+      // 11,017 since music audit 2 (M43: only grips with the asked bass are
+      // offered when one has it); 23,699 before, with the bound at 20,000.
+      expect(named).toBeGreaterThan(9000);
     }, 120_000);
   }
 
