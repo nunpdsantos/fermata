@@ -21,8 +21,7 @@ import { TrackDetail } from '../components/learn/tracks/TrackDetail';
 import { useLearnSessionStore, restorableScreen, putCheckAway, type SavedCheck } from '../state/learnSessionStore';
 import type { LearnDeepLink } from '../state/storeTypes';
 import { backTo, goTo, notePlace, placeToOpen, useBackLayer, useShowPlace } from '../state/appHistory';
-import { learnPlace, learnScreenOf, type LearnScreen } from './learnPlaces';
-import { MODULE_INDEX } from '../data/moduleIndex';
+import { learnPlace, learnScreenOf, lessonAt, type LearnScreen } from './learnPlaces';
 
 // ─── Screen state machine ───────────────────────────────────────────────────
 
@@ -43,7 +42,7 @@ function initialScreen(target: LearnDeepLink | null): LearnScreen {
   const kept = place === undefined ? null : learnScreenOf(place);
   if (kept) return withSavedSection(kept);
   // A deep link (opened by its effect below as well): no other screen first, which would be written in its entry.
-  if (target) return { type: 'module', ...target, run: false };
+  if (target) return { type: 'module', ...(lessonAt(target.moduleId) ?? target), run: false };
   return tabScreen();
 }
 
@@ -51,7 +50,10 @@ function initialScreen(target: LearnDeepLink | null): LearnScreen {
 function tabScreen(): LearnScreen {
   const saved = restorableScreen();
   if (!saved) return { type: 'levels' };
-  const { type, levelId, unitId, moduleId, section } = saved;
+  const { type, section } = saved;
+  // The lesson's own level and unit: a save from a release where "Next lesson" paired it with the unit before shows it whole.
+  const at = lessonAt(saved.moduleId) ?? saved;
+  const { levelId, unitId, moduleId } = at;
   return type === 'review' ? { type, levelId, unitId, moduleId } : { type, levelId, unitId, moduleId, section };
 }
 
@@ -131,15 +133,20 @@ export function LearnView() {
   const goToUnitBack = useCallback((levelId: string, unitId: string) => navigate({ type: 'unit', levelId, unitId }, 'back'), [navigate]);
   // A lesson the learner opens shows the lesson: a check of it kept by Back waits on its card
   // (only a return — a reload, the tab, Back / Forward — reopens a check by itself).
-  const goToModule = useCallback((levelId: string, unitId: string, moduleId: string, section?: string) => navigate({ type: 'module', levelId, unitId, moduleId, section, run: false }, 'forward'), [navigate]);
-  const goToReview = useCallback((levelId: string, unitId: string, moduleId: string) => navigate({ type: 'review', levelId, unitId, moduleId }, 'forward'), [navigate]);
+  // Its level and unit are the lesson's own, whoever asks (`lessonAt`; review 2, item 1).
+  const goToModule = useCallback((moduleId: string, section?: string) => {
+    const at = lessonAt(moduleId);
+    if (at) navigate({ type: 'module', ...at, section, run: false }, 'forward');
+  }, [navigate]);
+  const goToReview = useCallback((moduleId: string) => {
+    const at = lessonAt(moduleId);
+    if (at) navigate({ type: 'review', ...at }, 'forward');
+  }, [navigate]);
   // Back to another lesson's kept run, from the choice a new check here would have let it go (A2).
   const openKept = useCallback((check: SavedCheck) => {
-    const m = MODULE_INDEX.find((x) => x.id === check.moduleId);
-    if (!m) return;
-    navigate(check.kind === 'review'
-      ? { type: 'review', levelId: m.level, unitId: m.unitId, moduleId: m.id }
-      : { type: 'module', levelId: m.level, unitId: m.unitId, moduleId: m.id, run: true }, 'forward');
+    const at = lessonAt(check.moduleId);
+    if (!at) return;
+    navigate(check.kind === 'review' ? { type: 'review', ...at } : { type: 'module', ...at, run: true }, 'forward');
   }, [navigate]);
   // The level's celebration covers the screen. A tap on it goes on to the
   // overview, as before; the browser's Back closes it and moves nowhere else,
@@ -157,9 +164,9 @@ export function LearnView() {
   const setPendingLearnTarget = useAppStore((s) => s.setPendingLearnTarget);
   useEffect(() => {
     if (!pendingLearnTarget) return;
-    const { levelId, unitId, moduleId } = pendingLearnTarget;
+    const at = lessonAt(pendingLearnTarget.moduleId) ?? pendingLearnTarget;
     setPendingLearnTarget(null);
-    queueMicrotask(() => navigate({ type: 'module', levelId, unitId, moduleId, run: false }, 'forward'));
+    queueMicrotask(() => navigate({ type: 'module', ...at, run: false }, 'forward'));
   }, [pendingLearnTarget, setPendingLearnTarget, navigate]);
 
   // Scroll to top on screen change (a lesson opened at a section scrolls
@@ -302,17 +309,12 @@ export function LearnView() {
             <LevelsOverview
               progress={progress}
               onOpenLevel={goToLevel}
-              onOpenModule={(moduleId, unitId, levelId) => goToModule(levelId, unitId, moduleId)}
+              onOpenModule={(moduleId) => goToModule(moduleId)}
               onOpenTrack={(track) => goToUnit(track.levelId, track.unitId)}
-              onStartReview={(moduleId) => {
-                // Module ids are l{n}u{n}m{n}; level ids are "l{n}" and unit
-                // ids "u{n}". (This used to build the unit id "l1u1", which no
-                // unit has, so starting a review showed a blank screen —
-                // found by the W9-20 navigation tests.)
-                const ids = moduleId.match(/^(l\d+)(u\d+)m\d+$/);
-                if (!ids) return;
-                goToReview(ids[1], ids[2], moduleId);
-              }}
+              // The lesson's own level and unit (this used to build the unit
+              // id "l1u1", which no unit has, so starting a review showed a
+              // blank screen — found by the W9-20 navigation tests).
+              onStartReview={(moduleId) => goToReview(moduleId)}
             />
           </ScreenFrame>
         )}
@@ -326,7 +328,7 @@ export function LearnView() {
                 isModuleCompleted={isModuleCompleted}
                 getUnitCompletedModuleCount={getUnitCompletedModuleCount}
                 onOpenUnit={(unitId) => goToUnit(screen.levelId, unitId)}
-                onOpenModule={(moduleId, unitId) => goToModule(screen.levelId, unitId, moduleId)}
+                onOpenModule={(moduleId) => goToModule(moduleId)}
                 onBack={goToLevels}
               />
             )}
@@ -346,7 +348,7 @@ export function LearnView() {
                     unit={unit}
                     level={loadedLevel}
                     completedModules={progress.completedModules}
-                    onOpenModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
+                    onOpenModule={(moduleId) => goToModule(moduleId)}
                     onBack={goToLevels}
                   />
                 );
@@ -358,7 +360,7 @@ export function LearnView() {
                   level={loadedLevel}
                   progress={progress}
                   isModuleCompleted={isModuleCompleted}
-                  onOpenModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
+                  onOpenModule={(moduleId) => goToModule(moduleId)}
                   onBack={() => goToLevelBack(screen.levelId)}
                   onBackToLevels={goToLevels}
                 />
@@ -414,7 +416,7 @@ export function LearnView() {
                   onExercisesComplete={(passed) => { if (passed) markExercisesPassed(mod.id); }}
                   onBack={() => goToUnitBack(screen.levelId, screen.unitId)}
                   onBackToLevels={goToLevels}
-                  onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
+                  onNavigateModule={(moduleId) => goToModule(moduleId)}
                   initialSection={screen.section ?? null}
                   onOpenLevel={goToLevel}
                   run={screen.run}
@@ -474,8 +476,8 @@ export function LearnView() {
                   }}
                   onBack={() => goToLevels()}
                   onBackToLevels={goToLevels}
-                  onNavigateModule={(moduleId) => goToModule(screen.levelId, screen.unitId, moduleId)}
-                  onOpenLesson={(section) => goToModule(screen.levelId, screen.unitId, mod.id, section)}
+                  onNavigateModule={(moduleId) => goToModule(moduleId)}
+                  onOpenLesson={(section) => goToModule(mod.id, section)}
                   onOpenKept={openKept}
                 />
               );

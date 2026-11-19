@@ -12,10 +12,13 @@ import {
   armForTests,
   backTo,
   currentEntry,
+  exploreReturn,
   goTo,
   isArmedForTests,
   onPageShow,
   isHistoryEntry,
+  noteBrowsed,
+  noteBuilt,
   notePlace,
   placeToOpen,
   resetAppHistoryForTests,
@@ -24,7 +27,8 @@ import {
   useWorkKeeper,
   type HistoryEntry,
 } from '../appHistory';
-import { learnPlace, learnScreenOf } from '../../views/learnPlaces';
+import { learnPlace, learnScreenOf, lessonAt } from '../../views/learnPlaces';
+import { MODULE_INDEX } from '../../data/moduleIndex';
 
 /**
  * The browser's Back and Forward inside the app (audit P3, the owner's ruling
@@ -548,6 +552,14 @@ describe('work in progress', () => {
 });
 
 describe('Learn\'s places', () => {
+  it('a lesson\'s own level and unit come from the lesson (review 2, item 1: "Next lesson" paired the next unit\'s first lesson with this unit)', () => {
+    expect(lessonAt('l1u3m1')).toEqual({ levelId: 'l1', unitId: 'u3', moduleId: 'l1u3m1' });
+    expect(lessonAt('l1u34m2')).toEqual({ levelId: 'l1', unitId: 'u34', moduleId: 'l1u34m2' });
+    expect(lessonAt('l9u99m9')).toBeNull();
+    // Every lesson's place is one the entries accept.
+    for (const m of MODULE_INDEX) expect(learnScreenOf(learnPlace({ type: 'module', ...lessonAt(m.id)! })), m.id).not.toBeNull();
+  });
+
   it('every screen round-trips; ids the curriculum lacks are refused', () => {
     const screens = [
       { type: 'levels' as const },
@@ -569,4 +581,140 @@ it('the entry on screen is kept in step with history.state', () => {
   armForTests();
   goTo('drill', '');
   expect(currentEntry()).toEqual(window.history.state);
+});
+
+describe('review 2', () => {
+  it('item 3: a tab tapped while the app\'s own ← moves the history goes onto the entry after the landing (one step on), never a push', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    goTo('learn', 'level/l1');
+    goTo('learn', 'unit/l1/u2');
+    goTo('learn', 'module/l1/u2/l1u2m2'); // entries: 0 explore, 1 learn '', 2 level, 3 unit, 4 the lesson
+    const before = pushes().length;
+    backTo('learn', 'unit/l1/u2'); // the lesson's ←
+    expect(go).toHaveBeenLastCalledWith(-1);
+    armForTests(); // the learner taps Drill while the history moves
+    act(() => useAppStore.getState().setView('drill'));
+    expect(pushes()).toHaveLength(before);
+    pop({ fm: 1, i: 3, v: 'learn', s: 'unit/l1/u2', l: 0 }); // the ← lands
+    expect(go).toHaveBeenLastCalledWith(1); // a step on, onto the lesson's entry the ← left
+    expect(currentEntry()).toMatchObject({ i: 3, v: 'learn', s: 'unit/l1/u2' }); // (jsdom's history is not moved: `go` is observed)
+    pop({ fm: 1, i: 4, v: 'learn', s: 'module/l1/u2/l1u2m2', l: 0 }); // the step lands
+    expect(pushes()).toHaveLength(before); // no push: the tap's activation came before the traversal
+    expect(window.history.state).toMatchObject({ i: 4, v: 'drill', l: 0 });
+    expect(currentEntry()).toMatchObject({ i: 4, v: 'drill' });
+    // Back from Drill: the unit page, the screen the ← went to.
+    const seen: string[] = [];
+    function ShowLearn() {
+      useShowPlace('learn', (s) => seen.push(s ?? '(the tab)'));
+      return null;
+    }
+    render(<ShowLearn />);
+    pop({ fm: 1, i: 3, v: 'learn', s: 'unit/l1/u2', l: 0 });
+    expect(useAppStore.getState().view).toBe('learn');
+    expect(placeToOpen('learn')).toBe('unit/l1/u2');
+  });
+
+  it('item 3: with no entry after the landing, the landing is rewritten (as before); a write nobody asked for never steps on', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', 'module/l1/u3/l1u3m4');
+    armForTests(false);
+    const layer = render(<Sheetish open onClose={() => undefined} />); // no entry of its own
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 }); // Back: the layer closes; the app hops back to entry 1
+    expect(go).toHaveBeenLastCalledWith(1);
+    armForTests();
+    act(() => useAppStore.getState().setView('drill')); // tapped meanwhile
+    go.mockClear();
+    pop({ fm: 1, i: 1, v: 'learn', s: 'module/l1/u3/l1u3m4', l: 0 }); // the hop lands; nothing after it
+    expect(go).not.toHaveBeenCalled();
+    expect(window.history.state).toMatchObject({ i: 1, v: 'drill' });
+    layer.unmount();
+  });
+
+  it('item 3: a pass-over that lands while the learner opened a screen leaves that screen standing (the landing is not shown) and steps on', () => {
+    const seen: string[] = [];
+    function ShowLearn() {
+      useShowPlace('learn', (s) => seen.push(s ?? '(the tab)'));
+      return null;
+    }
+    render(<ShowLearn />);
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
+    goTo('learn', 'level/l1'); // 1
+    const sheet = render(<Sheetish open onClose={() => undefined} />); // 2: a layer over the level
+    sheet.unmount(); // closed by itself: its entry shows nothing new
+    pop({ fm: 1, i: 1, v: 'learn', s: 'level/l1', l: 0 }); // Back onto the level: nothing new … passed over
+    expect(go).toHaveBeenLastCalledWith(-1);
+    armForTests();
+    act(() => useAppStore.getState().setView('drill')); // tapped meanwhile
+    pop({ fm: 1, i: 0, v: 'learn', s: '', l: 0 }); // the pass-over lands
+    expect(useAppStore.getState().view).toBe('drill'); // the learner's screen stands
+    expect(seen).toEqual([]);
+    expect(go).toHaveBeenLastCalledWith(1);
+    pop({ fm: 1, i: 1, v: 'learn', s: 'level/l1', l: 0 });
+    expect(window.history.state).toMatchObject({ i: 1, v: 'drill', l: 0 });
+  });
+
+  it('item 2: Back into Explore brings back the chord, its inversion, the degree and the detail — with no chord too — and tells the card its tab, the builder its blocks, All Chords its category', () => {
+    const tabs = document.createElement('div');
+    tabs.innerHTML = '<button id="chords-tab-diatonic" aria-selected="false"></button><button id="chords-tab-all" aria-selected="false"></button><button id="chords-tab-build" aria-selected="true"></button>';
+    document.body.append(tabs);
+    const root = { natural: 'D', accidental: 'natural' } as const;
+    noteBuilt({ root: root as never, steps: [0, 4, 7] });
+    noteBrowsed(null);
+    const chord = { root, quality: 'major', notes: [] } as never;
+    useAppStore.setState({ selectedChord: chord, chordInversion: 2, selectedDegree: 5, detailPanelOpen: true });
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    expect(useAppStore.getState()).toMatchObject({ selectedChord: null, selectedDegree: null, detailPanelOpen: false });
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+    expect(useAppStore.getState()).toMatchObject({ view: 'explore', selectedChord: chord, chordInversion: 2, selectedDegree: 5, detailPanelOpen: true });
+    expect(exploreReturn()).toEqual({ tab: 'build', built: { root, steps: [0, 4, 7] }, category: null });
+    // No chord: the degree and the detail all the same (a lesson's "Open in Explore").
+    tabs.querySelector('#chords-tab-build')!.setAttribute('aria-selected', 'false');
+    tabs.querySelector('#chords-tab-all')!.setAttribute('aria-selected', 'true');
+    noteBrowsed(3);
+    useAppStore.setState({ selectedChord: null, chordInversion: 0, selectedDegree: 4, detailPanelOpen: true });
+    armForTests();
+    act(() => useAppStore.getState().setView('drill'));
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+    expect(useAppStore.getState()).toMatchObject({ view: 'explore', selectedChord: null, selectedDegree: 4, detailPanelOpen: true });
+    expect(exploreReturn()).toEqual({ tab: 'all', built: null, category: 3 });
+    // Any other way into Explore: nothing to bring back.
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    act(() => useAppStore.getState().setView('explore'));
+    expect(exploreReturn()).toBeNull();
+    tabs.remove();
+  });
+
+  it('item 6: after Back to a screen with no heading, focus waits on the main region at once, never on the page body', async () => {
+    const main = document.createElement('main');
+    main.id = 'main-content';
+    main.tabIndex = -1;
+    const panel = document.createElement('div');
+    panel.id = 'drill-panel';
+    main.append(panel);
+    document.body.append(main);
+    (document.activeElement as HTMLElement | null)?.blur();
+    armForTests();
+    act(() => useAppStore.getState().setView('drill'));
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+    armForTests();
+    act(() => useAppStore.getState().setView('drill'));
+    goTo('drill', 'settings');
+    pop({ fm: 1, i: 1, v: 'drill', s: '', l: 0 });
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    expect(document.activeElement).toBe(main);
+    // A heading that comes in time still takes it.
+    const h = document.createElement('h2');
+    h.textContent = 'Drill';
+    panel.append(h);
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    expect(document.activeElement).toBe(h);
+    main.remove();
+  });
 });

@@ -26,6 +26,19 @@ export function learnPlace(s: LearnScreen): string {
   }
 }
 
+/**
+ * A lesson's own level and unit, from the lesson itself (the module index),
+ * so no caller pairs a lesson with a unit it is not in. Until 19 November 2026
+ * "Next lesson" from a unit's last lesson passed the CURRENT unit with the
+ * next lesson's id, and Learn showed an empty panel (review 2 of the Back
+ * stream, item 1; in the code since the first Learn view, February 2026).
+ * null = an id the curriculum does not have.
+ */
+export function lessonAt(moduleId: string): { levelId: string; unitId: string; moduleId: string } | null {
+  const m = MODULE_INDEX.find((x) => x.id === moduleId);
+  return m ? { levelId: m.level, unitId: m.unitId, moduleId } : null;
+}
+
 /** The screen an entry names, when every id in it is one the curriculum has (an entry from another release may not). */
 export function learnScreenOf(place: string): LearnScreen | null {
   if (place === '') return { type: 'levels' };

@@ -18,6 +18,7 @@ import {
   isValidLearnSession,
   learnCheckInProgress,
   putCheckAway,
+  hasAnswer,
   restorableCheck,
   resumableCheck,
   type SavedCheck,
@@ -66,6 +67,21 @@ describe('a check put away', () => {
     expect(r).not.toBeNull();
     expect('away' in useLearnSessionStore.getState().check!).toBe(false);
     expect(learnCheckInProgress()).toBe(true);
+  });
+
+  it('a run with no answer in it is not kept: put away, it is gone (review 2, item 4); a first miss is an answer', () => {
+    const none = check({ run: { ...check().run, index: 0, scores: [], items: [], attempt: 1 } });
+    expect(hasAnswer(none)).toBe(false);
+    useLearnSessionStore.getState().setCheck(none);
+    expect(learnCheckInProgress()).toBe(true); // on screen it is still a check under way
+    putCheckAway();
+    expect(useLearnSessionStore.getState().check).toBeNull();
+    expect(saved().state.check).toBeNull();
+    const missed = check({ run: { ...none.run, attempt: 2, tried: ['no'] } });
+    expect(hasAnswer(missed)).toBe(true);
+    useLearnSessionStore.getState().setCheck(missed);
+    putCheckAway();
+    expect(useLearnSessionStore.getState().check).toMatchObject({ away: true });
   });
 
   it('a finished run is not put away (it is no work), and the field is guarded', () => {

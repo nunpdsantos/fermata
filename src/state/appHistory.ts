@@ -57,14 +57,20 @@
  *    neither Back nor Forward. Only ours have meaning.
  *  - While a traversal of the app's own is under way (closing a layer that
  *    had no entry, passing over an entry, the app's own way back), nothing is
- *    written: it would land on the wrong entry. Writes wait for the landing.
+ *    written: it would land on the wrong entry. Writes wait for the landing;
+ *    a screen the learner opened meanwhile goes onto the entry after the
+ *    landing (one step on), never onto a pushed one (`release`).
  *  - Leaving a screen that holds work in progress by Back or Forward (or by
  *    tapping its view's active tab) never drops it (the Learn session store
  *    and the Drill store keep it, as they do across a reload); the view that
  *    holds it says so (`useWorkKeeper`): a toast with "Continue", which
  *    returns — and a lesson's check card offers its kept check.
- *  - Back into Explore brings back the chord as it was left (its detail, its
- *    inversion, the chords card's tab): `setView` clears them, as a tab does.
+ *  - Back into Explore brings back Explore as it was left: the chord, its
+ *    inversion, the degree, the detail (with no chord too), the chords card's
+ *    tab, the builder's blocks and All Chords' category — exactly those
+ *    (`setView` clears the first four, as a tab does; the others are the
+ *    card's own and start again as it mounts). Not the Progression panel,
+ *    a held note or a focus note.
  *  - After Back or Forward changes the screen, focus goes to its heading in
  *    the main region (a screen reader reads its name), as a fresh screen
  *    would be met; a layer closed gives focus back as Escape does.
@@ -72,7 +78,9 @@
  *    "it may attempt to load the URL later, for instance, after the user
  *    restarts the browser"; `History.state`): the boot view comes from the
  *    entry (`pickBootView`), and the view opens the screen it names
- *    (`placeToOpen`). "Reset app data" forgets the entry's place.
+ *    (`placeToOpen`); the entries this tab knew are kept too (`saveKnown`),
+ *    so the app's own ← still goes Back after a reload. Explore's chord is
+ *    not (a reload starts without one). "Reset app data" forgets the place.
  * The tour, Quick Search, the sheets and the views talk to this module; the
  * entry bundle only imports it lazily (App.tsx, after the boot view is set)
  * and reads the entry's view (bootView.ts).
@@ -80,6 +88,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useAppStore } from './store';
 import type { AppState, ViewMode } from './storeTypes';
+import type { Note } from '../core/types/music';
 import { useWelcomeStore } from './welcomeGate';
 import { getDemoRequest } from './demoRequest';
 import { useToastStore } from './toastStore';
@@ -104,8 +113,17 @@ interface Layer {
   /** A layer that can go without telling (a menu): open while this holds. */
   live?: () => boolean;
 }
-/** What Explore's chord was when an Explore entry was left: `setView` clears it, Back brings it back. */
-type ExploreLeft = Pick<AppState, 'selectedChord' | 'chordInversion' | 'selectedDegree' | 'detailPanelOpen'> & { tab: string | null };
+/** What the chord builder has built: its root and its blocks (steps above the root). */
+export interface Built {
+  root: Note;
+  steps: number[];
+}
+/**
+ * What Explore was when an Explore entry was left (`setView` clears the chord,
+ * the degree and the detail, and Explore's chords card mounts again on its
+ * first tab with an empty builder): Back brings all of it back.
+ */
+type ExploreLeft = Pick<AppState, 'selectedChord' | 'chordInversion' | 'selectedDegree' | 'detailPanelOpen'> & { tab: string | null; built: Built | null; category: number | null };
 
 const VIEWS: readonly string[] = ['explore', 'learn', 'drill'];
 
@@ -127,6 +145,45 @@ const shows = new Map<ViewMode, (s: string | undefined, dir: Dir) => void>();
 const keepers = new Map<ViewMode, (to: HistoryEntry) => string | null>();
 /** This tab's entries as the app wrote or met them (index → place): where the app's own way back can go. */
 const known = new Map<number, { v: ViewMode; s?: string }>();
+
+/**
+ * `known` across a reload of this tab (review 2, item 5: after a reload the
+ * app's own ← had forgotten the entries before, and Back went to a screen the
+ * learner had gone back past). Kept in sessionStorage, which is this tab's
+ * alone and goes with it: NOT learner data — only where this tab's entries
+ * lead — so never in a backup (backups read localStorage), never app data to
+ * the first-visit gate, written only as the page is hidden or left (nothing
+ * is written while the app is used), at most the 50 entries nearest the one
+ * on screen (about what a browser keeps), read back only when it is ours in
+ * shape and agrees with the entry on screen (another document of this tab,
+ * left and come back to, has its own).
+ */
+const KNOWN_KEY = 'fermatina-history-v1';
+const KNOWN_KEEP = 50;
+function saveKnown(): void {
+  try {
+    const rows = [...known].filter(([k]) => Math.abs(k - cur.i) < KNOWN_KEEP).map(([k, p]) => (p.s === undefined ? [k, p.v] : [k, p.v, p.s]));
+    sessionStorage.setItem(KNOWN_KEY, JSON.stringify(rows));
+  } catch {
+    // Storage refused (a private window, the quota): after a reload the ← arrows rewrite the entry, as before.
+  }
+}
+function loadKnown(at: HistoryEntry): void {
+  try {
+    const rows: unknown = JSON.parse(sessionStorage.getItem(KNOWN_KEY) ?? 'null');
+    if (!Array.isArray(rows) || rows.length > 2 * KNOWN_KEEP) return;
+    const read = new Map<number, { v: ViewMode; s?: string }>();
+    for (const r of rows as unknown[]) {
+      if (!Array.isArray(r) || r.length < 2 || r.length > 3 || !Number.isInteger(r[0]) || !VIEWS.includes(r[1]) || (r.length === 3 && typeof r[2] !== 'string')) return;
+      read.set(r[0] as number, r.length === 3 ? { v: r[1] as ViewMode, s: r[2] as string } : { v: r[1] as ViewMode });
+    }
+    const here = read.get(at.i);
+    if (!here || here.v !== at.v || here.s !== at.s) return;
+    for (const [k, p] of read) known.set(k, p);
+  } catch {
+    // Unreadable: this tab starts with what it meets, as before.
+  }
+}
 /** Explore's chord as each Explore entry was left (in memory: a reload starts without a chord anyway). */
 const exploreLeft = new Map<number, ExploreLeft>();
 /**
@@ -137,20 +194,67 @@ const exploreLeft = new Map<number, ExploreLeft>();
 let opensAt: number | null = null;
 let keptToast: string | null = null;
 
-/** Writes held while a traversal of our own is under way (replayed, in order, once it lands). */
+/**
+ * Writes held while a traversal of our own is under way (replayed, in order,
+ * once it lands). `asked`: a screen the learner opened meanwhile (a tab tapped
+ * while the app's own ← moved the history), armed when it was asked for.
+ */
 let holding = false;
 let holdTimer: ReturnType<typeof setTimeout> | undefined;
-const held: (() => void)[] = [];
+const held: { call: () => void; asked: boolean }[] = [];
+/** A pass-over under way: the index it is going to. */
+let passing: number | null = null;
+/** The held writes are being replayed onto the entry after a landing (a step on): a screen there covers no layer. */
+let stepped = false;
 function hold(): void {
   holding = true;
   clearTimeout(holdTimer);
   // A traversal that goes nowhere (nothing that way) never lands: let go after a second.
-  holdTimer = setTimeout(release, 1000);
+  holdTimer = setTimeout(() => release(false), 1000);
 }
-function release(): void {
+/**
+ * The held writes, in order, once a traversal of our own has landed. A screen
+ * the learner opened while the history moved under the app (review 2, item 3)
+ * comes AFTER the entry landed on, as a screen of its own — but no push may
+ * carry it: its activation came before this traversal, and after a
+ * same-document back / forward Chromium "stops honoring such activations for
+ * creating new entries until a new activation is received" (the note cited in
+ * the header). An entry pushed then would make every entry of the document
+ * skippable, and Back would leave the app. So the entry after the landing
+ * takes it, when this tab has one (it is the one the learner just left): one
+ * step on, then that entry is rewritten, and the ones after it are forgotten,
+ * as a push would cut them. With none after it, the landing is rewritten, as
+ * before. `landed`: false when the hold only timed out.
+ */
+function release(landed: boolean): void {
   holding = false;
   clearTimeout(holdTimer);
-  for (const call of held.splice(0)) call();
+  const calls = held.splice(0);
+  const k = calls.findIndex((c) => c.asked);
+  if (landed && k >= 0 && known.has(cur.i + 1)) {
+    for (const c of calls.slice(0, k)) c.call();
+    const rest = calls.slice(k).map((c) => ({ call: c.call, asked: false }));
+    if (holding) {
+      held.push(...rest);
+      return;
+    }
+    for (const j of [...known.keys()]) if (j > cur.i + 1) known.delete(j);
+    for (const j of [...exploreLeft.keys()]) if (j > cur.i) exploreLeft.delete(j);
+    dropKeptToast();
+    held.push(...rest);
+    expecting = cur.i + 1;
+    stepped = true;
+    hold();
+    window.history.go(1);
+    return;
+  }
+  const onto = stepped;
+  stepped = false;
+  for (const c of calls) {
+    stepped = onto;
+    c.call();
+  }
+  stepped = false;
 }
 
 const tourPlaying = () => getDemoRequest() !== null;
@@ -183,31 +287,57 @@ export function currentEntry(): HistoryEntry {
   return cur;
 }
 
-/** Explore's chord, as the Explore entry being left had it. */
+/** The chord builder's blocks while it is on screen (it says so: `noteBuilt`), null otherwise. */
+let building: Built | null = null;
+
+/** The chord builder (Explore's Build tab) says what it has built, and null as it goes. */
+export function noteBuilt(b: Built | null): void {
+  building = b;
+}
+
+/** All Chords' category on screen (its chips), null otherwise. */
+let browsing: number | null = null;
+
+/** The chord browser (Explore's All Chords tab) says which category it shows, and null as it goes. */
+export function noteBrowsed(category: number | null): void {
+  browsing = category;
+}
+
+/** Explore as the Explore entry being left had it: the chord, its inversion, the degree, the detail, the chords card's tab, the builder's blocks, All Chords' category. */
 function noteExploreLeft(i: number, s: Pick<AppState, 'selectedChord' | 'chordInversion' | 'selectedDegree' | 'detailPanelOpen'>): void {
   let tab: string | null = null;
   for (const id of ['diatonic', 'all', 'build']) if (document.getElementById(`chords-tab-${id}`)?.getAttribute('aria-selected') === 'true') tab = id;
-  exploreLeft.set(i, { selectedChord: s.selectedChord, chordInversion: s.chordInversion, selectedDegree: s.selectedDegree, detailPanelOpen: s.detailPanelOpen, tab });
+  exploreLeft.set(i, {
+    selectedChord: s.selectedChord, chordInversion: s.chordInversion, selectedDegree: s.selectedDegree, detailPanelOpen: s.detailPanelOpen,
+    tab,
+    built: tab === 'build' && building ? { root: building.root, steps: [...building.steps] } : null,
+    category: tab === 'all' ? browsing : null,
+  });
 }
 
-/** Back (or Forward) into an Explore entry: its chord again, on the tab it was on (the tab's own handler clears the chord, so the chord goes after it). */
+/**
+ * Back (or Forward) into an Explore entry: its chord, inversion, degree and
+ * detail again (with no chord too: a lesson's "Open in Explore" leaves a
+ * degree and its detail), set as `setView` has cleared them and before
+ * Explore draws; the chords card's tab and the builder's blocks are read by
+ * them as they mount (`exploreReturn`).
+ */
 function bringExploreBack(i: number): void {
   const left = exploreLeft.get(i);
-  if (!left || left.selectedChord === null) return;
-  const { tab, ...chord } = left;
+  if (!left) return;
+  const { tab: _tab, built: _built, category: _category, ...chord } = left;
   useAppStore.setState(chord);
-  if (!tab || tab === 'diatonic') return;
-  let tries = 0;
-  const press = () => {
-    const button = document.getElementById(`chords-tab-${tab}`);
-    if (!button) {
-      if (++tries < 120) requestAnimationFrame(press);
-      return;
-    }
-    if (button.getAttribute('aria-selected') !== 'true') button.click();
-    useAppStore.setState(chord);
-  };
-  requestAnimationFrame(press);
+}
+
+/**
+ * The chords card's tab, the builder's blocks and All Chords' category as the
+ * Explore entry that Back / Forward is opening left them; null = as Explore
+ * opens them. Pure: an initializer may call it.
+ */
+export function exploreReturn(): Pick<ExploreLeft, 'tab' | 'built' | 'category'> | null {
+  if (opensAt !== cur.i || cur.v !== 'explore') return null;
+  const left = exploreLeft.get(cur.i);
+  return left ? { tab: left.tab, built: left.built, category: left.category } : null;
 }
 
 /**
@@ -217,19 +347,19 @@ function bringExploreBack(i: number): void {
 export function goTo(v: ViewMode, s: string | undefined): void {
   if (tourPlaying() || restoring || (cur.v === v && cur.s === s)) return;
   if (holding) {
-    held.push(() => goTo(v, s));
+    held.push({ call: () => goTo(v, s), asked: armed });
     return;
   }
   const push = armed && !useWelcomeStore.getState().open;
   opensAt = null;
-  write({ fm: 1, i: push ? cur.i + 1 : cur.i, v, s, l: push ? 0 : cur.l }, push);
+  write({ fm: 1, i: push ? cur.i + 1 : cur.i, v, s, l: push || stepped ? 0 : cur.l }, push);
 }
 
 /** A view says which screen it shows (on mount, a result, a correction): the entry is rewritten. */
 export function notePlace(v: ViewMode, s: string): void {
   if (tourPlaying()) return;
   if (holding) {
-    held.push(() => notePlace(v, s));
+    held.push({ call: () => notePlace(v, s), asked: false });
     return;
   }
   if (cur.v !== v || cur.s === s) return;
@@ -246,7 +376,7 @@ export function notePlace(v: ViewMode, s: string): void {
 export function backTo(v: ViewMode, s: string): void {
   if (tourPlaying() || restoring) return;
   if (holding) {
-    held.push(() => backTo(v, s));
+    held.push({ call: () => backTo(v, s), asked: false });
     return;
   }
   for (let j = cur.i - 1; j >= 0; j--) {
@@ -340,7 +470,7 @@ function pushForLayers(tour: boolean): void {
 function openLayer(layer: Layer): void {
   prune();
   layers.push(layer);
-  if (holding) held.push(() => pushForLayers(layer.tour));
+  if (holding) held.push({ call: () => pushForLayers(layer.tour), asked: false });
   else pushForLayers(layer.tour);
 }
 
@@ -366,7 +496,7 @@ export function useBackLayer(open: boolean, close: () => void, tour = false): vo
         const view = useAppStore.getState().view;
         if (cur.v !== view && !tourPlaying()) write({ ...cur, v: view, s: undefined }, false);
       };
-      if (holding) held.push(follow);
+      if (holding) held.push({ call: follow, asked: false });
       else follow();
     };
   }, [open, tour]);
@@ -378,18 +508,28 @@ function same(to: HistoryEntry, from: HistoryEntry): boolean {
 }
 
 /** After Back / Forward changed the screen: focus to its heading in the main region, as a screen is met fresh (a screen reader reads its name). */
+let focusing = 0;
 function focusScreen(view: ViewMode): void {
+  // The latest Back / Forward's screen only: an earlier one still looking would take focus from it.
+  const turn = ++focusing;
   let tries = 0;
   // Focus still where it was (the old screen, fading out) or on the page body is lost focus; anywhere new, the learner (or a sheet giving focus back) put it.
-  const before = document.activeElement;
+  let before = document.activeElement;
+  const main = document.getElementById('main-content');
   const look = () => {
+    if (turn !== focusing) return;
     const active = document.activeElement;
     if (active && active !== before && active !== document.body && active.isConnected) return;
     const panel = document.getElementById(`${view}-panel`);
     const heading = panel && [...panel.querySelectorAll<HTMLElement>('h1, h2')].find((h) => !h.closest('[inert]'));
     if (!heading) {
+      // Lost focus waits on the main region, never on the page body (a screen with no heading, Drill's
+      // question, left it there for two seconds: review 2, item 6); a heading that comes in time still takes it.
+      if ((!active || active === document.body || !active.isConnected) && main) {
+        main.focus({ preventScroll: true });
+        before = main;
+      }
       if (++tries < 120) requestAnimationFrame(look);
-      else document.getElementById('main-content')?.focus({ preventScroll: true });
       return;
     }
     if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
@@ -446,14 +586,23 @@ function onPopState(e: PopStateEvent): void {
     // Our own traversal landed.
     expecting = null;
     cur = to;
-    release();
+    release(true);
     return;
   }
   expecting = null;
+  const passed = passing !== null && to.i === passing;
+  passing = null;
+  if (passed && held.some((c) => c.asked)) {
+    // A pass-over landed, and the learner opened a screen meanwhile: that
+    // screen stands (the landing is not shown), and it goes after the landing.
+    cur = to;
+    release(true);
+    return;
+  }
   if (to.i === from.i) {
     // Back onto ours from an entry the app did not write: where the app already is.
     cur = to;
-    release();
+    release(false);
     if (!same(to, from)) show(to, -1);
     return;
   }
@@ -465,7 +614,7 @@ function onPopState(e: PopStateEvent): void {
     for (const layer of layers.slice(-extra).reverse()) layer.close();
     if (same(to, from)) {
       cur = to;
-      release();
+      release(false);
     } else {
       // The layer had no entry of its own: stay where it was.
       expecting = from.i;
@@ -481,9 +630,10 @@ function onPopState(e: PopStateEvent): void {
   if (same(to, from)) {
     cur = to;
     if (dir > 0 && !known.has(to.i + 1)) {
-      release();
+      release(false);
       return;
     }
+    passing = to.i + dir;
     hold();
     window.history.go(dir);
     return;
@@ -493,7 +643,7 @@ function onPopState(e: PopStateEvent): void {
   cur = to;
   dropKeptToast();
   show(to, dir);
-  release();
+  release(false);
   if (kept) offerReturn(kept, -dir);
   focusScreen(to.v);
 }
@@ -587,11 +737,17 @@ export function installAppHistory(): void {
   // A reload (or a return to an entry of this tab): the boot view came from
   // it (pickBootView); the view opens the screen it names as it mounts.
   const s = kept && kept.v === view ? kept.s : undefined;
+  // The entries this tab knew before the reload (the app's own ← goes Back to them).
+  if (kept) loadKnown(kept);
   write({ fm: 1, i: kept?.i ?? 0, v: view, s, l: 0 }, false);
   if (s !== undefined) opensAt = cur.i;
   window.addEventListener('popstate', onPopState);
   window.addEventListener('hashchange', onHashChange);
   window.addEventListener('pageshow', onPageShow);
+  window.addEventListener('pagehide', saveKnown);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveKnown();
+  });
   for (const type of ['keydown', 'mousedown', 'pointerup']) window.addEventListener(type, arm, true);
   document.addEventListener('click', onTabClick, true);
   document.addEventListener('click', onMenuButton, true);
@@ -611,6 +767,10 @@ export function resetAppHistoryForTests(): void {
   armed = false;
   restoring = false;
   expecting = null;
+  passing = null;
+  stepped = false;
+  building = null;
+  browsing = null;
   layers.length = 0;
   known.clear();
   exploreLeft.clear();

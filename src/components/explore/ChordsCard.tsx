@@ -20,6 +20,7 @@ import { SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 import { toast } from '../../state/toastStore.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import '../../i18n/exploreTools';
+import { exploreReturn } from '../../state/appHistory';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
@@ -90,7 +91,8 @@ export function ChordsCard() {
   const selectedChord = useAppStore((s) => s.selectedChord);
   const selectedKey = useAppStore((s) => s.selectedKey);
   const cardRef = useRef<HTMLElement>(null);
-  const [tab, setMode] = useState<ChordMode>('diatonic');
+  // Back into Explore opens the tab it was left on (state/appHistory.ts); otherwise In key.
+  const [tab, setMode] = useState<ChordMode>(() => (exploreReturn()?.tab as ChordMode | null | undefined) ?? 'diatonic');
   // Simple view: the In key row only (no All Chords / Build tabs). The tab
   // chosen in Full is kept for when the learner goes back.
   const simple = useExploreSimple();

@@ -318,11 +318,20 @@ export function restorableCheck(moduleId: string, exercises: readonly ExerciseDe
   return { check: restored, ordered: list };
 }
 
-/** The saved run no longer Learn's current screen (Back, or Learn moving on): kept, and not work in progress. */
+/** A run with an answer given in it (a question settled, or a first miss): work a learner would lose. Only such a run is "kept". */
+export const hasAnswer = (c: SavedCheck): boolean => c.run.scores.length > 0 || c.run.attempt === 2;
+
+/**
+ * The saved run no longer Learn's current screen (Back, or Learn moving on):
+ * with an answer in it, kept, and not work in progress; with none, gone —
+ * nothing in it to lose, and nothing anywhere then says it is kept (review 2
+ * of the Back stream, item 4).
+ */
 export function putCheckAway(): void {
   const store = useLearnSessionStore.getState();
   const c = store.check;
-  if (c && !c.finished && !c.away) store.setCheck({ ...c, away: true });
+  if (!c || c.finished || c.away) return;
+  store.setCheck(hasAnswer(c) ? { ...c, away: true } : null);
 }
 
 /**
