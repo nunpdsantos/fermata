@@ -1,6 +1,8 @@
 import { test, expect, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { levelCorpus } from '../src/data/exercises/__tests__/learnCorpus';
+import { MODULE_INDEX } from '../src/data/moduleIndex';
+import { OPTIONAL_UNIT_IDS } from '../src/core/constants/optionalCurriculum';
 
 /**
  * The browser's Back and Forward inside Fermatina (second audit round, QA
@@ -1180,6 +1182,413 @@ test.describe('review B-1', () => {
     expect(view, 'the tour ended away from where it began').not.toBe('learn');
     expect((await entry(page))!.v).toBe(view);
     await expectView(page, view as 'explore' | 'drill');
+    await context.close();
+  });
+});
+
+// ── The second cold review (review B-2), each in a real browser ─────────────────────────────────
+
+/** A lesson title as a pattern (some carry ( ) ? or +). */
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const nextLesson = (page: Page, title: string) => page.getByRole('button', { name: new RegExp(`^Next lesson\\s*${esc(title)}$`) }).last();
+const previousLesson = (page: Page, title: string) => page.getByRole('button', { name: new RegExp(`^Previous\\s*${esc(title)}$`) }).last();
+const placeOf = (m: { id: string; level: string; unitId: string }) => `module/${m.level}/${m.unitId}/${m.id}`;
+
+test.describe('review B-2', () => {
+  // Item 1: "Next lesson" from a unit's last lesson paired the next lesson with the CURRENT unit and showed an
+  // empty panel (in every release since the first Learn view, February 2026). Every unit boundary of every level.
+  for (let n = 1; n <= 9; n++) {
+    test(`item 1: level ${n} — Next from every unit's last lesson shows the next lesson in its own unit, Previous comes back; the level's last lesson has no Next`, async ({ browser }) => {
+      test.setTimeout(240_000);
+      const lessons = MODULE_INDEX.filter((m) => m.level === `l${n}` && !OPTIONAL_UNIT_IDS.has(m.unitId));
+      const boundaries = lessons.slice(0, -1).map((m, k) => [m, lessons[k + 1]] as const).filter(([a, b]) => a.unitId !== b.unitId);
+      expect(boundaries.length, 'a level with more than one unit').toBeGreaterThan(0);
+      const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } });
+      for (const [last, first] of boundaries) {
+        await page.goto(`/?lesson=${last.id}`);
+        await expect(lessonHeading(page, last.title)).toBeVisible({ timeout: 15_000 });
+        await nextLesson(page, first.title).click();
+        await expect(lessonHeading(page, first.title), `${last.id} → ${first.id}`).toBeVisible();
+        expect((await entry(page))?.s).toBe(placeOf(first));
+        await previousLesson(page, last.title).click();
+        await expect(lessonHeading(page, last.title), `${first.id} → ${last.id}`).toBeVisible();
+        expect((await entry(page))?.s).toBe(placeOf(last));
+        // Back retraces both.
+        await back(page);
+        await expect(lessonHeading(page, first.title)).toBeVisible();
+      }
+      const end = lessons.at(-1)!;
+      await page.goto(`/?lesson=${end.id}`);
+      await expect(lessonHeading(page, end.title)).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByRole('button', { name: /^Next lesson/ })).toHaveCount(0);
+      await context.close();
+    });
+  }
+
+  test('item 1: an optional unit (guitar notation, the two tracks) walks inside itself; its last lesson has no Next, its first no Previous', async ({ browser }) => {
+    test.setTimeout(120_000);
+    const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } });
+    for (const unit of OPTIONAL_UNIT_IDS) {
+      const lessons = MODULE_INDEX.filter((m) => m.unitId === unit);
+      await page.goto(`/?lesson=${lessons[0].id}`);
+      await expect(lessonHeading(page, lessons[0].title)).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByRole('button', { name: /^Previous/ })).toHaveCount(0);
+      await nextLesson(page, lessons[1].title).click();
+      await expect(lessonHeading(page, lessons[1].title)).toBeVisible();
+      expect((await entry(page))?.s).toBe(placeOf(lessons[1]));
+      await page.goto(`/?lesson=${lessons.at(-1)!.id}`);
+      await expect(lessonHeading(page, lessons.at(-1)!.title)).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByRole('button', { name: /^Next lesson/ })).toHaveCount(0);
+    }
+    await context.close();
+  });
+
+  // Item 2: each part by itself, from a state where it differs from what Explore opens with.
+  const exploreState = (page: Page) => page.evaluate(() => {
+    const tab = ['diatonic', 'all', 'build'].find((id) => document.getElementById(`chords-tab-${id}`)?.getAttribute('aria-selected') === 'true') ?? null;
+    const detail = document.querySelector('[data-testid="chord-detail"]');
+    return {
+      tab,
+      name: detail?.querySelector('h3, h2, [data-testid="chord-name"]')?.textContent?.trim() ?? (detail ? detail.textContent!.trim().slice(0, 12) : null),
+      inversion: detail?.querySelector('[role="radio"][aria-checked="true"]')?.textContent?.trim() ?? null,
+      blocks: document.querySelectorAll('[role="group"][aria-label^="Chromatic strip"] button[aria-pressed="true"]').length,
+      category: document.querySelector('[data-testid="chords-card"] [role="radiogroup"] [role="radio"][aria-checked="true"]')?.textContent?.trim() ?? null,
+    };
+  });
+  async function leaveAndComeBack(page: Page) {
+    await tab(page, 'learn').click();
+    await expectView(page, 'learn');
+    await back(page);
+    await expectView(page, 'explore');
+    await expect(page.getByTestId('chords-card')).toBeVisible();
+  }
+
+  test('item 2: Back into Explore brings back each part as it was: the chord and 1st / 2nd inversion (In key), All Chords\' category and its chord\'s detail, the built chord on Build', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const { context, page } = await open(browser, MODES[0]);
+    const detail = page.getByTestId('chord-detail');
+    // In key: V on its 1st inversion, then on its 2nd.
+    for (const k of [1, 2]) {
+      await page.getByTestId('chords-card').getByRole('button').filter({ hasText: /^V/ }).first().click();
+      await detail.getByRole('radio').nth(k).click();
+      const left = await exploreState(page);
+      expect(left.inversion).toBe(k === 1 ? '1st Inv' : '2nd Inv');
+      await leaveAndComeBack(page);
+      await expect.poll(() => exploreState(page)).toEqual(left);
+      await tab(page, 'explore').click(); // Explore's own tab clears it, as before
+      await expect(detail).toHaveCount(0);
+    }
+    // All Chords, a chord of a later category: the category and the chord's detail come back.
+    await page.locator('#chords-tab-all').click();
+    await page.getByTestId('chords-card').getByRole('radio').nth(2).click();
+    await page.getByTestId('chords-card').locator('button[data-quality]').nth(1).click();
+    await expect(detail).toBeVisible();
+    const all = await exploreState(page);
+    expect(all.tab).toBe('all');
+    await leaveAndComeBack(page);
+    await expect.poll(() => exploreState(page)).toEqual(all);
+    await expect(detail).toBeVisible();
+    // Build: C, E, G built, on its 1st inversion.
+    await page.locator('#chords-tab-build').click();
+    const strip = page.getByRole('group', { name: /Chromatic strip/ }).locator('button');
+    await strip.nth(4).click();
+    await strip.nth(7).click();
+    await expect(detail).toBeVisible();
+    await detail.getByRole('radio').nth(1).click();
+    const built = await exploreState(page);
+    expect(built).toMatchObject({ tab: 'build', blocks: 3, inversion: '1st Inv' });
+    await leaveAndComeBack(page);
+    await expect.poll(() => exploreState(page)).toEqual(built);
+    // Forward and Back again: the same.
+    await forward(page);
+    await expectView(page, 'learn');
+    await back(page);
+    await expect.poll(() => exploreState(page)).toEqual(built);
+    await context.close();
+  });
+
+  test('item 2: the degree and the detail flag come back with no chord too (no screen reads them today: set through the store, dev server)', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0]);
+    const STORE = '/src/state/store.ts';
+    const read = () => page.evaluate(async (path) => {
+      const m = (await import(/* @vite-ignore */ path)) as { useAppStore: { getState: () => { selectedChord: unknown; selectedDegree: number | null; detailPanelOpen: boolean } } };
+      const s = m.useAppStore.getState();
+      return { chord: s.selectedChord, degree: s.selectedDegree, detail: s.detailPanelOpen };
+    }, STORE);
+    if (!(await page.request.get(STORE)).headers()['content-type']?.includes('javascript')) test.skip(true, 'the build has no modules to reach the store');
+    await page.evaluate(async (path) => {
+      const m = (await import(/* @vite-ignore */ path)) as { useAppStore: { setState: (s: object) => void } };
+      m.useAppStore.setState({ selectedChord: null, selectedDegree: 4, detailPanelOpen: true });
+    }, STORE);
+    await leaveAndComeBack(page);
+    expect(await read()).toEqual({ chord: null, degree: 4, detail: true });
+    await context.close();
+  });
+
+  // Item 3: the window is tens of milliseconds; history.go is delayed by 500 ms to hold it open.
+  test('item 3: a tab tapped while the app\'s own ← moves the history is a screen of its own after it: no entry lost, none pushed', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const context = await browser.newContext({ viewport: MODES[0].viewport, reducedMotion: 'reduce', serviceWorkers: 'block' });
+    await context.addInitScript(() => {
+      if (!localStorage.getItem('__seeded')) {
+        localStorage.clear();
+        localStorage.setItem('fermata-welcome-v1', 'seen');
+        localStorage.setItem('music-theory-app', JSON.stringify({ state: { themeMode: 'fermata', language: 'en', instrument: 'piano', lastView: 'learn' }, version: 6 }));
+        localStorage.setItem('__seeded', '1');
+      }
+      const go = history.go.bind(history);
+      history.go = (d?: number) => void setTimeout(() => go(d), 500);
+      const pushes: unknown[] = [];
+      (window as unknown as { __pushes: unknown[] }).__pushes = pushes;
+      const push = history.pushState.bind(history);
+      history.pushState = (s: unknown, u: string, url?: string | URL | null) => { pushes.push({ active: navigator.userActivation?.isActive ?? null, state: s }); push(s, u, url); };
+    });
+    const page = await context.newPage();
+    await page.goto('/');
+    await expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0), { timeout: 15_000 }).toBe(1);
+    await levelOneCard(page).click();
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.unit) }).first().click();
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first().click();
+    await expect(lessonHeading(page, LESSON.title)).toBeVisible();
+    const lesson = (await entry(page))!;
+    const length = await historyLength(page);
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(`^(Back|${esc(LESSON.unit)})`) }).first().click(); // the lesson's ←
+    await page.waitForTimeout(100);
+    await tab(page, 'drill').click(); // while the history is still moving
+    await expectView(page, 'drill');
+    await expect.poll(() => entry(page), { timeout: 5_000 }).toMatchObject({ i: lesson.i, v: 'drill' });
+    expect(await historyLength(page), 'nothing pushed').toBe(length);
+    await noPushWithoutActivation(page);
+    await back(page);
+    await expect(unitPage(page)).toBeVisible();
+    expect((await entry(page))?.s).toBe(`unit/l1/u2`);
+    await back(page);
+    await expect(levelOnePage(page)).toBeVisible();
+    await context.close();
+  });
+
+  // Item 4.
+  test('item 4: a check left with no answer is nothing kept — the card and the toast say nothing, a new check needs no choice; Forward starts it again', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } }, `/?lesson=${LESSON.id}`);
+    await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+    await page.getByTestId('check-start').click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await back(page);
+    await expect(page.getByTestId('check-start')).toBeVisible();
+    await expect(page.getByTestId('check-kept')).toHaveCount(0);
+    await expect(page.getByTestId('check-continue')).toHaveCount(0);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check)).toBeNull();
+    await forward(page);
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await expect(page.getByTestId('check-position')).toHaveText(/^1 \/ \d+$/);
+    // Left for another view by Back (no answer): no toast.
+    await back(page);
+    await back(page);
+    await page.waitForTimeout(400);
+    await expect(page.getByTestId('toast-region').getByText(/kept/)).toHaveCount(0);
+    // Another lesson's check starts with no choice: nothing is kept.
+    await page.goto('/?lesson=l1u2m2');
+    await expect(page.locator('#learn-panel h1')).toBeVisible({ timeout: 15_000 });
+    await page.getByTestId('check-start').click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    await expect(page.getByTestId('kept-choice')).toHaveCount(0);
+    await context.close();
+  });
+
+  for (const mode of MODES) {
+    test(`item 4 (${mode.name}): the choice has a way out — Escape and Cancel give back the card, focus on the button that opened it; nothing is lost`, async ({ browser }) => {
+      test.setTimeout(90_000);
+      const key = answerKey();
+      const { context, page } = await open(browser, mode);
+      const { state } = await startAnswered(mode, page, key);
+      await back(page);
+      await back(page);
+      await expect(unitPage(page)).toBeVisible();
+      await press(mode, page.locator('#learn-panel').getByRole('button', { name: /Time Signatures/ }).first());
+      await expect(page.locator('#learn-panel h1')).toBeVisible();
+      for (const how of mode.touch ? ['Cancel'] : ['Escape', 'Cancel']) {
+        await press(mode, page.getByTestId('check-start'));
+        await expect(page.getByTestId('kept-choice')).toBeVisible();
+        await expect(page.getByTestId('check-start')).toHaveCount(0);
+        if (how === 'Escape') await page.keyboard.press('Escape');
+        else await press(mode, page.getByTestId('kept-cancel'));
+        await expect(page.getByTestId('kept-choice')).toHaveCount(0);
+        await expect(page.getByTestId('check-start')).toBeFocused();
+        await expect(page.getByTestId('focused-check')).toHaveCount(0);
+      }
+      // The kept one is still there, exactly.
+      await press(mode, page.getByTestId('check-start'));
+      await press(mode, page.getByTestId('kept-back'));
+      await expect(page.getByTestId('focused-check')).toBeVisible();
+      expect(await checkState(page)).toEqual(state);
+      await context.close();
+    });
+  }
+
+  // The choice's other words, in Portuguese and Spanish: a kept practice round before a review, a kept review before a check.
+  const WORDS = {
+    pt: {
+      practice: 'A tua ronda de prática em «A pauta e as claves» ficou guardada: pergunta 2 de 3. Se começares esta revisão, essa perde-se.',
+      review: 'A tua revisão de «A pauta e as claves» ficou guardada: pergunta 2 de 3. Se começares esta verificação, essa perde-se.',
+      back: 'Voltar a «A pauta e as claves»', startReview: 'Começar esta revisão', startCheck: 'Começar esta verificação', cancel: 'Cancelar',
+    },
+    es: {
+      practice: 'Tu ronda de práctica en «El pentagrama y las claves» se ha guardado: pregunta 2 de 3. Si empiezas este repaso, lo guardado se pierde.',
+      review: 'Tu repaso de «El pentagrama y las claves» se ha guardado: pregunta 2 de 3. Si empiezas esta comprobación, lo guardado se pierde.',
+      back: 'Volver a «El pentagrama y las claves»', startReview: 'Empezar este repaso', startCheck: 'Empezar esta comprobación', cancel: 'Cancelar',
+    },
+  } as const;
+  for (const lang of ['pt', 'es'] as const) {
+    test(`item 4 (${lang}): the choice before a review over a kept practice round, and before a check over a kept review, in the learner's language; Cancel leaves the review`, async ({ browser }) => {
+      test.setTimeout(90_000);
+      const now = Date.now();
+      const day = 86_400_000;
+      const progress = { state: { progress: { completedModules: [LESSON.id], moduleProgress: {}, exerciseResults: {}, reviewSchedules: { [LESSON.id]: { completedAt: now - 3 * day, nextReviewAt: now - day, intervalLevel: 0, reviewCount: 0, lastReviewedAt: now - 3 * day } } } }, version: 2 };
+      const { context, page } = await open(browser, MODES[0], { progress, settings: { lastView: 'learn', language: lang } });
+      const keep = (kind: 'practice' | 'review') => page.evaluate(([k, l]) => {
+        // The shipped v1 save's run (lesson l1u1m1, question 2 of 3, one answer given), kept by Back.
+        const check = { moduleId: 'l1u1m1', kind: k, lang: l, fingerprints: { l1u1m1e1: '66e6fdf2', l1u1m1e2: 'bfcb733e', l1u1m1e3: '36f41596' }, run: { order: ['l1u1m1e2', 'l1u1m1e1', 'l1u1m1e3'], index: 1, scores: [1], items: [{ id: 'l1u1m1e2', answers: ['x'], score: 1, answer: 'x' }], attempt: 1, selectedNotes: [], tried: [], missed: null, final: null }, finished: false, at: Date.now(), away: true };
+        localStorage.setItem('fermata-learn-session-v1', JSON.stringify({ state: { screen: null, check }, version: 1 }));
+      }, [kind, lang] as const);
+      // A practice round kept; the due review opened from the overview.
+      await keep('practice');
+      await page.reload();
+      await expect(page.locator('#learn-panel h1')).toBeVisible({ timeout: 15_000 });
+      await page.locator('#learn-panel').getByRole('button', { name: new RegExp(lang === 'pt' ? 'Figuras rítmicas e pausas' : 'Figuras rítmicas y silencios') }).first().click();
+      const choice = page.getByTestId('kept-choice');
+      await expect(choice).toContainText(WORDS[lang].practice);
+      await expect(page.getByTestId('kept-back')).toHaveText(WORDS[lang].back);
+      await expect(page.getByTestId('kept-start')).toHaveText(WORDS[lang].startReview);
+      await expect(page.getByTestId('kept-cancel')).toHaveText(WORDS[lang].cancel);
+      await expect(page.getByTestId('focused-check')).toHaveCount(0);
+      // Cancel: a review has no card, so it is left (as its own "Back to Learn"); nothing started, the kept round stays.
+      await page.getByTestId('kept-cancel').click();
+      await expect(choice).toHaveCount(0);
+      await expect(page.getByTestId('focused-check')).toHaveCount(0);
+      expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check.kind)).toBe('practice');
+      // A review kept; a lesson's check started.
+      await keep('review');
+      await page.goto(`/?lesson=${LESSON.id}`);
+      await expect(page.locator('#learn-panel h1')).toBeVisible({ timeout: 15_000 });
+      await page.getByTestId('check-start').click();
+      await expect(choice).toContainText(WORDS[lang].review);
+      await expect(page.getByTestId('kept-start')).toHaveText(WORDS[lang].startCheck);
+      await context.close();
+    });
+  }
+
+  // The rows the review found missing.
+  test('a Sprint ended by its ✕: Forward onto its entry starts no new Sprint, nor its clock (DrillView\'s `reopenable`)', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0], { drill: SPRINT_READY });
+    await tab(page, 'drill').click();
+    const panel = page.locator('#drill-panel');
+    await panel.getByRole('button', { name: 'End session' }).click();
+    await panel.getByRole('button', { name: 'Sprint', exact: true }).click();
+    const clock = panel.getByText(/^\d+s$/);
+    await expect(clock).toBeVisible();
+    await expect.poll(async () => (await entry(page))?.s).toBe('sprint');
+    await panel.getByRole('button', { name: 'End session' }).click(); // the Sprint's ✕
+    await expect(clock).toHaveCount(0);
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('fermata-drill-v1')!).state.sprint)).toBeNull();
+    await forward(page);
+    await page.waitForTimeout(1200);
+    await expect(clock).toHaveCount(0);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-drill-v1')!).state.sprint)).toBeNull();
+    expect((await entry(page))?.s).toBe('');
+    await context.close();
+  });
+
+  test('a review on screen with an answer is Learn\'s current screen: not put away, and it holds the tour (LearnView\'s `showsRun` for a review)', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const now = Date.now();
+    const day = 86_400_000;
+    const progress = { state: { progress: { completedModules: [LESSON.id], moduleProgress: {}, exerciseResults: {}, reviewSchedules: { [LESSON.id]: { completedAt: now - 3 * day, nextReviewAt: now - day, intervalLevel: 0, reviewCount: 0, lastReviewedAt: now - 3 * day } } } }, version: 2 };
+    const key = answerKey();
+    const { context, page } = await open(browser, MODES[0], { progress, settings: { lastView: 'learn' } });
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(LESSON.title) }).first().click();
+    await expect(page.getByTestId('focused-check')).toBeVisible();
+    const q1 = await keyed(page, key);
+    await answer(MODES[0], page, q1.wrong);
+    await page.waitForTimeout(600);
+    const check = await page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check);
+    expect(check).toMatchObject({ kind: 'review', moduleId: LESSON.id });
+    expect(check.away).toBeUndefined();
+    await page.getByTestId('app-menu').getByRole('button').first().click();
+    await page.getByRole('menuitem', { name: 'Show me around' }).click();
+    await expect(page.getByTestId('toast-region')).toContainText('Finish or leave your check first.');
+    await expect(page.getByTestId('tour-bar')).toHaveCount(0);
+    await context.close();
+  });
+
+  for (const where of ['a lesson', 'Drill settings'] as const) {
+    test(`two tabs: A on ${where}, B moves elsewhere, A reloads and stays on ${where}`, async ({ browser }) => {
+      const { context, page } = await open(browser, MODES[0], { drill: DRILL_SAVE });
+      if (where === 'a lesson') {
+        await page.goto(`/?lesson=${LESSON.id}`);
+        await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+      } else {
+        await tab(page, 'drill').click();
+        await page.locator('#drill-panel').getByRole('button', { name: 'Drill settings' }).click();
+        await expect.poll(async () => (await entry(page))?.s).toBe('settings');
+      }
+      const here = await entry(page);
+      const b = await context.newPage();
+      await b.goto('/');
+      await b.locator(`[role="tab"][data-tab="${where === 'a lesson' ? 'drill' : 'explore'}"]`).click();
+      await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.lastView)).toBe(where === 'a lesson' ? 'drill' : 'explore');
+      await page.reload();
+      await expectView(page, where === 'a lesson' ? 'learn' : 'drill');
+      if (where === 'a lesson') await expect(lessonHeading(page, LESSON.title)).toBeVisible({ timeout: 15_000 });
+      await expect.poll(() => entry(page)).toEqual(here);
+      await b.close();
+      await context.close();
+    });
+  }
+
+  // Item 5.
+  test('item 5: after a reload the app\'s own ← still goes Back to the entries before it: Back never shows the lesson it went back past', async ({ browser }) => {
+    test.setTimeout(90_000);
+    const { context, page } = await open(browser, MODES[0], { settings: { lastView: 'learn' } });
+    const track = MODULE_INDEX.filter((m) => m.unitId === 'u34');
+    await page.locator('#learn-panel').getByRole('button', { name: /Start with sound/ }).first().click();
+    await expect.poll(async () => (await entry(page))?.s).toBe('unit/l1/u34');
+    await page.locator('#learn-panel').getByRole('button', { name: new RegExp(esc(track[0].title)) }).first().click();
+    await expect(lessonHeading(page, track[0].title)).toBeVisible();
+    for (let k = 1; k <= 3; k++) {
+      await nextLesson(page, track[k].title).click();
+      await expect(lessonHeading(page, track[k].title)).toBeVisible();
+    }
+    await page.reload();
+    await expect(lessonHeading(page, track[3].title)).toBeVisible({ timeout: 15_000 });
+    await expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0)).toBe(1);
+    await page.locator('#learn-panel').getByRole('button', { name: /^(Back|Start with sound)/ }).first().click(); // the lesson's ←
+    await expect.poll(async () => (await entry(page))?.s).toBe('unit/l1/u34');
+    await back(page);
+    await expect(overview(page)).toBeVisible();
+    await forward(page);
+    await expect.poll(async () => (await entry(page))?.s).toBe('unit/l1/u34');
+    await forward(page);
+    await expect(lessonHeading(page, track[0].title)).toBeVisible();
+    await context.close();
+  });
+
+  // Item 6.
+  test('item 6: after Back to Drill\'s question (no heading), focus is on the main region at once, never on the page body', async ({ browser }) => {
+    const { context, page } = await open(browser, MODES[0], { drill: DRILL_SAVE, settings: { lastView: 'drill' } });
+    await expect(page.locator('#drill-panel')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#drill-panel button').first()).toBeVisible({ timeout: 15_000 });
+    await tab(page, 'explore').click();
+    await expectView(page, 'explore');
+    await back(page);
+    await expectView(page, 'drill');
+    const seen: string[] = [];
+    for (let k = 0; k < 6; k++) {
+      seen.push(await page.evaluate(() => (document.activeElement === document.body ? 'body' : document.activeElement?.id || document.activeElement?.tagName) ?? 'none'));
+      await page.waitForTimeout(100);
+    }
+    expect(seen.slice(1), seen.join(' ')).not.toContain('body');
+    expect(seen.slice(1).every((s) => s === 'main-content' || /^H[12]$/.test(s)), seen.join(' ')).toBe(true);
     await context.close();
   });
 });

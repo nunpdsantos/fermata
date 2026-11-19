@@ -523,9 +523,10 @@ function focusScreen(view: ViewMode): void {
     const panel = document.getElementById(`${view}-panel`);
     const heading = panel && [...panel.querySelectorAll<HTMLElement>('h1, h2')].find((h) => !h.closest('[inert]'));
     if (!heading) {
-      // Lost focus waits on the main region, never on the page body (a screen with no heading, Drill's
-      // question, left it there for two seconds: review 2, item 6); a heading that comes in time still takes it.
-      if ((!active || active === document.body || !active.isConnected) && main) {
+      // Focus lost, or still where it was, waits on the main region at once — never on the page body (a
+      // screen with no heading, Drill's question, left it there for two seconds: review 2, item 6); a
+      // heading that comes in time still takes it.
+      if ((!active || active === document.body || !active.isConnected || active === before) && main && active !== main) {
         main.focus({ preventScroll: true });
         before = main;
       }

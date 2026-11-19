@@ -77,7 +77,7 @@ describe('a check put away', () => {
     putCheckAway();
     expect(useLearnSessionStore.getState().check).toBeNull();
     expect(saved().state.check).toBeNull();
-    const missed = check({ run: { ...none.run, attempt: 2, tried: ['no'] } });
+    const missed = check({ run: { ...none.run, attempt: 2, tried: [{ value: 'no', words: 'no' }] } });
     expect(hasAnswer(missed)).toBe(true);
     useLearnSessionStore.getState().setCheck(missed);
     putCheckAway();

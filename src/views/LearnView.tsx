@@ -50,10 +50,8 @@ function initialScreen(target: LearnDeepLink | null): LearnScreen {
 function tabScreen(): LearnScreen {
   const saved = restorableScreen();
   if (!saved) return { type: 'levels' };
-  const { type, section } = saved;
-  // The lesson's own level and unit: a save from a release where "Next lesson" paired it with the unit before shows it whole.
-  const at = lessonAt(saved.moduleId) ?? saved;
-  const { levelId, unitId, moduleId } = at;
+  // (A lesson saved with a unit it is not in — the live release's "Next lesson" — is refused by the guard: the overview.)
+  const { type, levelId, unitId, moduleId, section } = saved;
   return type === 'review' ? { type, levelId, unitId, moduleId } : { type, levelId, unitId, moduleId, section };
 }
 
