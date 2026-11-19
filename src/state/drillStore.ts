@@ -107,7 +107,19 @@ export interface SprintRun {
   recorded: boolean;
 }
 
+/**
+ * The topic choices as saved. Every topic is a boolean except "Reading
+ * (guitar)", which is OPTIONAL (audit 2, P4, 19 November 2026): absent = no
+ * choice recorded yet, and its value in force is derived where it is read
+ * (services/drillFollow.ts `readingInForce`: on with Drill history, else only
+ * on the guitar). Written when the learner touches its chip, or by the first
+ * session (the value in force). Persist stays v3; a save from before reading
+ * with history loads with it on, as it always did.
+ */
+export type DrillFamilies = Omit<Record<DrillFamily, boolean>, 'read'> & { read?: boolean };
+
 export interface DrillSettings extends SessionConfig {
+  families: DrillFamilies;
   sound: boolean;      // default true
   showTimer: boolean;  // default false
   /**
@@ -132,13 +144,40 @@ export interface StartSessionOptions {
    * the topic choices, as before.
    */
   unlocked?: ((item: DrillItem) => boolean) | null;
+  /**
+   * Audit 2, P4: the "Reading (guitar)" topic's value in force
+   * (services/drillFollow.ts `readingInForce`), for a learner with no
+   * recorded choice; the session saves it. Absent = on, as before.
+   */
+  reading?: boolean;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
 
-const DEFAULT_FAMILIES: Record<DrillFamily, boolean> = Object.fromEntries(
+/** Every topic on, reading included: how a save from before the reading choice reads (and 153caab's defaults). */
+const ALL_FAMILIES: Record<DrillFamily, boolean> = Object.fromEntries(
   DRILL_FAMILIES.map((f) => [f, true]),
 ) as Record<DrillFamily, boolean>;
+
+/** Every topic on; reading has no recorded choice (P4: derived where it is read). */
+const DEFAULT_FAMILIES: DrillFamilies = Object.fromEntries(
+  DRILL_FAMILIES.filter((f) => f !== 'read').map((f) => [f, true]),
+) as DrillFamilies;
+
+/**
+ * The saved topic record, filled: every topic the save lacks is on. Reading
+ * is filled on (153caab's rule) only for a save written before the Drill had
+ * an intro (no `introDone` field), whose history shows it was used — so its
+ * first write after this change is byte for byte the one 153caab made. Every
+ * save the app writes now carries `introDone`: its missing reading stays
+ * missing (no choice recorded), and is derived where it is read. Key order as
+ * before (reading last).
+ */
+function savedFamilies(families: Record<string, unknown> | null, fillReading: boolean): DrillFamilies {
+  const out = { ...ALL_FAMILIES, ...(families ?? {}) } as Record<string, unknown>;
+  if ((families === null || !('read' in families)) && !fillReading) delete out.read;
+  return out as DrillFamilies;
+}
 
 export const DEFAULT_SETTINGS: DrillSettings = {
   length: 24,
@@ -371,32 +410,6 @@ export function validatePersistedShape(value: unknown): {
   // items — per-entry: a broken item is dropped, never the whole record
   const items = sanitizeItems(value.items);
 
-  // settings — fill missing fields with defaults rather than rejecting
-  let settings: DrillSettings;
-  if (isValidSettings(value.settings)) {
-    settings = { ...value.settings, families: { ...DEFAULT_FAMILIES, ...value.settings.families } };
-  } else if (isPlainObject(value.settings)) {
-    // Partial settings: fill missing primitives from defaults
-    const s = value.settings;
-    settings = {
-      length: ([12, 24, 40] as unknown[]).includes(s.length)
-        ? (s.length as 12 | 24 | 40)
-        : DEFAULT_SETTINGS.length,
-      newPerSession: typeof s.newPerSession === 'number'
-        ? s.newPerSession
-        : DEFAULT_SETTINGS.newPerSession,
-      families: isPlainObject(s.families)
-        ? { ...DEFAULT_FAMILIES, ...(s.families as Record<DrillFamily, boolean>) }
-        : DEFAULT_FAMILIES,
-      sound: typeof s.sound === 'boolean' ? s.sound : DEFAULT_SETTINGS.sound,
-      showTimer: typeof s.showTimer === 'boolean' ? s.showTimer : DEFAULT_SETTINGS.showTimer,
-      // Kept only when it says something; absent stays absent (never `undefined`).
-      ...(typeof s.followLessons === 'boolean' ? { followLessons: s.followLessons } : {}),
-    };
-  } else {
-    settings = DEFAULT_SETTINGS;
-  }
-
   // sprintBests — keep the numeric entries
   const sprintBests: Record<string, number> = {};
   if (isPlainObject(value.sprintBests)) {
@@ -426,6 +439,33 @@ export function validatePersistedShape(value: unknown): {
     ? value.introDone
     : Object.keys(items).length > 0 || lifetime.answered > 0 || activeSession !== null
       || sprint !== null || Object.keys(sprintBests).length > 0;
+  // P4: a save from before the intro (and so before the reading choice) that
+  // was used reads with reading on, as it always did; see savedFamilies.
+  const fillReading = typeof value.introDone !== 'boolean' && introDone;
+
+  // settings — fill missing fields with defaults rather than rejecting
+  let settings: DrillSettings;
+  if (isValidSettings(value.settings)) {
+    settings = { ...value.settings, families: savedFamilies(value.settings.families, fillReading) };
+  } else if (isPlainObject(value.settings)) {
+    // Partial settings: fill missing primitives from defaults
+    const s = value.settings;
+    settings = {
+      length: ([12, 24, 40] as unknown[]).includes(s.length)
+        ? (s.length as 12 | 24 | 40)
+        : DEFAULT_SETTINGS.length,
+      newPerSession: typeof s.newPerSession === 'number'
+        ? s.newPerSession
+        : DEFAULT_SETTINGS.newPerSession,
+      families: savedFamilies(isPlainObject(s.families) ? s.families : null, fillReading),
+      sound: typeof s.sound === 'boolean' ? s.sound : DEFAULT_SETTINGS.sound,
+      showTimer: typeof s.showTimer === 'boolean' ? s.showTimer : DEFAULT_SETTINGS.showTimer,
+      // Kept only when it says something; absent stays absent (never `undefined`).
+      ...(typeof s.followLessons === 'boolean' ? { followLessons: s.followLessons } : {}),
+    };
+  } else {
+    settings = { ...DEFAULT_SETTINGS, families: savedFamilies(null, fillReading) };
+  }
 
   return { items, settings, sprintBests, lifetime, activeSession, sprint, introDone };
 }
@@ -477,9 +517,18 @@ function mergeDrillItem(base: unknown, mine: unknown, theirs: unknown): unknown 
 const slot = (id: string): Rule => (b, m, t) =>
   m === null && isPlainObject(t) && (!isPlainObject(b) || b[id] !== t[id]) ? t : m;
 
+/**
+ * Reading's saved choice (P4) where both tabs changed it: a tab that knew of
+ * no choice (its base had none) and now holds one recorded it at its first
+ * session — the value in force there, not a choice — so a choice another tab
+ * saved meanwhile stands. A chip the learner touched is marked
+ * (`updateSettings`) and written whatever the save holds.
+ */
+const keepRecorded: Rule = (b, m, t) => (b === undefined && t !== undefined ? t : m);
+
 const DRILL_FIELDS: Rule = {
   items: { '*': mergeDrillItem },
-  settings: { families: { '*': 'atomic' } },
+  settings: { families: { '*': 'atomic', read: keepRecorded } },
   sprintBests: { '*': 'max' },
   lifetime: { answered: 'sum', correct: 'sum' },
   activeSession: slot('id'),
@@ -550,24 +599,41 @@ export const useDrillStore = create<DrillStoreState>()(
       introDone: false,
 
       startSession: (bank, now, options) => {
-        const { settings, items, introDone } = get();
+        const { settings, items, introDone, activeSession } = get();
         const seed = now % 0x80000000; // now % 2^31 — deterministic
         const id = `s${now}`;
-        const queue = composeSession(bank, items, settings, now, seed, undefined, options?.unlocked ?? null);
-        // Following the lessons with nothing they open and no fact met: no
-        // session starts (an empty one is a dead end, "0 of 0", that was
-        // saved and came back — final review of wave 2). The view shows the
-        // intro instead. Not following: as before.
-        if (queue.length === 0 && options?.unlocked) {
-          set({ activeSession: null });
+        // P4: reading's value in force — the saved choice, else what the view
+        // derived (services/drillFollow.ts readingInForce), else on (as before).
+        const recorded = typeof settings.families.read === 'boolean';
+        const reading = recorded ? settings.families.read === true : options?.reading ?? true;
+        const families = { ...settings.families, read: reading };
+        const queue = composeSession(bank, items, { ...settings, families }, now, seed, undefined, options?.unlocked ?? null);
+        // Nothing to ask — following the lessons with nothing they open, every
+        // topic off, or no new facts and none met (services/drillSession.ts
+        // `sessionHasNothing`, the view's own test): no session starts and
+        // nothing is saved (an empty one was a dead end, "0 of 0", that was
+        // saved and came back — final review of wave 2 for following; audit
+        // 2, P6, for every other case). A finished session still on screen
+        // closes, so the view shows the intro instead of its summary.
+        if (queue.length === 0) {
+          if (activeSession !== null) set({ activeSession: null });
           return;
         }
         // The first session saves the follow switch's value in force (it is
         // derived from "no Drill history", which this session ends). Later
         // sessions, and a learner who set it, write nothing new.
         const saveFollow = !introDone && settings.followLessons === undefined && options?.followLessons !== undefined;
+        // Likewise reading's value in force, where no choice is recorded (P4).
+        const saveReading = settings.families.read === undefined;
+        const nextSettings = saveFollow || saveReading
+          ? {
+            ...settings,
+            ...(saveReading ? { families } : {}),
+            ...(saveFollow ? { followLessons: options.followLessons } : {}),
+          }
+          : null;
         set({
-          ...(saveFollow ? { settings: { ...settings, followLessons: options.followLessons } } : {}),
+          ...(nextSettings ? { settings: nextSettings } : {}),
           activeSession: {
             id,
             queue,
@@ -676,10 +742,19 @@ export const useDrillStore = create<DrillStoreState>()(
 
       endSession: () => set({ activeSession: null }),
 
-      updateSettings: (patch) =>
+      updateSettings: (patch) => {
+        // The learner sets reading's chip (P4): their choice is the latest
+        // action, written whatever another tab saved meanwhile — unlike the
+        // value a first session records, which never writes over a recorded
+        // one (DRILL_FIELDS).
+        const read = patch.families?.read;
+        if (typeof read === 'boolean' && read !== get().settings.families.read) {
+          markNext(DRILL_STORE_KEY, [['settings', 'families', 'read'], () => read]);
+        }
         set((prev) => ({
           settings: { ...prev.settings, ...patch },
-        })),
+        }));
+      },
 
       recordSprint: (familiesKey, score) => {
         // The run just finished: its score where it beats the SAVED best, whatever this tab remembered.

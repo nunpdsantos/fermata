@@ -19,7 +19,9 @@ describe('reading family wiring', () => {
     expect(DRILL_FAMILIES).toContain('read');
     expect(bank.filter((i) => i.family !== 'read')).toEqual(generateDrillBank());
     expect(bank.filter((i) => i.family === 'read')).toEqual(genRead());
-    expect(DEFAULT_SETTINGS.families.read).toBe(true);
+    // Audit 2, P4: no recorded choice by default — derived where it is read
+    // (on with Drill history or the guitar: services/drillFollow.ts readingInForce).
+    expect(DEFAULT_SETTINGS.families).not.toHaveProperty('read');
   });
 
   it('counts new cards per stage, with every reading item in exactly one rung', () => {
@@ -32,12 +34,14 @@ describe('reading family wiring', () => {
 
   it('settings toggles the family and mastery shows all five stages', () => {
     const onUpdate = vi.fn();
-    const { unmount } = render(<DrillSettings settings={DEFAULT_SETTINGS} onUpdate={onUpdate} onBack={() => {}} onMasteryMap={() => {}} onResetProgress={() => {}} />);
+    // With reading on in force (the guitar, or Drill history): its chip turns it off.
+    const inForce = { ...DEFAULT_SETTINGS.families, read: true };
+    const { unmount } = render(<DrillSettings settings={DEFAULT_SETTINGS} inForce={inForce} onUpdate={onUpdate} onBack={() => {}} onMasteryMap={() => {}} onResetProgress={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: en.drill.families.read }));
     expect(onUpdate).toHaveBeenCalledWith({ families: { ...DEFAULT_SETTINGS.families, read: false } });
     unmount();
     const onToggleFamily = vi.fn();
-    render(<MasteryMap bank={bank} items={{}} families={DEFAULT_SETTINGS.families} now={0} onToggleFamily={onToggleFamily} onBack={() => {}} />);
+    render(<MasteryMap bank={bank} items={{}} families={inForce} now={0} onToggleFamily={onToggleFamily} onBack={() => {}} />);
     for (const name of Object.values(en.drill.reading.stages)) expect(screen.getByText(name)).toBeDefined();
     expect(document.querySelectorAll('[data-reading-stage]')).toHaveLength(5);
     fireEvent.click(screen.getByRole('button', { name: en.drill.families.read }));

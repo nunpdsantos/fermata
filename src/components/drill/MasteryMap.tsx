@@ -33,7 +33,8 @@ import { FollowCaption, type FollowInfo } from './FollowLessons';
 interface MasteryMapProps {
   bank: DrillItem[];
   items: Record<string, ItemSrsState>;
-  families: Record<DrillFamily, boolean>;
+  /** The topics in force; one absent is off. */
+  families: Partial<Record<DrillFamily, boolean>>;
   /** Current time (ms epoch) — injected so the view layer owns Date.now. */
   now: number;
   onToggleFamily: (family: DrillFamily, enabled: boolean) => void;
@@ -125,7 +126,7 @@ export function MasteryMap({
       <ul className="flex flex-col gap-3">
         {DRILL_FAMILIES.map((family) => {
           const m = mastery[family];
-          const enabled = families[family];
+          const enabled = families[family] === true;
           return (
             <li key={family} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between gap-3">

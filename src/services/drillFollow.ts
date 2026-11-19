@@ -101,6 +101,29 @@ export function followFamilies(
   return out;
 }
 
+/**
+ * The "Reading (guitar)" topic in force (audit 2, P4, 19 November 2026):
+ * finding notes on the guitar's neck is for someone who has a guitar in hand.
+ * Saved (`settings.families.read`, a boolean) → that, on any instrument: the
+ * learner chose it, or a session started with it. Never saved → ON for a
+ * learner with Drill history (a save from before reading existed: as before,
+ * nobody already drilling sees a change), otherwise ON only while the
+ * instrument is the guitar. Read live, so before any choice it follows the
+ * instrument; the first session saves the value in force (drillStore
+ * `startSession`), as it saves "Follow my lessons". The owner (history) is
+ * unchanged. Following the lessons, S-2 (`followExcluded`) still rules a
+ * piano learner's pool.
+ */
+export function readingInForce(saved: unknown, instrument: string, hasDrillHistory: boolean): boolean {
+  if (typeof saved === 'boolean') return saved;
+  return hasDrillHistory || instrument === 'guitar';
+}
+
+/** The topic choices in force: the saved ones, with reading's value in force. */
+export function familiesInForce(saved: Partial<Record<DrillFamily, boolean>>, reading: boolean): Record<DrillFamily, boolean> {
+  return { ...(saved as Record<DrillFamily, boolean>), read: reading };
+}
+
 const PIANO_EXCLUDED: ReadonlySet<DrillFamily> = new Set<DrillFamily>(['read']);
 const NOTHING_EXCLUDED: ReadonlySet<DrillFamily> = new Set<DrillFamily>();
 

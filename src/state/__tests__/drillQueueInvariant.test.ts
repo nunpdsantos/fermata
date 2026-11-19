@@ -37,7 +37,8 @@ function avoidableAdjacent(s: ActiveSession): string | null {
 
 interface Scenario {
   name: string;
-  families: Record<DrillFamily, boolean>;
+  // As saved: reading may carry no choice (audit 2, P4), and then a session started with no view is on, as before.
+  families: Partial<Record<DrillFamily, boolean>> & typeof DEFAULT_SETTINGS.families;
   length: 12 | 24 | 40;
   newPerSession: number;
   accuracy: number;
