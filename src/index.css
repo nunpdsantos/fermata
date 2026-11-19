@@ -3194,3 +3194,58 @@ html[data-metro-room] .learn-scroll {
 @media (min-width: 640px) {
   .chord-shapes-line { flex: 1 1 0; max-width: max-content; }
 }
+
+/* Explore and piano stream (builder X), second audit round (19 November 2026).
+   1. QA report 2, P5: every area of Explore that scrolls says so at its foot.
+   The page never scrolls and nothing a learner needs is cut: each area
+   either fits or scrolls inside itself with its edge showing there is more.
+   `explore/scrollCues.ts` marks a scroller whose CONTENT goes on below its
+   visible foot; the fade is drawn over that foot in the page colour (the
+   strip's and the chip rows' edge fades, turned on their side), takes no
+   room (a net 0 px: no measured layout moves) and no taps, and goes when the
+   foot is reached. Below 1200 px it is the work area's (or, on a short
+   screen, the whole view's): a sticky last item of the view's flex column.
+   On the workbench it is each column's: drawn by the work area in that
+   column's grid area (an absolutely placed grid child), over the column's
+   foot, never inside the scroller (whose cards would cover it).
+   2. The chord detail's landing counts the metronome's bar: on a laptop
+   `chordScrollLanding.ts` lands within the room above it where the detail
+   fits there; on a tablet, a phone or a short screen the detail is scrolled
+   into view with `block: 'nearest'`, which keeps clear of this padding. */
+.explore-root::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  flex: none;
+  height: 28px;
+  margin-top: -28px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+}
+.explore-root[data-more-below]::after { opacity: 1; }
+@media screen and (min-width: 1200px) {
+  .explore-work { position: relative; }
+  .explore-work::before, .explore-work::after {
+    content: '';
+    position: absolute;
+    grid-row: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 28px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 3;
+    background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+  }
+  .explore-work::before { grid-column: 1; }
+  .explore-work::after { grid-column: 2; }
+  .explore-work[data-main-more-below]::before, .explore-work[data-aside-more-below]::after { opacity: 1; }
+}
+@media print {
+  .explore-root::after, .explore-work::before, .explore-work::after { display: none; }
+}
+html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom: calc(var(--metro-room) + 8px); }

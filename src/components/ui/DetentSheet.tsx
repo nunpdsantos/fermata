@@ -93,6 +93,8 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
         return {
           top: r.top - origin, bottom: r.bottom - origin,
           ...(dots.length ? { dots: { top: Math.min(...dots.map((dot) => dot.top)) - origin, bottom: Math.max(...dots.map((dot) => dot.bottom)) - origin } } : {}),
+          // The fret numbers go with the strings (audit P5).
+          ...(el.getAttribute('data-dock-row') === 'frets' ? { withAbove: true } : {}),
         };
       }).filter((r) => r.bottom > r.top);
       const board = content.querySelector('.fretboard-scroll');
@@ -126,7 +128,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
   const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
   const fitted = fitDockDetents(
     Math.min(preferredFull, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
-    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content,
+    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content, available - VIEW_MIN_PX,
   );
   const full = fitted.full;
   const heights: Record<Detent, number> = { peek: peekHeight, half: fitted.half, full };

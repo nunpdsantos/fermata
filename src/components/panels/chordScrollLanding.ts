@@ -41,6 +41,26 @@ export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: nu
   return Math.max(0, first.top - clearance);
 }
 
+const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="metronome"]');
+
+/**
+ * How much of the scroller's visible foot the metronome's bar covers (0
+ * without it, or where it stands clear of the scroller: in the top bar's
+ * empty stretch, beside the column). The bar is a fixed overlay above the
+ * instrument (the carried item of the audit fixes of 18 November 2026: with
+ * the bar open a second-row control could land under it).
+ */
+export function coveredFoot(scroller: HTMLElement): number {
+  const bar = metronomeBar();
+  if (!bar) return 0;
+  const b = bar.getBoundingClientRect();
+  const s = scroller.getBoundingClientRect();
+  const top = s.top + scroller.clientTop;
+  const bottom = top + scroller.clientHeight;
+  if (b.height === 0 || b.bottom <= top || b.top >= bottom || b.right <= s.left || b.left >= s.right) return 0;
+  return bottom - Math.max(b.top, top);
+}
+
 /**
  * `strip` is the staff strip held at the top of the work column (sticky), or
  * null where it scrolls with the work — the Build tab on a laptop shorter
@@ -83,14 +103,38 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     const builderRoot = strip ? null : card.querySelector<HTMLElement>('.chord-builder > [data-chord-scroll-row]');
     const head = card.querySelector<HTMLElement>('.explore-card-head');
     const firstRow = detail.querySelector<HTMLElement>('.chord-detail-row');
-    const keep = () => builderRoot && head && firstRow
-      ? { rows: [measure(head), measure(builderRoot)], through: Math.max(measure(firstRow).bottom, measure(detail.querySelector('.chord-detail-actions')!).bottom) }
+    // `whole`: through the detail's last row (the pass within the room above the metronome's bar).
+    const keep = (whole = false) => builderRoot && head && firstRow
+      ? { rows: [measure(head), measure(builderRoot)], through: whole ? measure(detail).bottom : Math.max(measure(firstRow).bottom, measure(detail.querySelector('.chord-detail-actions')!).bottom) }
       : undefined;
-    const targetFor = () => chordLanding(candidates.map(measure), measure(detail), measure(detail.querySelector('.chord-detail-actions')!).bottom, scroller.clientHeight, clear, keep());
-    let target = targetFor();
+    // The metronome's bar covers only part of the column's foot (it stands
+    // over the instrument's right end): the landing is chosen as before, and
+    // only where that leaves a control of the detail under the bar is it
+    // chosen again within the room above the bar — kept if fewer are then
+    // covered (where even the room above the bar is too short for the whole
+    // detail, ▶ Chord's row first).
+    const covered = coveredFoot(scroller);
+    const underBar = (top: number) => {
+      const bar = metronomeBar();
+      if (!bar || covered <= 0) return 0;
+      const b = bar.getBoundingClientRect();
+      const shift = scroller.scrollTop - top;
+      return [...detail.querySelectorAll('button, .type-label')].filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.height > 0 && r.bottom + shift > b.top + 1 && r.top + shift < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
+      }).length;
+    };
+    const targetFor = (height = scroller.clientHeight, whole = false) => chordLanding(candidates.map(measure), measure(detail), measure(detail.querySelector('.chord-detail-actions')!).bottom, height, clear, keep(whole));
+    const choose = () => {
+      const first = targetFor();
+      if (underBar(first) === 0) return first;
+      const above = targetFor(scroller.clientHeight - covered, true);
+      return underBar(above) < underBar(first) ? above : first;
+    };
+    let target = choose();
     if (measure(card.querySelector('.explore-card-head')!).top < target + clear) {
       detail.dataset.compactSource = 'true';
-      target = targetFor(); // the source label may change the first row's height
+      target = choose(); // the source label may change the first row's height
     }
     const detailTop = measure(detail).top;
     spans = wholeRows([...before.map(measure), { top: detailTop, bottom: detailTop }]);
