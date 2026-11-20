@@ -153,5 +153,8 @@ describe('root position as recorded: aef144d\'s first grips but for the 22 liste
       for (const r of R12) for (const q of Object.keys(CHORD_FORMULAS)) lines.push(`${r}|${q}|${grip(chordShapesForCapo(buildChord(N(r), q as ChordQuality), 0, capo).shapes[0])}`);
       expect(createHash('sha256').update(lines.join('\n')).digest('hex'), `capo ${capo}`).toBe((recorded.hashes as Record<string, string>)[capo]);
     }
-  });
+    // Nine capos × 12 roots × every quality: its own time limit, as the test above has. Under the default
+    // 5 s it timed out on GitHub's runner on 20 November 2026 (this file took 165 s there with coverage, 17 s
+    // on the Mac that wrote it); it had passed there the run before.
+  }, 300_000);
 });
