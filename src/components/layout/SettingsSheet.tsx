@@ -7,6 +7,7 @@ import { toast } from '../../state/toastStore.ts';
 import { applyBackup, backupSections } from '../../utils/backupHelpers.ts';
 import { exportAndTell, importFailedText, NOTE_INK, readBackupFile, toastImportFailed, type ExportNote } from '../../utils/backupFile.ts';
 import { reloadPage } from '../../utils/pageReload.ts';
+import { placeFromSave } from '../../state/savedPlace';
 import { onOldAddress } from '../../services/appAddress.ts';
 import { AddressLink } from '../moved/AddressLink.tsx';
 import { BUILD_DATE } from '../../buildInfo.ts';
@@ -114,7 +115,9 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
       setDataNotes([{ text: importFailedText(applied), tone: 'error' }]);
       return;
     }
-    // Reload so every store rehydrates through its shape guards + migrations.
+    // Reload so every store rehydrates through its shape guards + migrations,
+    // at the imported save's own view, not this tab's entry (state/savedPlace.ts).
+    placeFromSave(localStorage);
     reloadPage();
   };
 

@@ -4,7 +4,9 @@
  * without one of its notes, passed every test that touches the panel). Every
  * track concept whose Try This is a scale or a chord: the scale plays its
  * notes once, upwards only, from the octave its picture starts on; the chord
- * plays exactly its notes (and its bass, if any).
+ * plays exactly the pitches its picture draws, octaves included (since the
+ * second audit, QA P7, a chord plays its picture's pitches rather than a
+ * voicing worked out again from its notes and bass).
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
@@ -16,7 +18,7 @@ vi.mock('../../../../core/services/audio', async (orig) => ({
   cancelScheduledAudio: () => {},
   playTimedNotes: () => {},
   playScale: (...args: unknown[]) => { audio.scale.push(args); },
-  playChordVoiced: (...args: unknown[]) => { audio.chord.push(args); },
+  playPitchedNotes: (...args: unknown[]) => { audio.chord.push(args); },
 }));
 vi.mock('../../../notation/StaffNotation', () => ({ StaffNotation: () => <div data-testid="staff" /> }));
 
@@ -24,10 +26,11 @@ import { InlineTryThis } from '../InlineTryThis';
 import { tryThisPicture } from '../tryThisPicture';
 import { useAppStore } from '../../../../state/store';
 import { L1_UNITS } from '../../../../core/constants/curriculumL1';
-import type { Note } from '../../../../core/types/music';
+import type { Note, PitchedNote } from '../../../../core/types/music';
 
 const C: Note = { natural: 'C', accidental: '' };
 const text = (ns: readonly Note[]) => ns.map((n) => `${n.natural}${n.accidental}`).join(' ');
+const pitched = (ns: readonly PitchedNote[]) => ns.map((n) => `${n.natural}${n.accidental}${n.octave}`).join(' ');
 
 beforeEach(() => {
   audio.scale = [];
@@ -56,9 +59,9 @@ describe('"Hear it" plays what the picture shows', () => {
       expect(audio.chord).toHaveLength(0);
     } else if (picture.kind === 'chord') {
       await waitFor(() => expect(audio.chord).toHaveLength(1));
-      const [notes, , , , bass] = audio.chord[0] as [Note[], number, number, unknown, Note | undefined];
-      expect(text(notes)).toBe(text(picture.notes));
-      expect(bass).toEqual(picture.bass);
+      const [pitches, duration] = audio.chord[0] as [PitchedNote[], number];
+      expect(pitched(pitches)).toBe(pitched(picture.pitches));
+      expect(duration).toBe(1.4);
       expect(audio.scale).toHaveLength(0);
     }
   });

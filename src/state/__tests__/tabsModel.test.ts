@@ -24,8 +24,18 @@
  * stale tab already shows is no change), and a metronome or progression a tab
  * did not have as its defaults; a progression with no chords is none.
  *
- * Fast by default (CI): TABS_MODEL_SEEDS=300 TABS_MODEL_STEPS=200
- * TABS_MODEL_TABS=4 for the long run (TABS_MODEL_FIRST: the first seed).
+ * Fast by default (CI: 12 seeds × 120 steps × 3 tabs). THE LONG RUN, last
+ * clean on 19 November 2026 (second audit round) on seeds 1–6000 at 200 steps
+ * × 4 tabs and on seeds 1–1000 at 200 steps × 3 and × 5 tabs:
+ *   TABS_MODEL_FIRST=1 TABS_MODEL_SEEDS=6000 TABS_MODEL_STEPS=200 TABS_MODEL_TABS=4 \
+ *     npx vitest run src/state/__tests__/tabsModel.test.ts --maxWorkers=1
+ *   (then TABS_MODEL_SEEDS=1000 with TABS_MODEL_TABS=3, and with 5.)
+ * 300 seeds was not enough: release 16 passed seeds 1–300 and failed 2213,
+ * 2215 and 2857 (of 2001–3000), and with the round's three Drill actions the
+ * same fault failed seed 228 — a mark written into a rule's empty form
+ * (twoTabsMarks.test.ts): 14 of seeds 1–6000 failed at 4 tabs, about one in
+ * 430. A new action shifts every seed's sequence: run the long run again after
+ * adding one.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_METRONOME } from '../metronomeSave';
@@ -93,7 +103,7 @@ const item = (id: string) => ({
   answer: { kind: 'choice' as const, correct: 'A' }, whyKey: 'w', whyParams: {}, rank: 0,
 });
 const SCHED = { completedAt: 1, nextReviewAt: 2, intervalLevel: 1, reviewCount: 1, lastReviewedAt: 1 };
-const KINDS = ['tick', 'tick', 'untick', 'rec', 'rec', 'pass', 'comp', 'uncomp', 'review', 'review', 'ans', 'ans', 'ans', 'sprint', 'dset', 'fing', 'fing', 'fclear', 'flabel', 'capo', 'theme', 'lang', 'metro', 'prog', 'reset', 'import', 'drillreset'] as const;
+const KINDS = ['tick', 'tick', 'untick', 'rec', 'rec', 'pass', 'comp', 'uncomp', 'review', 'review', 'ans', 'ans', 'ans', 'sprint', 'dset', 'dread', 'dread', 'dfollow', 'dchip', 'fing', 'fing', 'fclear', 'flabel', 'capo', 'theme', 'lang', 'metro', 'prog', 'reset', 'import', 'drillreset'] as const;
 
 type Divergences = Record<string, { seed: number; step: number; detail: string }[]>;
 
@@ -117,6 +127,9 @@ async function runSeed(seed: number, V: Divergences) {
     lifetime: { answered: 0, correct: 0 }, bests: {} as Record<string, number>,
     fing: {} as Record<string, number>, labelMode: undefined as string | undefined, sched: {} as Record<string, Schedule>,
     leaves: {} as Record<string, unknown>, touched: new Set<string>(),
+    // Drill's two values a first session records where no choice was made (review of bd14071):
+    // guitar reading and "Follow my lessons" — undefined = none saved; and one ordinary topic chip.
+    read: undefined as boolean | undefined, follow: undefined as boolean | undefined, triad: true,
   });
   let M = fresh();
   const dead = { ticks: new Set<string>(), exs: new Set<string>(), answers: new Set<number>() };
@@ -135,7 +148,21 @@ async function runSeed(seed: number, V: Divergences) {
   const restart = async (i: number) => { stop(tabs[i]); tabs[i] = await loadTab(); };
   const progOf = (t: Tab) => t.progress.useProgressStore.getState().progress;
   const drillOf = (t: Tab) => t.drill.useDrillStore.getState();
-  const startSession = (t: Tab) => { if (!drillOf(t).activeSession) drillOf(t).startSession(FACTS.map(item), clock + (t.sessions++) + Math.floor(R() * 1000)); };
+  /**
+   * A session starts as the view starts it, passing the values in force as THIS tab derives them (a piano
+   * learner with no profile: reading on with history, following off). It records each where this tab's memory
+   * has none — counted by the reference only if the reference has none yet either (keepRecorded: a value a
+   * first session records never writes over one already saved).
+   */
+  const startSession = (t: Tab) => {
+    const d = drillOf(t);
+    if (d.activeSession) return;
+    const reading = typeof d.settings.families.read === 'boolean' ? d.settings.families.read : d.introDone;
+    const followLessons = d.settings.followLessons ?? false;
+    if (d.settings.families.read === undefined && M.read === undefined) M.read = reading;
+    if (!d.introDone && d.settings.followLessons === undefined && M.follow === undefined) M.follow = followLessons;
+    d.startSession(FACTS.map(item), clock + (t.sessions++) + Math.floor(R() * 1000), { reading, followLessons, unlocked: null });
+  };
   const savedLeaves = (t: Tab) => leavesOf(JSON.parse(J(t.app.useAppStore.persist.getOptions().partialize!(t.app.useAppStore.getState()))));
   const replay = (f: string) => {
     let st: ItemState | undefined = M.drillBase[f];
@@ -183,6 +210,10 @@ async function runSeed(seed: number, V: Divergences) {
     if (lt.correct > lt.answered) viol('drill-correct-above-answered', `${label} ${J(lt)}`);
     if (ds && !ds.introDone && (ds.activeSession || Object.keys(items).length)) viol('drill-intro-not-passed', label);
     if (J(Object.entries(ds?.sprintBests ?? {}).sort()) !== J(Object.entries(M.bests).sort())) viol('drill-bests', `${label} want ${J(M.bests)} got ${J(ds?.sprintBests)}`);
+    // The two recorded values and a topic chip (taps exact; recordings never over a saved value).
+    if ((ds?.settings?.families?.read) !== M.read) viol('drill-reading', `${label} want ${J(M.read)} got ${J(ds?.settings?.families?.read)}`);
+    if ((ds?.settings?.followLessons) !== M.follow) viol('drill-follow', `${label} want ${J(M.follow)} got ${J(ds?.settings?.followLessons)}`);
+    if ((ds?.settings?.families?.triad ?? true) !== M.triad) viol('drill-topic-chip', `${label} want ${M.triad} got ${J(ds?.settings?.families?.triad)}`);
     // Fingerings
     const fs = sv(KEYS.fing)?.state;
     if (J(Object.entries(fs?.overrides ?? {}).sort()) !== J(Object.entries(M.fing).sort())) viol('fing-overrides', `${label} want ${J(M.fing)} got ${J(fs?.overrides)}`);
@@ -316,6 +347,32 @@ async function runSeed(seed: number, V: Divergences) {
           emit(t, KEYS.drill);
           break;
         }
+        case 'dread': {
+          // The learner taps the reading chip as THIS tab shows it (in force from its memory): their latest choice.
+          const d = drillOf(t);
+          const shown = typeof d.settings.families.read === 'boolean' ? d.settings.families.read : d.introDone;
+          d.updateSettings({ families: { ...d.settings.families, read: !shown } });
+          M.read = !shown;
+          emit(t, KEYS.drill);
+          break;
+        }
+        case 'dfollow': {
+          const d = drillOf(t);
+          const shown = d.settings.followLessons ?? false;
+          d.updateSettings({ followLessons: !shown });
+          M.follow = !shown;
+          emit(t, KEYS.drill);
+          break;
+        }
+        case 'dchip': {
+          // Another topic's chip: the whole record is written, reading as this (maybe stale) tab holds it.
+          const d = drillOf(t);
+          const v = !d.settings.families.triad;
+          d.updateSettings({ families: { ...d.settings.families, triad: v } });
+          M.triad = v;
+          emit(t, KEYS.drill);
+          break;
+        }
         case 'fing': {
           const k = pick(FSK);
           const clear = R() < 0.3;
@@ -419,8 +476,12 @@ async function runSeed(seed: number, V: Divergences) {
     }
     checkAll(label);
   }
-  // Every event arrives at last: each following tab shows what is saved.
+  // Every event arrives at last, and every tab is shown again (the app's own follow on pageshow /
+  // visibilitychange): a tab whose last event was among the one in five dropped re-reads then, as a
+  // frozen tab does when the learner comes back to it (review of bd14071: seed 81, 200 steps, 4 tabs
+  // dropped tab 1's last progress event on the final step). Each following tab shows what is saved.
   for (const e of events.splice(0)) deliver(e);
+  for (const t of tabs) for (const k of Object.values(KEYS)) t.safe.tabLine(k)?.adopt?.();
   for (const t of tabs) {
     const ps = sv(KEYS.progress)?.state?.progress;
     if (ps && J(progOf(t)) !== J(ps)) viol('converge-progress', 'tab memory differs from the save');
@@ -441,5 +502,5 @@ describe('several tabs at random, against one learner\'s actions in time order',
     const summary = Object.entries(V).map(([c, l]) => `${c}: ${l.length} (first: seed ${l[0].seed} step ${l[0].step}: ${l[0].detail.slice(0, 400)})`);
     process.stdout.write(`TABS MODEL seeds ${FIRST}..${FIRST + SEEDS - 1}, steps ${STEPS}, tabs ${NTABS}: ${summary.length ? `\n${summary.join('\n')}` : 'no divergence'}\n`);
     expect(summary).toEqual([]);
-  }, 900_000);
+  }, Math.max(900_000, SEEDS * STEPS * NTABS * 2)); // the long run (6000 × 200 × 4) needs more than 15 minutes on a loaded machine
 });

@@ -103,3 +103,30 @@ describe('never taller than the content', () => {
     expect(fitDockDetents(392, 708, 784, HEAD, [], 0, 0)).toMatchObject({ half: 392, full: 708, fullDistinct: true });
   });
 });
+
+// QA report 2, P5 (19 November 2026): at 375×667 the guitar's Half showed the
+// six strings and stopped above their fret numbers. The numbers go with the
+// strings; nothing else changes.
+describe('the fret numbers stay with the strings', () => {
+  const strings = Array.from({ length: 6 }, (_, i) => ({
+    top: 30 + i * 32, bottom: 62 + i * 32, dots: { top: 32 + i * 32, bottom: 60 + i * 32 },
+  }));
+  const frets = { top: 226, bottom: 244, withAbove: true };
+  const controls = { top: 252, bottom: 296 };
+  const HEAD = 72;
+  it('Half that would end after the last string ends after the fret numbers', () => {
+    // Without the flag the edge stops at the numbers' top: 72 + 226 + 4.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, { ...frets, withAbove: false }, controls], 300).half).toBe(HEAD + 226 + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 244 + 4);
+    // An edge that already fell exactly on the numbers' top, or in the 4 px between strings and numbers.
+    expect(fitDockDetents(HEAD + 226 + 4, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 244 + 4);
+    expect(fitDockDetents(HEAD + 224 + 4, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 244 + 4);
+  });
+  it('never past the room the view keeps (halfMax)', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 0, HEAD + 240).half).toBe(HEAD + 226 + 4);
+  });
+  it('an edge among the strings stays there (landscape), and one below the numbers is unchanged', () => {
+    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 126 + 4);
+    expect(fitDockDetents(HEAD + 250, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 250);
+  });
+});

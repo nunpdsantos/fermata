@@ -1214,6 +1214,43 @@ body {
   }
 }
 
+/* The guitar dock's notice (a chord's: no grip with the bass, a tone left
+   out, shapes for standard tuning only; a scale position's note out of
+   reach). Below 1280 px it takes a line of its own across the controls row,
+   as in release 16 at every width. From 1280 px it keeps its own width and
+   shares the controls row's line where it fits beside the controls AND the
+   chips' line at its minimum, so it adds no height to the dock (music audit
+   2, the review of builder K, item 8: +26 px at 1440×900 in Open G, pushing
+   Explore's circle past the fold). ChordShapeSelector measures that minimum:
+   the label, the gap, the WIDEST chip of the row as drawn selected and both
+   18 px edge fades, the same whichever chip is selected, so selecting a grip
+   never moves a notice whose words stay the same, and the dock keeps its
+   height; the chips give up width and scroll sideways, and the selected
+   one is placed again on any change of the row's box. Where the notice cannot fit, the flex line breaks
+   and it takes a line of its own (or two): decided by the widths the
+   platform draws, never by a language. From 1024 px, as it was until this
+   rule, the line it took could change with the grip selected (GitHub's
+   Linux, whose text is ~8 % wider: run #71, at b4fc9ab, chip 5 of 8 left out
+   of view); e2e/guitar-notice-height.spec.ts runs its main rows with text
+   8 % wider too. Outside the layers, so it wins over the element's `w-full`
+   utility without changing its markup (the owner's neck is recorded as is:
+   legacyNeck.test.tsx). */
+@media (min-width: 1280px) {
+  .fretboard-controls > p[role="status"] {
+    width: auto;
+    max-width: 100%;
+    flex: 0 1 auto;
+  }
+  /* Two notices together (a bass the neck cannot give AND a tone left out:
+     Cm(add11)/F♯) take their own line, as below 1280 px: on the controls'
+     line they squeezed the chips to 62 px and cut the selected one (second
+     review of builder K, item 5). */
+  .fretboard-controls > p[role="status"][data-notices="two"] {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
 /* ─── Explore workbench (W11-B, D-25 / D-29 / D-30) ───────────────
    Header (pickers · summary · Play · ⋯) over the work: the staff strip and
    the chords, with the circle of fifths beside them at ≥ 1200 px. The page
@@ -3193,4 +3230,142 @@ html[data-metro-room] .learn-scroll {
 }
 @media (min-width: 640px) {
   .chord-shapes-line { flex: 1 1 0; max-width: max-content; }
+}
+
+/* App behaviour stream (builder A), audit 2 P10, 19 November 2026: a printed
+   LESSON is its text, staves, rhythms, song references and tasks — not the
+   screen's furniture. On top of the print rules above (top bar, dock, toasts,
+   menus and sheets hidden; light tokens): the section rail or picker, Back,
+   each Try This's buttons (Hear it, Show on the piano / guitar, Open in
+   Explore — a chord list's chords stay, as words), the check's card ("Start
+   the check"), a track's closing card, Previous / Next and "Found a mistake?"
+   go; the rail's grid becomes one column; Learn's scroller prints whole; the
+   level and status colours print as their day ink (the Night block names
+   them too), so every printed word is ≥ 4.5:1 on the paper. Checked at A4
+   width and from a laptop's screen in e2e/lesson-print.spec.ts. */
+@media print {
+  :root.fermata-night {
+    --success-text: #006045;
+    --danger-text: #9f0712;
+    --warning-text: #973c00;
+    --level-text-l1: #235591;
+    --level-text-l2: #005c82;
+    --level-text-l3: #006440;
+    --level-text-l4: #006356;
+    --level-text-l5: #785200;
+    --level-text-l6: #8a4200;
+    --level-text-l7: #8d3063;
+    --level-text-l8: #5d4697;
+    --level-text-l9: #943135;
+  }
+  .learn-scroll {
+    overflow: visible !important;
+    height: auto !important;
+    padding-bottom: 0 !important;
+  }
+  /* Plain selectors in one list; each :has() and the complex :not() in a
+     rule of its own (review of bd14071), so a browser without one of them
+     drops only that rule, never the others. Without :has() the rail still
+     goes (its nav), only its empty column stays — and only on paper wider
+     than 1024 px, where the rail's grid applies at all. */
+  [data-testid="section-rail"],
+  [data-testid="section-picker"],
+  [data-section="intro"] > div:first-child > button,
+  [data-section="check"],
+  [data-section="check"] ~ * {
+    display: none !important;
+  }
+  [data-testid="inline-try-this"] button:not([data-testid="try-this-chords"] button) {
+    display: none !important;
+  }
+  aside:has(> [data-testid="section-rail"]) {
+    display: none !important;
+  }
+  [data-learn-scroll] div:has(> aside > [data-testid="section-rail"]) {
+    display: block !important;
+  }
+  [data-testid="try-this-chords"] button {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  /* A task's tick box is named by its instruction, and the rule above that
+     hides the dock (aria-label ending "instrument") caught every task ending
+     "… on your instrument": each task prints its box. */
+  [data-section="tasks"] button[aria-pressed] {
+    display: flex !important;
+  }
+  [data-testid="inline-try-this"],
+  [data-section="songs"] {
+    break-inside: avoid;
+  }
+}
+
+/* Explore and piano stream (builder X), second audit round (19 November 2026).
+   1. QA report 2, P5: every area of Explore that scrolls says so at its foot.
+   The page never scrolls and nothing a learner needs is cut: each area
+   either fits or scrolls inside itself with its edge showing there is more.
+   `explore/scrollCues.ts` marks a scroller whose CONTENT goes on below its
+   visible foot; the fade is drawn over that foot in the page colour (the
+   strip's and the chip rows' edge fades, turned on their side), takes no
+   room (a net 0 px: no measured layout moves) and no taps, and goes when the
+   foot is reached. Below 1200 px it is the work area's (or, on a short
+   screen, the whole view's): a sticky last item of the view's flex column.
+   On the workbench it is each column's own: a sticky last item of the
+   column, at its visible foot, above its cards (positioned, later in the
+   flow), its height cancelled by its margin (with the work column's 12 px
+   gap). (Review of the second round: drawn by the work area as absolutely
+   placed grid children, both fades spanned the work area's padding box —
+   the work column's lay over the circle column too.)
+   2. The chord detail's landing counts the metronome's bar: on a laptop
+   `chordScrollLanding.ts` lands within the room above it where the detail
+   fits there; on a tablet, a phone or a short screen the detail is scrolled
+   into view with `block: 'nearest'`, which keeps clear of this padding. */
+.explore-root::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  flex: none;
+  height: 28px;
+  margin-top: -28px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+}
+.explore-root[data-more-below]::after { opacity: 1; }
+@media screen and (min-width: 1200px) {
+  .explore-main::after, .explore-aside::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    display: block;
+    flex: none;
+    height: 28px;
+    margin-top: -28px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 3;
+    background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+  }
+  /* The work column is a flex column with a 12 px gap before its last item. */
+  .explore-main::after { margin-top: -40px; }
+  .explore-work[data-main-more-below] > .explore-main::after,
+  .explore-work[data-aside-more-below] > .explore-aside::after { opacity: 1; }
+}
+@media print {
+  .explore-root::after, .explore-main::after, .explore-aside::after { display: none; }
+}
+html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom: calc(var(--metro-room) + 8px); }
+/* 3. (Review of the second round.) The landing's tail is a floor under the
+   work column's own padding — the metronome's room included — never in its
+   place (`--chord-tail`, set by `chordScrollLanding.ts`); and the circle
+   column gets the bar's room too, so wedges under the bar (1366×768: 5♯, 6♭,
+   5♭) can be scrolled clear of it, as the work column's lines can. */
+@media screen and (min-width: 1200px) {
+  .explore-main { padding-bottom: max(2px, var(--chord-tail, 0px)); }
+  html[data-metro-room] .explore-main { padding-bottom: max(calc(var(--metro-room) + 8px), var(--chord-tail, 0px)); }
+  html[data-metro-room] .explore-aside { padding-bottom: calc(var(--metro-room) + 8px); }
 }

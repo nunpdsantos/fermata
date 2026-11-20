@@ -132,4 +132,38 @@ describe('LearnView navigation (W9-20)', () => {
     expect(await screen.findByText(`${MOD1.title} · review`, undefined, { timeout: 5000 })).toBeTruthy();
     expect(screen.getByTestId('focused-check')).toBeTruthy();
   }, 15_000);
+
+  // Review 2 of the Back stream, item 1: "Next lesson" from a unit's last lesson passed the current unit with
+  // the next lesson's id, and the panel was empty (in the code since the first Learn view).
+  it('"Next lesson" from a unit\'s last lesson opens the next one in its own unit; "Previous" comes back', async () => {
+    const [u2, u3] = [L1_UNITS[1], L1_UNITS[2]];
+    const last = u2.modules.at(-1)!;
+    const first = u3.modules[0];
+    useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: u2.id, moduleId: last.id } });
+    render(<LearnView />);
+    await h1(last.title);
+    const next = screen.getAllByRole('button').find((b) => b.textContent?.startsWith('Next lesson') && b.textContent.endsWith(first.title))!;
+    await act(async () => { fireEvent.click(next); });
+    await h1(first.title);
+    expect(useLearnSessionStore.getState().screen).toMatchObject({ unitId: u3.id, moduleId: first.id });
+    const prev = screen.getAllByRole('button').find((b) => b.textContent?.startsWith('Previous') && b.textContent.endsWith(last.title))!;
+    await act(async () => { fireEvent.click(prev); });
+    await h1(last.title);
+    expect(useLearnSessionStore.getState().screen).toMatchObject({ unitId: u2.id, moduleId: last.id });
+  });
+
+  it('a lesson saved with a unit it is not in (the live release\'s "Next lesson") is refused: Learn opens its overview, not an empty panel', async () => {
+    const first = L1_UNITS[2].modules[0];
+    useLearnSessionStore.setState({ screen: { type: 'module', levelId: 'l1', unitId: L1_UNITS[1].id, moduleId: first.id, section: null, at: Date.now() }, check: null });
+    render(<LearnView />);
+    await h1('Learn Music Theory');
+  });
+
+  it('a deep link naming the wrong unit opens the lesson in its own', async () => {
+    const first = L1_UNITS[2].modules[0];
+    useAppStore.setState({ pendingLearnTarget: { levelId: 'l1', unitId: L1_UNITS[1].id, moduleId: first.id } });
+    render(<LearnView />);
+    await h1(first.title);
+    expect(useLearnSessionStore.getState().screen).toMatchObject({ unitId: L1_UNITS[2].id });
+  });
 });

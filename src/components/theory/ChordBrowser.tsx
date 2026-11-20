@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { noteToString, type ChordQuality } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
@@ -10,6 +10,7 @@ import { ChipGroup } from '../ui/ChoiceChip.tsx';
 import { useAppStore } from '../../state/store.ts';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { CATEGORY_TERM, qualityTermId } from '../../glossary/termIds.ts';
+import { exploreReturn, noteBrowsed } from '../../state/appHistory';
 
 const CHORD_QUALITY_GROUPS: { labelKey: string; qualities: ChordQuality[] }[] = [
   {
@@ -78,7 +79,12 @@ export function ChordBrowser({ detail }: { detail?: ReactNode } = {}) {
   const selectedKey = useAppStore((s) => s.selectedKey);
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
   const selectedChord = useAppStore((s) => s.selectedChord);
-  const [activeCategory, setActiveCategory] = useState(0);
+  // Back into Explore opens the category it was left on, so its chord shows (state/appHistory.ts).
+  const [activeCategory, setActiveCategory] = useState(() => exploreReturn()?.category ?? 0);
+  useEffect(() => {
+    noteBrowsed(activeCategory);
+    return () => noteBrowsed(null);
+  }, [activeCategory]);
 
   const rootLabel = noteToString(selectedKey);
   const group = CHORD_QUALITY_GROUPS[activeCategory];

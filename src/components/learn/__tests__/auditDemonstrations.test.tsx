@@ -6,16 +6,18 @@
  * earReference method). Oracle pitches come from letters and octaves here,
  * never from the app.
  *
- *  - A22 (l9u30m4, "Descending Large Intervals"): the Try This promises C major
- *    descending, so it must start on the upper C and end on the lower C, and
- *    its staff must be written in the same order.
+ *  - A22 (l9u30m4, "Descending Large Intervals"): the Try This promises
+ *    descending intervals, so they must fall (since the second audit's fix
+ *    pass, the large intervals themselves, each from the upper C).
  *  - A27 (l4u12m5, "Third Inversion (V4/2)"): the bass must be heard falling
  *    from F to E, so G7/F must be followed by C/E, both chords shown.
  *  - A29 (l7u21m5): the task promises the bass F–F♯–G under F7 → F♯dim7 →
  *    C7; a plain C7 has C in the bass. The task now names C7/G; its three
- *    links, tapped one after another, are a look at each chord (F4, F♯4, G3:
- *    not a line), and it sends the learner to the jazz-blues Try This, which
- *    plays the three in a row over F3, F♯3, G3.
+ *    links, tapped one after another, are a look at each chord (F4, F♯4, G4
+ *    since the second audit, QA P7: C7/G is drawn and played as C7's second
+ *    inversion from G4, as the lesson's instrument shows it, where it was G3
+ *    under a root-position C7 with G doubled), and it sends the learner to
+ *    the jazz-blues Try This, which plays the three in a row over F3, F♯3, G3.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, act, within } from '@testing-library/react';
@@ -132,16 +134,19 @@ function conceptPanel(n: number): HTMLElement {
   return panels[n];
 }
 
-describe('A22 — "Descending Large Intervals": C major from the upper C down to the lower C', () => {
-  it('plays C5 B4 A4 G4 F4 E4 D4 C4, one note at a time, and writes them in that order', async () => {
+describe('A22 — "Descending Large Intervals": heard falling, from the upper C', () => {
+  // Round one played C major from the upper C down to the lower C (descending,
+  // but in steps). The second audit's fix pass plays the large intervals the
+  // lesson names, each falling from C5 (its staff, its drawing and the
+  // label: lessonDemonstrations.test.tsx).
+  it('plays C5 then E4, E♭4, D4, D♭4 and C4 in turn: every interval falls, one note at a time', async () => {
     renderLesson(L9_UNITS, 'l9u30m4');
     const panel = conceptPanel(1);
-    expect(within(panel).getByText(/descending/i)).toBeTruthy();
+    expect(within(panel).getByText(/falling/i)).toBeTruthy();
     const played = await hear(panel);
-    const down = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
-    expect(played).toEqual(down.map((p) => [midi(p)]));
-    const staff = await within(panel).findByTestId('staff');
-    expect(staff.getAttribute('data-notes')).toBe(down.join(' '));
+    const pairs = ['C5', 'E4', 'C5', 'Eb4', 'C5', 'D4', 'C5', 'Db4', 'C5', 'C4'];
+    expect(played).toEqual(pairs.map((p) => [midi(p)]));
+    for (let i = 1; i < played.length; i += 2) expect(played[i][0]).toBeLessThan(played[i - 1][0]);
   });
 
   it('the other concepts of the lesson are unchanged: Cmaj7 and Cm7 still sound as chords', async () => {
@@ -177,7 +182,7 @@ describe('A27 — V4/2: the bass falls from F to E, G7/F → C/E', () => {
 
 describe('A29 — jazz blues: F7 → F♯dim7 → C7/G over the bass F–F♯–G', () => {
   // Real pitches, never pitch classes: an octave is what tells a climb from a fall.
-  it('the task\'s three links are a look at each chord: tapped one after another their lowest notes are F4, F♯4, G3 (not a line), so the task sends the learner to the Try This to hear the climb', async () => {
+  it('the task\'s three links are a look at each chord: tapped one after another their lowest notes are F4, F♯4, G4, each chord as the instrument shows it, and the task sends the learner to the Try This to hear the three in a row', async () => {
     renderLesson(L7_UNITS, 'l7u21m5');
     // The task's own row: its tick box is named by the instruction.
     const toggle = screen.getByRole('button', { name: /jazz blues passing chord/i });
@@ -192,8 +197,8 @@ describe('A29 — jazz blues: F7 → F♯dim7 → C7/G over the bass F–F♯–
       expect(played, chord).toHaveLength(1);
       lowest.push(Math.min(...played[0]));
     }
-    // Each chord in the app's own single-chord voicing: the bass falls eleven half steps from F♯4 to G3.
-    expect(lowest).toEqual([midi('F4'), midi('F#4'), midi('G3')]);
+    // Each chord in the app's own single-chord voicing; C7/G as its second inversion, from G4.
+    expect(lowest).toEqual([midi('F4'), midi('F#4'), midi('G4')]);
     // So the task promises the ascent only where it is heard: under Jazz Blues, Hear it.
     expect(toggle.getAttribute('aria-label')).toMatch(/to see each chord, then, under Jazz Blues above, press Hear it to hear the three in a row/);
     expect(screen.getByRole('heading', { name: 'Jazz Blues' })).toBeTruthy();

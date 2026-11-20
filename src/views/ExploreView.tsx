@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExploreHeader } from '../components/explore/ExploreHeader.tsx';
 import { ScaleStrip } from '../components/explore/ScaleStrip.tsx';
@@ -13,6 +13,7 @@ import { useExploreSimple } from '../state/exploreDetail.ts';
 import { useGlossaryUi } from '../glossary/glossaryUi.ts';
 import { toast } from '../state/toastStore.ts';
 import { ProgressionHost } from '../components/explore/ProgressionHost.tsx';
+import { trackExploreScrollCues } from '../components/explore/scrollCues.ts';
 
 const GuitarPractice = lazy(() => import('../components/practice/GuitarPractice.tsx'));
 // The explanations (text in three languages, examples, sounds): fetched the
@@ -46,7 +47,8 @@ export const WORKBENCH_QUERY = '(min-width: 1200px)';
  * own when the window is too short — at 1440×900 neither needs to. Below
  * that the work area scrolls as one column (the circle under the chords on
  * a tablet; on a phone the circle is the key picker). The header and the
- * instrument dock never scroll away.
+ * instrument dock never scroll away. An area that scrolls shows it at its
+ * foot while it has more below (`explore/scrollCues.ts`, audit P5).
  *
  * Hovering, focusing or tapping a note anywhere makes it the linked focus
  * note (state/focusNoteStore.ts); changing the key or scale clears it.
@@ -79,9 +81,12 @@ export function ExploreView() {
     useFocusNoteStore.getState().clearAll();
   }, [selectedKey, selectedScale]);
   useEffect(() => () => useFocusNoteStore.getState().clearAll(), []);
+  // The continuation cues (audit P5): a fade at the foot of whichever area scrolls.
+  const rootRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => (rootRef.current ? trackExploreScrollCues(rootRef.current) : undefined), []);
 
   return (
-    <div className="explore-root" data-detail={simple ? 'simple' : 'full'} data-testid="explore-root">
+    <div ref={rootRef} className="explore-root" data-detail={simple ? 'simple' : 'full'} data-testid="explore-root">
       {/* The view's one top heading (audit 2026-11-18, Q14: Explore started at
           <h2>). Learn's views carry a visible h1; Explore's header has no room
           for a title line, so it is read, not drawn. */}

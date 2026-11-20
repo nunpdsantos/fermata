@@ -16,6 +16,15 @@
  *   loses it as it loses a shared link's parameters (state/shareParams.ts
  *   `cleanedAddress`). It is not a shared link: `?lang=pt` alone still shows
  *   the start screen, in Portuguese.
+ * - The one-tap offer (audit 2, P9; the owner, 18 November 2026: "a saved
+ *   language always wins; a link must never change a learner's setting by
+ *   itself"): on a visit WITH saved data, a link whose language differs from
+ *   the one the visit started in is offered once, in the link's language
+ *   ("Mudar para português?"), by one lasting toast; nothing changes until
+ *   that tap (`bootLanguageOffer`, components/layout/LanguageOffer.tsx). The
+ *   public pages' buttons (`?lesson=…&lang=`, `?start=theory&lang=`, the
+ *   landing pages' "open the app") and the tester's sheet ("Open Fermatina":
+ *   `/?lang=`) are such links.
  */
 
 import { hasSavedAppData } from '../state/welcomeGate';
@@ -81,7 +90,22 @@ export function linkLanguage(search: string, storage: ReadableStorage | undefine
   }
 }
 
-let bootLinkLanguage: AppLanguage | null | undefined;
+/** The boot address's `?lang=`, and whether it chose the visit's language (nothing saved). */
+let bootLink: { lang: AppLanguage | null; chose: boolean } | undefined;
+
+function readBootLink(): { lang: AppLanguage | null; chose: boolean } {
+  if (bootLink === undefined) {
+    let storage: Storage | undefined;
+    try {
+      storage = globalThis.localStorage;
+    } catch {
+      storage = undefined;
+    }
+    const search = typeof location === 'undefined' ? '' : location.search;
+    bootLink = { lang: addressLanguage(search), chose: linkLanguage(search, storage) !== null };
+  }
+  return bootLink;
+}
 
 /**
  * The language a visit starts in when no saved choice says otherwise: a
@@ -91,16 +115,20 @@ let bootLinkLanguage: AppLanguage | null | undefined;
  * preferences slice's default agree.
  */
 export function firstRunLanguage(): AppLanguage {
-  if (bootLinkLanguage === undefined) {
-    let storage: Storage | undefined;
-    try {
-      storage = globalThis.localStorage;
-    } catch {
-      storage = undefined;
-    }
-    bootLinkLanguage = typeof location === 'undefined' ? null : linkLanguage(location.search, storage);
-  }
-  return bootLinkLanguage ?? detectBrowserLanguage();
+  const link = readBootLink();
+  return (link.chose ? link.lang : null) ?? detectBrowserLanguage();
+}
+
+/**
+ * The boot address's `?lang=` when it did NOT choose the visit's language (a
+ * visit with saved data, where the saved language won): the language the
+ * one-tap offer proposes (audit 2, P9). Null on a first visit (the link's
+ * language was simply used) and without a valid `?lang=`. Read from the same
+ * one boot read as `firstRunLanguage`, before the address bar is cleaned.
+ */
+export function bootLanguageOffer(): AppLanguage | null {
+  const link = readBootLink();
+  return link.chose ? null : link.lang;
 }
 
 const HTML_LANG: Record<AppLanguage, string> = { en: 'en', pt: 'pt-PT', es: 'es-ES' };

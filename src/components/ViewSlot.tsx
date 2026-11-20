@@ -31,7 +31,7 @@ function ViewErrorFallback({ onRetry, sizeClassName }: { onRetry: () => void; si
 }
 
 // The lazy() wrappers outlive any one ViewSlot: App remounts the slot on every
-// view switch (AnimatePresence keys its wrapper by view), and a fresh lazy()
+// view switch (its wrapper is keyed by view), and a fresh lazy()
 // per mount would flash the spinner each time. Keyed by the (stable) loaders
 // table; a retry swaps in a new wrapper for the failed view only.
 const lazyCache = new WeakMap<object, Record<string, ComponentType>>();

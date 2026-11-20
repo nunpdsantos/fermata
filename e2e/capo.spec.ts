@@ -118,7 +118,9 @@ for (const v of VIEWS) {
     // the full neck below.)
     if (v.name !== 'landscape') {
       const atCapo = dock.locator('[data-string-row="3"][data-fret="3"]');
-      await expect(atCapo).toHaveAttribute('aria-label', 'Bb, fret 3, string 3, at the capo');
+      // The cell is the grip's (the open G shape's G string, at the capo): since
+      // music audit 2 (M48) its name says so; at the capo there is no finger.
+      await expect(atCapo).toHaveAttribute('aria-label', 'Bb, fret 3, string 3, at the capo, in the chord');
       if (v.touch) await atCapo.tap();
       else await atCapo.click();
       await expect(page.getByTestId('dock-readout')).toContainText('string 3 fret 3 (capo)');
@@ -135,7 +137,7 @@ for (const v of VIEWS) {
       const rows = await neck.locator('[data-dock-row="string"]').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().bottom));
       for (const b of rows) expect(b).toBeLessThanOrEqual(v.viewport.height + 0.5);
       const atCapo = neck.locator('[data-string-row="3"][data-fret="3"]');
-      await expect(atCapo).toHaveAttribute('aria-label', 'Bb, fret 3, string 3, at the capo');
+      await expect(atCapo).toHaveAttribute('aria-label', 'Bb, fret 3, string 3, at the capo, in the chord');
       await atCapo.tap();
       await expect.poll(() => samples.length, { message: 'the tap sounds' }).toBeGreaterThan(0);
       // Nothing behind the capo answers a tap.

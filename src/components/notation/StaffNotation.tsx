@@ -4,13 +4,14 @@
  */
 import type { PitchedNote } from '../../core/types/music';
 import { useStaffNotation, type StaffLayoutInfo } from './useStaffNotation';
+import type { ClefAnnotation } from '../../utils/notationHelpers';
 import { StaffNotationSkeleton } from './StaffNotationSkeleton';
 
 export interface StaffNotationProps {
   notes: PitchedNote[];
   clef?: 'treble' | 'bass';
   /** Clef annotation for already-written notation (does not transpose notes). */
-  annotation?: '8vb';
+  annotation?: ClefAnnotation;
   keySignature?: string;
   width?: number;
   /** Reserve space before notes, e.g. for wide labels beside a clef. */
@@ -65,8 +66,13 @@ export function StaffNotation({
     onLayout,
   });
 
+  // While VexFlow loads, hold the height the drawing will take (the fitted
+  // height, known before it loads), not the one asked for: a staff with a
+  // ledger line drew 100 px under an 80 px skeleton, and everything below it
+  // moved 20 px down when it arrived (Build's readout, scrolled clear of the
+  // dock, went back under it — e2e/explore-tools-audit.spec.ts Q4).
   if (loading) {
-    return <StaffNotationSkeleton height={height} />;
+    return <StaffNotationSkeleton height={fittedHeight} />;
   }
 
   return (

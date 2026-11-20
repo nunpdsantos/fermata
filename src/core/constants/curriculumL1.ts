@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { demonstration, run } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 1, Unit 1: Notation and Pitch
@@ -285,6 +286,20 @@ const l1u3m1: CurriculumModule = {
   prerequisites: ['l1u2m2'],
 };
 
+// Second audit, M50: a lesson about key signatures draws each key's scale
+// under its key signature, after the clef — no sharp or flat beside a note —
+// and plays it at the scale's pace. The tasks that ask what the signature
+// shows open the same drawing.
+const KEY_OF_G = demonstration('l1u3m2 key of G', {
+  key: 'G', tempo: 150, voices: [{ staff: 'treble', events: run('q', ['G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F#5', 'G5']) }],
+});
+const KEY_OF_D = demonstration('l1u3m2 key of D', {
+  key: 'D', tempo: 150, voices: [{ staff: 'treble', events: run('q', ['D4', 'E4', 'F#4', 'G4', 'A4', 'B4', 'C#5', 'D5']) }],
+});
+const KEY_OF_F = demonstration('l1u3m2 key of F', {
+  key: 'F', tempo: 150, voices: [{ staff: 'treble', events: run('q', ['F4', 'G4', 'A4', 'Bb4', 'C5', 'D5', 'E5', 'F5']) }],
+});
+
 const l1u3m2: CurriculumModule = {
   id: 'l1u3m2',
   unitId: 'u3',
@@ -303,6 +318,7 @@ const l1u3m2: CurriculumModule = {
         "A key signature is shorthand — instead of writing a sharp or flat next to every affected note, it lists them once at the beginning. G major's key signature has one sharp (F#), meaning every F in the piece is played as F#, unless a natural sign (♮) written in front of an F cancels the sharp, from that note to the end of the measure. This saves clutter and shows at a glance which notes the key uses.",
       tryThisQuery: 'key of G',
       tryThisLabel: "See G's key signature — one sharp",
+      demo: KEY_OF_G,
     },
     {
       title: 'Your First Four Keys',
@@ -310,6 +326,7 @@ const l1u3m2: CurriculumModule = {
         'Start with the most common keys: C major has no sharps or flats. G major has one sharp (F#). D major has two sharps (F#, C#). F major has one flat (Bb). Sharps always appear in order: F-C-G-D-A-E-B. Flats appear in the reverse: B-E-A-D-G-C-F. Each new key adds the next accidental in the sequence.',
       tryThisQuery: 'key of D',
       tryThisLabel: "See D's key signature — two sharps",
+      demo: KEY_OF_D,
     },
     {
       title: 'Scale vs. Key',
@@ -317,12 +334,13 @@ const l1u3m2: CurriculumModule = {
         "A scale is a pattern of notes in order. A key is the musical context that uses those notes, with one note as 'home.' When you are 'in the key of G major,' the G major scale provides your notes, G is home, and the key signature tells you to play F as F# unless a natural sign (♮) says otherwise. The same one-sharp signature also belongs to E minor, a key with the same notes and E as home: the signature gives the notes, and the music tells you which one is home.",
       tryThisQuery: 'key of F',
       tryThisLabel: "See F's key signature — one flat",
+      demo: KEY_OF_F,
     },
   ],
   tasks: [
-    { id: 'l1u3m2t1', instruction: "Tap 'key of G' — how many sharps does the key signature show?" },
-    { id: 'l1u3m2t2', instruction: "Tap 'key of D' — which new sharp was added beyond G major's F#?" },
-    { id: 'l1u3m2t3', instruction: "Tap 'key of F' — this is the first flat key. Which note is flatted?" },
+    { id: 'l1u3m2t1', instruction: "Tap 'key of G' — how many sharps does the key signature show?", demos: { 'key of G': KEY_OF_G } },
+    { id: 'l1u3m2t2', instruction: "Tap 'key of D' — which new sharp was added beyond G major's F#?", demos: { 'key of D': KEY_OF_D } },
+    { id: 'l1u3m2t3', instruction: "Tap 'key of F' — this is the first flat key. Which note is flatted?", demos: { 'key of F': KEY_OF_F } },
   ],
   prerequisites: ['l1u3m1'],
 };

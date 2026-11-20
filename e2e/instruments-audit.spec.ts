@@ -143,9 +143,18 @@ for (const viewport of [{ w: 1440, h: 900 }, { w: 1024, h: 768 }, { w: 390, h: 8
           const s = await stripState(sheet);
           if (!s.inside || s.vertical.some((v) => v !== 0)) failures.push(`${tab} playing: ${JSON.stringify(s)}`);
         }
-        // Previous while playing: it stops there, in view.
+        // Previous while playing: it stops, in view, one step back from where it was when the press landed. At this tempo the
+        // player moves a step every 0.3 s, so the step read here can be one behind by the time the press lands (it was, once,
+        // on a loaded machine, 19 November 2026): the step it stops on is one of the two that reading allows, and it STAYS.
         const at = (await stripState(sheet)).index;
-        if (at > 0) { await press(previous); await settle(page); await expectAt(at - 1, 'previous while playing'); }
+        if (at > 0) {
+          await press(previous); await settle(page);
+          const stopped = await stripState(sheet);
+          if (stopped.index !== at - 1 && stopped.index !== at) failures.push(`${tab} previous while playing: read ${at}, stopped on ${JSON.stringify(stopped)}`);
+          await page.waitForTimeout(700);
+          const later = await stripState(sheet);
+          if (later.index !== stopped.index || !later.inside || later.vertical.some((v) => v !== 0)) failures.push(`${tab} previous while playing, 0.7 s later: ${JSON.stringify(stopped)} → ${JSON.stringify(later)}`);
+        }
         expect(failures, `${tab}`).toEqual([]);
       }
     } finally {

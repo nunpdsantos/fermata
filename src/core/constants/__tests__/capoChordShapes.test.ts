@@ -17,6 +17,7 @@ import {
   getChordShapes,
   getChordShapesWithFallback,
   isPlayableChordShape,
+  lowestSoundingPitchClass,
   sortShapesForDefault,
   type ChordShape,
 } from '../guitarChordShapes';
@@ -110,17 +111,24 @@ describe('the central promise: capo 1–9 × the 24 major and minor triads', () 
     // The bass is lowest on the first grip: F (pc 5).
     expect(lowestPc(placed.shapes[0])).toBe(5);
     expect(absFrets(placed.shapes[0])).toEqual([null, 8, 5, 7, 6, 7]);
-    expect(chordShapesForCapo(buildChord(N('A', '#'), 'dominant7'), 3, 7).bassMatched).toBe(false);
+    // A bass no grip above the capo can carry: G7♯9 over A♭ at capo 5 (the board says so).
+    expect(chordShapesForCapo({ ...buildChord(N('G'), 'dominant7sharp9'), bassNote: N('A', 'b') }, 0, 5).bassMatched).toBe(false);
   });
 
-  it('the bass is judged on the grips left once they are moved up: none can take it, so the board says so', () => {
-    // E°7 / D♭ (third inversion: E G B♭ D♭), capo 2: the only bass grip needs fret 16,
-    // so it is dropped, and what remains does not put the bass lowest.
+  it('the bass is judged on the grips left once they are moved up; where none of those fits, the frets above the capo are searched', () => {
+    // E°7 / D♭ (third inversion: E G B♭ D♭), capo 2: the no-capo bass grip
+    // needs fret 16, so it is dropped; within the frets left above the capo
+    // the board then finds x 4 2 3 2 3 (the capo stops strings 4 and 2).
     const e7 = buildChord(N('E'), 'diminished7');
     const placed = chordShapesForCapo(e7, 3, 2);
-    expect(placed.bassMatched).toBe(false);
-    expect(placed.shapes.map((e) => absFrets(e))).toEqual([[null, null, 14, 15, 14, 15]]);
-    for (const e of placed.shapes) expect(isPlayableChordShape(e, 15, 2)).toBe(true);
+    expect(placed.bassMatched).toBe(true);
+    expect(absFrets(placed.shapes[0])).toEqual([null, 4, 2, 3, 2, 3]);
+    for (const e of placed.shapes) {
+      expect(isPlayableChordShape(e, 15, 2)).toBe(true);
+      const frets = absFrets(e);
+      const low = frets.findIndex((f) => f !== null);
+      expect((OPEN_PCS[low] + frets[low]!) % 12).toBe(1);
+    }
   });
 });
 
@@ -181,22 +189,122 @@ describe('inversions and the bass with a capo', () => {
   });
 });
 
-describe('no capo: exactly the pipeline the board always used', () => {
+describe('no capo: exactly the pipeline the board uses', () => {
+  // Since music audit 2: root position asks for the root (M43), only grips
+  // with the asked bass are offered when one has it, one chip per grip, and
+  // the board's order (the review of builder K, item 5, and the
+  // coordinator's refinement and ruling, and the second review), written here
+  // from its rule, each part on its own terms: the grips a hand can strum
+  // (an inner muted string beside a stopped one) where there are any; a grip
+  // made from the library's C- or G-shape barre last; for an
+  // asked bass outside the chord, a grip that sounds it once first; four
+  // strings or more first; for any asked bass, a first-position grip first (an
+  // open string, every stopped fret at 4 or below); the lowest fretted fret;
+  // for an asked bass, more strings; then as found; and for an asked bass, a
+  // grip that is an earlier one with strings merely muted after every other.
+  const fretsOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? 'x' : e.baseFret + p.fret)).join('-');
+  const sounding = (e: { shape: ChordShape }) => e.shape.strings.filter((p) => p.fret !== null).length;
+  const lowestFretted = (e: { shape: ChordShape; baseFret: number }) => Math.min(Infinity, ...e.shape.strings.flatMap((p) => (p.fret === null || e.baseFret + p.fret === 0 ? [] : [e.baseFret + p.fret])));
+  const absOf = (e: { shape: ChordShape; baseFret: number }) => e.shape.strings.map((p) => (p.fret === null ? null : e.baseFret + p.fret));
+  const openPosition = (e: { shape: ChordShape; baseFret: number }) => absOf(e).includes(0) && absOf(e).every((f) => f === null || f <= 4);
+  const timesSounded = (e: { shape: ChordShape; baseFret: number }, pc: number) => absOf(e).filter((f, s) => f !== null && (OPEN_PCS[s] + f) % 12 === pc).length;
+  const canStrum = (e: { shape: ChordShape; baseFret: number }) => {
+    const f = absOf(e);
+    const on = f.flatMap((x, i) => (x === null ? [] : [i]));
+    const stopped = (i: number) => i >= 0 && i < 6 && f[i] !== null && f[i]! > 0;
+    for (let s = on[0] + 1; s < on[on.length - 1]; s++) if (f[s] === null && !stopped(s - 1) && !stopped(s + 1)) return false;
+    return true;
+  };
+  const mutedFrom = (b: { shape: ChordShape; baseFret: number }, a: { shape: ChordShape; baseFret: number }) => {
+    const fb = absOf(b), fa = absOf(a);
+    return fb.some((x, i) => x === null && fa[i] !== null) && fb.every((x, i) => x === null || x === fa[i]);
+  };
+  const order = <T extends { shape: ChordShape; baseFret: number }>(given: T[], bassPc: number | null, outside: boolean, plain: Chord) => {
+    const strum = given.filter(canStrum);
+    const offered = strum.length > 0 ? strum : given;
+    // Rule 1 by the shape a grip was made from (`madeFrom`, which a grip given a
+    // bass carries), not its printed name ("G-shape Barre / A"): the second
+    // review found 692 lists with a barre so renamed ahead of other grips. The
+    // sweep checks the same rule from the frets alone (gripSweep.corpus).
+    void plain;
+    const fromBarre = (e: T) => /^(C|G)-shape Barre$/.test(e.shape.madeFrom ?? e.shape.name);
+    const rank = (e: T) => [
+      fromBarre(e) ? 1 : 0,
+      bassPc !== null && outside && timesSounded(e, bassPc) > 1 ? 1 : 0,
+      sounding(e) <= 3 ? 1 : 0,
+      bassPc !== null && !openPosition(e) ? 1 : 0,
+      lowestFretted(e) === Infinity ? 0 : lowestFretted(e),
+      bassPc !== null ? -sounding(e) : 0,
+    ];
+    const cmp = (a: number[], b: number[]) => { for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] - b[k]; return 0; };
+    const sorted = offered.map((e, i) => ({ e, i, r: rank(e) })).sort((a, b) => cmp(a.r, b.r) || a.i - b.i).map((x) => x.e);
+    const placed = bassPc === null ? sorted : [...sorted.filter((e, i) => !sorted.slice(0, i).some((a) => mutedFrom(e, a))), ...sorted.filter((e, i) => sorted.slice(0, i).some((a) => mutedFrom(e, a)))];
+    return placed.slice(0, 8);
+  };
+  // The grips the search adds where a list has no first-position grip (second
+  // review, item 4): each a searched grip in first position with the bass
+  // lowest, and only where the strummable list had none.
+  const withAdded = <T extends { shape: ChordShape; baseFret: number }>(offered: T[], got: T[], bassPc: number, where: string) => {
+    const added = got.filter((e) => !offered.some((o) => fretsOf(o) === fretsOf(e)));
+    const strum = offered.filter(canStrum);
+    for (const e of added) {
+      expect(e.shape.name.startsWith('Search') && openPosition(e) && lowestSoundingPitchClass(e) === bassPc, `${where}: ${fretsOf(e)}`).toBe(true);
+      expect((strum.length > 0 ? strum : offered).some(openPosition), `${where}: added though first position was there`).toBe(false);
+    }
+    return [...offered, ...added];
+  };
   it('all 24 triads, root position and both inversions', () => {
     for (const chord of TRIADS) {
       for (const inversion of [0, 1, 2]) {
-        const bass = inversion > 0 ? chord.notes[inversion % chord.notes.length] : null;
-        const expected = arrangeShapesForBass(
+        const bass = chord.notes[inversion % chord.notes.length];
+        const arranged = arrangeShapesForBass(
           sortShapesForDefault(getChordShapesWithFallback(chord)),
           chord,
-          bass ? pcOf(bass) : null,
-          bass ? `${bass.natural}${bass.accidental}` : '',
+          pcOf(bass),
+          inversion > 0 ? `${bass.natural}${bass.accidental}` : '',
         );
+        expect(arranged.bassMatched).toBe(true);
+        const seen = new Set<string>();
+        const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === pcOf(bass) && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
+        // … and eight grips at most, the first of that order.
         const got = chordShapesForCapo(chord, inversion, 0);
-        expect(got.shapes).toEqual(expected.shapes);
-        expect(got.bassMatched).toBe(expected.bassMatched);
+        const expected = order(withAdded(offered, got.shapes, pcOf(bass), `${chord.root.natural}${chord.root.accidental} ${chord.quality} inv ${inversion}`), inversion > 0 ? pcOf(bass) : null, false, chord);
+        expect(got.shapes.map(fretsOf), `${chord.root.natural}${chord.root.accidental} ${chord.quality} inv ${inversion}`).toEqual(expected.map(fretsOf));
+        expect(got.bassMatched).toBe(true);
         expect(got.shapeChord).toBe(chord);
       }
     }
+  });
+
+  it('the 24 triads over every bass outside the chord (D/C, G/F♯, C/B♭…): the outside bass sounded once comes first', () => {
+    let outsideFirst = 0;
+    let doubledLater = 0;
+    for (const chord of TRIADS) {
+      const tones = new Set(chord.notes.map(pcOf));
+      for (const [bassPc, name] of ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'].entries()) {
+        if (tones.has(bassPc)) continue;
+        const request = { ...chord, bassNote: { natural: name[0], accidental: name.slice(1) } as typeof chord.root };
+        const arranged = arrangeShapesForBass(sortShapesForDefault(getChordShapesWithFallback(request)), request, bassPc, name);
+        if (!arranged.bassMatched) continue;
+        const seen = new Set<string>();
+        const offered = arranged.shapes.filter((e) => lowestSoundingPitchClass(e) === bassPc && !seen.has(fretsOf(e)) && seen.add(fretsOf(e)));
+        const got = chordShapesForCapo(request, 0, 0);
+        const where = `${chord.root.natural}${chord.root.accidental} ${chord.quality}/${name}`;
+        expect(got.shapes.map(fretsOf), where).toEqual(order(withAdded(offered, got.shapes, bassPc, where), bassPc, true, chord).map(fretsOf));
+        if (timesSounded(got.shapes[0], bassPc) === 1) outsideFirst++;
+        if (offered.some((e) => timesSounded(e, bassPc) > 1)) doubledLater++;
+      }
+    }
+    // The walk met grips that double the bass, and put one that does not first.
+    expect(doubledLater).toBeGreaterThan(10);
+    expect(outsideFirst).toBeGreaterThan(100);
+  });
+
+  it('a C- or G-shape barre given a bass still comes after every other grip (second review, item 2): C/A opens on x 0 2 0 1 0, its G-shape barre 5 7 5 5 5 8 last', () => {
+    const request = { ...buildChord(N('C'), 'major'), bassNote: N('A') };
+    const list = chordShapesForCapo(request, 0, 0).shapes.map(fretsOf);
+    expect(list[0]).toBe('x-0-2-0-1-0');
+    expect(list.indexOf('5-7-5-5-5-8')).toBe(list.length - 1);
+    expect(list.indexOf('x-0-5-5-5-0')).toBeLessThan(list.indexOf('5-7-5-5-5-8'));
   });
 });

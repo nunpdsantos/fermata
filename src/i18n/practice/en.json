@@ -70,6 +70,12 @@
   "finger": "Left hand {{finger}}",
   "fingerFor": "Finger for {{note}}, string {{string}}",
   "barre": "Partial barré",
+  "barreFull": "Full barré",
+  "barreSpan": "Barré: finger {{finger}} across strings {{from}} to {{to}}, fret {{fret}}",
+  "fingerBusy": "Finger {{finger}} is not offered for {{target}} on string {{targetString}}: at the same time it already holds {{note}} on string {{string}}, fret {{fret}}, and one finger cannot hold two frets.",
+  "fingerAcross": "Finger {{finger}} is not offered for {{target}} on string {{targetString}}: laid across from {{note}} on string {{string}}, fret {{fret}}, it would also stop string {{between}}, which is played open or at a lower fret at the same time.",
+  "fingerClash": "Finger {{finger}} is on {{a}} on string {{aString}}, fret {{aFret}}, and on {{b}} on string {{bString}}, fret {{bFret}}, at the same time: one finger cannot hold two frets. Change one of them.",
+  "fingerClashAcross": "Finger {{finger}} is on {{a}} on string {{aString}} and on {{b}} on string {{bString}}, at fret {{fret}}: laid across, it would also stop string {{between}}, which is played open or at a lower fret at the same time. Change one of them.",
   "reach": "Re-spread the hand",
   "shift": {
     "guide": "Guide-finger shift: {{from}} → {{to}}",

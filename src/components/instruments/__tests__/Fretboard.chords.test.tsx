@@ -158,7 +158,9 @@ describe('inversions and slash chords set the bass (W3-11)', () => {
   });
 
   it('when no shape can carry the bass, the board says so instead of ignoring it', async () => {
-    useAppStore.setState({ selectedChord: buildChord(N('C'), 'minor7'), chordInversion: 1 });
+    // (Cm7 first inversion did until the review of builder K: the neck is now
+    // searched and finds x x 1 3 1 3. C7♯5♭9 over B has no grip a hand can play.)
+    useAppStore.setState({ selectedChord: { ...buildChord(N('C'), 'dominant7sharp5flat9'), bassNote: N('B') }, chordInversion: 0 });
     await renderFretboard();
     expect(screen.getByRole('status').textContent).toContain('fretboard.bassNotice');
   });

@@ -19,11 +19,13 @@ const color = () => ACCENT_FILL;
  * A window of at least five frets follows the displayed passage; no tiny whole-neck dots on phones.
  * The current event wins when the passage revisits a cell with another finger.
  */
-export function PracticeNeck({ route, index, tuning, fingerFor, edited, onNote }: {
+export function PracticeNeck({ route, index, tuning, fingerFor, edited, onNote, barreAt }: {
   route: PracticeRoute; index: number; tuning: GuitarTuning;
   fingerFor: (event: number, n: FingeredNote) => number;
   edited: (event: number, n: FingeredNote) => boolean;
   onNote: (event: number, n: FingeredNote) => void;
+  /** The barré a note lies under (music audit 2, M41), in words: its dot's description says so. */
+  barreAt?: (event: number, n: FingeredNote) => string | null;
 }) {
   const { t } = useTranslation();
   const current = route.events[index];
@@ -66,7 +68,8 @@ export function PracticeNeck({ route, index, tuning, fingerFor, edited, onNote }
             if (n.stringIndex !== s) continue;
             const isGuide = guide && (n === guide || n === departure);
             dots.set(n.fret, { context: !currentShape, label: !currentShape ? '' : `${fingerFor(event, n)}${isGuide ? shiftArrow(guide.shift) : ''}`, isRoot: false, isStretch: !!n.reach || (n.position !== null && (n.fret < n.position || n.fret > n.position + 3)),
-              isEdited: currentShape && edited(event, n), description: !currentShape ? '' : isGuide ? guideText : t('practice.finger', { finger: fingerFor(event, n) }) });
+              isEdited: currentShape && edited(event, n), description: !currentShape ? '' : isGuide ? guideText
+                : [t('practice.finger', { finger: fingerFor(event, n) }), barreAt?.(event, n)].filter(Boolean).join(' · ') });
           }
           return <FretboardString key={s} stringIdx={s} visibleFrets={frets} nutSide={orientation.nut} fretMinWidth={0} mobile={false}
             isChordView atNut showFretBreak={low > 1} mode="position" stringName={names[s]} activeNotes={new Set()}

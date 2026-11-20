@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { LazyMotion, MotionConfig, domAnimation, AnimatePresence, m } from 'framer-motion';
+import { LazyMotion, MotionConfig, domAnimation, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
 import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
 import { QuickSearchHost } from './components/navigation/QuickSearchHost.tsx';
@@ -74,7 +74,7 @@ function App() {
     const paramView = params.get('view');
     const link = readShareParams(search, hash);
     const { setView, lastView } = useAppStore.getState();
-    setView(pickBootView(search, lastView));
+    setView(pickBootView(search, lastView, window.history.state));
 
     // Strip ?view=, ?lang= (i18n/language.ts: it has chosen the language of a
     // first visit by now, or was ignored) and the link's parameters (keep
@@ -82,6 +82,9 @@ function App() {
     if (paramView !== null || link !== null || params.has(LANG_PARAM)) {
       window.history.replaceState(window.history.state, '', cleanedAddress(pathname, search, hash));
     }
+
+    // Back and Forward inside the app (P3): its own chunk, once the boot view is set.
+    import('./state/appHistory.ts').catch(() => undefined);
 
     if (link !== null) {
       markOpenedFromShareLink();
@@ -97,21 +100,33 @@ function App() {
       <MotionConfig reducedMotion="user">
       {startShown ? <StartHost /> : (
       <AppShell>
-        <AnimatePresence mode="wait">
-          <m.div
-            key={view}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            className="h-full flex flex-col min-h-0"
-            id={`${view}-panel`}
-            role="tabpanel"
-            aria-labelledby={`tab-${view}`}
-          >
-            {!linkOpening && <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />}
-          </m.div>
-        </AnimatePresence>
+        {/* A view fades in and does NOT fade out (20 November 2026): the one
+            it replaces is unmounted at once. Until then the view on its way
+            out stayed mounted for a 150 ms exit and the next one waited for
+            it (AnimatePresence, mode "wait"). With Back (or a tab) pressed
+            just as a lesson was arriving, the lesson mounted inside the Learn
+            view that was already leaving: it wrote its screen and drove the
+            instrument (now also refused where they are written: appHistory
+            `shown`, lessonInstrument), and its exit never ended, so Explore
+            never mounted: the tab said Explore and the screen stayed the
+            lesson until a tab was tapped (GitHub's back-button A6, twice on a
+            first attempt; here 8 of 60 with the CPU slowed, with and without
+            reduced motion). With no view on its way out there is nothing to
+            arrive in. The guards are still needed: a lesson drawn just before
+            the view is left runs its first effects before the next view is
+            drawn, with the store already on that view. */}
+        <m.div
+          key={view}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+          className="h-full flex flex-col min-h-0"
+          id={`${view}-panel`}
+          role="tabpanel"
+          aria-labelledby={`tab-${view}`}
+        >
+          {!linkOpening && <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />}
+        </m.div>
       </AppShell>
       )}
       {!startShown && <QuickSearchHost />}

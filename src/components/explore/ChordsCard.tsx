@@ -6,7 +6,7 @@ import { ChordBuilderPanel } from '../theory/ChordBuilderPanel.tsx';
 import { CurrentChordPanel } from '../panels/CurrentChordPanel.tsx';
 import { Segment } from '../ui/Segment.tsx';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { exploreRegister } from './exploreRegister';
+import { exploreChordVoicing } from './exploreRegister';
 import { useAppStore } from '../../state/store.ts';
 import { keyName } from './focusReadout.ts';
 import { staffTrim } from './staffTrim.ts';
@@ -20,21 +20,24 @@ import { SHEET_QUERY } from '../../hooks/useMediaQuery.ts';
 import { toast } from '../../state/toastStore.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import '../../i18n/exploreTools';
+import { exploreReturn } from '../../state/appHistory';
 
 const StaffNotation = lazy(() =>
   import('../notation/StaffNotation.tsx').then((m) => ({ default: m.StaffNotation })),
 );
 
-/** The selected chord on a small staff, in its inversion (what the instrument plays). */
+/** The selected chord on a small staff, in its inversion: exactly what ▶ Chord
+ *  plays, slash bass and the piano's octave included (`exploreChordVoicing`). */
 const CHORD_STAFF_HEIGHT = 80;
 
 function ChordStaff() {
   const { invertedNotes } = useKeyContext();
   const chord = useAppStore((s) => s.selectedChord);
   const instrument = useAppStore((s) => s.instrument);
+  const baseOctave = useAppStore((s) => s.baseOctave);
   const notes = useMemo(
-    () => (chord ? exploreRegister(instrument).chordPitches(invertedNotes.length > 0 ? invertedNotes : chord.notes, instrument === 'guitar' ? chord.bassNote : undefined) : []),
-    [chord, invertedNotes, instrument],
+    () => (chord ? exploreChordVoicing(instrument, baseOctave, chord, invertedNotes) : []),
+    [chord, invertedNotes, instrument, baseOctave],
   );
   const trim = useMemo(() => staffTrim(notes, instrument, CHORD_STAFF_HEIGHT), [notes, instrument]);
   if (!chord) return null;
@@ -45,7 +48,8 @@ function ChordStaff() {
       data-testid="chord-staff"
       style={{ marginTop: -trim.top, marginBottom: -trim.bottom }}
     >
-      <Suspense fallback={<StaffNotationSkeleton height={CHORD_STAFF_HEIGHT} />}>
+      {/* The drawing's own height (the trim's layout), so nothing moves when it arrives. */}
+      <Suspense fallback={<StaffNotationSkeleton height={trim.height} />}>
         <StaffNotation
           notes={notes}
           height={CHORD_STAFF_HEIGHT}
@@ -90,7 +94,8 @@ export function ChordsCard() {
   const selectedChord = useAppStore((s) => s.selectedChord);
   const selectedKey = useAppStore((s) => s.selectedKey);
   const cardRef = useRef<HTMLElement>(null);
-  const [tab, setMode] = useState<ChordMode>('diatonic');
+  // Back into Explore opens the tab it was left on (state/appHistory.ts); otherwise In key.
+  const [tab, setMode] = useState<ChordMode>(() => (exploreReturn()?.tab as ChordMode | null | undefined) ?? 'diatonic');
   // Simple view: the In key row only (no All Chords / Build tabs). The tab
   // chosen in Full is kept for when the learner goes back.
   const simple = useExploreSimple();

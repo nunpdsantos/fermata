@@ -7,7 +7,7 @@
  * one-object resolver does not read it.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { parseChordListQuery, lessonInstrumentQuery, chordListSounds, CHORD_LIST_STEP_S } from '../queryExecutorChords';
+import { parseChordListQuery, lessonInstrumentQuery, chordListSounds, slashChordInversion, CHORD_LIST_STEP_S } from '../queryExecutorChords';
 import { executeTheoryQuery } from '../queryExecutor';
 import { resolveTheoryQuery } from '../theoryQuery';
 import { clearProgressionRequest, getProgressionRequest } from '../../state/progressionRequest';
@@ -75,14 +75,28 @@ describe('parseChordListQuery', () => {
     });
     expect(lowest('chords: F7 F#dim7 C7/G')).toEqual(['F3', 'F#3', 'G3']);
     expect(lowest('chords: G7/F C/E')).toEqual(['F3', 'E3']);
-    // The known limit: a written line that crosses between B and C is heard
-    // the other way round (B3 → C3, a major 7th down, for a half step up).
-    expect(lowest('chords: G7/B C')).toEqual(['B3', 'C3']);
+    // A bass that moves by step across B and C is heard as that step (second
+    // audit, round one's known limit closed): B3 → C4, a half step up, where
+    // octave 3 alone gave C3, a major 7th down; and down again, C3 → B2.
+    expect(lowest('chords: G7/B C')).toEqual(['B3', 'C4']);
+    expect(lowest('chords: C G/B')).toEqual(['C3', 'B2']);
+    // A leap goes back to octave 3; a step after a step keeps climbing.
+    expect(lowest('chords: G Am Bm C D Em')).toEqual(['G3', 'A3', 'B3', 'C4', 'D4', 'E4']);
+    expect(lowest('chords: Bm C F')).toEqual(['B3', 'C4', 'F3']);
+    // A step is a step down as well as up: up, then back the same way (fix
+    // pass, item 2: after a climb a step down fell an octave, D4 → C3).
+    expect(lowest('chords: Bm C D C Bm')).toEqual(['B3', 'C4', 'D4', 'C4', 'B3']);
+    expect(lowest('chords: C G/B Am G F Em Dm C')).toEqual(['C3', 'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2']);
+    // The register is bounded: a line may follow its steps from C2 to B4; a
+    // step past B4 (or below C2) and every leap come back to octave 3.
+    expect(lowest('chords: C Dm Em F G Am Bm C Dm Em F G Am Bm C Dm')).toEqual(
+      ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C3', 'D3']);
+    expect(lowest('chords: C Bdim Am G F Em Dm C Bdim')).toEqual(['C3', 'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2', 'B3']);
+    expect(lowest('chords: C F G C')).toEqual(['C3', 'F3', 'G3', 'C3']);
     // Every chord list the lessons ship: a bass that moves by a half or whole
-    // step (pitch classes 1 or 2 apart) is heard as that step, except where
-    // it crosses B–C. The one list that does is root-position and unchanged
-    // since wave 2 (the track's chords of G in scale order): it is listed, so
-    // a new crossing fails here.
+    // step (pitch classes 1 or 2 apart) is heard as that step — l1u35m3, the
+    // track's chords of G in scale order, crossed B–C until the second audit;
+    // none may now.
     const midiOf = (p: { octave: number }, pc: number) => 12 * (p.octave + 1) + pc;
     const lists = [L1_UNITS, L2_UNITS, L3_UNITS, L4_UNITS, L5_UNITS, L6_UNITS, L7_UNITS, L8_UNITS, L9_UNITS]
       .flat().flatMap((u) => u.modules).flatMap((m) => m.concepts.map((c) => [m.id, c.tryThisQuery] as const))
@@ -97,9 +111,23 @@ describe('parseChordListQuery', () => {
         if (step !== null && step !== 0 && basses[i] - basses[i - 1] !== step) broken.push(`${id} ${q}: ${basses[i - 1]} → ${basses[i]}`);
       }
     }
-    expect(broken).toEqual(['l1u35m3 chords: G Am Bm C D Em: 59 → 48']);
+    expect(broken).toEqual([]);
     // Root position, as before: open voicing from the root in octave 3.
     expect(chordListSounds(parseChordListQuery('chords: G C')!).map((s) => s.pitches.map((p) => `${p.natural}${p.octave}`).join(' '))).toEqual(['G3 D4 B4', 'C3 G3 E4']);
+  });
+
+  it('a slash chord whose bass is one of its tones sounds as that inversion, nothing doubled (second audit, QA P7)', () => {
+    const voicing = (q: string) => chordListSounds(parseChordListQuery(q)!).map((s) => s.pitches.map((p) => `${p.natural}${p.accidental}${p.octave}`).join(' '));
+    // V4/2 → I6: the 7th F only in the bass, the 3rd E only in the bass (was F3 G4 B4 D5 F5 and E3 C4 E4 G4).
+    expect(voicing('chords: G7/F C/E')).toEqual(['F3 G3 B3 D4', 'E3 G3 C4']);
+    // F7 → F♯dim7 → C7/G: root position as before, C7/G in second inversion (was G3 C4 E4 G4 B♭4).
+    expect(voicing('chords: F7 F#dim7 C7/G')[2]).toBe('G3 Bb3 C4 E4');
+    // A bass that is not a chord tone still stands under the whole chord, sounded once (the same round's M58:
+    // it was D3 D4 C5 E5 G5, the bass twice and the chord an octave up).
+    expect(voicing('chords: C C/D')[1]).toBe('D3 C4 E4 G4');
+    expect(slashChordInversion(parseChordListQuery('chords: C C/E')![1].chord)).toBe(1);
+    expect(slashChordInversion(parseChordListQuery('chords: C C/D')![1].chord)).toBeNull();
+    expect(slashChordInversion(parseChordListQuery('chords: C G')![1].chord)).toBeNull();
   });
 
   it('the one-object resolver (Cmd+K, the lesson instrument) does not read it', () => {

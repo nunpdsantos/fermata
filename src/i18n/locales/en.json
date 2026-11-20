@@ -620,7 +620,6 @@
     "chordFret": "Fret {{fret}}",
     "chordShapesStandardOnly": "Chord shapes are for standard tuning only. Showing the chord's notes on the whole neck.",
     "noChordShape": "No playable shape for this chord. Showing its notes on the whole neck.",
-    "tuningGapNotice": "In this tuning two strings are a 5th apart, so one note between them is out of the hand's reach in this position.",
     "bassNotice": "No shape here has {{bass}} in the bass, so the shapes are shown as they are."
   },
   "difficulty": {

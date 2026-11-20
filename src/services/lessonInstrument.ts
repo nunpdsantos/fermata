@@ -46,9 +46,18 @@ function stopWatching(): void {
 /**
  * Show a lesson query on the instrument (no view change). Returns false when
  * the query names nothing the instrument can show (the circle of fifths, or a
- * query the resolver does not know) — the instrument is then left as it is.
+ * query the resolver does not know), and when Learn is not the view on screen
+ * (below) — the instrument is then left as it is.
  */
 export function showLessonQuery(query: string): boolean {
+  // Only while Learn is the view (as the lesson's dock: lessonDock.ts). A
+  // lesson's first effects can run after the learner has left it: Back
+  // pressed just as it was drawn (and, while views still had an exit
+  // animation, a lesson mounting in the view on its way out). Its selection
+  // must not land on Explore then (the chord Back had just brought back was
+  // replaced by the lesson's, and the loan was never given back: reproduced
+  // with the CPU slowed, 20 November 2026).
+  if (useAppStore.getState().view !== 'learn') return false;
   const resolved = resolveTheoryQuery(query);
   if (!resolved || resolved.kind === 'circle') return false;
   borrow();

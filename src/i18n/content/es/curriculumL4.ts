@@ -75,23 +75,23 @@ const curriculumL4: CurriculumLevelOverlay = {
           title: 'Tipos de retardo: 4-3, 7-6, 9-8',
           explanation:
             'Los retardos se nombran según los intervalos que forman sobre el bajo en el momento de la disonancia y la resolución. El retardo 4-3 es el más frecuente: una 4.ª sobre el bajo resuelve a una 3.ª. El retardo 7-6 retiene una 7.ª que resuelve a una 6.ª — habitual en secuencias y cadenas de retardos. El retardo 9-8 retiene una 9.ª (o 2.ª una octava más arriba) que resuelve a una octava. Los tres resuelven por grado conjunto descendente. Un retardo ornamentado añade una o más notas entre el retardo y su resolución, como una breve bordadura inferior, antes de que la línea llegue a su resolución un grado más abajo.',
-          tryThisLabel: 'Imagina mantener C sobre este acorde (ret. 4-3)',
+          tryThisLabel: 'Escucha dos retardos: C retenido sobre un bajo G desciende a B (4-3), y ese B, retenido sobre un bajo C, desciende a A (7-6)',
         },
         {
           title: 'El retardo de bajo 2-3',
           explanation:
             'El retardo 2-3 es único: se produce en la voz del bajo en lugar de en una voz superior. La nota del bajo es retenida del acorde anterior, formando una 2.ª contra una voz superior que permanece inmóvil, y luego resuelve por grado conjunto descendente. La etiqueta «2-3» describe el intervalo por encima del bajo: al descender el bajo, ese intervalo crece de una 2.ª a una 3.ª — la voz superior no se mueve. El bajo, como en todos los retardos estándar, resuelve por grado conjunto descendente. (Kostka/Payne, Tonal Harmony, cap. 12.)',
-          tryThisLabel: 'Mantén E en una voz superior mientras el bajo desciende D → C — el intervalo por encima del bajo crece de una 2.ª a una 3.ª',
+          tryThisLabel: 'Escucha el E mantenido en una voz superior mientras el bajo desciende de D a C — el intervalo por encima del bajo crece de una 2.ª a una 3.ª (aquí una 9.ª a una 10.ª: se sigue llamando 2-3)',
         },
       ],
       tasks: [
         {
           instruction:
-            'Toca "C major chord" e imagina mantener la nota F mientras el acorde suena — el F es una 4.ª disonante sobre el bajo que quiere resolver por grado conjunto descendente a E (un patrón de retardo 4-3)',
+            'Pulsa "C major chord" para oír F retenido sobre C y G, que después desciende a E — el F es una 4.ª disonante sobre el bajo y resuelve por grado conjunto descendente a E, la 3.ª (un retardo 4-3)',
         },
         {
           instruction:
-            'En un retardo 7-6, una 7.ª sobre el bajo resuelve a una 6.ª. Imagina la nota B retenida sobre un bajo C: B es una 7.ª y resuelve descendiendo a A (una 6.ª sobre C). Esto crea una disonancia más suave que la 4-3',
+            'En un retardo 7-6, una 7.ª sobre el bajo resuelve a una 6.ª: en Tipos de retardo (arriba), pulsa Escuchar y, después del 4-3, oirás B retenido sobre un bajo C (una 7.ª) resolver descendiendo a A (una 6.ª sobre C). Esto crea una disonancia más suave que la 4-3',
         },
         {
           instruction:

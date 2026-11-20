@@ -1,4 +1,5 @@
 import type { CurriculumUnit, CurriculumModule } from '../types/curriculum';
+import { demonstration, note, chord } from '../utils/demonstration';
 
 // ---------------------------------------------------------------------------
 // Level 4, Unit 12: Non-Chord Tones and Dominant Seventh
@@ -28,24 +29,57 @@ const l4u12m1: CurriculumModule = {
       explanation:
         'Suspensions are named by the intervals they form above the bass at the moment of dissonance and resolution. The 4-3 suspension is the most common: a 4th above the bass resolves to a 3rd. The 7-6 suspension holds a 7th that resolves to a 6th \u2014 common in sequences and chains of suspensions. The 9-8 suspension holds a 9th (or 2nd an octave up) that resolves to an octave. All three resolve downwards by step. A decorated (ornamented) suspension adds one or more notes between the suspension and its resolution, such as a brief lower neighbour, before the line arrives on its resolution a step below.',
       tryThisQuery: 'G major chord',
-      tryThisLabel: 'Imagine holding C over this chord (4-3 sus)',
+      tryThisLabel: 'Hear two suspensions: C held over a G bass falls to B (4-3), and that B, held over a C bass, falls to A (7-6)',
+      // Second audit, fix pass: the 4-3 and the 7-6 heard, not imagined. The B
+      // that resolves the 4-3 is tied into the next bar, where the bass moves
+      // to C under it: prepared, held as a 7th, it falls to A, a 6th.
+      demo: demonstration('l4u12m1 c1', {
+        tempo: 72,
+        time: '4/4',
+        voices: [
+          { staff: 'treble', events: [note('h', 'C5'), note('h', 'B4', { tie: true }), note('h', 'B4'), note('h', 'A4')] },
+          { staff: 'bass', events: [chord('w', ['G2', 'D3']), chord('w', ['C3', 'E3'])] },
+        ],
+      }),
     },
     {
       title: 'The 2-3 Bass Suspension',
       explanation:
         'The 2-3 suspension is unique: it occurs in the bass voice rather than an upper voice. The bass note is held from the previous chord, forming a 2nd against a stationary upper voice, then resolves downwards by step. The label "2-3" describes the interval above the bass: as the bass descends, that interval grows from a 2nd to a 3rd — the upper voice does not move. The bass, like all standard suspensions, resolves by step downwards. (Kostka/Payne, Tonal Harmony, Ch. 12.)',
       tryThisQuery: 'C major chord',
-      tryThisLabel: 'Hold E in an upper voice while the bass descends D → C — the interval above the bass grows from a 2nd to a 3rd',
+      tryThisLabel: 'Hear E held in an upper voice while the bass falls from D to C — the interval above the bass grows from a 2nd to a 3rd (here a 9th to a 10th: it is still called 2-3)',
+      // Second audit, M54: the E sounds once and holds; under it the bass, on
+      // the bass staff, strikes D, then C. As the sources write it (Hutchinson,
+      // Music Theory for the 21st-Century Classroom, §10.9: "you may encounter
+      // the literal intervals 10-9 but should label the suspension as 2-3";
+      // Brick, species counterpoint: "Below a cantus firmus: 2-3 (9-10)").
+      demo: demonstration('l4u12m1 c2', {
+        tempo: 80,
+        voices: [
+          { staff: 'treble', events: [note('w', 'E4')] },
+          { staff: 'bass', events: [note('h', 'D3'), note('h', 'C3')] },
+        ],
+      }),
     },
   ],
   tasks: [
     {
       id: 'l4u12m1t1',
-      instruction: "Play 'C major chord' and imagine holding the note F while the chord sounds \u2014 the F is a dissonant 4th above the bass that wants to resolve down to E (a 4-3 suspension pattern)",
+      instruction: "Tap 'C major chord' to hear F held over C and G, then falling to E \u2014 the F is a dissonant 4th above the bass, and it resolves down to E, the 3rd (a 4-3 suspension)",
+      // Second audit, fix pass: the 4-3 the task describes, heard.
+      demos: {
+        'C major chord': demonstration('l4u12m1t1', {
+          tempo: 72,
+          voices: [
+            { staff: 'treble', events: [note('h', 'F4'), note('h', 'E4')] },
+            { staff: 'bass', events: [chord('w', ['C3', 'G3'])] },
+          ],
+        }),
+      },
     },
     {
       id: 'l4u12m1t2',
-      instruction: "In a 7-6 suspension, a 7th above the bass resolves to a 6th. Imagine the note B held over a C bass: B is a 7th, and it resolves down to A (a 6th above C). This creates a gentler dissonance than the 4-3",
+      instruction: "In a 7-6 suspension, a 7th above the bass resolves to a 6th: under Suspension Types above, press Hear it, and after the 4-3 you hear B held over a C bass (a 7th) resolve down to A (a 6th above C). This creates a gentler dissonance than the 4-3",
     },
     {
       id: 'l4u12m1t3',
@@ -717,6 +751,18 @@ const l4u14m4: CurriculumModule = {
         'Roman numeral analysis follows a systematic process: (1) determine the key from the key signature and cadence patterns, (2) at each harmonic rhythm point, identify the chord \u2014 which notes are sounding, (3) determine root and quality, (4) label with Roman numeral, quality symbol, and inversion figure, (5) identify NCTs as notes that do not belong to the chord, (6) mark cadences at phrase endings. This method transforms intuitive listening into structured understanding.',
       tryThisQuery: 'key of C',
       tryThisLabel: 'See all chords available for analysis in C',
+      // Second audit, fix pass: the seven chords of the key, I to vii°, one
+      // after another (it showed the scale).
+      demo: demonstration('l4u14m4 c0', {
+        tempo: 100,
+        voices: [{
+          staff: 'treble',
+          events: [
+            chord('h', ['C4', 'E4', 'G4']), chord('h', ['D4', 'F4', 'A4']), chord('h', ['E4', 'G4', 'B4']), chord('h', ['F4', 'A4', 'C5']),
+            chord('h', ['G4', 'B4', 'D5']), chord('h', ['A4', 'C5', 'E5']), chord('h', ['B4', 'D5', 'F5']),
+          ],
+        }],
+      }),
     },
     {
       title: 'Reading Chorale Textures',

@@ -77,7 +77,10 @@ describe('every chip the board can offer carries a learner\'s name (Q1)', () => 
         }
       }
       expect([...bad]).toEqual([]);
-      expect(named).toBeGreaterThan(20000);
+      // 27,905 after the review of builder K (every way of giving the asked
+      // bass, the neck searched, eight grips at most); 11,017 at its head,
+      // 23,699 at 153caab.
+      expect(named).toBeGreaterThan(27_500);
     }, 120_000);
   }
 

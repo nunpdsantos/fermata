@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { seededBrowser, type View, type Lang } from './helpers/wave1';
+import { seededBrowser, PHONE, type View, type Lang } from './helpers/wave1';
 
 /**
  * Audit 2026-11-18, stream C (Explore tools), in a real browser:
@@ -16,6 +16,20 @@ import { seededBrowser, type View, type Lang } from './helpers/wave1';
  *   - at every size the readout can be brought wholly into view between the
  *     held staff strip and the dock by scrolling the work column, before and
  *     after a chord is built (it is never only reachable by hiding the dock);
+ *   - and it STAYS there when the staff strip's staff arrives: VexFlow is
+ *     held back until the readout has been scrolled into view, then let go
+ *     (review of the second round, 20 November 2026: the strip's loading
+ *     skeleton was 80 px and the drawn staff 100, so a staff that arrived
+ *     late — a fresh dev server on GitHub's runners — moved everything under
+ *     it 20 px down and put the readout back under the dock; release 16 did
+ *     the same, only less often too late). Held two ways (`holdVexFlow`):
+ *     the loader with the library, so the strip shows ScaleStrip's Suspense
+ *     fallback; then the library alone, so StaffNotation itself mounts and
+ *     shows its OWN skeleton. Each time the strip's height is compared too;
+ *     at 1440×900 that is the only check that can see a 20 px drop (the
+ *     readout has 23 px to spare there), the readout's carries it elsewhere;
+ *   - in normal text and with the text 8 % wider (letter-spacing 0.04em,
+ *     roughly how GitHub's Linux draws it);
  *   - after a chord is built, ▶ Chord is in view, and wherever the readout
  *     and the detail's actions fit together under the strip (1280, 1440,
  *     1536 — logged per size) the readout lands in view with them; at
@@ -29,9 +43,10 @@ const LAPTOPS: [number, number][] = [[1280, 800], [1366, 768], [1440, 900], [153
 const LANGS: Lang[] = ['en', 'pt', 'es'];
 const BUILD = { en: 'Build', pt: 'Construir', es: 'Construir' } as const;
 
-async function openBuild(page: Page, lang: Lang) {
+async function openBuild(page: Page, lang: Lang, wide = false) {
   await page.goto('/');
   await expect(page.getByTestId('scale-strip')).toBeVisible({ timeout: 15_000 });
+  if (wide) await page.addStyleTag({ content: 'body *:not(svg):not(svg *) { letter-spacing: 0.04em !important; }' });
   await page.evaluate(() => document.fonts.ready);
   await page.getByRole('tab', { name: BUILD[lang], exact: true }).click();
   await expect(page.getByTestId('builder-readout')).toBeAttached();
@@ -60,6 +75,71 @@ function geometry(page: Page) {
 const whole = (b: { top: number; bottom: number } | null, g: { top: number; bottom: number }) =>
   !!b && b.top >= g.top - 0.5 && b.bottom <= g.bottom + 0.5;
 
+/**
+ * Hold VexFlow back until `release()`. What each configuration serves (read
+ * 20 November 2026): the dev server `/src/utils/vexflowLoader.ts` (the
+ * loader) and `/node_modules/.vite/deps/vexflow_bravura.js` (the library);
+ * the build `assets/vexflowLoader-<hash>.js` and `assets/vexflow-<hash>.js`
+ * (the library's chunk is named in vite.config.ts).
+ *  - 'loader' holds both (/vexflow/): useStaffNotation imports the loader, so
+ *    the lazy StaffNotation chunk cannot run, the library is never asked for,
+ *    and each staff shows the Suspense fallback its caller gives (ScaleStrip,
+ *    ChordStaff);
+ *  - 'library' holds the library alone: StaffNotation mounts, asks for it and
+ *    shows its OWN skeleton (StaffNotation.tsx).
+ * `asked` lists the paths held, to prove which of the two it was.
+ */
+const HOLDS = { loader: /vexflow/i, library: /\/vexflow(?:_bravura|-[\w-]+)\.js(?:\?|$)/ } as const;
+type Hold = keyof typeof HOLDS;
+async function holdVexFlow(page: Page, hold: Hold) {
+  let release!: () => void;
+  const held = new Promise<void>((r) => { release = r; });
+  const asked: string[] = [];
+  await page.route(HOLDS[hold], async (route) => { asked.push(new URL(route.request().url()).pathname); await held; await route.continue(); });
+  return { hold, asked, release: () => release() };
+}
+
+/**
+ * What a staff shows: 'drawn', 'none', or whose skeleton — 'fallback' (its
+ * caller's Suspense fallback) or 'own' (StaffNotation's, while VexFlow
+ * loads). The two skeletons are the same markup; which one it is comes from
+ * React's fiber of it: the nearer of a lazy component (StaffNotation, lazy in
+ * every caller) and a Suspense boundary above it.
+ */
+function staffShows(page: Page, sel: string) {
+  return page.evaluate((sel) => {
+    type Fiber = { tag: number; elementType?: { $$typeof?: symbol } | null; return: Fiber | null };
+    const box = document.querySelector(sel);
+    if (!box) return 'none';
+    if (box.querySelector('g.vf-stavenote')) return 'drawn';
+    const skeleton = box.querySelector('.animate-pulse');
+    if (!skeleton) return 'none';
+    const key = Object.keys(skeleton).find((k) => k.startsWith('__reactFiber$'));
+    for (let f = key ? (skeleton as unknown as Record<string, Fiber>)[key] : null; f; f = f.return) {
+      if (f.elementType?.$$typeof === Symbol.for('react.lazy')) return 'own';
+      if (f.tag === 13) return 'fallback'; // a Suspense boundary
+    }
+    return 'skeleton';
+  }, sel);
+}
+
+/** The hold took (the right paths asked for) and each staff shows the skeleton it should. */
+async function expectSkeletons(page: Page, vf: Awaited<ReturnType<typeof holdVexFlow>>, staffs: string[], where: string) {
+  const isLoader = (p: string) => /vexflowLoader/.test(p);
+  await expect.poll(() => vf.asked.length, `${where}: VexFlow asked for and held`).toBeGreaterThan(0);
+  if (vf.hold === 'loader') {
+    expect(vf.asked.every(isLoader), `${where}: only the loader held, the library never asked for (${vf.asked.join(', ')})`).toBe(true);
+  } else {
+    expect(vf.asked.some(isLoader), `${where}: the loader let through, the library held (${vf.asked.join(', ')})`).toBe(false);
+  }
+  const want = vf.hold === 'loader' ? 'fallback' : 'own';
+  for (const sel of staffs) {
+    await expect.poll(() => staffShows(page, sel), `${where}: ${sel} shows ${want === 'own' ? "StaffNotation's own skeleton" : "its caller's Suspense fallback"}`).toBe(want);
+  }
+}
+
+const height = (page: Page, sel: string) => page.locator(sel).evaluate((e) => e.getBoundingClientRect().height);
+
 /** Scroll the work column (as a wheel would) until the readout is wholly between the strip and the dock. */
 async function scrollReadoutIntoView(page: Page) {
   await page.evaluate(() => {
@@ -74,22 +154,30 @@ async function scrollReadoutIntoView(page: Page) {
   await page.waitForTimeout(150);
 }
 
-for (const [w, h] of LAPTOPS) {
-  test(`Q4 ${w}×${h}: Build's readout and inspector over the docked piano, EN / PT / ES`, async ({ browser }) => {
+for (const [w, h] of LAPTOPS) for (const wide of [false, true]) {
+  test(`Q4 ${w}×${h}${wide ? ', text 8 % wider' : ''}: Build's readout and inspector over the docked piano, EN / PT / ES`, async ({ browser }) => {
     const v: View = { name: 'laptop', viewport: { width: w, height: h }, touch: false };
     for (const lang of LANGS) {
       const { context, page } = await seededBrowser(browser, v, {
         themeMode: 'fermata', language: lang, lastView: 'explore', instrument: 'piano', baseOctave: 4,
         selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major',
       }, {}, { lang });
-      await openBuild(page, lang);
-      const where = `${w}×${h} ${lang}`;
+      // Hold VexFlow back (the loader with the library: the strip shows
+      // ScaleStrip's Suspense fallback) until the readout has been scrolled
+      // into view, so the staff always arrives late.
+      const vf = await holdVexFlow(page, 'loader');
+      await openBuild(page, lang, wide);
+      const where = `${w}×${h} ${lang}${wide ? ' (text 8 % wider)' : ''}`;
+      await expectSkeletons(page, vf, ['.strip-staff'], where);
       let g = await geometry(page);
       const dockHeight = g.dockHeight;
       expect(dockHeight, `${where}: the piano shows at Half`).toBeGreaterThan(200);
       expect(g.pageScroll, `${where}: the page never scrolls`).toBeLessThanOrEqual(0);
       if (w === 1440) {
         // The audit's own screen: everything of the builder, nothing scrolled.
+        // (The 23 px to spare here are more than a late staff's 20 px drop, so
+        // the readout's checks below cannot see one at this size: the strip's
+        // height check can, and the three shorter sizes carry the readout's.)
         expect(g.columnScroll, `${where}: the work column needs no scrolling`).toBeLessThanOrEqual(1);
         expect(whole(g.notes, g), `${where}: the 13 notes on screen`).toBe(true);
         expect(whole(g.readout, g), `${where}: the readout on screen`).toBe(true);
@@ -99,6 +187,15 @@ for (const [w, h] of LAPTOPS) {
       await scrollReadoutIntoView(page);
       g = await geometry(page);
       expect(whole(g.readout, g), `${where}: before a chord, the readout can be scrolled wholly into view`).toBe(true);
+      // The staff arrives: nothing above the readout grows, so it stays in view.
+      expect(await page.locator('.strip-staff g.vf-stavenote').count(), `${where}: the staff not drawn yet`).toBe(0);
+      const strip = await height(page, '.strip-card');
+      vf.release();
+      await expect(page.locator('.strip-staff g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+      await page.waitForTimeout(150);
+      g = await geometry(page);
+      expect(whole(g.readout, g), `${where}: the staff drawn, the readout still wholly in view`).toBe(true);
+      expect(await height(page, '.strip-card'), `${where}: the staff drawn, the strip no taller than its fallback`).toBeCloseTo(strip, 0);
 
       // C E G: a chord, its detail opens under the builder.
       await page.locator('.explore-main').evaluate((el) => { el.scrollTop = 0; });
@@ -134,6 +231,91 @@ for (const [w, h] of LAPTOPS) {
       g = await geometry(page);
       expect(whole(g.readout, g), `${where}: a chord open, the readout can be scrolled wholly into view`).toBe(true);
       expect(g.dockHeight).toBe(dockHeight);
+      await context.close();
+
+      // Again with the library alone held: the loader comes, StaffNotation
+      // mounts and shows its OWN skeleton (review of the fix, 20 November
+      // 2026: holding /vexflow/ holds the loader too, so the first pass only
+      // ever shows ScaleStrip's fallback, and StaffNotation's own skeleton
+      // put back at the height asked for passed it).
+      {
+        const { context, page } = await seededBrowser(browser, v, {
+          themeMode: 'fermata', language: lang, lastView: 'explore', instrument: 'piano', baseOctave: 4,
+          selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major',
+        }, {}, { lang });
+        const vf = await holdVexFlow(page, 'library');
+        await openBuild(page, lang, wide);
+        const own = `${where}, StaffNotation's own skeleton`;
+        await expectSkeletons(page, vf, ['.strip-staff'], own);
+        await scrollReadoutIntoView(page);
+        let g = await geometry(page);
+        expect(whole(g.readout, g), `${own}: the readout can be scrolled wholly into view`).toBe(true);
+        expect(await staffShows(page, '.strip-staff'), `${own}: still the skeleton on screen`).toBe('own');
+        const strip = await height(page, '.strip-card');
+        vf.release();
+        await expect(page.locator('.strip-staff g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+        await page.waitForTimeout(150);
+        g = await geometry(page);
+        expect(whole(g.readout, g), `${own}: the library arrived, the readout still wholly in view`).toBe(true);
+        expect(await height(page, '.strip-card'), `${own}: the library arrived, the strip no taller than the skeleton`).toBeCloseTo(strip, 0);
+        await context.close();
+      }
+    }
+  });
+}
+
+// Review of the staff-skeleton fix (20 November 2026): nothing tested the
+// chord's own small staff (the detail's, shown under 1200 px wide), so its
+// fallback put back at CHORD_STAFF_HEIGHT under its comment got past every
+// row. The chord C is drawn taller than the 80 px asked for (C4's ledger
+// line on the piano: 100 px; the guitar's staff, written an octave up under
+// its 8vb clef: 108), and with an 80 px skeleton the chord detail and the
+// chords card's foot moved 20 / 28 px when VexFlow arrived (390×844: the
+// detail 389.8 → 409.8, the card's bottom 564.2 → 584.2). A phone and a
+// laptop size where the chord staff shows, piano and guitar, the chord C
+// selected (a share link), VexFlow held both ways (`holdVexFlow`): the
+// chord staff's box, the chord detail's height, the chords card's bottom
+// and the strip's staff, measured on the skeletons and again once both
+// staffs are drawn: none moves.
+const CHORD_STAFF_VIEWS: View[] = [PHONE, { name: 'laptop', viewport: { width: 1024, height: 768 }, touch: false }];
+for (const v of CHORD_STAFF_VIEWS) for (const instrument of ['piano', 'guitar'] as const) {
+  test(`Staff skeletons ${v.viewport.width}×${v.viewport.height} ${instrument}, the chord C: nothing moves when VexFlow arrives (the Suspense fallbacks, then StaffNotation's own)`, async ({ browser }) => {
+    for (const hold of ['loader', 'library'] as const) {
+      const { context, page } = await seededBrowser(browser, v, {
+        themeMode: 'fermata', language: 'en', lastView: 'explore', instrument, baseOctave: 4,
+        selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major',
+      });
+      const vf = await holdVexFlow(page, hold);
+      await page.goto(`/?key=C&scale=major&chord=C&inst=${instrument}`);
+      await expect(page.getByTestId('chord-staff')).toBeVisible({ timeout: 15_000 });
+      if (instrument === 'guitar') await expect(page.locator('[role="grid"]').first()).toBeVisible({ timeout: 15_000 });
+      await page.evaluate(() => document.fonts.ready);
+      const where = `${v.viewport.width}×${v.viewport.height} ${instrument}, ${hold === 'loader' ? 'the Suspense fallbacks' : "StaffNotation's own skeletons"}`;
+      await expectSkeletons(page, vf, ['.strip-staff', '[data-testid="chord-staff"]'], where);
+      await page.waitForTimeout(300);
+      const measure = () => page.evaluate(() => {
+        const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect();
+        return {
+          'the chord staff (height)': box('[data-testid="chord-staff"]').height,
+          'the chord staff (top)': box('[data-testid="chord-staff"]').top,
+          "the chord detail's height": box('[data-testid="chord-detail"]').height,
+          "the chords card's bottom": box('[data-testid="chords-card"]').bottom,
+          "the strip's staff (height)": box('.strip-staff').height,
+        };
+      });
+      const before = await measure();
+      expect(await staffShows(page, '[data-testid="chord-staff"]'), `${where}: still the skeleton on screen`).toBe(hold === 'loader' ? 'fallback' : 'own');
+      vf.release();
+      await expect(page.locator('[data-testid="chord-staff"] g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+      await expect(page.locator('.strip-staff g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+      await page.waitForTimeout(150);
+      const after = await measure();
+      console.log(`[skeletons] ${where}: ${Object.entries(before).map(([k, b]) => `${k} ${Math.round(b * 10) / 10} → ${Math.round(after[k as keyof typeof after] * 10) / 10}`).join(', ')}`);
+      // The case that moved: a chord drawn taller than the 80 px asked for.
+      expect(after['the chord staff (height)'], `${where}: the chord drawn taller than the 80 px asked for`).toBeGreaterThan(80);
+      for (const k of Object.keys(before) as (keyof typeof before)[]) {
+        expect(after[k], `${where}: ${k} unchanged when VexFlow arrived`).toBeCloseTo(before[k], 0);
+      }
       await context.close();
     }
   });

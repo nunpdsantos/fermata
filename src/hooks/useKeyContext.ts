@@ -4,7 +4,7 @@ import { classicalDescendingType } from '../core/utils/classicalScale.ts';
 import { useAppStore } from '../state/store.ts';
 import { buildScale } from '../core/constants/scales.ts';
 import { getDiatonicChordsForScale } from '../core/constants/chords.ts';
-import { getScaleNotesWithOctaves, chordVoicingPitches, getMidiNumber } from '../core/utils/pianoLayout.ts';
+import { getScaleNotesWithOctaves, chordVoicingPitches, getMidiNumber, slashChordNotesAbove } from '../core/utils/pianoLayout.ts';
 import { getPitchClass } from '../core/constants/notes.ts';
 import { buildSpellingMap, spellFromMap, spellSharpDefault } from '../core/utils/spelling.ts';
 import { degreeOf, degreeColorSlot } from '../core/utils/degreeSpelling.ts';
@@ -186,7 +186,9 @@ export function useKeyContext(): KeyContextValue {
 
     // The same pitches the chord plays (slash bass an octave below) — one
     // voicing function for keys and sound (audit W2-07 review).
-    for (const p of chordVoicingPitches(invertedNotes, baseOctave, selectedChord.bassNote)) {
+    // A bass outside the chord sounds once on every inversion chip (as
+    // `exploreChordVoicing` voices it for ▶ Chord, the staff and the arpeggio).
+    for (const p of chordVoicingPitches(slashChordNotesAbove(selectedChord, invertedNotes), baseOctave, selectedChord.bassNote)) {
       s.add(getMidiNumber(p, p.octave));
     }
     return s;

@@ -57,10 +57,11 @@ export function ToastContainer() {
               role="status"
             >
               <span className="shrink-0 flex">{icon(t.type)}</span>
-              <span className="flex-1">{t.message}</span>
+              <span className="flex-1" lang={t.lang}>{t.message}</span>
               {t.action && (
                 <Button
                   variant="primary"
+                  lang={t.lang}
                   onClick={() => {
                     removeToast(t.id);
                     t.action!.onSelect();

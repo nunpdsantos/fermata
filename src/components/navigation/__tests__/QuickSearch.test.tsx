@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { StrictMode, useLayoutEffect } from 'react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
 import { getResults } from '../quickSearchResults';
 import { useAppStore } from '../../../state/store';
@@ -182,4 +183,182 @@ describe('QuickSearch rendered integration', () => {
   // selectedIdx reset (queued microtask) + callback identity make a synchronous
   // fireEvent(Enter) flaky, so selection is asserted via click above (same
   // executeResult path). The arrow/Enter handler itself is a trivial switch.
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Its own focus timer and Escape, in the first instant (two retried browser
+// tests on GitHub, 20 November 2026: focus on <body> after a result chosen
+// from Drill; an Escape that closed nothing)
+// ───────────────────────────────────────────────────────────────────────────
+describe('QuickSearch: closed in its first instant', () => {
+  it('a dialog closed before its 50 ms are up no longer waits to focus its input', () => {
+    vi.useFakeTimers();
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<QuickSearch />);
+      const idle = vi.getTimerCount();
+      act(() => useAppStore.getState().setQuickSearchOpen(true));
+      expect(vi.getTimerCount(), 'the input is focused 50 ms after opening').toBe(idle + 1);
+      // A result chosen (or Escape) before the timer ran: the dialog closes.
+      act(() => useAppStore.getState().setQuickSearchOpen(false));
+      expect(vi.getTimerCount(), 'the focus timer went with the dialog').toBe(idle);
+      // Opened again, it waits again, and focuses once the 50 ms are up.
+      act(() => useAppStore.getState().setQuickSearchOpen(true));
+      expect(vi.getTimerCount()).toBe(idle + 1);
+      act(() => { vi.advanceTimersByTime(60); });
+      expect(document.activeElement).toBe(screen.getByRole('combobox'));
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('Escape pressed before React has drawn the open dialog closes it (the key reads the store, not a render\'s copy)', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      useAppStore.setState({ quickSearchOpen: true });
+      // Still the handler of the render in which it was closed.
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('Escape in the very step the dialog is first drawn closes it: the keys are listened for from that step (it is mounted already open, the first time search opens)', () => {
+    // A key that arrives as the dialog is committed, before any ordinary effect has run: pressed here by a
+    // sibling's layout effect, which React runs in that same step, after this component's own.
+    function EscapeAsItIsDrawn() {
+      useLayoutEffect(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      }, []);
+      return null;
+    }
+    useAppStore.setState({ quickSearchOpen: true });
+    render(<><QuickSearch /><EscapeAsItIsDrawn /></>);
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  // The listener's life, counted on the window itself (a key pressed would not tell: listeners left
+  // behind toggle in pairs, and an even number of them looks like none).
+  const keydown = (calls: unknown[][]) => calls.filter(([type]) => type === 'keydown').map(([, fn]) => fn);
+
+  it('the keys are let go when it unmounts: every keydown listener it added is removed', () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      const { unmount } = render(<QuickSearch />);
+      const added = keydown(add.mock.calls);
+      expect(added.length).toBeGreaterThan(0);
+      unmount();
+      const removed = keydown(remove.mock.calls);
+      for (const fn of added) expect(removed).toContain(fn);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
+  it('one listener at a time, also where effects run twice (strict mode): one Cmd+K opens it, the next closes it', () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<StrictMode><QuickSearch /></StrictMode>);
+      expect(keydown(add.mock.calls).length - keydown(remove.mock.calls).length, 'keydown listeners left on the window').toBe(1);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(true);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      expect(keydown(add.mock.calls).length - keydown(remove.mock.calls).length, 'still one after opening and closing').toBe(1);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
+  it('Escape while it is closed does nothing: no focus is moved, nothing is scheduled (the rest of the app uses Escape too)', () => {
+    const a = document.createElement('button');
+    const b = document.createElement('button');
+    document.body.append(a, b);
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<QuickSearch />);
+      a.focus();
+      // Opened and closed by Cmd+K: that way of closing leaves the dialog remembering where focus was.
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      b.focus();
+      const frame = vi.spyOn(window, 'requestAnimationFrame');
+      try {
+        act(() => {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        });
+        expect(frame, 'no focus restore asked for').not.toHaveBeenCalled();
+      } finally {
+        frame.mockRestore();
+      }
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      expect(document.activeElement).toBe(b);
+    } finally {
+      a.remove();
+      b.remove();
+    }
+  });
+
+  it('a plain k or K, with no Cmd or Ctrl, is typing: the open dialog stays open and the closed one stays closed', () => {
+    // Looked at after EACH key: two toggles would cancel out.
+    useAppStore.setState({ quickSearchOpen: true });
+    render(<QuickSearch />);
+    for (const key of ['k', 'K']) {
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      });
+      expect(useAppStore.getState().quickSearchOpen, `open, after a plain ${key}`).toBe(true);
+    }
+    act(() => useAppStore.getState().setQuickSearchOpen(false));
+    for (const key of ['k', 'K']) {
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      });
+      expect(useAppStore.getState().quickSearchOpen, `closed, after a plain ${key}`).toBe(false);
+    }
+  });
+
+  it('Ctrl+K or Cmd+K with a capital K toggles too (with Caps Lock on, the letter can arrive as a capital)', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'K', ctrlKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(true);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'K', metaKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+  });
+
+  it('Cmd+K pressed twice before React has drawn opens and closes (each key reads the store)', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+  });
 });

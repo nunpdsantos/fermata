@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 17,
+      "date": "2026-11-20",
+      "critical": false,
+      "notes": {
+        "en": "The browser's Back button now steps back one screen and keeps a check or Drill in progress. Also fixed: “Next lesson” at a unit's end, guitar tuning.",
+        "pt": "Voltar atrás no navegador recua agora um ecrã e guarda a verificação ou o Treino em curso. E ainda: «Lição seguinte» no fim da unidade e a afinação da guitarra.",
+        "es": "El botón Atrás vuelve ahora una pantalla y conserva la comprobación o la Práctica en curso. Además: «Lección siguiente» al final de la unidad y la afinación."
+      }
+    },
+    {
       "release": 16,
       "date": "2026-11-19",
       "critical": false,

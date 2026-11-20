@@ -18,6 +18,7 @@
 import type { Chord, Note, PitchedNote } from '../core/types/music';
 import { chordFromParsed, looksLikeChordSymbol, parseChordSymbol } from '../core/utils/chordParser';
 import { chordVoicingPitches } from '../core/utils/pianoLayout';
+import { getPitchClass } from '../core/constants/notes';
 
 export const CHORD_LIST_PREFIX = 'chords:';
 
@@ -65,38 +66,87 @@ export interface ChordListSound {
 }
 
 /**
- * The octave a chord of a list is voiced from, chosen so that EVERY chord's
- * lowest note sits in octave 3 (C3 to B3): a root-position chord is voiced
- * from its root in octave 3 (open voicing, as an ear-training progression
- * sounds); a slash chord is voiced as a slash chord sounds in any lesson Try
- * This (`chordVoicingPitches` from octave 4, its bass one octave lower:
- * octave 3). So a bass that moves by a half or whole step is heard as that
- * step only while both notes lie between C and B: F7 → F♯dim7 → C7/G climbs
- * F3, F♯3, G3, and G7/F → C/E falls F3 to E3, but a step across B–C jumps the
- * other way (G7/B → C sounds B3 then C3, a major 7th down for a half step up:
- * pinned in queryExecutorChords.test.ts as the known limit). That test also
- * walks every chord list in the lessons: the slash-chord lists keep their
- * steps; one root-position list, unchanged since wave 2, crosses B–C
- * (l1u35m3, G Am Bm C D Em: Bm → C sounds B3 → C3) and is listed there.
+ * The pitches one chord of a list sounds with its lowest note in `octave`
+ * (3 unless the step rule of `chordListSounds` moves it). Root position:
+ * `chordVoicingPitches` from the root (open in octave 3, close above). A
+ * slash chord whose bass is one of its own tones IS an inversion
+ * (second audit, QA P7: G7/F is V4/2): its tones in close position from that
+ * bass, each once — never the root-position chord over a second copy of the
+ * bass, which doubled the 7th of G7/F and the leading note of G7/B. A bass
+ * outside the chord (C/D) stands under the chord, as it always did.
  */
-export function chordListOctave(chord: Chord): number {
-  return chord.bassNote ? 4 : 3;
+export function chordListPitchesAt(chord: Chord, octave: number): PitchedNote[] {
+  const inversion = slashChordInversion(chord);
+  if (inversion !== null) {
+    const rotated = [...chord.notes.slice(inversion), ...chord.notes.slice(0, inversion)] as Note[];
+    return chordVoicingPitches(rotated, octave + 1).map((p) => ({ ...p, octave: p.octave - 1 }));
+  }
+  return chord.bassNote
+    ? chordVoicingPitches(chord.notes as Note[], octave + 1, chord.bassNote)
+    : chordVoicingPitches(chord.notes as Note[], octave);
 }
 
-/** The pitches one chord of a list sounds (its bass, or root, in octave 3). */
+/** The pitches one chord of a list sounds on its own (its bass, or root, in octave 3). */
 export function chordListPitches(chord: Chord): PitchedNote[] {
-  return chordVoicingPitches(chord.notes as Note[], chordListOctave(chord), chord.bassNote);
+  return chordListPitchesAt(chord, 3);
 }
 
 /**
- * What "Hear it" plays for a chord list: each chord once, in order, one per
- * second, over its root (or the bass a slash names) as a clear bass in
- * octave 3 (`chordListPitches`).
+ * The inversion a slash chord's bass names (1 = its 3rd in the bass …), or
+ * null for no slash, a bass on the root, or a bass that is not a chord tone.
+ * The same rule as `inversionOfBass` in `utils/chordSelection.ts`, by which
+ * the lesson's instrument opens C/E as C major, first inversion; kept here so
+ * this module stays free of the store.
+ */
+export function slashChordInversion(chord: Chord): number | null {
+  if (!chord.bassNote || chord.algorithmicDisplayName || chord.notes.length === 0) return null;
+  // A bass outside the chord is put first by the parser (C/D → D C E G).
+  if (getPitchClass(chord.notes[0]) !== getPitchClass(chord.root)) return null;
+  const at = chord.notes.findIndex((n) => getPitchClass(n) === getPitchClass(chord.bassNote!));
+  return at > 0 ? at : null;
+}
+
+const LETTER_INDEX: Record<string, number> = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
+const lowestMidi = (pitches: PitchedNote[]) => Math.min(...pitches.map((p) => 12 * (p.octave + 1) + getPitchClass(p)));
+/** Where a chord list's bass may go when it follows a line by step: C2 (MIDI 36) to B4 (71). */
+export const CHORD_LIST_BASS_RANGE = { low: 36, high: 71 };
+
+/**
+ * What "Hear it" plays for a chord list, and what each of its chord buttons
+ * plays: each chord once, in order, one per second, over its bass.
+ *
+ * Every bass stands in octave 3 (C3–B3) — unless it moves by step (the next
+ * letter up or down) from the bass before: then it is placed a step above or
+ * below that bass, in whatever octave that takes, so a line is heard as the
+ * line it is, up or down, across B–C too (round one's l1u35m3, G Am Bm C D
+ * Em: the bass now climbs G3 A3 B3 C4 D4 E4; Bm C D C Bm goes up and comes
+ * back the same way). The register is bounded: a step that would take the
+ * bass below C2 or above B4 is placed in octave 3 instead, and any leap
+ * returns to octave 3, so a list that climbs or falls for long comes back
+ * home at its first leap, or at the edge of that range.
  */
 export function chordListSounds(entries: readonly ChordListEntry[]): ChordListSound[] {
-  return entries.map((e, i) => ({
-    at: i * CHORD_LIST_STEP_S,
-    duration: CHORD_LIST_CHORD_S,
-    pitches: chordListPitches(e.chord),
-  }));
+  let previous: { letter: number; midi: number } | null = null;
+  return entries.map((e, i) => {
+    const bass = e.chord.bassNote ?? e.chord.root;
+    let pitches = chordListPitchesAt(e.chord, 3);
+    const letter = LETTER_INDEX[bass.natural];
+    if (previous) {
+      const byLetter = (letter - previous.letter + 7) % 7;
+      const home = lowestMidi(pitches);
+      if (byLetter === 1 || byLetter === 6) {
+        // The bass a step above (or below) the previous one: the nearest octave of it on that side.
+        const prev = previous.midi;
+        let target = home;
+        while (byLetter === 1 && target <= prev) target += 12;
+        while (byLetter === 1 && target - 12 > prev) target -= 12;
+        while (byLetter === 6 && target >= prev) target -= 12;
+        while (byLetter === 6 && target + 12 < prev) target += 12;
+        const inRange = target >= CHORD_LIST_BASS_RANGE.low && target <= CHORD_LIST_BASS_RANGE.high;
+        if (inRange && target !== home) pitches = chordListPitchesAt(e.chord, 3 + (target - home) / 12);
+      }
+    }
+    previous = { letter, midi: lowestMidi(pitches) };
+    return { at: i * CHORD_LIST_STEP_S, duration: CHORD_LIST_CHORD_S, pitches };
+  });
 }

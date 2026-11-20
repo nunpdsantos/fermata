@@ -6,6 +6,7 @@ import { ToastRegion } from './ToastRegion.tsx';
 import { StartHint } from './StartHint.tsx';
 import { TourHost } from '../tour/TourHost.tsx';
 import { MovedNoticeHost } from '../moved/MovedNoticeHost.tsx';
+import { LanguageOffer } from './LanguageOffer.tsx';
 import { useToastAvoid } from './toastLayout.ts';
 import { useAppStore } from '../../state/store.ts';
 import type { Detent } from '../../state/dock.ts';
@@ -63,8 +64,14 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="h-screen supports-[height:100dvh]:h-dvh flex flex-col" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      {/* It moves focus and adds no history entry (audit P3, review A1: a fragment
+          link's entry trapped Back). The href stays for what a link announces. */}
       <a
         href="#main-content"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById('main-content')?.focus();
+        }}
         className="sr-only focus:not-sr-only focus:fixed focus:z-[90] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2"
         style={{ ['--tw-ring-color' as string]: 'var(--focus-ring)', backgroundColor: 'var(--card-hover)', color: 'var(--text)' }}
       >
@@ -75,11 +82,13 @@ export function AppShell({ children }: AppShellProps) {
       <ToastRegion />
       {/* On the old address only: "we've moved" (a toast there) and its panel. */}
       <MovedNoticeHost />
+      {/* A returning visit's link in another language: a one-tap offer (a toast there). */}
+      <LanguageOffer />
       {/* After a 'new' / 'player' start-screen door (state/startHint.ts):
           one line in the flow, Explore only — it covers nothing. */}
       <StartHint />
       <div ref={bodyRef} className="flex-1 min-h-0 flex flex-col">
-        <main id="main-content" className="flex-1 overflow-hidden flex flex-col min-h-0" inert={sheetCoversView || undefined}>
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-hidden flex flex-col min-h-0 outline-none" inert={sheetCoversView || undefined}>
           {children}
         </main>
         {hasDock && (

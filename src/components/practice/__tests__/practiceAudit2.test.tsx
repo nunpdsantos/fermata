@@ -1,0 +1,485 @@
+/**
+ * Music audit 2 (18 November 2026), findings M37–M41, as a learner meets them on the guitar practice sheet.
+ * Each `describe` reproduced its finding at 153caab (release 16) by failing; see the corpus sweep beside it
+ * (practiceAudit2.corpus.test.ts) for the whole matrix.
+ */
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import i18n from '../../../i18n';
+import GuitarPractice from '../GuitarPractice';
+import { useAppStore } from '../../../state/store';
+import { useFingeringStore, FINGERING_STORE_KEY } from '../../../state/fingeringStore';
+import { useFocusNoteStore } from '../../../state/focusNoteStore';
+import { cancelScheduledAudio, playTimedNotes, resumeAudio, type TimedNote } from '../../../core/services/audio';
+import { TUNING_STANDARD } from '../../../core/constants/guitarTunings';
+import type { Note } from '../../../core/types/music';
+import { positionWalkPractice, rightHandPractice, routeFingerKey, technicalSet, type PracticeRoute } from '../practiceModel';
+import { PracticePlayer } from '../PracticePlayer';
+
+vi.mock('../../../core/services/audio', () => ({
+  SYNTH_PRESETS: {}, resumeAudio: vi.fn().mockResolvedValue(undefined), cancelScheduledAudio: vi.fn(), playTimedNotes: vi.fn(),
+}));
+vi.mock('../../notation/StaffNotation', () => ({ StaffNotation: () => <div data-testid="staff-notes" /> }));
+
+const C = { natural: 'C', accidental: '' } as const;
+const B = { natural: 'B', accidental: '' } as const;
+
+beforeEach(async () => {
+  vi.clearAllMocks();
+  vi.mocked(resumeAudio).mockResolvedValue(undefined);
+  localStorage.clear();
+  useFingeringStore.setState({ overrides: {}, labelMode: 'finger' });
+  useFocusNoteStore.getState().clearAll();
+  useAppStore.setState({ selectedKey: C, selectedScale: 'major', guitarTuningId: 'standard', instrument: 'guitar', view: 'explore' });
+  await i18n.changeLanguage('en');
+});
+afterEach(cleanup);
+
+const current = () => screen.getByTestId('practice-current').textContent!;
+const step = () => current().match(/^(\d+) of (\d+)/)!.slice(1).map(Number);
+const tempo = () => (screen.getByRole('combobox', { name: 'Tempo' }) as HTMLSelectElement).value;
+const fingerSelect = (note: RegExp) => screen.getByRole('combobox', { name: note }) as HTMLSelectElement;
+const optionDisabled = (select: HTMLSelectElement, value: string) => (within(select).getByRole('option', { name: value }) as HTMLOptionElement).disabled;
+const openTechnical = (id: string) => {
+  fireEvent.click(screen.getByRole('tab', { name: 'Technical set' }));
+  fireEvent.change(screen.getByTestId('practice-exercise'), { target: { value: id } });
+};
+const goTo = (n: number) => { for (let i = 1; i < n; i++) fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' })); };
+
+describe('M37: one finger cannot stop two frets at the same instant', () => {
+  const thirds = technicalSet(C, 'major', TUNING_STANDARD).find((i) => i.id === 'thirds-together')!.route!;
+  const [lowC, highE] = thirds.events[0].notes;
+  const key = (n: typeof lowC) => routeFingerKey(C, 'major', TUNING_STANDARD, thirds, 0, n);
+
+  it('the audit\'s pair: C on string 5 fret 3 with finger 3, E on string 4 fret 2 with finger 2', () => {
+    expect([lowC, highE].map((n) => [n.note.natural, 6 - n.stringIndex, n.fret, n.finger])).toEqual([['C', 5, 3, 3], ['E', 4, 2, 2]]);
+  });
+
+  it('finger 3 is not offered for E while C holds it, is refused if sent anyway, and the editor says where it is', () => {
+    render(<GuitarPractice />);
+    openTechnical('thirds-together');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const e = fingerSelect(/Finger for E, string 4/);
+    const c = fingerSelect(/Finger for C, string 5/);
+    expect(['1', '2', '3', '4'].map((v) => optionDisabled(e, v))).toEqual([false, false, true, false]);
+    expect(['1', '2', '3', '4'].map((v) => optionDisabled(c, v))).toEqual([false, true, false, false]);
+    fireEvent.change(e, { target: { value: '3' } });
+    expect(e.value).toBe('2');
+    expect(useFingeringStore.getState().overrides).toEqual({});
+    expect(screen.queryAllByTestId('practice-clash')).toHaveLength(0);
+    expect(screen.getAllByTestId('practice-finger-busy').map((p) => p.textContent)).toEqual([
+      'Finger 2 is not offered for C on string 5: at the same time it already holds E on string 4, fret 2, and one finger cannot hold two frets.',
+      'Finger 3 is not offered for E on string 4: at the same time it already holds C on string 5, fret 3, and one finger cannot hold two frets.',
+    ]);
+    // Either finger can still change: C to 1 frees 3 for E.
+    fireEvent.change(c, { target: { value: '1' } });
+    expect(optionDisabled(e, '3')).toBe(false);
+    fireEvent.change(e, { target: { value: '3' } });
+    expect(useFingeringStore.getState().overrides).toEqual({ [key(lowC)]: 1, [key(highE)]: 3 });
+  });
+
+  it('a tap on the neck steps past the finger it cannot take (E: 2 → 4, not 3)', () => {
+    render(<GuitarPractice />);
+    openTechnical('thirds-together');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const cell = screen.getByTestId('practice-neck').querySelector<HTMLElement>(`[data-string-row="${highE.stringIndex}"][data-fret="2"]`)!;
+    fireEvent.click(cell);
+    expect(useFingeringStore.getState().overrides).toEqual({ [key(highE)]: 4 });
+    fireEvent.click(cell);
+    expect(useFingeringStore.getState().overrides).toEqual({ [key(highE)]: 1 });
+    fireEvent.click(cell); // 1 → 2, the suggestion: the override goes
+    expect(useFingeringStore.getState().overrides).toEqual({});
+  });
+
+  it('a barré across one fret stays offered, and its cue shows', () => {
+    // The first "together" step that holds two strings at ONE fret, in any key on standard tuning.
+    let found: { root: Note; id: string; index: number } | null = null;
+    for (const root of ['C', 'G', 'D', 'A', 'E', 'F'].map((natural) => ({ natural, accidental: '' }) as Note)) {
+      for (const item of technicalSet(root, 'major', TUNING_STANDARD)) {
+        if (!item.id.endsWith('-together') || !item.route) continue;
+        const index = item.route.events.findIndex((ev) => ev.notes.length === 2 && ev.notes.every((n) => n.fret > 0) && ev.notes[0].fret === ev.notes[1].fret
+          && ev.notes[0].finger !== ev.notes[1].finger && Math.abs(ev.notes[0].stringIndex - ev.notes[1].stringIndex) === 1);
+        if (index >= 0) { found = { root, id: item.id, index }; break; }
+      }
+      if (found) break;
+    }
+    expect(found).not.toBeNull();
+    useAppStore.setState({ selectedKey: found!.root });
+    render(<GuitarPractice />);
+    openTechnical(found!.id);
+    goTo(found!.index + 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const route = technicalSet(found!.root, 'major', TUNING_STANDARD).find((i) => i.id === found!.id)!.route!;
+    const [lo, hi] = route.events[found!.index].notes;
+    const hiSelect = screen.getAllByRole('combobox', { name: /Finger for/ })[1] as HTMLSelectElement;
+    expect(optionDisabled(hiSelect, String(lo.finger))).toBe(false);
+    fireEvent.change(hiSelect, { target: { value: String(lo.finger) } });
+    expect(hiSelect.value).toBe(String(lo.finger));
+    expect(screen.getByTestId('practice-barre').textContent).toBe(`Barré: finger ${lo.finger} across strings ${6 - hi.stringIndex} to ${6 - lo.stringIndex}, fret ${lo.fret}`);
+  }, 30_000); // 4.2 s on a slow GitHub runner (20 November 2026; about 1 s on the Mac that wrote it): its own limit, not the default 5 s
+
+  it('successive notes may reuse a finger: a scale step offers all four', () => {
+    render(<GuitarPractice />);
+    goTo(3);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const select = screen.getByRole('combobox', { name: /Finger for/ }) as HTMLSelectElement;
+    expect(['1', '2', '3', '4'].map((v) => optionDisabled(select, v))).toEqual([false, false, false, false]);
+    expect(screen.queryAllByTestId('practice-finger-busy')).toHaveLength(0);
+  });
+
+  it('a clash saved by release 16 is kept, named with both places, and mended by changing either finger', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, JSON.stringify({ state: { overrides: { [key(highE)]: 3 }, labelMode: 'finger' }, version: 1 }));
+    await useFingeringStore.persist.rehydrate();
+    render(<GuitarPractice />);
+    openTechnical('thirds-together');
+    expect(screen.getByTestId('practice-clash').textContent).toBe(
+      'Finger 3 is on C on string 5, fret 3, and on E on string 4, fret 2, at the same time: one finger cannot hold two frets. Change one of them.');
+    expect(useFingeringStore.getState().overrides).toEqual({ [key(highE)]: 3 });
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    // Both show 3; 3 is not offered to either, so the teacher picks another for one of them.
+    expect(fingerSelect(/Finger for E/).value).toBe('3');
+    fireEvent.change(fingerSelect(/Finger for C/), { target: { value: '2' } });
+    expect(screen.queryAllByTestId('practice-clash')).toHaveLength(0);
+    expect(useFingeringStore.getState().overrides).toEqual({ [key(highE)]: 3, [key(lowC)]: 2 });
+  });
+});
+
+describe('M38: Position walk keeps a teacher\'s finger', () => {
+  const walk = positionWalkPractice(C, 'major', TUNING_STANDARD)!;
+  const first = walk.events[0].notes[0];
+  const key = routeFingerKey(C, 'major', TUNING_STANDARD, walk, 0, first);
+
+  it('step 1 of 63, C on string 5 fret 3, finger 2 → 3: shown, saved, kept on return and reload, then reset', async () => {
+    expect([walk.events.length, first.note.natural, 6 - first.stringIndex, first.fret, first.finger]).toEqual([63, 'C', 5, 3, 2]);
+    const view = render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Position walk' }));
+    expect(step()).toEqual([1, 63]);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    expect(screen.getByRole('button', { name: 'Reset to suggested' })).toHaveProperty('disabled', true);
+    fireEvent.change(fingerSelect(/Finger for C, string 5/), { target: { value: '3' } });
+    expect(fingerSelect(/Finger for C, string 5/).value).toBe('3');
+    expect(current()).toContain('Left hand 3');
+    expect(screen.getByRole('button', { name: 'Reset to suggested' })).toHaveProperty('disabled', false);
+    expect(JSON.parse(localStorage.getItem(FINGERING_STORE_KEY)!).state.overrides).toEqual({ [key]: 3 });
+    // Leave the tab and come back.
+    fireEvent.click(screen.getByRole('tab', { name: 'Scales' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Position walk' }));
+    expect(current()).toContain('Left hand 3');
+    // Reload.
+    view.unmount();
+    await useFingeringStore.persist.rehydrate();
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Position walk' }));
+    expect(current()).toContain('Left hand 3');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Reset to suggested' }));
+    expect(current()).toContain('Left hand 2');
+    expect(JSON.parse(localStorage.getItem(FINGERING_STORE_KEY)!).state.overrides).toEqual({});
+  });
+});
+
+describe('M39: the stroke keeps the step and the tempo', () => {
+  it('C major two octaves, 60 BPM, step 7 of 29 (open B): tirando ↔ apoyando, paused', () => {
+    render(<GuitarPractice />);
+    fireEvent.change(screen.getByRole('combobox', { name: 'Tempo' }), { target: { value: '60' } });
+    goTo(7);
+    expect(step()).toEqual([7, 29]);
+    expect(current()).toMatch(/B · Left hand 0 · string 2 fret 0/);
+    for (const stroke of ['apoyando', 'tirando', 'apoyando']) {
+      fireEvent.click(screen.getByRole('radio', { name: stroke }));
+      expect([step(), tempo()]).toEqual([[7, 29], '60']);
+    }
+    // The alternating fingers leave the left-hand route as it is too.
+    fireEvent.click(screen.getByRole('radio', { name: 'm–a' }));
+    expect([step(), tempo()]).toEqual([[7, 29], '60']);
+    expect(screen.getAllByRole('button', { name: /^Step / })[6].firstElementChild!.textContent).toBe('m');
+    fireEvent.click(screen.getByRole('radio', { name: 'i–m' }));
+    expect([step(), tempo()]).toEqual([[7, 29], '60']);
+  });
+
+  it('while playing: the playback goes on, at its step and tempo, both ways', async () => {
+    render(<GuitarPractice />);
+    fireEvent.change(screen.getByRole('combobox', { name: 'Tempo' }), { target: { value: '60' } });
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: '▶ Play' })));
+    const [, , callbacks] = vi.mocked(playTimedNotes).mock.calls[0];
+    act(() => callbacks!.onNotePlay(6));
+    const cancels = vi.mocked(cancelScheduledAudio).mock.calls.length;
+    for (const stroke of ['apoyando', 'tirando']) {
+      fireEvent.click(screen.getByRole('radio', { name: stroke }));
+      expect([step(), tempo()]).toEqual([[7, 29], '60']);
+      expect(screen.getByRole('button', { name: '■ Stop' })).toBeDefined();
+    }
+    expect(vi.mocked(cancelScheduledAudio).mock.calls.length).toBe(cancels);
+    expect(playTimedNotes).toHaveBeenCalledTimes(1);
+    act(() => callbacks!.onNotePlay(7));
+    expect(step()).toEqual([8, 29]);
+  });
+
+  it('another route still starts at step 1 (a different range)', () => {
+    render(<GuitarPractice />);
+    goTo(5);
+    fireEvent.click(screen.getByRole('radio', { name: '1 octave' }));
+    expect(step()[0]).toBe(1);
+  });
+});
+
+describe('M40: one string, one note at a time, on the schedule the audio engine is given', () => {
+  it('C major, p i m i at 60 BPM: the open G (string 3) played at 1.0 s ends at 2.9 s, before its next pluck at 3.0 s; other strings ring on', async () => {
+    const route = rightHandPractice(C, 'major', TUNING_STANDARD, 'p-i-m-i')!;
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Right hand' }));
+    fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p-i-m-i' } });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Tempo' }), { target: { value: '60' } });
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: '▶ Play' })));
+    const [notes] = vi.mocked(playTimedNotes).mock.calls[0] as [TimedNote[]];
+    const strings = route.events.flatMap((e) => e.notes.map((n) => n.stringIndex));
+    expect(notes).toHaveLength(strings.length);
+    const g = notes.map((n, k) => ({ ...n, s: strings[k] })).filter((n) => n.s === 3);
+    expect(g.slice(0, 2).map((n) => [n.at, Number((n.at + n.duration).toFixed(6))])).toEqual([[1, 2.9], [3, 3.9]]);
+    // On every string: a note ends before that string sounds again.
+    for (const [k, n] of notes.entries()) {
+      const next = notes.findIndex((_, j) => j > k && strings[j] === strings[k]);
+      if (next >= 0) expect(n.at + n.duration).toBeLessThanOrEqual(notes[next].at);
+    }
+    // The bass (string 5, C) and the 2nd string (m) still ring to the bar's end.
+    expect(notes.filter((n, k) => strings[k] !== 3 && n.at < 4).map((n) => Number((n.at + n.duration).toFixed(6)))).toEqual([3.9, 3.9]);
+  });
+});
+
+describe('M41: the barré cue, printed and spoken', () => {
+  it('B major (p+a) i m i, step 1: finger 1 across strings 1 to 5 at fret 2, on the notes, the step and the neck', () => {
+    useAppStore.setState({ selectedKey: B });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Right hand' }));
+    fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p+a-i-m-i' } });
+    expect(current()).toContain('p · B · Left hand 1 · string 5 fret 2 · Partial barré');
+    expect(current()).toContain('a · F♯ · Left hand 1 · string 1 fret 2 · Partial barré');
+    expect(screen.getByTestId('practice-barre').textContent).toBe('Barré: finger 1 across strings 1 to 5, fret 2');
+    const steps = screen.getAllByRole('button', { name: /^Step / });
+    expect(steps[0].getAttribute('aria-label')).toBe('Step 1: B + F#. Barré: finger 1 across strings 1 to 5, fret 2');
+    // The index stays down through the bar: every stroke of it names the barré (the review of 19 November 2026).
+    expect(steps.slice(1, 4).map((b) => b.getAttribute('aria-label'))).toEqual(['Step 2: B', 'Step 3: D#', 'Step 4: B'].map((x) => `${x}. Barré: finger 1 across strings 1 to 5, fret 2`));
+    const neck = screen.getByTestId('practice-neck');
+    // The dots' own description (their title) on the two strings under the index.
+    const titles = [...neck.querySelectorAll('[data-dot="position"]')].map((d) => [d.closest('[data-string-row]')!.getAttribute('data-string-row'), d.getAttribute('title')]);
+    expect(titles.filter(([, title]) => title?.includes('Partial barré'))).toEqual([['1', 'Left hand 1 · Partial barré'], ['5', 'Left hand 1 · Partial barré']]);
+    // Step 2 plucks string 3 at fret 4, not under the index: the line stays, the note's own word does not.
+    fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+    expect(screen.getByTestId('practice-barre').textContent).toBe('Barré: finger 1 across strings 1 to 5, fret 2');
+    const lines = [...screen.getByTestId('practice-current').querySelectorAll('p')].map((x) => x.textContent);
+    expect(lines).toEqual(['2 of 12 · I', expect.stringMatching(/^i · B · Left hand \d · string 3 fret 4$/), 'Barré: finger 1 across strings 1 to 5, fret 2']);
+  });
+
+  it('across all six strings it is a full barré, not a partial one (C♯ major p i m a, step 5: the V7 on the E shape at fret 4)', () => {
+    useAppStore.setState({ selectedKey: { natural: 'C', accidental: '#' } });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Right hand' }));
+    goTo(5);
+    expect(current()).toContain('5 of 12 · V7');
+    expect(current()).toContain('Left hand 1 · string 6 fret 4 · Full barré');
+    expect(current()).not.toContain('Partial');
+    expect(screen.getByTestId('practice-barre').textContent).toBe('Barré: finger 1 across strings 1 to 6, fret 4');
+    const titles = [...screen.getByTestId('practice-neck').querySelectorAll('[data-dot="position"]')].map((d) => d.getAttribute('title'));
+    expect(titles).toContain('Left hand 1 · Full barré');
+    expect(titles).not.toContain('Left hand 1 · Partial barré');
+  });
+
+  it('a pattern that plucks one string under the index needs no cue (B major p i m)', () => {
+    useAppStore.setState({ selectedKey: B });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Right hand' }));
+    fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p-i-m' } });
+    expect(current()).not.toContain('barré');
+    expect(screen.queryAllByTestId('practice-barre')).toHaveLength(0);
+  });
+
+  it.each([
+    ['pt', 'Pestana: dedo 1 sobre as cordas 1 a 5, traste 2'],
+    ['es', 'Cejilla: dedo 1 sobre las cuerdas 1 a 5, traste 2'],
+  ])('%s says it too', async (lang, line) => {
+    await i18n.changeLanguage(lang);
+    useAppStore.setState({ selectedKey: B });
+    render(<GuitarPractice />);
+    fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.rightHand') }));
+    fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p+a-i-m-i' } });
+    expect(screen.getByTestId('practice-barre').textContent).toBe(line);
+  });
+});
+
+describe('M37: a finger laid across a string that sounds lower, in words', () => {
+  // A ringing group of three (as a broken chord's), built by hand: E on string 4 fret 2 (finger 1), the open G,
+  // and a note on string 2 at fret 2 (finger 2). The pitches are placeholders: only the places matter here.
+  const n = (stringIndex: number, fret: number, finger: number, natural: string) => ({
+    midi: [40, 45, 50, 55, 59, 64][stringIndex] + fret, note: { natural, accidental: '' }, pitched: { natural, accidental: '', octave: 3 },
+    stringIndex, fret, finger, position: null, frame: null, segment: 0, shift: null, reach: null, barre: false,
+  }) as PracticeRoute['events'][number]['notes'][number];
+  const route: PracticeRoute = { id: 'brokenChord', octaves: 1, overRinging: true, events: [
+    { notes: [n(2, 2, 1, 'E')], degrees: [3], rh: ['p'] },
+    { notes: [n(3, 0, 0, 'G')], degrees: [5], rh: ['i'] },
+    { notes: [n(4, 2, 2, 'C')], degrees: [1], rh: ['m'] },
+  ] };
+  const key = (i: number) => routeFingerKey(C, 'major', TUNING_STANDARD, route, i, route.events[i].notes[0]);
+
+  it('the editor does not offer finger 1 to the 2nd string: laid over from the 4th it would stop the open G too', () => {
+    render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit fingering' }));
+    const select = screen.getByRole('combobox', { name: /Finger for C, string 2/ }) as HTMLSelectElement;
+    expect(['1', '2', '3', '4'].map((v) => optionDisabled(select, v))).toEqual([true, false, false, false]);
+    expect(screen.getAllByTestId('practice-finger-busy').map((p) => p.textContent)).toEqual([
+      'Finger 1 is not offered for C on string 2: laid across from E on string 4, fret 2, it would also stop string 3, which is played open or at a lower fret at the same time.',
+    ]);
+  });
+
+  it('saved so (finger 1 on both), it is named with the string between', async () => {
+    localStorage.setItem(FINGERING_STORE_KEY, JSON.stringify({ state: { overrides: { [key(2)]: 1 }, labelMode: 'finger' }, version: 1 }));
+    await useFingeringStore.persist.rehydrate();
+    render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+    expect(screen.getByTestId('practice-clash').textContent).toBe(
+      'Finger 1 is on E on string 4 and on C on string 2, at fret 2: laid across, it would also stop string 3, which is played open or at a lower fret at the same time. Change one of them.');
+  });
+});
+
+describe('the review of 19 November 2026: what the first tests left unpinned', () => {
+  const thirdsKey = (i: 0 | 1) => {
+    const route = technicalSet(C, 'major', TUNING_STANDARD).find((x) => x.id === 'thirds-together')!.route!;
+    return routeFingerKey(C, 'major', TUNING_STANDARD, route, 0, route.events[0].notes[i]);
+  };
+  const lines = () => [...screen.getByTestId('practice-current').querySelectorAll('p')].map((x) => x.textContent);
+
+  describe.each([
+    ['pt', {
+      full: 'p · G♯ · Mão esquerda 1 · corda 6 traste 4 · Pestana completa', fullLine: 'Pestana: dedo 1 sobre as cordas 1 a 6, traste 4',
+      partial: 'p · B · Mão esquerda 1 · corda 5 traste 2 · Pestana parcial',
+      busy: ['O dedo 2 não está disponível para C na corda 5: ao mesmo tempo, já está em E, na corda 4, traste 2, e um dedo não pode estar em dois trastes.',
+        'O dedo 3 não está disponível para E na corda 4: ao mesmo tempo, já está em C, na corda 5, traste 3, e um dedo não pode estar em dois trastes.'],
+      clash: 'O dedo 3 está em C, na corda 5, traste 3, e em E, na corda 4, traste 2, ao mesmo tempo: um dedo não pode estar em dois trastes. Muda um deles.',
+    }],
+    ['es', {
+      full: 'p · G♯ · Mano izquierda 1 · cuerda 6 traste 4 · Cejilla completa', fullLine: 'Cejilla: dedo 1 sobre las cuerdas 1 a 6, traste 4',
+      partial: 'p · B · Mano izquierda 1 · cuerda 5 traste 2 · Cejilla parcial',
+      busy: ['El dedo 2 no está disponible para C en la cuerda 5: a la vez ya está en E, en la cuerda 4, traste 2, y un dedo no puede estar en dos trastes.',
+        'El dedo 3 no está disponible para E en la cuerda 4: a la vez ya está en C, en la cuerda 5, traste 3, y un dedo no puede estar en dos trastes.'],
+      clash: 'El dedo 3 está en C, en la cuerda 5, traste 3, y en E, en la cuerda 4, traste 2, a la vez: un dedo no puede estar en dos trastes. Cambia uno de los dos.',
+    }],
+  ] as const)('%s: the barré words and the editor\'s sentences, each finger, string and fret in its place', (lang, words) => {
+    beforeEach(async () => { await i18n.changeLanguage(lang); });
+
+    it('a full barré (C♯ major p i m a, step 5) and a partial one (B major (p+a) i m i, step 1)', () => {
+      useAppStore.setState({ selectedKey: { natural: 'C', accidental: '#' } });
+      const view = render(<GuitarPractice />);
+      fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.rightHand') }));
+      for (let i = 1; i < 5; i++) fireEvent.click(screen.getByRole('button', { name: i18n.t('practice.next') }));
+      expect(lines()).toContain(words.full);
+      expect(lines()).toContain(words.fullLine);
+      view.unmount();
+      useAppStore.setState({ selectedKey: B });
+      render(<GuitarPractice />);
+      fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.rightHand') }));
+      fireEvent.change(screen.getByTestId('practice-pattern'), { target: { value: 'p+a-i-m-i' } });
+      expect(lines()).toContain(words.partial);
+    });
+
+    it('the fingers not offered, and a clash saved before', async () => {
+      const view = render(<GuitarPractice />);
+      fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.technical') }));
+      fireEvent.change(screen.getByTestId('practice-exercise'), { target: { value: 'thirds-together' } });
+      fireEvent.click(screen.getByRole('button', { name: i18n.t('fretboard.editFingering') }));
+      expect(screen.getAllByTestId('practice-finger-busy').map((x) => x.textContent)).toEqual(words.busy);
+      view.unmount();
+      localStorage.setItem(FINGERING_STORE_KEY, JSON.stringify({ state: { overrides: { [thirdsKey(1)]: 3 }, labelMode: 'finger' }, version: 1 }));
+      await useFingeringStore.persist.rehydrate();
+      render(<GuitarPractice />);
+      fireEvent.click(screen.getByRole('tab', { name: i18n.t('practice.tabs.technical') }));
+      fireEvent.change(screen.getByTestId('practice-exercise'), { target: { value: 'thirds-together' } });
+      expect(screen.getByTestId('practice-clash').textContent).toBe(words.clash);
+    });
+  });
+
+  describe('the player starts again for another route, and only then', () => {
+    const toSixty = () => fireEvent.change(screen.getByRole('combobox', { name: 'Tempo' }), { target: { value: '60' } });
+
+    it('another scale (Scales, step 5 → natural minor): step 1, tempo as a new route\'s', () => {
+      render(<GuitarPractice />);
+      toSixty();
+      goTo(5);
+      expect([step()[0], tempo()]).toEqual([5, '60']);
+      fireEvent.change(screen.getByRole('combobox', { name: 'Scale' }), { target: { value: 'natural_minor' } });
+      expect([step()[0], tempo()]).toEqual([1, '80']);
+    });
+
+    it('another root (step 5, C → D major): step 1', () => {
+      render(<GuitarPractice />);
+      toSixty();
+      goTo(5);
+      act(() => useAppStore.getState().setKey({ natural: 'D', accidental: '' }));
+      expect([step()[0], tempo()]).toEqual([1, '80']);
+    });
+
+    it('another exercise from a step the new one does not have (Technical, Scale at step 28 → Tonic arpeggio): step 1, no crash', () => {
+      render(<GuitarPractice />);
+      fireEvent.click(screen.getByRole('tab', { name: 'Technical set' }));
+      goTo(28);
+      expect(step()).toEqual([28, 29]);
+      fireEvent.change(screen.getByTestId('practice-exercise'), { target: { value: 'tonicArpeggio' } });
+      const arp = technicalSet(C, 'major', TUNING_STANDARD).find((x) => x.id === 'tonicArpeggio')!.route!;
+      expect(step()).toEqual([1, arp.events.length]);
+    }, 30_000); // 4,989 ms on a slow GitHub runner (20 November 2026; about 1 s on the Mac that wrote it): its own limit, not the default 5 s
+
+    it('i–m ↔ m–a while playing: the playback goes on, at its step and tempo, with its one schedule', async () => {
+      render(<GuitarPractice />);
+      toSixty();
+      await act(async () => fireEvent.click(screen.getByRole('button', { name: '▶ Play' })));
+      const [, , callbacks] = vi.mocked(playTimedNotes).mock.calls[0];
+      act(() => callbacks!.onNotePlay(6));
+      const cancels = vi.mocked(cancelScheduledAudio).mock.calls.length;
+      for (const scheme of ['m–a', 'i–m']) {
+        fireEvent.click(screen.getByRole('radio', { name: scheme }));
+        expect([step(), tempo()]).toEqual([[7, 29], '60']);
+        expect(screen.getByRole('button', { name: '■ Stop' })).toBeDefined();
+      }
+      expect(vi.mocked(cancelScheduledAudio).mock.calls.length).toBe(cancels);
+      expect(playTimedNotes).toHaveBeenCalledTimes(1);
+      act(() => callbacks!.onNotePlay(7));
+      expect(step()).toEqual([8, 29]);
+    });
+  });
+
+  describe('a ringing group of three, built by hand (the places matter, the pitches are placeholders)', () => {
+    const n = (stringIndex: number, fret: number, finger: number, natural: string) => ({
+      midi: [40, 45, 50, 55, 59, 64][stringIndex] + fret, note: { natural, accidental: '' }, pitched: { natural, accidental: '', octave: 3 },
+      stringIndex, fret, finger, position: null, frame: null, segment: 0, shift: null, reach: null, barre: false,
+    }) as PracticeRoute['events'][number]['notes'][number];
+    const make = (...notes: ReturnType<typeof n>[]): PracticeRoute => ({ id: 'brokenChord', octaves: 1, overRinging: true,
+      events: notes.map((x) => ({ notes: [x], degrees: [1], rh: ['p'] })) });
+    const next = () => fireEvent.click(screen.getByRole('button', { name: 'Next note or chord' }));
+
+    it('a clash saved between its first and its last step is named on both (review mutant 37-16)', async () => {
+      const route = make(n(2, 2, 1, 'E'), n(3, 0, 0, 'G'), n(4, 3, 2, 'C'));
+      const key = routeFingerKey(C, 'major', TUNING_STANDARD, route, 2, route.events[2].notes[0]);
+      localStorage.setItem(FINGERING_STORE_KEY, JSON.stringify({ state: { overrides: { [key]: 1 }, labelMode: 'finger' }, version: 1 }));
+      await useFingeringStore.persist.rehydrate();
+      render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+      const said = 'Finger 1 is on E on string 4, fret 2, and on C on string 2, fret 3, at the same time: one finger cannot hold two frets. Change one of them.';
+      expect(screen.getByTestId('practice-clash').textContent).toBe(said);
+      next();
+      expect(screen.queryAllByTestId('practice-clash')).toHaveLength(0); // the open G's step holds neither
+      next();
+      expect(screen.getByTestId('practice-clash').textContent).toBe(said);
+    });
+
+    it('the barré word goes only to the notes its finger holds: a note at its fret under another finger has none (review mutant 41-11)', () => {
+      const route = make(n(2, 2, 1, 'E'), n(3, 2, 2, 'A'), n(4, 2, 1, 'C'));
+      render(<PracticePlayer route={route} root={C} scale="major" tuning={TUNING_STANDARD} />);
+      expect(lines()).toContain('p · E · Left hand 1 · string 4 fret 2 · Partial barré');
+      next();
+      // The A, on string 3 at fret 2 under finger 2: the group's barré line stands, the word does not.
+      expect(lines()).toContain('p · A · Left hand 2 · string 3 fret 2');
+      expect(lines()).toContain('Barré: finger 1 across strings 2 to 4, fret 2');
+      const titles = [...screen.getByTestId('practice-neck').querySelectorAll('[data-dot="position"]')].map((d) => d.getAttribute('title'));
+      expect(titles).toContain('Left hand 2');
+      expect(titles.filter((x) => x?.includes('barré'))).toEqual(['Left hand 1 · Partial barré', 'Left hand 1 · Partial barré']);
+    });
+  });
+});

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Term } from '../../glossary/Term.tsx';
 import { termAttr } from '../../glossary/visibleTerms.ts';
 import { qualityTermId } from '../../glossary/termIds.ts';
-import { Note, NaturalNote, Accidental, noteToString, ChordIdentification } from '../../core/types/music.ts';
+import { Note, NaturalNote, Accidental, noteToString, ChordIdentification, type Chord } from '../../core/types/music.ts';
 import { withGlyphs } from '../../core/utils/accidentalGlyphs.ts';
 import { getPitchClass } from '../../core/constants/notes.ts';
 import { identifyChordFromNotes } from '../../core/utils/reverseChordParser.ts';
@@ -17,14 +17,15 @@ import {
   degreeColorSlot,
 } from '../../core/utils/degreeSpelling.ts';
 import { useKeyContext } from '../../hooks/useKeyContext.ts';
-import { exploreRegister } from '../explore/exploreRegister';
+import { exploreChordVoicing, exploreRegister } from '../explore/exploreRegister';
 import { useAppStore } from '../../state/store.ts';
-import { resumeAudio, playChordVoiced, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
+import { resumeAudio, playPitchedNotes, cancelScheduledAudio } from '../../core/services/audio.ts';
 import { getSynthConfig } from '../../services/synthConfig.ts';
 import { ChromaticStrip } from './ChromaticStrip.tsx';
 import { builderRole, matchText, otherReadings } from './builderRole.ts';
 import { SelectTrigger } from '../ui/SelectTrigger.tsx';
 import { Button } from '../ui/Button.tsx';
+import { exploreReturn, noteBuilt } from '../../state/appHistory';
 
 // Both everyday names of every black key, so the dropdown can always show the
 // strip's root as spelled (C♯ and D♭ are different roots to spell from).
@@ -62,6 +63,12 @@ function intervalLabelFor(root: Note, note: Note, step: number): string {
  * and once the blocks form a chord, its tones show the chord's own spelling
  * (C augmented's raised 5th is G♯, labelled A5). The key no longer decides.
  */
+/** The same chord: root, quality, notes, bass and name. */
+function sameChord(a: Chord, b: Chord): boolean {
+  const id = (c: Chord) => JSON.stringify([c.root, c.quality, c.notes, c.bassNote ?? null, c.algorithmicDisplayName ?? null]);
+  return id(a) === id(b);
+}
+
 export function ChordBuilderPanel() {
   const { t, i18n } = useTranslation();
   const lang = toContentLanguage(i18n.language);
@@ -72,8 +79,13 @@ export function ChordBuilderPanel() {
   const baseOctave = useAppStore((s) => s.baseOctave);
   const setSelectedChord = useAppStore((s) => s.setSelectedChord);
 
-  const [chordRoot, setChordRoot] = useState<Note>(selectedKey);
-  const [active, setActive] = useState<Set<number>>(new Set([0]));
+  // Back into Explore brings back what was built (state/appHistory.ts); otherwise the key's root alone.
+  const [chordRoot, setChordRoot] = useState<Note>(() => exploreReturn()?.built?.root ?? selectedKey);
+  const [active, setActive] = useState<Set<number>>(() => new Set(exploreReturn()?.built?.steps ?? [0]));
+  useEffect(() => {
+    noteBuilt({ root: chordRoot, steps: [...active] });
+    return () => noteBuilt(null);
+  }, [chordRoot, active]);
 
   // The note each block stands for, spelled by its interval from the root.
   const intervalNoteAtStep = useCallback(
@@ -152,7 +164,12 @@ export function ChordBuilderPanel() {
   // the scale — per spec §13.3 we do NOT synthesise a chord from an
   // unrecognised note-set).
   useEffect(() => {
-    setSelectedChord(top && top.confidence === 'exact' ? top.chord : null);
+    const next = top && top.confidence === 'exact' ? top.chord : null;
+    // The chord these blocks build is selected already (Back brought it back with
+    // its inversion, which selecting it again would reset): left as it is.
+    const now = useAppStore.getState().selectedChord;
+    if (next && now && sameChord(now, next)) return;
+    setSelectedChord(next);
   }, [top, setSelectedChord]);
 
   const handlePlay = useCallback(async () => {
@@ -162,12 +179,12 @@ export function ChordBuilderPanel() {
     // selected chord's voicing); an unrecognised set plays as built.
     const recognised = top && top.confidence === 'exact' ? top.chord : null;
     cancelScheduledAudio(); // replaces whatever was sounding (W8-01)
-    if (instrument === 'guitar') {
-      const notes = recognised ? (invertedNotes.length ? invertedNotes : recognised.notes) : inputNotes;
-      playPitchedNotes(exploreRegister(instrument).chordPitches(notes, recognised?.bassNote), 1.2, getSynthConfig(synthPreset));
-      return;
-    }
-    playChordVoiced(recognised ? recognised.notes : inputNotes, baseOctave, 1.2, getSynthConfig(synthPreset), recognised?.bassNote);
+    // A recognised chord is the selected one: the detail's own voicing, in
+    // its inversion, at the piano's octave (audit M58 — on the piano this
+    // played root position while the keys and ▶ Chord had the inversion).
+    playPitchedNotes(recognised
+      ? exploreChordVoicing(instrument, baseOctave, recognised, invertedNotes)
+      : exploreRegister(instrument, baseOctave).chordPitches(inputNotes), 1.2, getSynthConfig(synthPreset));
   }, [active.size, inputNotes, baseOctave, synthPreset, top, instrument, invertedNotes]);
 
   const stepsSorted = useMemo(() => [...active].sort((a, b) => a - b), [active]);

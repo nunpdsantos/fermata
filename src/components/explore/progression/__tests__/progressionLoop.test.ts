@@ -31,7 +31,7 @@ import { exploreRegister } from '../../exploreRegister';
 import { getMidiNumber } from '../../../../core/utils/pianoLayout';
 
 const chords = readChords(['G', 'D', 'Em', 'C']);
-const pitches = (c: (typeof chords)[number]) => exploreRegister('piano').chordPitches(c.notes, c.bassNote);
+const pitches = (c: (typeof chords)[number]) => exploreRegister('piano', 4).chordPitches(c.notes, c.bassNote);
 const midi = (p: PitchedNote) => getMidiNumber(p, p.octave);
 
 describe('one cycle, read independently', () => {

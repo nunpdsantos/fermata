@@ -117,6 +117,39 @@ test('the cable pulled mid-chord releases everything', async ({ browser }) => {
   await context.close();
 });
 
+// Audit M62. MIDI 1.0 Detailed Specification 4.2.1, p. A-5: "A Hold or Sustain pedal 'On' message takes
+// priority over Note Off and All Notes Off until it is released"; p. 25: All Sound Off turns every note off
+// "as soon as possible". The bytes are the specification's own figure (G4 = 0x43), then the same with 120.
+test('the pedal holds a note through All Notes Off (123) until it is lifted; All Sound Off (120) ends it at once', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const { context, page } = await open(browser, { lastView: 'explore' });
+  const dev = await recordVoice(page);
+  await turnOnInSettings(page);
+  const g4 = key(page, 67);
+  await sendMidi(page, [0x90, 0x43, 0x40]);
+  await sendMidi(page, [0xb0, 0x40, 0x7f]);
+  await sendMidi(page, [0x90, 0x43, 0x00]);
+  await sendMidi(page, [0xb0, 0x7b, 0x00]);
+  // Held through the All Notes Off: still lit, still sounding, a moment later too.
+  await page.waitForTimeout(300);
+  await expect(g4).toHaveAttribute('aria-pressed', 'true');
+  if (dev) expect(await soundingNow(page)).toEqual([67]);
+  await sendMidi(page, [0xb0, 0x40, 0x00]);
+  await expect(g4).toHaveAttribute('aria-pressed', 'false');
+  if (dev) expect(await soundingNow(page)).toEqual([]);
+
+  // The same with All Sound Off: it ends at once, the pedal still down.
+  await sendMidi(page, [0xb0, 0x40, 0x7f]);
+  await sendMidi(page, [0x90, 0x43, 0x40]);
+  await sendMidi(page, [0x90, 0x43, 0x00]);
+  await expect(g4).toHaveAttribute('aria-pressed', 'true');
+  await sendMidi(page, [0xb0, 0x78, 0x00]);
+  await expect(g4).toHaveAttribute('aria-pressed', 'false');
+  if (dev) expect(await soundingNow(page)).toEqual([]);
+  await sendMidi(page, [0xb0, 0x40, 0x00]);
+  await context.close();
+});
+
 test('a later visit: back on only while the browser still allows it; otherwise nothing is asked', async ({ browser }) => {
   test.setTimeout(90_000);
   {

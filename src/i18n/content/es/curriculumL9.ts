@@ -167,7 +167,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Una técnica mnemónica comprobada: asociar cada intervalo con el comienzo de una melodía familiar. 2.ª menor ascendente = tema de Tiburón. 2.ª mayor = Cumpleaños Feliz (compara las 2.ª y 3.ª notas; las dos primeras tienen la misma altura). 3.ª menor = Greensleeves. 3.ª mayor = When the Saints (oh-when). 4.ª justa = Marcha Nupcial de Wagner (Here Comes the Bride). Tritono = The Simpsons (The-Simp). 5.ª justa = Brilla Brilla Estrellita (compara las 2.ª y 3.ª notas; las dos primeras tienen la misma altura). Estas son ruedas de entrenamiento — el objetivo es interiorizar el sonido de cada intervalo directamente y después abandonar la muleta. Comienza solo con intervalos ascendentes y después añade descendentes cuando los ascendentes estén sólidos.',
           tryThisLabel:
-            'Toca C mayor — escucha cada intervalo a partir de la fundamental',
+            'Escucha cada intervalo desde la fundamental, de la 2.ª menor a la 5.ª justa: C–Db, C–D, C–Eb, C–E, C–F, C–Gb y C–G',
         },
         {
           title: 'Consonancia perfecta frente a imperfecta',
@@ -221,7 +221,7 @@ const curriculumL9: CurriculumLevelOverlay = {
           explanation:
             'Los intervalos descendentes suenan diferentes de los ascendentes aunque la distancia sea igual. Una 5.ª justa descendente (G descendiendo a C) suena como resolución o aterrizaje. Una 6.ª mayor descendente suena cálida y nostálgica. Las séptimas descendentes suenan dramáticas y amplias. Practica intervalos descendentes por separado — muchos estudiantes que dominan intervalos ascendentes se debaten con los descendentes. Usa asociaciones con canciones descendentes: 5J descendente = las dos primeras notas del tema de Los Picapiedra (Flint-stones), 3m descendente = Hey Jude (hey-Jude). Construye el conjunto descendente como competencia propia.',
           tryThisLabel:
-            'Toca C mayor descendente — escucha los intervalos al revés',
+            'Escucha los intervalos amplios descendiendo desde el C agudo: C–E (6.ª menor), C–Eb (6.ª mayor), C–D (7.ª menor), C–Db (7.ª mayor) y C–C (octava)',
         },
         {
           title: 'Relaciones de inversión de intervalos',

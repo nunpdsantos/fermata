@@ -17,7 +17,8 @@ export type GroupOf = (id: string) => string;
 export interface SessionConfig {
   length: 12 | 24 | 40;
   newPerSession: number;       // 0..8; 0 = review-only mode
-  families: Record<DrillFamily, boolean>;
+  /** The topics drilled; a topic absent here is off (the saved record may lack reading: audit 2, P4). */
+  families: Partial<Record<DrillFamily, boolean>>;
 }
 
 // ─── Internal Helpers ─────────────────────────────────────────────────────────
@@ -293,6 +294,37 @@ export function composeSession(
 
   // No item next to itself or a sibling (W0-02, W7-04).
   return separateSiblings(assembled, groupOf);
+}
+
+/**
+ * True when composeSession, given the same bank, states, config and
+ * `unlocked`, would compose an EMPTY queue — whatever `now` and `seed` are
+ * (audit 2, P6, 19 November 2026). The one rule for "nothing to ask": every
+ * topic switched off, new facts per session at 0 with no fact met yet, or —
+ * following the lessons — nothing they open. The store starts no session then
+ * (`startSession`), and the Drill view shows its intro, saying why, instead
+ * of a session of nothing ("0 of 0 correct").
+ *
+ * Exactly composeSession's buckets: a pool fact is asked when it has a saved
+ * state past 'new' (due, learning, or review / by heart: the confidence
+ * tail), or no state at all while new facts are allowed. A saved state still
+ * at 'new' is in no bucket. Pinned against composeSession itself in
+ * drillSession.nothing.test.ts.
+ */
+export function sessionHasNothing(
+  bank: readonly DrillItem[],
+  states: Record<string, ItemSrsState>,
+  config: SessionConfig,
+  unlocked: ((item: DrillItem) => boolean) | null = null,
+): boolean {
+  const inPool = unlocked
+    ? (item: DrillItem) => states[item.id] !== undefined || unlocked(item)
+    : (item: DrillItem) => Boolean(config.families[item.family]);
+  return !bank.some((item) => {
+    if (!inPool(item)) return false;
+    const state = states[item.id];
+    return state === undefined ? config.newPerSession > 0 : state.tier !== 'new';
+  });
 }
 
 // ─── requeue helpers ──────────────────────────────────────────────────────────

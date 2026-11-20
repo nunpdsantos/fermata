@@ -217,7 +217,7 @@ export const CircleOfFifths = memo(function CircleOfFifths({ signatureInFacts = 
       await resumeAudio();
       const config = getSynthConfig(synthPreset);
       cancelScheduledAudio(); // a new key replaces the previous one's sound (W8-01)
-      playChordVoiced([note], exploreRegister(instrument).octave, 0.5, config);
+      playChordVoiced([note], exploreRegister(instrument, useAppStore.getState().baseOctave).octave, 0.5, config);
     },
     [synthPreset, setKey, setScale, instrument],
   );

@@ -277,8 +277,10 @@ const templates: ModuleTemplateConfig[] = [
     templates: [
       {
         type: 'ear_training',
-        promptTemplate: 'Listen to this pitch from a stepwise melody and identify it.',
-        hintTemplate: 'In stepwise melodies, each note is a half step or whole step from the previous one. Sing the scale to orient yourself.',
+        // Second audit, M57: one note after the reference C, no melody around
+        // it, so the prompt says what is heard, as the module's own e1 and e2 do.
+        promptTemplate: 'Listen to this note and identify it.',
+        hintTemplate: 'Start from the C you hear first and sing up the C major scale, one step at a time, until you reach this note.',
         params: {
           earMode: 'note',
           roots: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],

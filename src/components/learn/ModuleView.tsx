@@ -5,6 +5,8 @@ import type { CurriculumModule, CurriculumUnit, CurriculumLevel } from '../../co
 import type { ExerciseDefinition } from '../../core/types/exercise';
 import { getNextModuleInLevel, getPreviousModuleInLevel } from '../../data/curriculumLoader';
 import { findQuotedQueries } from '../../utils/theoryQuery';
+import { queryLabel, taskText } from '../../utils/queryLabel';
+import { useNoteLabel } from '../../hooks/useSolfege';
 import { LearnBreadcrumb } from './LearnBreadcrumb';
 import { Button, IconButton } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -35,18 +37,27 @@ import {
   fingerprintsOf,
   identitiesOf,
   restorableCheck,
+  resumableCheck,
+  putCheckAway,
+  hasAnswer,
   type RunSnapshot,
+  type SavedCheck,
 } from '../../state/learnSessionStore';
+import { useWorkKeeper } from '../../state/appHistory';
+import { learnPlace } from '../../views/learnPlaces';
+import { getModuleTitle, loadModuleIndex } from '../../data/moduleIndexI18n';
 
 /** Wide enough for the rail beside the text (below it, the phone picker). */
 const RAIL_QUERY = '(min-width: 1024px)';
 
-function renderTaskInstruction(instruction: string, onTryQuery: (query: string) => void, accent: string, openQuery: string | null): ReactNode[] {
+function renderTaskInstruction(instruction: string, onTryQuery: (query: string) => void, accent: string, openQuery: string | null, label: (query: string) => string): ReactNode[] {
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   // Every quoted token that names something the app can show becomes a
   // button, in any language and anywhere in the sentence (W9-01). It now
-  // opens the Try-This IN PLACE, under the task (W4b).
+  // opens the Try-This IN PLACE, under the task (W4b). The token is what it
+  // runs; its words are the name of what it opens, in the learner's
+  // language (utils/queryLabel.ts, the owner's ruling of 19 November 2026).
   for (const { index, length, query } of findQuotedQueries(instruction)) {
     if (index > lastIndex) parts.push(instruction.slice(lastIndex, index));
     parts.push(
@@ -61,13 +72,44 @@ function renderTaskInstruction(instruction: string, onTryQuery: (query: string) 
         className="inline-flex items-baseline font-medium rounded px-1 py-0.5 -my-0.5 transition-colors cursor-pointer underline decoration-dotted underline-offset-2"
         style={{ color: accentText(accent), backgroundColor: `${accent}0d` }}
       >
-        &lsquo;{query}&rsquo;
+        &lsquo;{label(query)}&rsquo;
       </button>,
     );
     lastIndex = index + length;
   }
   if (lastIndex < instruction.length) parts.push(instruction.slice(lastIndex));
   return parts.length > 0 ? parts : [instruction];
+}
+
+/**
+ * Before a check (or review) started here lets another lesson's kept run go
+ * (one slot; second audit round, A2): what is kept, and the ways on — back to
+ * it, start here, or neither (Cancel, or Escape: review 2, item 4). Focus
+ * comes to it, as the button that opened it has gone.
+ */
+function KeptChoice({ kept, review, onBack, onStart, onCancel }: { kept: SavedCheck; review: boolean; onBack: () => void; onStart: () => void; onCancel: () => void }) {
+  const { t, i18n } = useTranslation();
+  const title = getModuleTitle(kept.moduleId, (i18n.language || 'en').slice(0, 2)) ?? kept.moduleId;
+  const first = useRef<HTMLButtonElement>(null);
+  useEffect(() => first.current?.focus(), []);
+  const what = kept.kind === 'review' ? 'backNav.otherReviewKept' : kept.kind === 'practice' ? 'backNav.otherPracticeKept' : 'backNav.otherCheckKept';
+  return (
+    <div className="mt-3 flex flex-col gap-3 px-4 py-4 rounded-2xl" style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border-subtle)' }} data-testid="kept-choice"
+      onKeyDown={(e) => {
+        if (e.key !== 'Escape' || e.defaultPrevented) return;
+        e.preventDefault();
+        onCancel();
+      }}>
+      <p className="text-ui" style={{ color: 'var(--text)' }}>
+        {t(what, { title, current: kept.run.index + 1, total: kept.run.order.length })} {t(review ? 'backNav.startReviewLetsGo' : 'backNav.startCheckLetsGo')}
+      </p>
+      <div className="flex flex-wrap gap-2 max-sm:flex-col">
+        <Button ref={first} variant="primary" onClick={onBack} className="max-sm:w-full" data-testid="kept-back">{t('backNav.backToKept', { title })}</Button>
+        <Button variant="secondary" onClick={onStart} className="max-sm:w-full" data-testid="kept-start">{t(review ? 'backNav.startReviewHere' : 'backNav.startCheckHere')}</Button>
+        <Button variant="quiet" onClick={onCancel} className="max-sm:w-full" data-testid="kept-cancel">{t('lesson.cancel')}</Button>
+      </div>
+    </div>
+  );
 }
 
 /** The scrolling Learn region this screen lives in (LearnView's). */
@@ -118,7 +160,23 @@ interface ModuleViewProps {
   onLevelComplete?: () => void;
   /** Opens a level's page (a track's closing card, wave 2). */
   onOpenLevel?: (levelId: string) => void;
+  /**
+   * The browser's Back and Forward (audit P3): true = the check (or its
+   * result) is the screen, false = the lesson itself (a check under way is
+   * kept, and its card offers it), undefined = as before (a saved check opens).
+   */
+  run?: boolean;
+  /**
+   * The check opened or closed: `user` = the learner opened it (a screen of
+   * its own), `back` = the app's own way back to the lesson (✕ Exit, "Back
+   * to the lesson"…), `fix` = the lesson corrects what the entry said.
+   */
+  onRunChange?: (run: boolean, how: RunChange) => void;
+  /** Go to another lesson's kept run (the choice before starting a check here would let it go). */
+  onOpenKept?: (check: SavedCheck) => void;
 }
+
+export type RunChange = 'user' | 'back' | 'fix';
 
 export function ModuleView({
   module,
@@ -145,6 +203,9 @@ export function ModuleView({
   onOpenLesson,
   initialSection = null,
   onOpenLevel,
+  run: runWanted,
+  onRunChange,
+  onOpenKept,
 }: ModuleViewProps) {
   const { t, i18n } = useTranslation();
   const shareLinkLabel = useShareLinkLabel();
@@ -167,12 +228,19 @@ export function ModuleView({
   const instrument = useAppStore((s) => s.instrument);
   const wide = useMediaQuery(RAIL_QUERY);
   const lang = (i18n.language || 'en').slice(0, 2);
+  // A task phrase's words: the name of what its token opens, in this language (Dó-Ré-Mi beside a root where the app shows it).
+  const noteLabel = useNoteLabel();
+  const phraseLabel = useCallback(
+    (query: string) => queryLabel(query, { lang: lang === 'pt' || lang === 'es' ? lang : 'en', t: (key) => t(key), note: noteLabel }),
+    [lang, t, noteLabel],
+  );
   // The language the check's words are in: English when a PT/ES overlay
   // failed to load (a run answered then is never resumed under the translation).
   const contentLang = exercises.find((ex) => ex.contentLang)?.contentLang ?? lang;
   const rootRef = useRef<HTMLDivElement>(null);
   const saveCheck = useLearnSessionStore((s) => s.setCheck);
   const saveSection = useLearnSessionStore((s) => s.setSection);
+  const savedCheck = useLearnSessionStore((s) => s.check);
 
   // ── Sections (the rail) ───────────────────────────────────────────────────
   const sections = useMemo((): Omit<LessonSection, 'done'>[] => {
@@ -209,6 +277,42 @@ export function ModuleView({
   const [result, setResult] = useState<{ kind: RunKind; outcomes: ItemOutcome[]; passed: boolean } | null>(null);
   const runKey = useRef(0);
 
+  // The saved check is judged once its lesson's exercises are here (the
+  // mount effect below drops one that can no longer continue, as 153caab
+  // did on opening): until then the card offers nothing.
+  const [judged, setJudged] = useState(false);
+  // A check of this lesson that Back (or Forward) left, kept (audit P3): its
+  // card says so and offers it again, exactly where it was. A review is a
+  // screen of its own; a run with no answer in it is nothing kept (one left
+  // goes: putCheckAway), so the card never says so (review 2, item 4).
+  const kept = judged && !isReviewMode && mode === 'lesson' && savedCheck && savedCheck.moduleId === module.id && savedCheck.kind !== 'review'
+    && !savedCheck.finished && savedCheck.run.order.length > 0 && hasAnswer(savedCheck) ? savedCheck : null;
+  // Another lesson's run, kept with an answer in it: starting one here would let it go, so the learner chooses first (A2).
+  const otherKept = savedCheck && savedCheck.moduleId !== module.id && !savedCheck.finished && hasAnswer(savedCheck) ? savedCheck : null;
+  const [choosing, setChoosing] = useState(false);
+  const [, setTitlesLoaded] = useState(false);
+  useEffect(() => {
+    if (!choosing || lang === 'en') return;
+    let live = true;
+    void loadModuleIndex(lang).then(() => { if (live) setTitlesLoaded(true); });
+    return () => { live = false; };
+  }, [choosing, lang]);
+
+  // Leaving a run under way by Back or Forward (or the active tab) for another
+  // screen: it is put away (kept, no longer work in progress) and, with an
+  // answer in it, a toast says it is kept, with Continue — its own lesson's
+  // card says it instead.
+  const running = mode === 'check' && !!savedCheck && savedCheck.moduleId === module.id && !savedCheck.finished;
+  const lessonPlace = learnPlace({ type: 'module', levelId: level.id, unitId: unit.id, moduleId: module.id });
+  useWorkKeeper('learn', running ? (to) => {
+    const c = useLearnSessionStore.getState().check;
+    if (!c || c.moduleId !== module.id || c.finished) return null;
+    putCheckAway();
+    if (!hasAnswer(c) || (!isReviewMode && to.v === 'learn' && to.s === lessonPlace)) return null;
+    const key = c.kind === 'review' ? 'backNav.reviewKept' : c.kind === 'practice' ? 'backNav.practiceKept' : 'backNav.checkKept';
+    return t(key, { current: c.run.index + 1, total: c.run.order.length });
+  } : null);
+
   const scrollTo = useCallback((id: string, smooth = true) => {
     const scroller = scrollerOf(rootRef.current);
     if (!scroller) return;
@@ -243,32 +347,59 @@ export function ModuleView({
     requestAnimationFrame(() => scrollTo('top'));
   }, [module.id, contentLang, saveCheck, scrollTo]);
 
+  // The saved run of this lesson (or this review) continued exactly where it
+  // was — or its result screen. False when there is none to continue.
+  const resumeSaved = useCallback((): boolean => {
+    const saved = restorableCheck(module.id, exercises, contentLang);
+    if (!saved || (saved.check.kind === 'review') !== isReviewMode) return false;
+    const kind = saved.check.kind;
+    if (saved.check.finished) {
+      const byId = new Map(exercises.map((ex) => [ex.id, ex]));
+      const outcomes = saved.check.run.items.flatMap((i) => {
+        const ex = byId.get(i.id);
+        return ex ? [{ exercise: ex, answers: i.answers, score: i.score, answer: i.answer }] : [];
+      });
+      const earned = outcomes.reduce((n, o) => n + o.score, 0);
+      runKey.current += 1;
+      setRun({ key: runKey.current, kind, exercises: saved.ordered });
+      setResult({ kind, outcomes, passed: earned >= outcomes.length * 0.8 });
+      setMode('result');
+    } else {
+      startRun(kind, saved.ordered, saved.check.run);
+    }
+    return true;
+  }, [module.id, exercises, contentLang, isReviewMode, startRun]);
+
   // Restore a check that was under way (after a reload) — or start a review.
+  // Opened at the lesson itself by Back / Forward (or a reload there), a
+  // check under way stays on the check card instead (audit P3).
   const restoredRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current || exercisesState !== 'ready') return;
     restoredRef.current = true;
-    const saved = restorableCheck(module.id, exercises, contentLang);
-    if (saved && (saved.check.kind === 'review') === isReviewMode) {
-      const kind = saved.check.kind;
-      if (saved.check.finished) {
-        const byId = new Map(exercises.map((ex) => [ex.id, ex]));
-        const outcomes = saved.check.run.items.flatMap((i) => {
-          const ex = byId.get(i.id);
-          return ex ? [{ exercise: ex, answers: i.answers, score: i.score, answer: i.answer }] : [];
-        });
-        const earned = outcomes.reduce((n, o) => n + o.score, 0);
-        runKey.current += 1;
-        setRun({ key: runKey.current, kind, exercises: saved.ordered });
-        setResult({ kind, outcomes, passed: earned >= outcomes.length * 0.8 });
-        setMode('result');
-      } else {
-        startRun(kind, saved.ordered, saved.check.run);
-      }
+    queueMicrotask(() => setJudged(true));
+    const own = useLearnSessionStore.getState().check;
+    const mine = own && own.moduleId === module.id && !own.finished && (own.kind === 'review') === isReviewMode ? own : null;
+    // The lesson itself (opened by the learner, or Back / Forward there), or a
+    // run put away by Back: it waits on the card — and one that can no longer
+    // continue (older than a day, its questions changed, another language)
+    // is dropped now, so the card never promises what it cannot do (A3).
+    if (!isReviewMode && (runWanted === false || (runWanted === undefined && mine?.away))) {
+      if (mine && !resumableCheck(mine, module.id, exercises, contentLang)) saveCheck(null);
+      if (runWanted === undefined) onRunChange?.(false, 'fix');
       return;
     }
-    if (isReviewMode && hasExercises) startRun('review', exercises);
-  }, [exercisesState, exercises, module.id, contentLang, isReviewMode, hasExercises, startRun]);
+    if (resumeSaved()) {
+      if (!isReviewMode && runWanted !== true) onRunChange?.(true, 'fix');
+      return;
+    }
+    if (isReviewMode && hasExercises) {
+      // Another lesson's run kept with an answer: the learner chooses before this review lets it go (A2).
+      const other = useLearnSessionStore.getState().check;
+      if (other && other.moduleId !== module.id && !other.finished && hasAnswer(other)) queueMicrotask(() => setChoosing(true));
+      else startRun('review', exercises);
+    } else if (runWanted) onRunChange?.(false, 'fix'); // nothing to continue: the lesson
+  }, [exercisesState, exercises, module.id, contentLang, isReviewMode, hasExercises, startRun, resumeSaved, runWanted, onRunChange, saveCheck]);
 
   // The lesson drives the instrument (D-20): folded away on opening, showing
   // the section being read (the first concept to begin with). Leaving the
@@ -356,17 +487,44 @@ export function ModuleView({
   }, [scrollTo, sections]);
 
   const backToLesson = useCallback((section = 'check') => {
-    saveCheck(null);
-    setMode('lesson');
-    setRun(null);
-    setResult(null);
+    // A review's Re-read opens the lesson as a screen of its own; the
+    // review's result stays saved, so Back returns to it (audit P3).
     if (isReviewMode) {
       onOpenLesson?.(section);
       return;
     }
+    saveCheck(null);
+    setMode('lesson');
+    setRun(null);
+    setResult(null);
     pendingScroll.current = section;
     setCurrentSection(section);
-  }, [saveCheck, isReviewMode, onOpenLesson]);
+    onRunChange?.(false, 'back');
+  }, [saveCheck, isReviewMode, onOpenLesson, onRunChange]);
+
+  // Back / Forward between the lesson and its check (audit P3): Back from the
+  // check shows the lesson at its check card and KEEPS the check (the card
+  // offers it again, exactly where it was); Forward continues it.
+  const shownRun = useRef(runWanted);
+  useEffect(() => {
+    if (shownRun.current === runWanted) return;
+    shownRun.current = runWanted;
+    if (!restoredRef.current || isReviewMode || runWanted === undefined) return;
+    if (!runWanted && mode !== 'lesson') {
+      setMode('lesson');
+      setRun(null);
+      setResult(null);
+      pendingScroll.current = 'check';
+      setCurrentSection('check');
+    } else if (runWanted && mode === 'lesson' && !resumeSaved()) {
+      // Forward onto a check left with no answer (it went: nothing was kept):
+      // the check again, from its start — unless another lesson's run is kept
+      // with an answer, which the card asks about first.
+      const other = useLearnSessionStore.getState().check;
+      if (hasExercises && !(other && other.moduleId !== module.id && !other.finished && hasAnswer(other))) startRun('check', exercises);
+      else onRunChange?.(false, 'fix');
+    }
+  }, [runWanted, mode, isReviewMode, resumeSaved, onRunChange, hasExercises, module.id, startRun, exercises]);
 
   // ── Tasks with an inline Try This ─────────────────────────────────────────
   const [taskTry, setTaskTry] = useState<{ taskId: string; query: string } | null>(null);
@@ -394,8 +552,40 @@ export function ModuleView({
 
   const onSnapshot = useCallback((snapshot: RunSnapshot) => {
     const saved = useLearnSessionStore.getState().check;
-    if (saved && saved.moduleId === module.id) saveCheck({ ...saved, run: snapshot, at: Date.now() });
+    if (!saved || saved.moduleId !== module.id) return;
+    // An answer on screen: the run is Learn's current screen again (never `away`).
+    const { away: _away, ...onScreen } = saved;
+    saveCheck({ ...onScreen, run: snapshot, at: Date.now() });
   }, [module.id, saveCheck]);
+
+  // The choice between another lesson's kept run and a new one here (A2).
+  // Cancel (or Escape) is neither: the lesson's card again, focus on the
+  // button that opened the choice; a review has no card, so it is left, as
+  // its own "Back to Learn" leaves it (review 2, item 4).
+  const startButton = useRef<HTMLButtonElement>(null);
+  const refocusStart = useRef(false);
+  useEffect(() => {
+    if (choosing || !refocusStart.current) return;
+    refocusStart.current = false;
+    startButton.current?.focus();
+  }, [choosing]);
+  const keptChoice = choosing && otherKept ? (
+    <KeptChoice
+      kept={otherKept}
+      review={isReviewMode}
+      onBack={() => { setChoosing(false); onOpenKept?.(otherKept); }}
+      onStart={() => {
+        setChoosing(false);
+        startRun(isReviewMode ? 'review' : 'check', exercises);
+        if (!isReviewMode) onRunChange?.(true, 'user');
+      }}
+      onCancel={() => {
+        setChoosing(false);
+        if (isReviewMode) onBack();
+        else refocusStart.current = true;
+      }}
+    />
+  ) : null;
 
   const rereadFor = useCallback((o: ItemOutcome) => {
     const i = conceptForQuestion(`${o.exercise.prompt} ${o.exercise.hint ?? ''}`, module, o.answer);
@@ -441,7 +631,7 @@ export function ModuleView({
     } else {
       if (!isReviewMode && canComplete && !isModuleCompleted) actions.push({ label: t('lesson.completeLesson'), onClick: () => { complete(); backToLesson('check'); }, variant: 'primary' });
       else if (!isReviewMode && !allTasksDone) actions.push({ label: t('lesson.goToTasks'), onClick: () => backToLesson('tasks'), variant: 'primary' });
-      else if (!isReviewMode && nextModule) actions.push({ label: t('lesson.nextLesson'), onClick: () => { saveCheck(null); onNavigateModule(nextModule.id); }, variant: 'primary' });
+      else if (!isReviewMode && nextModule) actions.push({ label: t('lesson.nextLesson'), onClick: () => onNavigateModule(nextModule.id), variant: 'primary' });
       if (practise) actions.push({ ...practise, variant: 'secondary' });
     }
     actions.push(isReviewMode
@@ -478,6 +668,7 @@ export function ModuleView({
             <Button variant="secondary" onClick={onBack}>{t('lesson.backToLearn')}</Button>
           </>
         )}
+        {keptChoice && <div className="max-w-xl px-4">{keptChoice}</div>}
       </div>
     );
   }
@@ -571,7 +762,7 @@ export function ModuleView({
             <section key={i} data-section={`c${i}`} className={`mb-12 ${sectionClass}`}>
               <h2 className="text-title font-semibold mb-3" style={{ color: 'var(--text)' }}>{concept.title}</h2>
               <p className="learn-concept-text mb-4" style={{ color: 'var(--text-muted)' }}>{concept.explanation}</p>
-              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} descending={concept.descending} names={noStaff} accent={accent} />
+              <InlineTryThis query={concept.tryThisQuery} label={concept.tryThisLabel} rhythm={concept.rhythm} clefs={concept.clefs} descending={concept.descending} demo={concept.demo} names={noStaff} accent={accent} />
             </section>
           ))}
 
@@ -613,7 +804,7 @@ export function ModuleView({
                         <button
                           type="button"
                           aria-pressed={done}
-                          aria-label={task.instruction}
+                          aria-label={taskText(task.instruction, phraseLabel)}
                           onClick={(e) => {
                             e.stopPropagation();
                             onToggleTask(module.id, task.id);
@@ -634,12 +825,12 @@ export function ModuleView({
                           </span>
                         </button>
                         <span className={`text-ui ${done ? 'line-through' : ''}`} style={{ color: 'var(--text-muted)' }}>
-                          {renderTaskInstruction(task.instruction, (query) => setTaskTry((cur) => (cur?.taskId === task.id && cur.query === query ? null : { taskId: task.id, query })), accent, openQuery)}
+                          {renderTaskInstruction(task.instruction, (query) => setTaskTry((cur) => (cur?.taskId === task.id && cur.query === query ? null : { taskId: task.id, query })), accent, openQuery, phraseLabel)}
                         </span>
                       </div>
                       {openQuery && (
                         <div className="px-4 pb-3">
-                          <InlineTryThis compact query={openQuery} label={`‘${openQuery}’`} names={noStaff} accent={accent} />
+                          <InlineTryThis compact query={openQuery} label={`‘${phraseLabel(openQuery)}’`} demo={task.demos?.[openQuery]} names={noStaff} accent={accent} />
                         </div>
                       )}
                     </div>
@@ -669,15 +860,26 @@ export function ModuleView({
                       <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.passedMark', { score: passMark(exercises.length).toLocaleString(i18n.language || 'en'), total: exercises.length })}</p>
                       <p className="text-ui mt-1" style={{ color: 'var(--text-muted)' }}>{t('lesson.scoring')}</p>
                     </>}
-                  </div>
-                  <div className="flex flex-wrap gap-2 max-sm:flex-col">
-                    {!isModuleCompleted && canComplete && (
-                      <Button variant="primary" onClick={complete} className="max-sm:w-full">{t('lesson.completeLesson')}</Button>
+                    {kept && (
+                      <p className="text-ui mt-1" style={{ color: 'var(--text)' }} data-testid="check-kept">
+                        {t(kept.kind === 'practice' ? 'backNav.practiceKept' : 'backNav.checkKept', { current: kept.run.index + 1, total: kept.run.order.length })}
+                      </p>
                     )}
-                    <Button variant={exercisesPassed ? 'secondary' : 'primary'} onClick={() => startRun('check', exercises)} className="max-sm:w-full">
+                  </div>
+                  {!keptChoice && <div className="flex flex-wrap gap-2 max-sm:flex-col">
+                    {kept && (
+                      // The same test as the card (resumableCheck): a check that can no longer continue is dropped and the card goes.
+                      <Button variant="primary" onClick={() => { if (resumeSaved()) onRunChange?.(true, 'user'); }} className="max-sm:w-full" data-testid="check-continue">
+                        {t(kept.kind === 'practice' ? 'backNav.continuePractice' : 'backNav.continueCheck')}
+                      </Button>
+                    )}
+                    {!isModuleCompleted && canComplete && (
+                      <Button variant={kept ? 'secondary' : 'primary'} onClick={complete} className="max-sm:w-full">{t('lesson.completeLesson')}</Button>
+                    )}
+                    <Button ref={startButton} variant={exercisesPassed || kept ? 'secondary' : 'primary'} onClick={() => { if (otherKept) setChoosing(true); else { startRun('check', exercises); onRunChange?.(true, 'user'); } }} className="max-sm:w-full" data-testid="check-start">
                       {exercisesPassed ? t('lesson.checkAgain') : t('lesson.startCheck')}
                     </Button>
-                  </div>
+                  </div>}
                 </>
               ) : (
                 <>
@@ -687,6 +889,7 @@ export function ModuleView({
               ))}
               {isModuleCompleted && <span className="text-ui text-success">{t('lesson.lessonComplete')}</span>}
             </div>
+            {keptChoice}
           </section>
 
           {/* ─── A track's last lesson: its closing card (wave 2) ────────── */}

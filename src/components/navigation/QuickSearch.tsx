@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef, useMemo, useId } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, m } from 'framer-motion';
 import { useAppStore } from '../../state/store.ts';
+import { useBackLayer } from '../../state/appHistory';
 import { getResults, searchNames, type SearchResultType } from './quickSearchResults.ts';
 import { searchBadgeColors } from './searchBadge.ts';
 import { useDegreeColorsEnabled } from '../../hooks/useDegreeColors.ts';
@@ -131,29 +132,47 @@ export function QuickSearch() {
     setQuery('');
     restoreFocus();
   }, [setQuickSearchOpen, restoreFocus]);
+  // The browser's Back closes it, as Escape does (audit P3).
+  useBackLayer(quickSearchOpen, closeDialog);
 
-  // Cmd+K to toggle
-  useEffect(() => {
+  // Cmd+K to toggle, Escape to close. Whether it is open is read from the
+  // store at the key, not from a render's copy: a key pressed in the instant
+  // between the dialog appearing and this effect running again was judged
+  // by the old copy, so an Escape there closed nothing (seen on GitHub,
+  // 20 November 2026). And the keys are listened for from the very step in
+  // which the dialog is drawn (a layout effect): this component is fetched
+  // and mounted the first time search opens, already open, and an ordinary
+  // effect runs a moment after the dialog is on screen, so an Escape in that
+  // moment found nobody listening (the same test, retried on GitHub again
+  // with the first cure in, run 44709333098).
+  useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      const open = useAppStore.getState().quickSearchOpen;
+      // Either case: with Caps Lock on, Ctrl+K arrives as a capital K (the host that first opens search
+      // already took both; this one did not, so search then opened once and never again).
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setQuickSearchOpen(!quickSearchOpen);
+        setQuickSearchOpen(!open);
         setQuery('');
       }
-      if (e.key === 'Escape' && quickSearchOpen) {
+      if (e.key === 'Escape' && open) {
         closeDialog();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [quickSearchOpen, setQuickSearchOpen, closeDialog]);
+  }, [setQuickSearchOpen, closeDialog]);
 
-  // Capture previous focus and auto-focus input when opened
+  // Capture previous focus and auto-focus input when opened. The focus is
+  // taken back if the dialog closes first: a result chosen before the 50 ms
+  // were up left this timer to focus the closing dialog's input, and focus
+  // then fell to <body> instead of where the result sent it (Explore's key
+  // picker; seen once on GitHub, 20 November 2026).
   useEffect(() => {
-    if (quickSearchOpen) {
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
+    if (!quickSearchOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
+    return () => window.clearTimeout(timer);
   }, [quickSearchOpen]);
 
   const executeResult = useCallback(

@@ -16,9 +16,9 @@ it('every guitar scale strip shares piano flow for the same written notes, inclu
     for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
       const scale = buildScale(note(root), type);
       const sig = getKeySignatureForScale(scale.root, type) ?? undefined;
-      const directions = [getScaleNotesWithOctaves(scale.notes, exploreRegister('guitar').octave)];
+      const directions = [getScaleNotesWithOctaves(scale.notes, exploreRegister('guitar', 4).octave)];
       if (type === 'melodic_minor') {
-        directions.push(getScaleNotesWithOctaves(buildScale(note(root), 'natural_minor').notes, exploreRegister('guitar').octave).reverse());
+        directions.push(getScaleNotesWithOctaves(buildScale(note(root), 'natural_minor').notes, exploreRegister('guitar', 4).octave).reverse());
       }
       for (const sounding of directions) {
         const plan = staffPlan(sounding, undefined, 'guitar', true);
@@ -69,10 +69,10 @@ describe('Explore visible ink across the complete root / scale / chord selection
         for (const type of Object.keys(SCALE_FORMULAS) as ScaleType[]) {
           const scale = buildScale(note(root), type);
           const sig = getKeySignatureForScale(scale.root, type) ?? undefined;
-          check(getScaleNotesWithOctaves(scale.notes, exploreRegister(instrument).octave), instrument, sig);
+          check(getScaleNotesWithOctaves(scale.notes, exploreRegister(instrument, 4).octave), instrument, sig);
           if (type === 'melodic_minor') {
             const down = buildScale(note(root), 'natural_minor');
-            check(getScaleNotesWithOctaves(down.notes, exploreRegister(instrument).octave).reverse(), instrument, sig);
+            check(getScaleNotesWithOctaves(down.notes, exploreRegister(instrument, 4).octave).reverse(), instrument, sig);
           }
         }
       }
@@ -83,8 +83,8 @@ describe('Explore visible ink across the complete root / scale / chord selection
           const chord = buildChord(note(root), quality);
           for (let inversion = 0; inversion < chord.notes.length; inversion++) {
             const voiced = [...chord.notes.slice(inversion), ...chord.notes.slice(0, inversion)];
-            check(exploreRegister(instrument).chordPitches(voiced), instrument);
-            if (instrument === 'guitar') check(exploreRegister(instrument).chordPitches(voiced, note('G')), instrument);
+            check(exploreRegister(instrument, 4).chordPitches(voiced), instrument);
+            if (instrument === 'guitar') check(exploreRegister(instrument, 4).chordPitches(voiced, note('G')), instrument);
           }
         }
       }

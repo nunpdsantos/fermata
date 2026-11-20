@@ -112,7 +112,15 @@ function handle(input: InputState, ev: MidiEvent): void {
       c.sustained.clear();
       for (const p of kept) settle(p);
     }
+  } else if (ev.type === 'allNotesOff' && c.pedal) {
+    // The pedal takes priority (MIDI 1.0 Detailed Specification 4.2.1, p. A-5): every key is let go as by
+    // its Note Off — "recognized but not acted upon until the release of the hold pedal" — so each goes on,
+    // held by the pedal, and ends when it is lifted (a key struck after this is a new note).
+    for (const p of c.held) c.sustained.add(p);
+    c.held.clear();
   } else {
+    // All Notes Off with the pedal up, or All Sound Off (p. 25: "as soon as possible", the pedal
+    // notwithstanding; it is not a Hold Off, so the pedal stays as it is).
     const all = [...c.held, ...c.sustained];
     c.held.clear();
     c.sustained.clear();

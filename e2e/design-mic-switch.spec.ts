@@ -340,9 +340,23 @@ async function goTo(page: Page, lang: Lang, where: Where) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+/**
+ * The window at a new width, and the bar settled there. Under reduced motion
+ * every property is a 0.01 ms transition (index.css), so the padding and gap a
+ * media query changes land a frame late, and later while the page is busy:
+ * GitHub's build shard read the bar two frames and 150 ms after a check opened
+ * at 1024 px was shrunk to 320 px and found its wide-screen padding and gap
+ * still in force (the strip at 20 + 188 px), on the first attempt of every run
+ * of pull request #71; the next read and the retry were right. Measured here
+ * with the page's CPU slowed 20 times: that state lasts about 180 ms after
+ * the new width arrives, then rights itself. So the wait is for the width to
+ * have arrived and no transition to be running (5 s at most: then the read
+ * goes ahead and says what it finds), and then the pause.
+ */
 async function resize(page: Page, width: number) {
   await page.setViewportSize({ width, height: 800 });
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await page.waitForFunction((w) => window.innerWidth === w && !document.getAnimations().some((a) => a instanceof CSSTransition && a.playState === 'running'), width, { timeout: 5_000 }).catch(() => undefined);
   await page.waitForTimeout(150);
 }
 

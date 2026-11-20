@@ -12,7 +12,7 @@
  * that cannot turn one off still opens the microphone.
  */
 import { useAppStore } from '../../state/store.ts';
-import { detectPitch, type PitchEstimate } from './pitch.ts';
+import { analysisFrameSize, detectPitch, type PitchEstimate } from './pitch.ts';
 import { makeAudioContext, microphoneSupported } from './support.ts';
 
 /** Why the microphone could not open. */
@@ -46,7 +46,6 @@ export const MIC_CONSTRAINTS: MediaStreamConstraints = {
   video: false,
 };
 
-const FRAME_SIZE = 4096;
 const FRAME_MS = 30;
 const RESUME_WAIT_MS = 500;
 
@@ -177,7 +176,9 @@ export async function startListening(options: ListenOptions, context?: AudioCont
 
   const source = ctx.createMediaStreamSource(stream);
   const analyser = ctx.createAnalyser();
-  analyser.fftSize = FRAME_SIZE;
+  // The frame follows the device's rate: the same stretch of time at 44.1, 48, 96 or 192 kHz (audit M61).
+  const frameSize = analysisFrameSize(ctx.sampleRate);
+  analyser.fftSize = frameSize;
   analyser.smoothingTimeConstant = 0;
   // Pulled through a silent gain into the destination: some engines only
   // process nodes that reach it. Gain 0 — the microphone is never played.
@@ -192,7 +193,7 @@ export async function startListening(options: ListenOptions, context?: AudioCont
     });
   }
 
-  const frame = new Float32Array(FRAME_SIZE);
+  const frame = new Float32Array(frameSize);
   session.timer = setInterval(() => {
     if (live !== session) return;
     analyser.getFloatTimeDomainData(frame);
