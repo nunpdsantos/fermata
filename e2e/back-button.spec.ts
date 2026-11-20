@@ -953,6 +953,51 @@ test.describe('review B-1', () => {
     await context.close();
   });
 
+  // A6's one failure on GitHub's build shard (run 44688260743, first attempt; right on the retry), then
+  // reproduced: Back pressed while the lesson is still opening. The view on its way out stays mounted
+  // for its exit, the lesson finishes mounting there, and (before the fix) it drove the instrument and
+  // wrote its screen: Explore came back with the LESSON's chord and its entry said "Learn, this lesson",
+  // so a reload opened the lesson. The window is the lesson's own opening time: at this machine's speed
+  // a few tens of milliseconds, so the page's CPU is slowed here and Back is pressed at several moments
+  // across it (on this Mac, slowed 6 times, 300 to 500 ms after the tap fell inside it on the build:
+  // the row fails there without the fix; on another machine the moments may miss the window, and then
+  // it proves less, never something false). A view writes only while it is the view on screen
+  // (appHistory `shown`, lessonInstrument `showLessonQuery`; their unit tests are exact).
+  test('Back pressed while a lesson is still opening: Explore comes back with its own key and chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
+    test.setTimeout(180_000);
+    for (const wait of [150, 300, 400, 500, 700]) {
+      const at = `Back ${wait} ms after the tap`;
+      const { context, page } = await open(browser, MODES[0]);
+      await historyReady(page);
+      const picker = page.getByTestId('explore-header').getByTestId('key-picker');
+      await picker.selectOption({ label: 'G' });
+      await page.getByTestId('chords-card').getByRole('button').filter({ hasText: /^V/ }).first().click();
+      const detail = page.getByTestId('chord-detail');
+      await expect(detail).toBeVisible();
+      const before = { chord: (await detail.innerText()).slice(0, 40), key: await picker.inputValue(), entry: (await entry(page))! };
+      expect(before.entry.v, at).toBe('explore');
+      const cdp = await context.newCDPSession(page);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+      await detail.getByRole('button', { name: /Learn about this/ }).click();
+      await expectView(page, 'learn');
+      await page.waitForTimeout(wait);
+      await back(page);
+      await expectView(page, 'explore');
+      // Whatever was still on its way has arrived and settled.
+      await page.waitForTimeout(3_000);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      await expect(detail, `${at}: the chord's detail`).toBeVisible();
+      expect((await detail.innerText()).slice(0, 40), `${at}: the chord as it was left`).toBe(before.chord);
+      expect(await picker.inputValue(), `${at}: Explore's key`).toBe(before.key);
+      const now = (await entry(page))!;
+      expect({ i: now.i, v: now.v, s: now.s ?? null }, `${at}: the entry Back landed on is still Explore's`).toEqual({ i: before.entry.i, v: 'explore', s: null });
+      await page.reload();
+      await expectView(page, 'explore');
+      expect(await page.getByTestId('explore-header').getByTestId('key-picker').inputValue(), `${at}: after a reload, Explore on its own key`).toBe(before.key);
+      await context.close();
+    }
+  });
+
   test('A8: the active tab tapped mid-check or mid-Sprint leaves it with the same notice as Back, and Continue returns', async ({ browser }) => {
     test.setTimeout(90_000);
     const mode = MODES[0];

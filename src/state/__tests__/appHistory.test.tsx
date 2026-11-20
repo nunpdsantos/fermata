@@ -84,7 +84,8 @@ describe('entries', () => {
 
   it('the same screen writes nothing; a view naming its screen rewrites the entry (no new one)', () => {
     armForTests();
-    goTo('learn', '');
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', '');
     goTo('learn', '');
     expect(pushes()).toHaveLength(1);
     notePlace('learn', 'level/l1');
@@ -93,6 +94,33 @@ describe('entries', () => {
     // A report from a view that is not the entry's is not written.
     notePlace('drill', 'mastery');
     expect(window.history.state).toMatchObject({ v: 'learn', s: 'level/l1' });
+  });
+
+  it('a view writes only while it is the view on screen: one that finishes opening after Back has left it changes nothing (a lesson still loading when Back was pressed)', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn')); // entries: 0 explore, 1 learn
+    const pushed = pushes().length;
+    pop({ fm: 1, i: 0, v: 'explore', l: 0 }); // Back, before the lesson has mounted
+    expect(useAppStore.getState().view).toBe('explore');
+    const entry = { ...(window.history.state as HistoryEntry) };
+    const replaced = (window.history.replaceState as unknown as ReturnType<typeof vi.fn>).mock.calls.length;
+    const went = go.mock.calls.length;
+    // The lesson arrives now, in the view on its way out, and says where it is, each way a view can.
+    goTo('learn', 'module/l1/u3/l1u3m4');
+    notePlace('learn', 'module/l1/u3/l1u3m4');
+    backTo('learn', '');
+    armForTests(); // not even with a tap in between
+    goTo('learn', 'module/l1/u3/l1u3m4');
+    // Nothing written (jsdom's history is not moved by a popstate: the module's own entry says where Back landed).
+    expect(window.history.state).toEqual(entry);
+    expect(pushes()).toHaveLength(pushed);
+    expect((window.history.replaceState as unknown as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(replaced);
+    expect(go.mock.calls).toHaveLength(went);
+    expect(currentEntry()).toMatchObject({ i: 0, v: 'explore' });
+    // The view on screen still writes its own.
+    act(() => useAppStore.getState().setView('learn'));
+    goTo('learn', 'module/l1/u3/l1u3m4');
+    expect(window.history.state).toMatchObject({ v: 'learn', s: 'module/l1/u3/l1u3m4' });
   });
 
   it('while the start screen is owed a door rewrites the entry (the start screen never shows again)', () => {
@@ -159,7 +187,7 @@ describe('Back and Forward', () => {
 
   it('an entry that shows nothing new is passed over in the direction of travel (at the first entry, Back leaves)', () => {
     armForTests();
-    goTo('learn', undefined);
+    act(() => useAppStore.getState().setView('learn'));
     notePlace('learn', '');
     pop({ fm: 1, i: 0, v: 'learn', s: '', l: 0 });
     expect(go).toHaveBeenCalledWith(-1);
@@ -579,7 +607,9 @@ describe('Learn\'s places', () => {
 
 it('the entry on screen is kept in step with history.state', () => {
   armForTests();
+  act(() => useAppStore.getState().setView('drill'));
   goTo('drill', '');
+  expect(currentEntry()).toMatchObject({ v: 'drill', s: '' });
   expect(currentEntry()).toEqual(window.history.state);
 });
 

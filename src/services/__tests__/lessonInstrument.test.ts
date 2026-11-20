@@ -58,6 +58,28 @@ beforeEach(() => {
   localStorage.clear();
 });
 
+describe('the lesson drives the instrument only while Learn is the view', () => {
+  it('a lesson that finishes opening after the learner has gone Back to Explore changes nothing there, and borrows nothing', async () => {
+    const page = await exploreOnFSharpMelodicMinor();
+    // "Learn about this", then Back before the lesson has mounted: the view is Explore again.
+    page.useAppStore.getState().setView('learn');
+    page.useAppStore.getState().setView('explore');
+    const before = { ...page.selection(), chord: page.useAppStore.getState().selectedChord };
+    // The lesson mounts now, in the view on its way out, and shows its first concept.
+    expect(page.showLessonQuery('C major chord')).toBe(false);
+    expect(page.showLessonQuery('G major scale')).toBe(false);
+    expect({ ...page.selection(), chord: page.useAppStore.getState().selectedChord }).toEqual(before);
+    expect(page.selection()).toEqual(FS_MELODIC_MINOR);
+    expect(page.isLessonInstrumentBorrowed()).toBe(false);
+    expect(saved()).toMatchObject(FS_MELODIC_MINOR);
+    // In Learn it drives the instrument as before.
+    page.useAppStore.getState().setView('learn');
+    expect(page.showLessonQuery('C major scale')).toBe(true);
+    expect(page.selection()).toEqual({ key: C, scale: 'major' });
+    expect(page.isLessonInstrumentBorrowed()).toBe(true);
+  });
+});
+
 describe('a reload or a closed tab mid-lesson keeps Explore\'s selection (B2)', () => {
   it('reload mid-lesson (twice): the reopened lesson borrows Explore\'s selection, and leaving Learn gives it back', async () => {
     const first = await exploreOnFSharpMelodicMinor();

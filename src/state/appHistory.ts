@@ -351,10 +351,25 @@ export function exploreReturn(): Pick<ExploreLeft, 'tab' | 'built' | 'category'>
 }
 
 /**
+ * Is `v` the view on screen? A view writes its screens only while it is. One
+ * that finishes opening after the learner has left it (Back pressed while a
+ * lesson was still loading: the view on its way out stays mounted for its
+ * exit, and the lesson mounts there) wrote its screen into the entry Back
+ * had landed on, so Explore's entry said "Learn, this lesson" and a reload
+ * opened the lesson (reproduced with the CPU slowed, 20 November 2026). Asked
+ * again when a held call is let go, so a write queued during a traversal is
+ * judged by the view shown after it.
+ */
+function shown(v: ViewMode): boolean {
+  return useAppStore.getState().view === v;
+}
+
+/**
  * The learner opens a screen: a new entry when that is allowed (see the
  * header), else the current one is rewritten. The same screen writes nothing.
  */
 export function goTo(v: ViewMode, s: string | undefined): void {
+  if (!shown(v)) return;
   if (tourPlaying() || restoring || (cur.v === v && cur.s === s)) return;
   if (holding) {
     held.push({ call: () => goTo(v, s), asked: armed });
@@ -367,7 +382,7 @@ export function goTo(v: ViewMode, s: string | undefined): void {
 
 /** A view says which screen it shows (on mount, a result, a correction): the entry is rewritten. */
 export function notePlace(v: ViewMode, s: string): void {
-  if (tourPlaying()) return;
+  if (!shown(v) || tourPlaying()) return;
   if (holding) {
     held.push({ call: () => notePlace(v, s), asked: false });
     return;
@@ -384,7 +399,7 @@ export function notePlace(v: ViewMode, s: string): void {
  * moves the history under it.
  */
 export function backTo(v: ViewMode, s: string): void {
-  if (tourPlaying() || restoring) return;
+  if (!shown(v) || tourPlaying() || restoring) return;
   if (holding) {
     held.push({ call: () => backTo(v, s), asked: false });
     return;
