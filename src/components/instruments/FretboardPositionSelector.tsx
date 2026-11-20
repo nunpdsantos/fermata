@@ -27,12 +27,33 @@ interface ChordShapeSelectorProps {
    * with the app's edge fade where they do not fit (index.css
    * .chord-shapes-line: beside "Flip neck" and the tuning from 640 px, which
    * take width from the chips; a line of their own below). Their line is
-   * never narrower than its label, the selected chip and both fades (measured
-   * below), so where the row cannot hold that beside the other controls the
-   * row breaks onto another line rather than cut the chip.
+   * never narrower than its label, the widest chip as drawn selected and both
+   * fades (measured below, the same whichever chip is selected), so where the
+   * row cannot hold that beside the other controls the row breaks onto
+   * another line rather than cut a chip; the selected chip is placed again on
+   * any change of the row's box.
    * The full neck's header keeps the wrapping chips.
    */
   oneLine?: boolean;
+}
+
+/**
+ * A chip's width as it is drawn selected: its text in the selected chip's
+ * font (weight included), its letter-spacing after every character as the
+ * browser adds it, the padding and the border, at least the chip's minimum
+ * width. The same whichever chip is selected. Without a canvas (a test's
+ * DOM) its width as drawn.
+ */
+function selectedWidth(chip: HTMLElement, selected: HTMLElement, pen: CanvasRenderingContext2D | null): number {
+  if (!pen) return chip.getBoundingClientRect().width;
+  const on = getComputedStyle(selected);
+  const text = chip.textContent ?? '';
+  pen.font = `${on.fontStyle} ${on.fontWeight} ${on.fontSize} ${on.fontFamily}`;
+  const spacing = parseFloat(on.letterSpacing) || 0;
+  const px = (v: string) => parseFloat(v) || 0;
+  const width = pen.measureText(text).width + spacing * Array.from(text).length
+    + px(on.paddingLeft) + px(on.paddingRight) + px(on.borderLeftWidth) + px(on.borderRightWidth);
+  return Math.max(width, px(on.minWidth));
 }
 
 /** Which grip of the chord: a ChipGroup (one of many — D-28 choice chip). */
@@ -41,46 +62,73 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, 
   const rowRef = useRef<HTMLDivElement>(null);
   // The selected chip whole, in view and clear of both edge fades (where a
   // fade shows; an end with nothing beyond it shows none): its row scrolls
-  // sideways, nothing else moves. And the chips' line is never narrower than
-  // its label, the gap, that whole chip and room for both fades (a minimum width measured
-  // here: no CSS sizes a scroller to ONE of its children). So where the
-  // controls, a notice and one whole chip do not fit on one line, the flex
-  // line breaks and the notice takes a line of its own, decided by widths at
-  // whatever width the platform draws text (GitHub's Linux, ~8 % wider than
-  // a Mac, cut the selected chip to a 95 px row at 1024 px in Spanish: music
-  // audit 2, run #71). Re-measured when the chip or the label changes size
-  // (fonts, a language, wider text); never the row itself, which this sizes.
+  // sideways, nothing else moves. The chips' line is never narrower than its
+  // label, the gap, the WIDEST chip of the row as it is drawn selected (bolder:
+  // `.chip[aria-checked="true"]`) and room for both fades: a minimum width
+  // measured here (no CSS sizes a scroller to one of its children). Each
+  // chip's selected width is its text measured in the selected chip's font
+  // (canvas text metrics: the page is not touched, as a hidden copy in the
+  // row would be, which the edge fade's MutationObserver answers by
+  // observing the row again) plus its letter-spacing, padding and border. The widest, not the selected one, and each as drawn
+  // selected: the line's minimum, and so where the notice goes (index.css,
+  // from 1280 px it may share the controls' line) and the dock's height, are
+  // the same whichever grip the learner picks (from the selected chip, the
+  // line changed under a narrower chip, the notice moved up and the row
+  // shrank AFTER the chip was placed: GitHub's Linux, run #71 at b4fc9ab,
+  // chip 5 of 8 at 1024 px with wider text).
+  // The chip is placed again whenever the row's own box changes, whatever
+  // changed it (a notice arriving or leaving, the window, a font, a min-width
+  // still transitioning under reduced motion), and the minimum re-measured
+  // when a chip or the label changes size. This cannot loop: the minimum
+  // depends only on the chips and the label, and placing only scrolls. A
+  // new minimum noticed by the observer is written in the next frame: written
+  // inside its callback, the row's box (shallower than the chips it was told
+  // about) changes there and then, and Chromium reports "ResizeObserver loop
+  // completed with undelivered notifications" though nothing loops.
   useLayoutEffect(() => {
     const line = rowRef.current;
     const row = line?.querySelector<HTMLElement>('.chip-group');
     if (!oneLine || !line || !row) return;
-    const place = () => {
+    // The box the fades are painted on (`.edge-fade`): the scroller itself
+    // sits 2 px outside it (its margin −2 px, padding 2 px, room for a chip's
+    // focus ring), so measuring the scroller left the chip 2 px under each
+    // fade (cold review, F4).
+    const box = row.closest<HTMLElement>('.edge-fade') ?? row;
+    const label = line.firstElementChild as HTMLElement | null;
+    const pen = document.createElement('canvas').getContext('2d');
+    let frame = 0;
+    const place = (observed: boolean) => {
       const chip = row.querySelector<HTMLElement>('[aria-checked="true"]');
-      if (!chip) return;
-      const width = chip.getBoundingClientRect().width;
-      if (width <= 0) return; // not laid out (a test's DOM): nothing to keep
-      const fades = row.children.length > 1 ? EDGE_FADE_PX : 0;
-      const label = line.firstElementChild as HTMLElement | null;
+      if (!chip || chip.getBoundingClientRect().width <= 0) return; // not laid out (a test's DOM): nothing to keep
+      const chips = Array.from(row.querySelectorAll<HTMLElement>('[role="radio"]'));
+      const widest = Math.max(...chips.map((c) => selectedWidth(c, chip, pen)));
+      const fades = chips.length > 1 ? EDGE_FADE_PX : 0;
       const gap = parseFloat(getComputedStyle(line).columnGap) || 0;
-      line.style.minWidth = `${Math.ceil((label?.getBoundingClientRect().width ?? 0) + gap + width + 2 * fades)}px`;
-      // Against the box the fades are painted on (`.edge-fade`): the scroller
-      // itself sits 2 px outside it (its margin −2 px, padding 2 px, room for
-      // a chip's focus ring), so measuring the scroller left the chip 2 px
-      // under each fade (cold review, F4).
-      const box = (row.closest('.edge-fade') ?? row).getBoundingClientRect();
+      const min = `${Math.ceil((label?.getBoundingClientRect().width ?? 0) + gap + widest + 2 * fades)}px`;
+      if (line.style.minWidth !== min) {
+        if (!observed) line.style.minWidth = min;
+        else {
+          cancelAnimationFrame(frame);
+          frame = requestAnimationFrame(() => place(false));
+        }
+      }
+      const b = box.getBoundingClientRect();
       const at = chip.getBoundingClientRect();
       // Whole pixels, rounded towards clear: a scroll position is kept in whole
       // pixels, so a fractional move could leave the chip half a pixel under.
-      if (at.left < box.left + fades) row.scrollLeft -= Math.ceil(box.left + fades - at.left);
-      else if (at.right > box.right - fades) row.scrollLeft += Math.ceil(at.right - (box.right - fades));
+      if (at.left < b.left + fades) row.scrollLeft -= Math.ceil(b.left + fades - at.left);
+      else if (at.right > b.right - fades) row.scrollLeft += Math.ceil(at.right - (b.right - fades));
     };
-    place();
+    place(false);
     if (typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(place);
-    const chip = row.querySelector('[aria-checked="true"]');
-    if (chip) observer.observe(chip);
-    if (line.firstElementChild) observer.observe(line.firstElementChild);
-    return () => observer.disconnect();
+    const observer = new ResizeObserver(() => place(true));
+    observer.observe(box);
+    for (const c of Array.from(row.querySelectorAll('[role="radio"]'))) observer.observe(c);
+    if (label) observer.observe(label);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [oneLine, selectedIdx, labels]);
   const group = (
     <ChipGroup
