@@ -958,7 +958,7 @@ function ExplorationFretboard({ variant = 'dock' }: FretboardProps) {
 
           {scaleView && mode === 'position' && <PositionLegend />}
 
-          {/* From 1024 px it shares the row's line where it fits (index.css,
+          {/* From 1280 px it shares the row's line where it fits (index.css,
               `.fretboard-controls > p[role="status"]`: the markup stays as the
               owner's neck recorded it). */}
           {notices.length > 0 && (

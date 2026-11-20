@@ -1216,29 +1216,33 @@ body {
 
 /* The guitar dock's notice (a chord's: no grip with the bass, a tone left
    out, shapes for standard tuning only; a scale position's note out of
-   reach). From 1024 px it keeps its own width and shares the controls row's
-   line where it fits beside the controls AND one whole chord chip — the
-   chips give up width and scroll sideways, never below their selected chip
-   (ChordShapeSelector gives `.chord-shapes-line` a measured minimum: its
-   label, the gap, that whole chip and both 18 px edge fades) — so it adds no
-   height to the dock (music audit 2, the
-   review of builder K, item 8: +26 px at 1440×900 in Open G, pushing
-   Explore's circle past the fold). Where it cannot fit, the flex line breaks
-   and it takes a line of its own (or two), as below 1024 px: decided by the
-   widths the platform draws, never by a language (GitHub's Linux, whose text
-   is ~8 % wider, cut the selected chip at 1024 px in Spanish: run #71;
-   e2e/guitar-notice-height.spec.ts runs every row with text 8 % wider too).
-   Outside the layers, so it wins over the element's `w-full` utility
-   without changing its markup (the owner's neck is recorded as is:
+   reach). Below 1280 px it takes a line of its own across the controls row,
+   as in release 16 at every width. From 1280 px it keeps its own width and
+   shares the controls row's line where it fits beside the controls AND the
+   chips' line at its minimum, so it adds no height to the dock (music audit
+   2, the review of builder K, item 8: +26 px at 1440×900 in Open G, pushing
+   Explore's circle past the fold). ChordShapeSelector measures that minimum:
+   the label, the gap, the WIDEST chip of the row as drawn selected and both
+   18 px edge fades, the same whichever chip is selected, so selecting a grip
+   never moves the notice or changes the dock's height; the chips give up
+   width and scroll sideways, and the selected one is placed again on any
+   change of the row's box. Where the notice cannot fit, the flex line breaks
+   and it takes a line of its own (or two): decided by the widths the
+   platform draws, never by a language. From 1024 px, as it was until this
+   rule, the line it took could change with the grip selected (GitHub's
+   Linux, whose text is ~8 % wider: run #71, at b4fc9ab, chip 5 of 8 left out
+   of view); e2e/guitar-notice-height.spec.ts runs every row with text 8 %
+   wider too. Outside the layers, so it wins over the element's `w-full`
+   utility without changing its markup (the owner's neck is recorded as is:
    legacyNeck.test.tsx). */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .fretboard-controls > p[role="status"] {
     width: auto;
     max-width: 100%;
     flex: 0 1 auto;
   }
   /* Two notices together (a bass the neck cannot give AND a tone left out:
-     Cm(add11)/F♯) take their own line, as below 1024 px: on the controls'
+     Cm(add11)/F♯) take their own line, as below 1280 px: on the controls'
      line they squeezed the chips to 62 px and cut the selected one (second
      review of builder K, item 5). */
   .fretboard-controls > p[role="status"][data-notices="two"] {
