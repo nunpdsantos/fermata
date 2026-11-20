@@ -296,18 +296,20 @@ for (const lang of ['en', 'es'] as const) {
 }
 
 // ─── Re-measured when the text grows (cold review F5) ────────────────────────
-// At a width where the chips' line sits squeezed beside the notice, the text
-// of the chips' line is made much wider AFTER the first layout (letter-spacing
-// 0.4em: each chip grows by more than the fades' room), so only re-measuring
-// keeps the claim: the line's minimum follows the new widths, the notice moves
-// to its own line, and the chip row is again at least as wide as its chip.
+// The chips' line beside the notice (1024×768 EN: the line 261 px, 75 px over
+// its minimum), its text made much wider AFTER the first layout
+// (letter-spacing 1em: the label and the chip grow by more than that slack and
+// the fades' room together), so only re-measuring keeps the claim: the line's
+// minimum follows the new widths, the notice moves to its own line, and the
+// chip row is again at least as wide as its chip (without the ResizeObserver
+// the row is left narrower than the chip: both assertions below fail).
 test('re-measured when the text grows after the first layout: C7♯5♭9 / B, 1024×768 en, the chips\' text widened', async ({ browser }) => {
   const { context, page } = await open(browser, { w: 1024, h: 768 }, 'en', {}, '/?chord=C7%235b9/B&inst=guitar', false);
   try {
     const dock = page.getByTestId('instrument-dock');
     const before = await checkRow(page, 'before widening', 1);
     expect(before.sameLine, 'before widening: the notice shares the line (the chips squeezed beside it)').toBe(true);
-    await page.addStyleTag({ content: '.chord-shapes-line, .chord-shapes-line * { letter-spacing: 0.4em !important; }' });
+    await page.addStyleTag({ content: '.chord-shapes-line, .chord-shapes-line * { letter-spacing: 1em !important; }' });
     await settled(page);
     const m = await page.evaluate(() => {
       const line = document.querySelector<HTMLElement>('[data-testid="instrument-dock"] .chord-shapes-line')!;
