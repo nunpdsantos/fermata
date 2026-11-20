@@ -116,7 +116,7 @@ describe('M37: one finger cannot stop two frets at the same instant', () => {
     fireEvent.change(hiSelect, { target: { value: String(lo.finger) } });
     expect(hiSelect.value).toBe(String(lo.finger));
     expect(screen.getByTestId('practice-barre').textContent).toBe(`Barré: finger ${lo.finger} across strings ${6 - hi.stringIndex} to ${6 - lo.stringIndex}, fret ${lo.fret}`);
-  });
+  }, 30_000); // 4.2 s on a slow GitHub runner (20 November 2026; about 1 s on the Mac that wrote it): its own limit, not the default 5 s
 
   it('successive notes may reuse a finger: a scale step offers all four', () => {
     render(<GuitarPractice />);
@@ -425,7 +425,7 @@ describe('the review of 19 November 2026: what the first tests left unpinned', (
       fireEvent.change(screen.getByTestId('practice-exercise'), { target: { value: 'tonicArpeggio' } });
       const arp = technicalSet(C, 'major', TUNING_STANDARD).find((x) => x.id === 'tonicArpeggio')!.route!;
       expect(step()).toEqual([1, arp.events.length]);
-    });
+    }, 30_000); // 4,989 ms on a slow GitHub runner (20 November 2026; about 1 s on the Mac that wrote it): its own limit, not the default 5 s
 
     it('i–m ↔ m–a while playing: the playback goes on, at its step and tempo, with its one schedule', async () => {
       render(<GuitarPractice />);
