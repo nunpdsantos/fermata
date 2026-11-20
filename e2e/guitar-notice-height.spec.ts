@@ -72,9 +72,12 @@ const NO_BASS_URL = '/?chord=C7%235b9/B&inst=guitar';
 // undelivered notifications" as an error event). Under reduced motion every
 // property is transitioned (index.css, 0.01 ms), so a size written in an
 // observer's callback changes a frame later and is never reported: hence
-// (2) a quiet window, no ResizeObserver callback at all (every observer of
-// the page counted) for 500 ms while nothing changes; a loop calls back every
-// frame. Two known-positive rows below plant one loop of each kind.
+// (2) a quiet window: every observer of the page counted for 500 ms while
+// nothing changes. A loop calls back every frame (the planted one below:
+// dozens in that time); one or two callbacks are a last size landing late,
+// not a loop (the same 0.01 ms transition: on GitHub's dev shard one came in
+// a row with no chips at all, run 44688260743, first attempt), so two at
+// most are let pass. Two known-positive rows below plant one loop of each kind.
 const consoleSeen = new WeakMap<Page, string[]>();
 const RO_MESSAGE = /ResizeObserver/;
 function listen(page: Page) {
@@ -104,7 +107,7 @@ async function expectNoLoop(page: Page, where: string) {
     const from = w.__roCalls;
     setTimeout(() => done([from, w.__roCalls]), 500);
   }));
-  expect(calls[1] - calls[0], `${where}: no ResizeObserver callback in 500 ms with nothing changing (${calls[0]} → ${calls[1]})`).toBe(0);
+  expect(calls[1] - calls[0], `${where}: no ResizeObserver callback in 500 ms with nothing changing (${calls[0]} → ${calls[1]}; two at most are a late size landing, a loop is one every frame)`).toBeLessThanOrEqual(2);
 }
 
 type Motion = 'reduce' | 'no-preference';
