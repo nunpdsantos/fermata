@@ -1224,7 +1224,8 @@ body {
    Explore's circle past the fold). ChordShapeSelector measures that minimum:
    the label, the gap, the WIDEST chip of the row as drawn selected and both
    18 px edge fades, the same whichever chip is selected, so selecting a grip
-   never moves the notice or changes the dock's height; the chips give up
+   never moves a notice whose words stay the same, nor changes the dock's
+   height with it; the chips give up
    width and scroll sideways, and the selected one is placed again on any
    change of the row's box. Where the notice cannot fit, the flex line breaks
    and it takes a line of its own (or two): decided by the widths the

@@ -135,28 +135,37 @@ export function QuickSearch() {
   // The browser's Back closes it, as Escape does (audit P3).
   useBackLayer(quickSearchOpen, closeDialog);
 
-  // Cmd+K to toggle
+  // Cmd+K to toggle, Escape to close. Whether it is open is read from the
+  // store at the key, not from a render's copy: a key pressed in the instant
+  // between the dialog appearing and this effect running again was judged
+  // by the old copy, so an Escape there closed nothing (seen once on GitHub,
+  // 20 November 2026).
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const open = useAppStore.getState().quickSearchOpen;
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setQuickSearchOpen(!quickSearchOpen);
+        setQuickSearchOpen(!open);
         setQuery('');
       }
-      if (e.key === 'Escape' && quickSearchOpen) {
+      if (e.key === 'Escape' && open) {
         closeDialog();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [quickSearchOpen, setQuickSearchOpen, closeDialog]);
+  }, [setQuickSearchOpen, closeDialog]);
 
-  // Capture previous focus and auto-focus input when opened
+  // Capture previous focus and auto-focus input when opened. The focus is
+  // taken back if the dialog closes first: a result chosen before the 50 ms
+  // were up left this timer to focus the closing dialog's input, and focus
+  // then fell to <body> instead of where the result sent it (Explore's key
+  // picker; seen once on GitHub, 20 November 2026).
   useEffect(() => {
-    if (quickSearchOpen) {
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
+    if (!quickSearchOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
+    return () => window.clearTimeout(timer);
   }, [quickSearchOpen]);
 
   const executeResult = useCallback(

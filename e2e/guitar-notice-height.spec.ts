@@ -681,6 +681,53 @@ for (const { motion, label: motionLabel } of MOTIONS) {
   });
 }
 
+// ─── A learner's own text spacing (cold review of the third pass, F1) ────────
+// WCAG 1.4.12's text spacing (letter-spacing 0.12em, word-spacing 0.16em) on
+// everything, from the first layout. The line's minimum is still its label,
+// the gap, the widest chip as drawn selected and both fades: measured here on
+// real copies of the chips, against the minimum the app wrote from its
+// canvas measure (which adds the letter-spacing after every character and the
+// word-spacing after every space itself). Without the word-spacing term the
+// minimum came short by 2.2 px for each space in the widest chip's words.
+// Whether the notice shares the line at this spacing is not this row's claim.
+for (const lang of LANGS) {
+  test(`a learner's own text spacing (letter-spacing 0.12em, word-spacing 0.16em): the chips' line keeps its minimum for the widest chip as drawn, C7♯5♭9 / B, 1280×720 ${lang}`, async ({ browser }) => {
+    const where = `own text spacing, 1280×720 ${lang}`;
+    const { context, page } = await open(browser, { w: 1280, h: 720 }, lang, {}, NO_BASS_URL, '*, *::before, *::after { letter-spacing: 0.12em !important; word-spacing: 0.16em !important; }');
+    try {
+      await checkRow(page, where, 1);
+      const m = await page.evaluate(() => {
+        const line = document.querySelector<HTMLElement>('[data-testid="instrument-dock"] .chord-shapes-line')!;
+        const row = line.querySelector('.chip-group')!;
+        const label = line.firstElementChild!.getBoundingClientRect().width;
+        const copies = Array.from(row.querySelectorAll('[role="radio"]'), (c) => {
+          const copy = c.cloneNode(true) as HTMLElement;
+          copy.setAttribute('aria-checked', 'true');
+          copy.style.cssText = 'position: absolute; visibility: hidden';
+          return copy;
+        });
+        row.append(...copies);
+        const widths = copies.map((c) => c.getBoundingClientRect().width);
+        const widest = Math.max(...widths);
+        const words = copies[widths.indexOf(widest)].textContent ?? '';
+        for (const c of copies) c.remove();
+        return { label, widest, words, spaces: (words.match(/[ \u00a0]/g) ?? []).length, gap: parseFloat(getComputedStyle(line).columnGap), min: parseFloat(line.style.minWidth) };
+      });
+      const exact = m.label + m.gap + m.widest + 36;
+      console.log(`own text spacing: ${where}: label ${m.label.toFixed(1)} + gap ${m.gap} + widest chip "${m.words}" ${m.widest.toFixed(1)} + 36 = ${exact.toFixed(1)} px; the line's minimum ${m.min} px`);
+      expect(m.spaces, `${where}: the widest chip's words hold a space (else the word-spacing is not tested): "${m.words}"`).toBeGreaterThan(0);
+      // The minimum is that sum rounded up to a whole pixel.
+      expect(m.min - exact, `${where}: the line's minimum ${m.min} px for label ${m.label.toFixed(1)} + gap ${m.gap} + widest chip ${m.widest.toFixed(1)} + 2 × 18 = ${exact.toFixed(1)} px`).toBeGreaterThanOrEqual(-0.1);
+      expect(m.min - exact, `${where}: the line's minimum ${m.min} px no more than a pixel over ${exact.toFixed(1)} px`).toBeLessThanOrEqual(1.1);
+      // The copies woke the edge fade's own observer (it watches the row's children): let that pass first.
+      await settled(page);
+      await expectNoLoop(page, where);
+    } finally {
+      await context.close();
+    }
+  });
+}
+
 // ─── The loop detector sees a loop (two known positives) ─────────────────────
 // An observer planted on the page that changes its own target's size each
 // time it is told. (1) With the size not transitioned the browser reports it;

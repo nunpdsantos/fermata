@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
 import { getResults } from '../quickSearchResults';
 import { useAppStore } from '../../../state/store';
@@ -182,4 +182,54 @@ describe('QuickSearch rendered integration', () => {
   // selectedIdx reset (queued microtask) + callback identity make a synchronous
   // fireEvent(Enter) flaky, so selection is asserted via click above (same
   // executeResult path). The arrow/Enter handler itself is a trivial switch.
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Its own focus timer and Escape, in the first instant (two retried browser
+// tests on GitHub, 20 November 2026: focus on <body> after a result chosen
+// from Drill; an Escape that closed nothing)
+// ───────────────────────────────────────────────────────────────────────────
+describe('QuickSearch: closed in its first instant', () => {
+  it('a dialog closed before its 50 ms are up no longer waits to focus its input', () => {
+    vi.useFakeTimers();
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<QuickSearch />);
+      const idle = vi.getTimerCount();
+      act(() => useAppStore.getState().setQuickSearchOpen(true));
+      expect(vi.getTimerCount(), 'the input is focused 50 ms after opening').toBe(idle + 1);
+      // A result chosen (or Escape) before the timer ran: the dialog closes.
+      act(() => useAppStore.getState().setQuickSearchOpen(false));
+      expect(vi.getTimerCount(), 'the focus timer went with the dialog').toBe(idle);
+      // Opened again, it waits again, and focuses once the 50 ms are up.
+      act(() => useAppStore.getState().setQuickSearchOpen(true));
+      expect(vi.getTimerCount()).toBe(idle + 1);
+      act(() => { vi.advanceTimersByTime(60); });
+      expect(document.activeElement).toBe(screen.getByRole('combobox'));
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('Escape pressed before React has drawn the open dialog closes it (the key reads the store, not a render\'s copy)', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      useAppStore.setState({ quickSearchOpen: true });
+      // Still the handler of the render in which it was closed.
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('Cmd+K pressed twice before React has drawn opens and closes (each key reads the store)', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+  });
 });

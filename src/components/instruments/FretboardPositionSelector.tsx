@@ -39,19 +39,21 @@ interface ChordShapeSelectorProps {
 
 /**
  * A chip's width as it is drawn selected: its text in the selected chip's
- * font (weight included), its letter-spacing after every character as the
- * browser adds it, the padding and the border, at least the chip's minimum
- * width. The same whichever chip is selected. Without a canvas (a test's
- * DOM) its width as drawn.
+ * font (weight included), its letter-spacing after every character and its
+ * word-spacing after every space, as the browser adds them (a learner's own
+ * text spacing, WCAG 1.4.12, changes both), the padding and the border, at
+ * least the chip's minimum width. The same whichever chip is selected.
+ * Without a 2D canvas (a browser that gives none: a test's DOM never gets
+ * here, its chips have no width) its width as drawn.
  */
 function selectedWidth(chip: HTMLElement, selected: HTMLElement, pen: CanvasRenderingContext2D | null): number {
   if (!pen) return chip.getBoundingClientRect().width;
   const on = getComputedStyle(selected);
   const text = chip.textContent ?? '';
   pen.font = `${on.fontStyle} ${on.fontWeight} ${on.fontSize} ${on.fontFamily}`;
-  const spacing = parseFloat(on.letterSpacing) || 0;
-  const px = (v: string) => parseFloat(v) || 0;
-  const width = pen.measureText(text).width + spacing * Array.from(text).length
+  const px = (v: string) => parseFloat(v) || 0; // "normal" is no spacing
+  const spaces = text.match(/[ \u00a0]/g)?.length ?? 0;
+  const width = pen.measureText(text).width + px(on.letterSpacing) * Array.from(text).length + px(on.wordSpacing) * spaces
     + px(on.paddingLeft) + px(on.paddingRight) + px(on.borderLeftWidth) + px(on.borderRightWidth);
   return Math.max(width, px(on.minWidth));
 }
@@ -69,7 +71,7 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, 
   // chip's selected width is its text measured in the selected chip's font
   // (canvas text metrics: the page is not touched, as a hidden copy in the
   // row would be, which the edge fade's MutationObserver answers by
-  // observing the row again) plus its letter-spacing, padding and border. The widest, not the selected one, and each as drawn
+  // observing the row again) plus its letter-spacing, word-spacing, padding and border. The widest, not the selected one, and each as drawn
   // selected: the line's minimum, and so where the notice goes (index.css,
   // from 1280 px it may share the controls' line) and the dock's height, are
   // the same whichever grip the learner picks (from the selected chip, the
