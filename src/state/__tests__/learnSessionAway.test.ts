@@ -95,14 +95,18 @@ describe('a check put away', () => {
 
 describe('one test for the card and the resume (resumableCheck, review A3)', () => {
   it('a check older than a day, one whose question changed, or in another language cannot continue', () => {
+    // Every check here is stamped with THIS `now`: `check()` reads the clock
+    // again, and a millisecond later its stamp lies in the future, which is
+    // not fresh either (the whole suite failed once on that tick, and the
+    // three refusals below would then pass for the wrong reason).
     const now = Date.now();
-    expect(resumableCheck(check(), 'l1u1m1', LIST, 'en', now)).not.toBeNull();
+    expect(resumableCheck(check({ at: now }), 'l1u1m1', LIST, 'en', now)).not.toBeNull();
     expect(resumableCheck(check({ at: now - LEARN_SESSION_TTL_MS - 60_000 }), 'l1u1m1', LIST, 'en', now)).toBeNull();
     expect(resumableCheck(check({ at: now - 25 * 60 * 60 * 1000 }), 'l1u1m1', LIST, 'en', now)).toBeNull();
     const changed = LIST.map((e) => (e.id === 'l1u1m1e2' ? ex(e.id, 'Another question?') : e));
-    expect(resumableCheck(check(), 'l1u1m1', changed, 'en', now)).toBeNull();
-    expect(resumableCheck(check(), 'l1u1m1', LIST, 'pt', now)).toBeNull();
-    expect(resumableCheck(check(), 'l1u2m1', LIST, 'en', now)).toBeNull();
+    expect(resumableCheck(check({ at: now }), 'l1u1m1', changed, 'en', now)).toBeNull();
+    expect(resumableCheck(check({ at: now }), 'l1u1m1', LIST, 'pt', now)).toBeNull();
+    expect(resumableCheck(check({ at: now }), 'l1u2m1', LIST, 'en', now)).toBeNull();
     // It changes nothing: restorableCheck is the one that drops.
     useLearnSessionStore.getState().setCheck(check({ at: now - 25 * 60 * 60 * 1000 }));
     resumableCheck(useLearnSessionStore.getState().check, 'l1u1m1', LIST, 'en', now);
