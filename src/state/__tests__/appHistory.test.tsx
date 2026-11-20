@@ -123,6 +123,33 @@ describe('entries', () => {
     expect(window.history.state).toMatchObject({ v: 'learn', s: 'module/l1/u3/l1u3m4' });
   });
 
+  it('the app\'s own ← from a view that is not on screen moves no history (an earlier entry of that view is within reach)', () => {
+    armForTests();
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', ''); // entries: 0 explore, 1 Learn's overview
+    armForTests();
+    act(() => useAppStore.getState().setView('explore')); // 2 explore
+    armForTests();
+    act(() => useAppStore.getState().setView('learn')); // 3 learn: a lesson opening
+    pop({ fm: 1, i: 2, v: 'explore', l: 0 }); // Back, before it has mounted
+    expect(useAppStore.getState().view).toBe('explore');
+    expect(currentEntry()).toMatchObject({ i: 2, v: 'explore' });
+    const went = go.mock.calls.length;
+    // The lesson's ← (or one held during a traversal and let go), from the view on its way out:
+    // entry 1 is Learn's overview, one step back from here.
+    backTo('learn', '');
+    expect(go.mock.calls).toHaveLength(went);
+    expect(currentEntry()).toMatchObject({ i: 2, v: 'explore' });
+    // Known positive: from Explore itself, on screen, the same reach is Back by one.
+    act(() => useAppStore.getState().setView('learn'));
+    notePlace('learn', 'level/l1'); // 3 learn, a level
+    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }); // Back twice lands on the overview
+    armForTests();
+    goTo('learn', 'level/l1'); // 2 learn, the level again
+    backTo('learn', ''); // the level's ←, on screen: Back to the overview's entry
+    expect(go).toHaveBeenLastCalledWith(-1);
+  });
+
   it('while the start screen is owed a door rewrites the entry (the start screen never shows again)', () => {
     armForTests();
     useWelcomeStore.setState({ open: true });

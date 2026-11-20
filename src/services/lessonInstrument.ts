@@ -46,7 +46,8 @@ function stopWatching(): void {
 /**
  * Show a lesson query on the instrument (no view change). Returns false when
  * the query names nothing the instrument can show (the circle of fifths, or a
- * query the resolver does not know) — the instrument is then left as it is.
+ * query the resolver does not know), and when Learn is not the view on screen
+ * (below) — the instrument is then left as it is.
  */
 export function showLessonQuery(query: string): boolean {
   // Only while Learn is the view (as the lesson's dock: lessonDock.ts). A

@@ -957,13 +957,16 @@ test.describe('review B-1', () => {
   // reproduced: Back pressed while the lesson is still opening. The view on its way out stays mounted
   // for its exit, the lesson finishes mounting there, and (before the fix) it drove the instrument and
   // wrote its screen: Explore came back with the LESSON's chord and its entry said "Learn, this lesson",
-  // so a reload opened the lesson. The window is the lesson's own opening time: at this machine's speed
-  // a few tens of milliseconds, so the page's CPU is slowed here and Back is pressed at several moments
-  // across it (on this Mac, slowed 6 times, 300 to 500 ms after the tap fell inside it on the build:
-  // the row fails there without the fix; on another machine the moments may miss the window, and then
-  // it proves less, never something false). A view writes only while it is the view on screen
-  // (appHistory `shown`, lessonInstrument `showLessonQuery`; their unit tests are exact).
-  test('Back pressed while a lesson is still opening: Explore comes back with its own key and chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
+  // so a reload opened the lesson. The window runs from Learn's panel mounting to the lesson appearing:
+  // on a first, cold open of the build about 170 to 490 ms after the tap on this Mac (the cold review's
+  // measurement), 0 to 35 ms once the lesson's code is fetched. The page's CPU is slowed 6 times to
+  // widen it and Back is pressed at several moments across it: without the fix the row fails at 300 ms,
+  // on the dev server and on the build (on another machine the moments may miss the window, and then
+  // it proves less, never something false). Mouse mode, the worker blocked. It holds the chord, the
+  // entry and the reload; Explore's key did not move in this lesson even before the fix (its first
+  // concept names a chord), so the key is checked only as a guard. A view writes only while it is the
+  // view on screen (appHistory `shown`, lessonInstrument `showLessonQuery`; their unit tests are exact).
+  test('Back pressed while a lesson is still opening: Explore comes back with its own chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
     test.setTimeout(180_000);
     for (const wait of [150, 300, 400, 500, 700]) {
       const at = `Back ${wait} ms after the tap`;

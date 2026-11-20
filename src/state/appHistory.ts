@@ -28,6 +28,9 @@
  *    names the screen they open, when this tab's history has one (`backTo`),
  *    else they rewrite the entry. So the next Back never shows the screen they
  *    left, nor one they went back past.
+ *  - A view writes its screens only while it is the view on screen (`shown`,
+ *    in `goTo`, `notePlace` and `backTo`): one that finishes mounting in the
+ *    view on its way out, after Back has left it, writes nothing.
  *  - Only after a user activation since the last Back / Forward (`armed`):
  *    Chromium marks EVERY entry of a document that adds one without a user
  *    activation as skippable, and its Back button then leaves the app
