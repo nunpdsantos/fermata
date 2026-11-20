@@ -14,6 +14,9 @@ const GROUP_LABEL_STYLE: React.CSSProperties = { color: 'var(--text-muted)' };
 
 // ─── Chord shapes ───────────────────────────────────────────────────────────
 
+/** The edge fades' width (index.css `.edge-fade::before / ::after`, 18 px), kept clear beside the selected chip. */
+const EDGE_FADE_PX = 18;
+
 interface ChordShapeSelectorProps {
   shapeCount: number;
   labels: string[];
@@ -34,15 +37,41 @@ interface ChordShapeSelectorProps {
 export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, oneLine = false }: ChordShapeSelectorProps) {
   const { t } = useTranslation();
   const rowRef = useRef<HTMLDivElement>(null);
-  // The selected chip in view: its row scrolls sideways, nothing else moves.
+  // The selected chip whole and in view: its row scrolls sideways, nothing
+  // else moves. And the chips' line is never narrower than its label and that
+  // whole chip, with the edge fades clear of it (a minimum width measured
+  // here: no CSS sizes a scroller to ONE of its children). So where the
+  // controls, a notice and one whole chip do not fit on one line, the flex
+  // line breaks and the notice takes a line of its own, decided by widths at
+  // whatever width the platform draws text (GitHub's Linux, ~8 % wider than
+  // a Mac, cut the selected chip to a 95 px row at 1024 px in Spanish: music
+  // audit 2, run #71). Re-measured when the chip or the label changes size
+  // (fonts, a language, wider text); never the row itself, which this sizes.
   useLayoutEffect(() => {
-    const row = rowRef.current?.querySelector<HTMLElement>('.chip-group');
-    const chip = row?.querySelector<HTMLElement>('[aria-checked="true"]');
-    if (!oneLine || !row || !chip) return;
-    const box = row.getBoundingClientRect();
-    const at = chip.getBoundingClientRect();
-    if (at.left < box.left) row.scrollLeft -= box.left - at.left;
-    else if (at.right > box.right) row.scrollLeft += at.right - box.right;
+    const line = rowRef.current;
+    const row = line?.querySelector<HTMLElement>('.chip-group');
+    if (!oneLine || !line || !row) return;
+    const place = () => {
+      const chip = row.querySelector<HTMLElement>('[aria-checked="true"]');
+      if (!chip) return;
+      const width = chip.getBoundingClientRect().width;
+      if (width <= 0) return; // not laid out (a test's DOM): nothing to keep
+      const fades = row.children.length > 1 ? EDGE_FADE_PX : 0;
+      const label = line.firstElementChild as HTMLElement | null;
+      const gap = parseFloat(getComputedStyle(line).columnGap) || 0;
+      line.style.minWidth = `${Math.ceil((label?.getBoundingClientRect().width ?? 0) + gap + width + 2 * fades)}px`;
+      const box = row.getBoundingClientRect();
+      const at = chip.getBoundingClientRect();
+      if (at.left < box.left + fades) row.scrollLeft -= box.left + fades - at.left;
+      else if (at.right > box.right - fades) row.scrollLeft += at.right - (box.right - fades);
+    };
+    place();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(place);
+    const chip = row.querySelector('[aria-checked="true"]');
+    if (chip) observer.observe(chip);
+    if (line.firstElementChild) observer.observe(line.firstElementChild);
+    return () => observer.disconnect();
   }, [oneLine, selectedIdx, labels]);
   const group = (
     <ChipGroup
