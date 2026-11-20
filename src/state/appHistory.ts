@@ -362,7 +362,8 @@ export function exploreReturn(): Pick<ExploreLeft, 'tab' | 'built' | 'category'>
  * its way out stayed mounted for an exit animation and the lesson mounted
  * there; a view is now unmounted at once (App.tsx), but one drawn just before
  * it is left still runs its first effects before the next view is drawn, with
- * the store already on that view (the third cold review's measurement). Asked
+ * the store already on that view (measured by the fourth cold review, and by
+ * the seat on this code with the guards taken out). Asked
  * again when a held call is let go, so a write queued during a traversal is
  * judged by the view shown after it.
  */

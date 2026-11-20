@@ -148,7 +148,9 @@ export function QuickSearch() {
   useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const open = useAppStore.getState().quickSearchOpen;
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      // Either case: with Caps Lock on, Ctrl+K arrives as a capital K (the host that first opens search
+      // already took both; this one did not, so search then opened once and never again).
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setQuickSearchOpen(!open);
         setQuery('');

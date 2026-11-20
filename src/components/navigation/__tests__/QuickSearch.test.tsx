@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { useLayoutEffect } from 'react';
+import { StrictMode, useLayoutEffect } from 'react';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
 import { getResults } from '../quickSearchResults';
@@ -237,6 +237,66 @@ describe('QuickSearch: closed in its first instant', () => {
     render(<><QuickSearch /><EscapeAsItIsDrawn /></>);
     expect(useAppStore.getState().quickSearchOpen).toBe(false);
     expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  // The listener's life, counted on the window itself (a key pressed would not tell: listeners left
+  // behind toggle in pairs, and an even number of them looks like none).
+  const keydown = (calls: unknown[][]) => calls.filter(([type]) => type === 'keydown').map(([, fn]) => fn);
+
+  it('the keys are let go when it unmounts: every keydown listener it added is removed', () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      const { unmount } = render(<QuickSearch />);
+      const added = keydown(add.mock.calls);
+      expect(added.length).toBeGreaterThan(0);
+      unmount();
+      const removed = keydown(remove.mock.calls);
+      for (const fn of added) expect(removed).toContain(fn);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
+  it('one listener at a time, also where effects run twice (strict mode): one Cmd+K opens it, the next closes it', () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<StrictMode><QuickSearch /></StrictMode>);
+      expect(keydown(add.mock.calls).length - keydown(remove.mock.calls).length, 'keydown listeners left on the window').toBe(1);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(true);
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      expect(keydown(add.mock.calls).length - keydown(remove.mock.calls).length, 'still one after opening and closing').toBe(1);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
+  it('Ctrl+K with a capital K (Caps Lock on) toggles too, as the key that first opens search does', () => {
+    useAppStore.setState({ quickSearchOpen: false });
+    render(<QuickSearch />);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'K', ctrlKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(true);
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'K', metaKey: true }));
+    });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
   });
 
   it('Cmd+K pressed twice before React has drawn opens and closes (each key reads the store)', () => {

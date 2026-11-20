@@ -973,7 +973,7 @@ test.describe('review B-1', () => {
   // motion). Views no longer fade out (App.tsx; `src/__tests__/viewLeavesAtOnce.test.tsx` is exact):
   // the moments 50 and 100 ms (100 twice: where it failed most) and the one view on screen are asserted
   // here for it. A weak detector on its own: against the build with the exit animation this row failed
-  // about one run in six (the third cold review's count); the unit test is what holds it.
+  // about one run in six (the fourth cold review's count); the unit test is what holds it.
   test('Back pressed while a lesson is still opening: Explore comes back with its own chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
     test.setTimeout(180_000);
     for (const wait of [50, 100, 100, 150, 300, 400, 500, 700]) {
