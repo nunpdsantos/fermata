@@ -286,7 +286,60 @@ describe('QuickSearch: closed in its first instant', () => {
     }
   });
 
-  it('Ctrl+K with a capital K (Caps Lock on) toggles too, as the key that first opens search does', () => {
+  it('Escape while it is closed does nothing: no focus is moved, nothing is scheduled (the rest of the app uses Escape too)', () => {
+    const a = document.createElement('button');
+    const b = document.createElement('button');
+    document.body.append(a, b);
+    try {
+      useAppStore.setState({ quickSearchOpen: false });
+      render(<QuickSearch />);
+      a.focus();
+      // Opened and closed by Cmd+K: that way of closing leaves the dialog remembering where focus was.
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+      });
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      b.focus();
+      const frame = vi.spyOn(window, 'requestAnimationFrame');
+      try {
+        act(() => {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        });
+        expect(frame, 'no focus restore asked for').not.toHaveBeenCalled();
+      } finally {
+        frame.mockRestore();
+      }
+      expect(useAppStore.getState().quickSearchOpen).toBe(false);
+      expect(document.activeElement).toBe(b);
+    } finally {
+      a.remove();
+      b.remove();
+    }
+  });
+
+  it('a plain k or K, with no Cmd or Ctrl, is typing: the open dialog stays open and the closed one stays closed', () => {
+    // Looked at after EACH key: two toggles would cancel out.
+    useAppStore.setState({ quickSearchOpen: true });
+    render(<QuickSearch />);
+    for (const key of ['k', 'K']) {
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      });
+      expect(useAppStore.getState().quickSearchOpen, `open, after a plain ${key}`).toBe(true);
+    }
+    act(() => useAppStore.getState().setQuickSearchOpen(false));
+    for (const key of ['k', 'K']) {
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+      });
+      expect(useAppStore.getState().quickSearchOpen, `closed, after a plain ${key}`).toBe(false);
+    }
+  });
+
+  it('Ctrl+K or Cmd+K with a capital K toggles too (with Caps Lock on, the letter can arrive as a capital)', () => {
     useAppStore.setState({ quickSearchOpen: false });
     render(<QuickSearch />);
     act(() => {
