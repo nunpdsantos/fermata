@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo, useId } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, m } from 'framer-motion';
 import { useAppStore } from '../../state/store.ts';
@@ -138,9 +138,14 @@ export function QuickSearch() {
   // Cmd+K to toggle, Escape to close. Whether it is open is read from the
   // store at the key, not from a render's copy: a key pressed in the instant
   // between the dialog appearing and this effect running again was judged
-  // by the old copy, so an Escape there closed nothing (seen once on GitHub,
-  // 20 November 2026).
-  useEffect(() => {
+  // by the old copy, so an Escape there closed nothing (seen on GitHub,
+  // 20 November 2026). And the keys are listened for from the very step in
+  // which the dialog is drawn (a layout effect): this component is fetched
+  // and mounted the first time search opens, already open, and an ordinary
+  // effect runs a moment after the dialog is on screen, so an Escape in that
+  // moment found nobody listening (the same test, retried on GitHub again
+  // with the first cure in, run 44709333098).
+  useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const open = useAppStore.getState().quickSearchOpen;
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {

@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { useLayoutEffect } from 'react';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
 import { getResults } from '../quickSearchResults';
@@ -219,6 +220,21 @@ describe('QuickSearch: closed in its first instant', () => {
       // Still the handler of the render in which it was closed.
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     });
+    expect(useAppStore.getState().quickSearchOpen).toBe(false);
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('Escape in the very step the dialog is first drawn closes it: the keys are listened for from that step (it is mounted already open, the first time search opens)', () => {
+    // A key that arrives as the dialog is committed, before any ordinary effect has run: pressed here by a
+    // sibling's layout effect, which React runs in that same step, after this component's own.
+    function EscapeAsItIsDrawn() {
+      useLayoutEffect(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      }, []);
+      return null;
+    }
+    useAppStore.setState({ quickSearchOpen: true });
+    render(<><QuickSearch /><EscapeAsItIsDrawn /></>);
     expect(useAppStore.getState().quickSearchOpen).toBe(false);
     expect(screen.queryByRole('combobox')).toBeNull();
   });
