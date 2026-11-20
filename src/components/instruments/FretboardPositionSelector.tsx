@@ -95,13 +95,17 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, 
     // fade (cold review, F4).
     const box = row.closest<HTMLElement>('.edge-fade') ?? row;
     const label = line.firstElementChild as HTMLElement | null;
-    const pen = document.createElement('canvas').getContext('2d');
+    // Asked for once, and only once a chip is laid out: a test's DOM has no
+    // canvas and says so in the log each time it is asked for one.
+    let pen: CanvasRenderingContext2D | null | undefined;
     let frame = 0;
     const place = (observed: boolean) => {
       const chip = row.querySelector<HTMLElement>('[aria-checked="true"]');
       if (!chip || chip.getBoundingClientRect().width <= 0) return; // not laid out (a test's DOM): nothing to keep
+      if (pen === undefined) pen = document.createElement('canvas').getContext('2d');
+      const ink = pen;
       const chips = Array.from(row.querySelectorAll<HTMLElement>('[role="radio"]'));
-      const widest = Math.max(...chips.map((c) => selectedWidth(c, chip, pen)));
+      const widest = Math.max(...chips.map((c) => selectedWidth(c, chip, ink)));
       const fades = chips.length > 1 ? EDGE_FADE_PX : 0;
       const gap = parseFloat(getComputedStyle(line).columnGap) || 0;
       const min = `${Math.ceil((label?.getBoundingClientRect().width ?? 0) + gap + widest + 2 * fades)}px`;
