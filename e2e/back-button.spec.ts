@@ -966,9 +966,15 @@ test.describe('review B-1', () => {
   // entry and the reload; Explore's key did not move in this lesson even before the fix (its first
   // concept names a chord), so the key is checked only as a guard. A view writes only while it is the
   // view on screen (appHistory `shown`, lessonInstrument `showLessonQuery`; their unit tests are exact).
+  // And the second fault behind A6's retries (it failed again with those guards in, run 44697593749):
+  // Back pressed 60 to 120 ms after the tab changed, just as Learn's view was arriving, left the LESSON
+  // on screen under the Explore tab until a tab was tapped: the view on its way out never finished its
+  // exit, so Explore never mounted (8 of 60 here on the build, slowed 6 times, with and without reduced
+  // motion). Views no longer fade out (App.tsx; `src/__tests__/viewLeavesAtOnce.test.tsx` is exact):
+  // the moments 50 and 100 ms and the one view on screen are asserted here for it.
   test('Back pressed while a lesson is still opening: Explore comes back with its own chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
     test.setTimeout(180_000);
-    for (const wait of [150, 300, 400, 500, 700]) {
+    for (const wait of [50, 100, 100, 150, 300, 400, 500, 700]) {
       const at = `Back ${wait} ms after the tap`;
       const { context, page } = await open(browser, MODES[0]);
       await historyReady(page);
@@ -989,6 +995,7 @@ test.describe('review B-1', () => {
       // Whatever was still on its way has arrived and settled.
       await page.waitForTimeout(3_000);
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      expect(await page.locator('#explore-panel, #learn-panel, #drill-panel').evaluateAll((panels) => panels.map((p) => p.id)), `${at}: the one view on screen is Explore`).toEqual(['explore-panel']);
       await expect(detail, `${at}: the chord's detail`).toBeVisible();
       expect((await detail.innerText()).slice(0, 40), `${at}: the chord as it was left`).toBe(before.chord);
       expect(await picker.inputValue(), `${at}: Explore's key`).toBe(before.key);
