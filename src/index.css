@@ -1219,8 +1219,9 @@ body {
    reach). From 1024 px it keeps its own width and shares the controls row's
    line where it fits beside the controls AND one whole chord chip — the
    chips give up width and scroll sideways, never below their selected chip
-   (ChordShapeSelector gives `.chord-shapes-line` that chip's measured width
-   as its minimum) — so it adds no height to the dock (music audit 2, the
+   (ChordShapeSelector gives `.chord-shapes-line` a measured minimum: its
+   label, the gap, that whole chip and both 18 px edge fades) — so it adds no
+   height to the dock (music audit 2, the
    review of builder K, item 8: +26 px at 1440×900 in Open G, pushing
    Explore's circle past the fold). Where it cannot fit, the flex line breaks
    and it takes a line of its own (or two), as below 1024 px: decided by the

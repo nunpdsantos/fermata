@@ -25,9 +25,11 @@ interface ChordShapeSelectorProps {
   /**
    * The dock's controls row: the chips stay on ONE line and scroll sideways
    * with the app's edge fade where they do not fit (index.css
-   * .chord-shapes-line: beside "Flip neck" and the tuning from 640 px, so
-   * the button takes width from the chips, never a line — its "adds no
-   * height" rule holds in every language; a line of their own below).
+   * .chord-shapes-line: beside "Flip neck" and the tuning from 640 px, which
+   * take width from the chips; a line of their own below). Their line is
+   * never narrower than its label, the selected chip and both fades (measured
+   * below), so where the row cannot hold that beside the other controls the
+   * row breaks onto another line rather than cut the chip.
    * The full neck's header keeps the wrapping chips.
    */
   oneLine?: boolean;
@@ -37,9 +39,10 @@ interface ChordShapeSelectorProps {
 export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, oneLine = false }: ChordShapeSelectorProps) {
   const { t } = useTranslation();
   const rowRef = useRef<HTMLDivElement>(null);
-  // The selected chip whole and in view: its row scrolls sideways, nothing
-  // else moves. And the chips' line is never narrower than its label and that
-  // whole chip, with the edge fades clear of it (a minimum width measured
+  // The selected chip whole, in view and clear of both edge fades (where a
+  // fade shows; an end with nothing beyond it shows none): its row scrolls
+  // sideways, nothing else moves. And the chips' line is never narrower than
+  // its label, the gap, that whole chip and room for both fades (a minimum width measured
   // here: no CSS sizes a scroller to ONE of its children). So where the
   // controls, a notice and one whole chip do not fit on one line, the flex
   // line breaks and the notice takes a line of its own, decided by widths at
@@ -60,10 +63,16 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, 
       const label = line.firstElementChild as HTMLElement | null;
       const gap = parseFloat(getComputedStyle(line).columnGap) || 0;
       line.style.minWidth = `${Math.ceil((label?.getBoundingClientRect().width ?? 0) + gap + width + 2 * fades)}px`;
-      const box = row.getBoundingClientRect();
+      // Against the box the fades are painted on (`.edge-fade`): the scroller
+      // itself sits 2 px outside it (its margin −2 px, padding 2 px, room for
+      // a chip's focus ring), so measuring the scroller left the chip 2 px
+      // under each fade (cold review, F4).
+      const box = (row.closest('.edge-fade') ?? row).getBoundingClientRect();
       const at = chip.getBoundingClientRect();
-      if (at.left < box.left + fades) row.scrollLeft -= box.left + fades - at.left;
-      else if (at.right > box.right - fades) row.scrollLeft += at.right - (box.right - fades);
+      // Whole pixels, rounded towards clear: a scroll position is kept in whole
+      // pixels, so a fractional move could leave the chip half a pixel under.
+      if (at.left < box.left + fades) row.scrollLeft -= Math.ceil(box.left + fades - at.left);
+      else if (at.right > box.right - fades) row.scrollLeft += Math.ceil(at.right - (box.right - fades));
     };
     place();
     if (typeof ResizeObserver === 'undefined') return;
