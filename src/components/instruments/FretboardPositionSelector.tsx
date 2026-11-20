@@ -71,7 +71,8 @@ export function ChordShapeSelector({ shapeCount, labels, selectedIdx, onSelect, 
   // chip's selected width is its text measured in the selected chip's font
   // (canvas text metrics: the page is not touched, as a hidden copy in the
   // row would be, which the edge fade's MutationObserver answers by
-  // observing the row again) plus its letter-spacing, word-spacing, padding and border. The widest, not the selected one, and each as drawn
+  // observing the row again) plus its letter-spacing, word-spacing, padding
+  // and border. The widest, not the selected one, and each as drawn
   // selected: the line's minimum, and so where the notice goes (index.css,
   // from 1280 px it may share the controls' line) and the dock's height, are
   // the same whichever grip the learner picks (from the selected chip, the

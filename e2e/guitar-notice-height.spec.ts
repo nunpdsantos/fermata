@@ -13,10 +13,13 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  * `.chord-shapes-line`), so the grip selected never moves the notice; and the
  * selected chip is placed again whenever the row's own box changes.
  *
- * What is asserted holds on every platform, so it is asserted twice: with
- * this machine's text and with text 8 % wider (letter-spacing 0.04em, roughly
- * how GitHub's Linux draws it; e2e/neck-orientation.spec.ts does the same).
- * On every row:
+ * The main rows are asserted twice: with this machine's text and with text
+ * 8 % wider (letter-spacing 0.04em, roughly how GitHub's Linux draws it;
+ * e2e/neck-orientation.spec.ts does the same). The own line below 1280 px
+ * holds at any text width; the sharing from 1280 px holds with text up to
+ * about 0.05em wider than this Mac's (GitHub's Linux is within that), beyond
+ * which the notice rightly takes its own line and those rows would fail.
+ * On every row that measures the notice (`checkRow`):
  *  - the notice's own line boxes lie inside the dock (all four sides) and the
  *    window, and no ancestor that clips cuts any of them;
  *  - each chord case has its one selected chip (the Open G chord, which has
@@ -683,7 +686,8 @@ for (const { motion, label: motionLabel } of MOTIONS) {
 
 // ─── A learner's own text spacing (cold review of the third pass, F1) ────────
 // WCAG 1.4.12's text spacing (letter-spacing 0.12em, word-spacing 0.16em) on
-// everything, from the first layout. The line's minimum is still its label,
+// everything, set once the page has loaded (so these rows also pass through
+// the re-measure and its next-frame write). The line's minimum is still its label,
 // the gap, the widest chip as drawn selected and both fades: measured here on
 // real copies of the chips, against the minimum the app wrote from its
 // canvas measure (which adds the letter-spacing after every character and the

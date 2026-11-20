@@ -1224,16 +1224,15 @@ body {
    Explore's circle past the fold). ChordShapeSelector measures that minimum:
    the label, the gap, the WIDEST chip of the row as drawn selected and both
    18 px edge fades, the same whichever chip is selected, so selecting a grip
-   never moves a notice whose words stay the same, nor changes the dock's
-   height with it; the chips give up
-   width and scroll sideways, and the selected one is placed again on any
-   change of the row's box. Where the notice cannot fit, the flex line breaks
+   never moves a notice whose words stay the same, and the dock keeps its
+   height; the chips give up width and scroll sideways, and the selected
+   one is placed again on any change of the row's box. Where the notice cannot fit, the flex line breaks
    and it takes a line of its own (or two): decided by the widths the
    platform draws, never by a language. From 1024 px, as it was until this
    rule, the line it took could change with the grip selected (GitHub's
    Linux, whose text is ~8 % wider: run #71, at b4fc9ab, chip 5 of 8 left out
-   of view); e2e/guitar-notice-height.spec.ts runs every row with text 8 %
-   wider too. Outside the layers, so it wins over the element's `w-full`
+   of view); e2e/guitar-notice-height.spec.ts runs its main rows with text
+   8 % wider too. Outside the layers, so it wins over the element's `w-full`
    utility without changing its markup (the owner's neck is recorded as is:
    legacyNeck.test.tsx). */
 @media (min-width: 1280px) {
