@@ -65,7 +65,7 @@ describe('the lesson drives the instrument only while Learn is the view', () => 
     page.useAppStore.getState().setView('learn');
     page.useAppStore.getState().setView('explore');
     const before = { ...page.selection(), chord: page.useAppStore.getState().selectedChord };
-    // The lesson mounts now, in the view on its way out, and shows its first concept.
+    // The lesson's first effects run now, its view already left, and it shows its first concept.
     expect(page.showLessonQuery('C major chord')).toBe(false);
     expect(page.showLessonQuery('G major scale')).toBe(false);
     expect({ ...page.selection(), chord: page.useAppStore.getState().selectedChord }).toEqual(before);

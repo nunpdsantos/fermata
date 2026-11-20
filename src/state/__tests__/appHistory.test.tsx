@@ -105,7 +105,7 @@ describe('entries', () => {
     const entry = { ...(window.history.state as HistoryEntry) };
     const replaced = (window.history.replaceState as unknown as ReturnType<typeof vi.fn>).mock.calls.length;
     const went = go.mock.calls.length;
-    // The lesson arrives now, in the view on its way out, and says where it is, each way a view can.
+    // The lesson arrives now, its view already left, and says where it is, each way a view can.
     goTo('learn', 'module/l1/u3/l1u3m4');
     notePlace('learn', 'module/l1/u3/l1u3m4');
     backTo('learn', '');
@@ -135,17 +135,17 @@ describe('entries', () => {
     expect(useAppStore.getState().view).toBe('explore');
     expect(currentEntry()).toMatchObject({ i: 2, v: 'explore' });
     const went = go.mock.calls.length;
-    // The lesson's ← (or one held during a traversal and let go), from the view on its way out:
+    // The lesson's ← (or one held during a traversal and let go), from a view already left:
     // entry 1 is Learn's overview, one step back from here.
     backTo('learn', '');
     expect(go.mock.calls).toHaveLength(went);
     expect(currentEntry()).toMatchObject({ i: 2, v: 'explore' });
     // Known positive: from Explore itself, on screen, the same reach is Back by one.
     act(() => useAppStore.getState().setView('learn'));
-    notePlace('learn', 'level/l1'); // 3 learn, a level
-    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }); // Back twice lands on the overview
+    notePlace('learn', 'level/l1'); // Learn again, on a level (no tap since Back: the entry is rewritten, not added)
+    pop({ fm: 1, i: 1, v: 'learn', s: '', l: 0 }); // Back lands on the overview's entry
     armForTests();
-    goTo('learn', 'level/l1'); // 2 learn, the level again
+    goTo('learn', 'level/l1'); // a new entry after it: the level
     backTo('learn', ''); // the level's ←, on screen: Back to the overview's entry
     expect(go).toHaveBeenLastCalledWith(-1);
   });

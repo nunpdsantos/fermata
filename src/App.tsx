@@ -112,7 +112,9 @@ function App() {
             lesson until a tab was tapped (GitHub's back-button A6, twice on a
             first attempt; here 8 of 60 with the CPU slowed, with and without
             reduced motion). With no view on its way out there is nothing to
-            arrive in. */}
+            arrive in. The guards are still needed: a lesson drawn just before
+            the view is left runs its first effects before the next view is
+            drawn, with the store already on that view. */}
         <m.div
           key={view}
           initial={{ opacity: 0, y: 8 }}

@@ -954,8 +954,8 @@ test.describe('review B-1', () => {
   });
 
   // A6's one failure on GitHub's build shard (run 44688260743, first attempt; right on the retry), then
-  // reproduced: Back pressed while the lesson is still opening. The view on its way out stays mounted
-  // for its exit, the lesson finishes mounting there, and (before the fix) it drove the instrument and
+  // reproduced: Back pressed while the lesson is still opening. The view on its way out stayed mounted
+  // for an exit animation then, the lesson finished mounting there, and it drove the instrument and
   // wrote its screen: Explore came back with the LESSON's chord and its entry said "Learn, this lesson",
   // so a reload opened the lesson. The window runs from Learn's panel mounting to the lesson appearing:
   // on a first, cold open of the build about 170 to 490 ms after the tap on this Mac (the cold review's
@@ -971,7 +971,9 @@ test.describe('review B-1', () => {
   // on screen under the Explore tab until a tab was tapped: the view on its way out never finished its
   // exit, so Explore never mounted (8 of 60 here on the build, slowed 6 times, with and without reduced
   // motion). Views no longer fade out (App.tsx; `src/__tests__/viewLeavesAtOnce.test.tsx` is exact):
-  // the moments 50 and 100 ms and the one view on screen are asserted here for it.
+  // the moments 50 and 100 ms (100 twice: where it failed most) and the one view on screen are asserted
+  // here for it. A weak detector on its own: against the build with the exit animation this row failed
+  // about one run in six (the third cold review's count); the unit test is what holds it.
   test('Back pressed while a lesson is still opening: Explore comes back with its own chord, its entry stays Explore\'s, and a reload opens Explore', async ({ browser }) => {
     test.setTimeout(180_000);
     for (const wait of [50, 100, 100, 150, 300, 400, 500, 700]) {
@@ -1321,8 +1323,9 @@ test.describe('review B-2', () => {
   async function leaveAndComeBack(page: Page) {
     await tab(page, 'learn').click();
     await expectView(page, 'learn');
-    // Explore gone for good: a Back within its fade would revive the same Explore (framer-motion's
-    // AnimatePresence), its card's own state intact, and test nothing.
+    // Explore gone (its panel is unmounted the moment the view changes; while views still had an exit
+    // animation, a Back within the fade revived the same Explore, its card's own state intact, and
+    // tested nothing).
     await expect(page.locator('#explore-panel')).toHaveCount(0);
     await expect(overview(page)).toBeVisible();
     await back(page);

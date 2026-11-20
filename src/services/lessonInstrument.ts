@@ -51,12 +51,12 @@ function stopWatching(): void {
  */
 export function showLessonQuery(query: string): boolean {
   // Only while Learn is the view (as the lesson's dock: lessonDock.ts). A
-  // lesson can finish opening after the learner has left it: Back pressed
-  // while it was still loading finds its view on the way out, still mounted
-  // for its exit, and the lesson mounts there. Its selection must not land
-  // on Explore then (the chord Back had just brought back was replaced by
-  // the lesson's, and the loan was never given back: seen on GitHub's build
-  // shard, 20 November 2026, and reproduced with the CPU slowed).
+  // lesson's first effects can run after the learner has left it: Back
+  // pressed just as it was drawn (and, while views still had an exit
+  // animation, a lesson mounting in the view on its way out). Its selection
+  // must not land on Explore then (the chord Back had just brought back was
+  // replaced by the lesson's, and the loan was never given back: reproduced
+  // with the CPU slowed, 20 November 2026).
   if (useAppStore.getState().view !== 'learn') return false;
   const resolved = resolveTheoryQuery(query);
   if (!resolved || resolved.kind === 'circle') return false;

@@ -29,8 +29,8 @@
  *    else they rewrite the entry. So the next Back never shows the screen they
  *    left, nor one they went back past.
  *  - A view writes its screens only while it is the view on screen (`shown`,
- *    in `goTo`, `notePlace` and `backTo`): one that finishes mounting in the
- *    view on its way out, after Back has left it, writes nothing.
+ *    in `goTo`, `notePlace` and `backTo`): one whose first effects run after
+ *    it has been left (Back pressed just as it was drawn) writes nothing.
  *  - Only after a user activation since the last Back / Forward (`armed`):
  *    Chromium marks EVERY entry of a document that adds one without a user
  *    activation as skippable, and its Back button then leaves the app
@@ -354,12 +354,15 @@ export function exploreReturn(): Pick<ExploreLeft, 'tab' | 'built' | 'category'>
 }
 
 /**
- * Is `v` the view on screen? A view writes its screens only while it is. One
- * that finishes opening after the learner has left it (Back pressed while a
- * lesson was still loading: the view on its way out stays mounted for its
- * exit, and the lesson mounts there) wrote its screen into the entry Back
- * had landed on, so Explore's entry said "Learn, this lesson" and a reload
- * opened the lesson (reproduced with the CPU slowed, 20 November 2026). Asked
+ * Is `v` the view on screen? A view writes its screens only while it is. A
+ * lesson that finished opening after the learner had left it (Back pressed
+ * while it was still loading) wrote its screen into the entry Back had landed
+ * on, so Explore's entry said "Learn, this lesson" and a reload opened the
+ * lesson (reproduced with the CPU slowed, 20 November 2026). Then the view on
+ * its way out stayed mounted for an exit animation and the lesson mounted
+ * there; a view is now unmounted at once (App.tsx), but one drawn just before
+ * it is left still runs its first effects before the next view is drawn, with
+ * the store already on that view (the third cold review's measurement). Asked
  * again when a held call is let go, so a write queued during a traversal is
  * judged by the view shown after it.
  */
@@ -541,7 +544,7 @@ function focusScreen(view: ViewMode): void {
   // The latest Back / Forward's screen only: an earlier one still looking would take focus from it.
   const turn = ++focusing;
   let tries = 0;
-  // Focus still where it was (the old screen, fading out) or on the page body is lost focus; anywhere new, the learner (or a sheet giving focus back) put it.
+  // Focus still where it was (on the old screen, as it goes) or on the page body is lost focus; anywhere new, the learner (or a sheet giving focus back) put it.
   let before = document.activeElement;
   const main = document.getElementById('main-content');
   const look = () => {
