@@ -66,8 +66,13 @@ export function StaffNotation({
     onLayout,
   });
 
+  // While VexFlow loads, hold the height the drawing will take (the fitted
+  // height, known before it loads), not the one asked for: a staff with a
+  // ledger line drew 100 px under an 80 px skeleton, and everything below it
+  // moved 20 px down when it arrived (Build's readout, scrolled clear of the
+  // dock, went back under it — e2e/explore-tools-audit.spec.ts Q4).
   if (loading) {
-    return <StaffNotationSkeleton height={height} />;
+    return <StaffNotationSkeleton height={fittedHeight} />;
   }
 
   return (

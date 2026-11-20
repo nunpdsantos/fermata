@@ -301,7 +301,8 @@ export function ScaleStrip() {
             aria-hidden="true"
             style={{ marginTop: `${(-trim.top / staffWidth) * 100}%`, marginBottom: `${(-trim.bottom / staffWidth) * 100}%` }}
           >
-            <Suspense fallback={<StaffNotationSkeleton height={STAFF_HEIGHT} />}>
+            {/* The drawing's own height (the trim's layout), so nothing moves when it arrives. */}
+            <Suspense fallback={<StaffNotationSkeleton height={trim.height} />}>
               <StaffNotation
                 notes={notes}
                 keySignature={keySignature}

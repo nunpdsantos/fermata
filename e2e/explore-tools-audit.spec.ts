@@ -16,6 +16,15 @@ import { seededBrowser, type View, type Lang } from './helpers/wave1';
  *   - at every size the readout can be brought wholly into view between the
  *     held staff strip and the dock by scrolling the work column, before and
  *     after a chord is built (it is never only reachable by hiding the dock);
+ *   - and it STAYS there when the staff strip's staff arrives: VexFlow is
+ *     held back until the readout has been scrolled into view, then let go
+ *     (review of the second round, 20 November 2026: the strip's loading
+ *     skeleton was 80 px and the drawn staff 100, so a staff that arrived
+ *     late — a fresh dev server on GitHub's runners — moved everything under
+ *     it 20 px down and put the readout back under the dock; release 16 did
+ *     the same, only less often too late);
+ *   - in normal text and with the text 8 % wider (letter-spacing 0.04em,
+ *     roughly how GitHub's Linux draws it);
  *   - after a chord is built, ▶ Chord is in view, and wherever the readout
  *     and the detail's actions fit together under the strip (1280, 1440,
  *     1536 — logged per size) the readout lands in view with them; at
@@ -29,9 +38,10 @@ const LAPTOPS: [number, number][] = [[1280, 800], [1366, 768], [1440, 900], [153
 const LANGS: Lang[] = ['en', 'pt', 'es'];
 const BUILD = { en: 'Build', pt: 'Construir', es: 'Construir' } as const;
 
-async function openBuild(page: Page, lang: Lang) {
+async function openBuild(page: Page, lang: Lang, wide = false) {
   await page.goto('/');
   await expect(page.getByTestId('scale-strip')).toBeVisible({ timeout: 15_000 });
+  if (wide) await page.addStyleTag({ content: 'body *:not(svg):not(svg *) { letter-spacing: 0.04em !important; }' });
   await page.evaluate(() => document.fonts.ready);
   await page.getByRole('tab', { name: BUILD[lang], exact: true }).click();
   await expect(page.getByTestId('builder-readout')).toBeAttached();
@@ -74,16 +84,21 @@ async function scrollReadoutIntoView(page: Page) {
   await page.waitForTimeout(150);
 }
 
-for (const [w, h] of LAPTOPS) {
-  test(`Q4 ${w}×${h}: Build's readout and inspector over the docked piano, EN / PT / ES`, async ({ browser }) => {
+for (const [w, h] of LAPTOPS) for (const wide of [false, true]) {
+  test(`Q4 ${w}×${h}${wide ? ', text 8 % wider' : ''}: Build's readout and inspector over the docked piano, EN / PT / ES`, async ({ browser }) => {
     const v: View = { name: 'laptop', viewport: { width: w, height: h }, touch: false };
     for (const lang of LANGS) {
       const { context, page } = await seededBrowser(browser, v, {
         themeMode: 'fermata', language: lang, lastView: 'explore', instrument: 'piano', baseOctave: 4,
         selectedKey: { natural: 'C', accidental: '' }, selectedScale: 'major',
       }, {}, { lang });
-      await openBuild(page, lang);
-      const where = `${w}×${h} ${lang}`;
+      // Hold VexFlow back until the readout has been scrolled into view
+      // (module and chunk alike: /vexflow/), so the staff always arrives late.
+      let release!: () => void;
+      const held = new Promise<void>((r) => { release = r; });
+      await page.route(/vexflow/i, async (route) => { await held; await route.continue(); });
+      await openBuild(page, lang, wide);
+      const where = `${w}×${h} ${lang}${wide ? ' (text 8 % wider)' : ''}`;
       let g = await geometry(page);
       const dockHeight = g.dockHeight;
       expect(dockHeight, `${where}: the piano shows at Half`).toBeGreaterThan(200);
@@ -99,6 +114,13 @@ for (const [w, h] of LAPTOPS) {
       await scrollReadoutIntoView(page);
       g = await geometry(page);
       expect(whole(g.readout, g), `${where}: before a chord, the readout can be scrolled wholly into view`).toBe(true);
+      // The staff arrives: nothing above the readout grows, so it stays in view.
+      expect(await page.locator('.strip-staff g.vf-stavenote').count(), `${where}: the staff not drawn yet`).toBe(0);
+      release();
+      await expect(page.locator('.strip-staff g.vf-stavenote').first()).toBeAttached({ timeout: 15_000 });
+      await page.waitForTimeout(150);
+      g = await geometry(page);
+      expect(whole(g.readout, g), `${where}: the staff drawn, the readout still wholly in view`).toBe(true);
 
       // C E G: a chord, its detail opens under the builder.
       await page.locator('.explore-main').evaluate((el) => { el.scrollTop = 0; });

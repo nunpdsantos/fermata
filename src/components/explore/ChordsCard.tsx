@@ -48,7 +48,8 @@ function ChordStaff() {
       data-testid="chord-staff"
       style={{ marginTop: -trim.top, marginBottom: -trim.bottom }}
     >
-      <Suspense fallback={<StaffNotationSkeleton height={CHORD_STAFF_HEIGHT} />}>
+      {/* The drawing's own height (the trim's layout), so nothing moves when it arrives. */}
+      <Suspense fallback={<StaffNotationSkeleton height={trim.height} />}>
         <StaffNotation
           notes={notes}
           height={CHORD_STAFF_HEIGHT}
