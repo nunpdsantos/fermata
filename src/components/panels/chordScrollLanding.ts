@@ -101,12 +101,14 @@ const DETAIL_PARTS = '.chord-detail-name, button, [role="radio"], .type-label, a
  * With the metronome's bar over the column's foot, a held strip can leave
  * too little room (1366×768: 95–111 px between the strip and the bar for a
  * detail of 142–217 px; In key and All Chords, the leftovers round of 21
- * November 2026). The landing is chosen with the strip held, as before; only
- * where that leaves the chord's name or a control of its detail under the
- * bar, under the strip or below the column's foot does the strip scroll with
- * the work for this chord (`data-strip-scrolls`, index.css), in the spirit
- * of the owner's ruling for Build, and the detail land again as on Build.
- * Where both fit (1440×900, 1536×864), the strip stays held.
+ * November 2026). The landing is chosen with the strip held, as before; where
+ * that leaves the chord's name or a control of its detail under the bar,
+ * under the strip or below the column's foot, the detail at the top of the
+ * view is tried; only where that fails too does the strip scroll with the
+ * work for this chord (`data-strip-scrolls`, index.css), in the spirit of
+ * the owner's ruling for Build, and the detail land again as on Build.
+ * Where both fit (1440×900, 1536×864, the first chord of a visit at
+ * 1280×800), the strip stays held.
  */
 export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
@@ -182,29 +184,44 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
       detail.dataset.compactSource = 'true';
       target = choose(); // the source label may change the first row's height
     }
-    // With the bar over the foot and the strip held: is the chord's name and
-    // every control of its detail in view at that scroll — below the strip,
-    // clear of the bar, above the column's foot? If not, the strip scrolls
-    // with the work for this chord, and the detail lands again without it.
-    if (strip && covered > 0) {
+    // With the bar over the column's foot, the chord's name and every control
+    // of its detail must be in view at the scroll chosen: below what is held
+    // above, clear of the bar (where it will stand once the detail is there),
+    // above the column's foot. Where the choice leaves something out (it
+    // reads the bar where it stands, and the bar moves as the detail opens:
+    // under load a late re-landing chose the chord's row with ▶ Chord, the
+    // rest below the foot), the detail at the top of the view is tried; where
+    // that fails too with the strip held, the strip scrolls with the work for
+    // this chord and the detail lands again.
+    if (covered > 0) {
       const s = scroller.getBoundingClientRect();
       const viewTop = s.top + scroller.clientTop + clear - 8;
       const foot = s.top + scroller.clientTop + scroller.clientHeight;
-      const shift = scroller.scrollTop - target;
-      const d = detail.getBoundingClientRect();
-      const bar = barPlaceWith(metronomeBar()!, { top: d.top + shift, bottom: d.bottom + shift, left: d.left, right: d.right });
-      const inView = [...detail.querySelectorAll(DETAIL_PARTS)].every((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.height === 0 || r.width === 0) return true;
-        const top = r.top + shift, bottom = r.bottom + shift;
-        const underBar = bottom > bar.top + 1 && top < bar.bottom - 1 && r.right > bar.left + 1 && r.left < bar.right - 1;
-        return top >= viewTop - 0.5 && bottom <= foot + 0.5 && !underBar;
-      });
-      if (!inView) {
-        released = true;
-        scroller.setAttribute('data-strip-scrolls', '');
-        land();
-        return;
+      const inView = (at: number) => {
+        const shift = scroller.scrollTop - at;
+        const d = detail.getBoundingClientRect();
+        const bar = barPlaceWith(metronomeBar()!, { top: d.top + shift, bottom: d.bottom + shift, left: d.left, right: d.right });
+        return [...detail.querySelectorAll(DETAIL_PARTS)].every((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.height === 0 || r.width === 0) return true;
+          const top = r.top + shift, bottom = r.bottom + shift;
+          const underBar = bottom > bar.top + 1 && top < bar.bottom - 1 && r.right > bar.left + 1 && r.left < bar.right - 1;
+          return top >= viewTop - 0.5 && bottom <= foot + 0.5 && !underBar;
+        });
+      };
+      if (!inView(target)) {
+        // The detail at the top: the card's head is above the view, so the detail names its tab.
+        const named = detail.dataset.compactSource;
+        detail.dataset.compactSource = 'true';
+        const top = measure(detail).top - clear;
+        if (inView(top)) target = top;
+        else if (strip) {
+          released = true;
+          scroller.setAttribute('data-strip-scrolls', '');
+          land();
+          return;
+        } else if (named) detail.dataset.compactSource = named;
+        else delete detail.dataset.compactSource;
       }
     }
     const detailTop = measure(detail).top;

@@ -137,9 +137,11 @@ test.describe('E2: with the metronome\'s bar open, a chord\'s name and every con
               await top();
               await page.locator('.chord-row button').nth(i).click();
               const r = await land(`In key ${i + 1}`);
-              // The first chord of a visit at 1280×800 fits under the held strip (the bar, still at the left edge where
-              // nothing was in its way when the chord was chosen, moves to the right as the detail opens).
-              if (w === 1280 && instrument === 'piano' && language === 'en' && i === 0) expect(r.held, 'In key 1 at 1280×800: both fit, the strip stays held').toBe(true);
+              // Where both fit at 1280×800, the strip stays held: the first chord of a visit (the bar, still at the left
+              // edge where nothing was in its way when the chord was chosen, moves to the right as the detail opens),
+              // and In key 7 in English, whose 186 px detail fits under the strip only when it lands at the top of
+              // the view (the landing's own first choice keeps the chord's row with ▶ Chord and leaves the rest below).
+              if (w === 1280 && language === 'en' && ((i === 0 && instrument === 'piano') || i === 6)) expect(r.held, `In key ${i + 1} at 1280×800: both fit, the strip stays held`).toBe(true);
             }
             await top();
             await page.getByRole('tab', { name: t.all, exact: true }).click();
