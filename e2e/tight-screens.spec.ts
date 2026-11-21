@@ -42,8 +42,9 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  *
  * E3. The phone sheet (375×667, 390×844, 360×640) at Peek, Half and Full,
  * piano, guitar and guitar in Open G: where its content goes on below the
- * foot, Explore's own fade shows there (at 57cda40 the only sign was a 3 px
- * line), and at Half it lies under the last whole row, never over the fret
+ * foot, Explore's fade shows there, ending in the sheet's own surface colour
+ * (at 57cda40 the only sign was a 3 px line), and at Half it lies under the
+ * last whole row, never over the fret
  * numbers; scrolled to the end, the last control is in view and the fade
  * goes. Where everything fits, no fade, and the sheet does not scroll; nor
  * does it by padding alone. (The owner's ruling, 21 November 2026, on the
@@ -56,14 +57,24 @@ const WIDE_TEXT = '*, *::before, *::after { letter-spacing: 0.04em !important; }
 const TEXTS = [{ wide: false, label: '' }, { wide: true, label: ' (text 8 % wider)' }] as const;
 const MOTIONS = [{ motion: 'reduce', label: '' }, { motion: 'no-preference', label: ', ordinary motion' }] as const;
 type Motion = (typeof MOTIONS)[number]['motion'];
-/** A landing and the few after it that a late size calls for; the code stops after at most five in a row. */
-const MOST_LANDINGS = 10;
+/**
+ * The landings one choice brings, and the frames in which the column moves.
+ * The code lands at most five times in a row for one cause (a choice, a size
+ * changed, the bar opened or closed); a choice can bring several causes (the
+ * detail opening, then the card's margin a frame late, then the bar moving
+ * off it), so the count is bounded by what this spec measures, with a margin:
+ * in its run of 21 November 2026 (third pass, dev server, this Mac), at most
+ * 9 landings (once in 3,484; 7 or fewer in all but 2) and 3 frames moving
+ * the column for one choice, bounded at 9 + 2 and 3 + 1.
+ */
+const MOST_LANDINGS = 11;
+const MOST_MOVES = 4;
 
-type Landed = { before: number; after: number };
-/** The landings since counting began: where each found the column and where it left it. */
-type LandWindow = { __lands?: Landed[] };
-/** Start counting landings afresh. */
-const countLandings = (page: Page) => page.evaluate(() => { (window as unknown as LandWindow).__lands = []; });
+type Landed = { before: number; after: number; target: number };
+/** The landings since counting began (where each found the column, where it left it, where it asked it to be), and the frames in which the column moved. */
+type LandWindow = { __lands?: Landed[]; __moved?: number };
+/** Start counting landings, and frames in which the column moves, afresh. */
+const countLandings = (page: Page) => page.evaluate(() => { const w = window as unknown as LandWindow; w.__lands = []; w.__moved = 0; });
 
 async function open(browser: Browser, baseURL: string, opts: { w: number; h: number; touch?: boolean; state?: Seed; wide?: boolean; motion?: Motion }) {
   const context = await browser.newContext({
@@ -87,8 +98,22 @@ async function open(browser: Browser, baseURL: string, opts: { w: number; h: num
     proto.scrollTo = function (this: Element, ...a: unknown[]) {
       const before = this.scrollTop;
       original.apply(this, a);
-      if (this.classList.contains('explore-main')) ((window as unknown as LandWindow).__lands ??= []).push({ before, after: this.scrollTop });
+      const top = (a[0] as { top?: number } | undefined)?.top ?? NaN;
+      if (this.classList.contains('explore-main')) ((window as unknown as LandWindow).__lands ??= []).push({ before, after: this.scrollTop, target: top });
     };
+    // Every frame: did the work column move since the last one?
+    let last = NaN;
+    const watch = () => {
+      const main = document.querySelector('.explore-main');
+      const now = main ? main.scrollTop : NaN;
+      if (Number.isFinite(last) && Number.isFinite(now) && Math.abs(now - last) >= 0.5) {
+        const w = window as unknown as LandWindow;
+        w.__moved = (w.__moved ?? 0) + 1;
+      }
+      last = now;
+      requestAnimationFrame(watch);
+    };
+    requestAnimationFrame(watch);
   });
   const page = await context.newPage();
   await page.goto('/');
@@ -179,7 +204,7 @@ async function choose(page: Page, selector: string) {
  * held strip leaves above the bar, the fade's offset from the column's real
  * foot, and the landings: how many, and whether the last changed nothing.
  */
-type Landing = { held: boolean; attr: boolean; hidden: string[]; detail: number; roomHeld: number; name: string; fadeOffset: number; lands: number; lastNoop: boolean };
+type Landing = { held: boolean; attr: boolean; hidden: string[]; detail: number; roomHeld: number; name: string; fadeOffset: number; lands: number; lastNoop: boolean; moved: number; short: number };
 const landingState = (page: Page) => page.evaluate((): Landing => {
   const bar = document.querySelector('[data-testid="metronome"]')?.getBoundingClientRect() ?? null;
   const main = document.querySelector<HTMLElement>('.explore-main')!;
@@ -212,9 +237,12 @@ const landingState = (page: Page) => page.evaluate((): Landing => {
   const lands = (window as unknown as LandWindow).__lands ?? [];
   const last = lands[lands.length - 1];
   const lastNoop = !last || (Math.abs(last.after - last.before) < 0.5 && Math.abs(last.after - main.scrollTop) < 0.5);
+  // How far the column ended from where the last landing asked it to be (0 with no landing).
+  const short = last && Number.isFinite(last.target) ? Math.abs(main.scrollTop - last.target) : 0;
   return {
     held, attr: main.hasAttribute('data-strip-scrolls'), hidden, detail: detail.getBoundingClientRect().height, roomHeld,
     name: detail.querySelector('.chord-detail-name')!.textContent!.trim(), fadeOffset: fadeBottom - foot, lands: lands.length, lastNoop,
+    moved: (window as unknown as LandWindow).__moved ?? 0, short,
   };
 });
 
@@ -265,13 +293,16 @@ const heldOffsetExists = (page: Page) => page.evaluate(() => {
 
 /** The assertions every landing with the bar open meets (on Build under 900 px tall the strip scrolls by the owner's ruling, with no attribute). */
 function checkLanding(r: Landing, where: string, build = false) {
-  console.log(`[landing] ${where} (${r.name}): strip ${r.held ? 'held' : 'scrolls'}, detail ${r.detail.toFixed(0)} px, ${r.lands} landings${r.hidden.length ? `, out of view: ${r.hidden.join('; ')}` : ''}`);
+  console.log(`[landing] ${where} (${r.name}): strip ${r.held ? 'held' : 'scrolls'}, detail ${r.detail.toFixed(0)} px, ${r.lands} landings, ${r.moved} frames moving${r.hidden.length ? `, out of view: ${r.hidden.join('; ')}` : ''}`);
   expect(r.hidden, `${where}: the chord's name and every control of its detail in view`).toEqual([]);
   expect(Math.abs(r.fadeOffset), `${where}: the column's foot fade drawn at its real foot, not the bar's room above it`).toBeLessThanOrEqual(0.5);
   if (build) expect(r.attr, `${where}: Build: the strip goes by the ruling's own rule, never this attribute`).toBe(false);
   else expect(r.attr, `${where}: the attribute and the strip agree`).toBe(!r.held);
   expect(r.lands, `${where}: a landing and few after it (${r.lands})`).toBeLessThanOrEqual(MOST_LANDINGS);
+  expect(r.moved, `${where}: the column moved in few frames (${r.moved})`).toBeLessThanOrEqual(MOST_MOVES);
   expect(r.lastNoop, `${where}: the last landing changed nothing`).toBe(true);
+  // Where the last landing asked it to be (the review saw 310 for 343.3 under reduced motion: its tail arrived late).
+  expect(r.short, `${where}: the column where the last landing asked it to be`).toBeLessThanOrEqual(1);
 }
 
 test.describe('E2: with the bar open, In key and Build land in view; the strip held exactly where both fit', () => {
@@ -580,8 +611,11 @@ test.describe('E2: the landing\'s forecast of the bar is where the bar stands (d
         await choose(page, `.chord-row button >> nth=${i}`);
         await landed(page);
         // The app's own module instance (the dev server's address for it), called on the page as it stands.
+        // The forecast needs the metronome's placement, which the module loads only once a landing meets the bar: this
+        // copy may not be the app's (the dev server serves an edited module at a new address), so it loads it itself.
         const d: number[] = await page.evaluate(`(async () => {
           const mod = await import('/src/components/panels/chordScrollLanding.ts');
+          await mod.loadBarPlacement();
           const bar = document.querySelector('[data-testid="metronome"]');
           const real = bar.getBoundingClientRect();
           const forecast = mod.barPlaceWith(bar, document.querySelector('[data-testid="chord-detail"]').getBoundingClientRect());
@@ -604,7 +638,9 @@ test.describe('E2: with no bar, the nine landings are those of 57cda40 (this Mac
   // late — it now lands as here; the branch for the bar is never entered
   // without a bar: unit test "no bar: no forecast of the bar is made…").
   // The positions follow the text's metrics, so they are compared on macOS
-  // only: GitHub's Linux draws text about 8 % wider.
+  // only: GitHub's Linux draws text about 8 % wider. Each bound is the ±1 px
+  // the title says: a row whose bound is wider than its title is a fault (the
+  // second review planted ±60 here and every row still passed).
   const AT_57CDA40: Record<string, number[]> = {
     '1280x800 guitar': [61, 61, 61, 61, 61, 61, 61, 109, 219],
     '1280x800 piano': [61, 61, 61, 61, 61, 61, 61, 109, 219],
@@ -665,7 +701,7 @@ test.describe('E2: with no bar, the nine landings are those of 57cda40 (this Mac
 type SheetState = {
   shown: string; clientH: number; scrollH: number; scrollTop: number; below: number;
   fade: { opacity: number; position: string; height: number; image: string; bottom: number };
-  exploreFade: string; foot: number; straddling: string[]; lastControlBottom: number; halfLine: boolean;
+  surface: string; foot: number; straddling: string[]; lastControlBottom: number; halfLine: boolean;
 };
 const sheetState = (page: Page) => page.evaluate((): SheetState => {
   const sheet = document.querySelector('[data-testid="instrument-dock"]')!;
@@ -685,9 +721,10 @@ const sheetState = (page: Page) => page.evaluate((): SheetState => {
     shown: sheet.getAttribute('data-detent')!, clientH: c.clientHeight, scrollH: c.scrollHeight, scrollTop: c.scrollTop,
     below: c.clientHeight > 0 ? lowest - foot : 0,
     fade: { opacity: after.content === 'none' || after.display === 'none' ? 0 : Number(after.opacity), position: after.position, height: fadeHeight, image: after.backgroundImage, bottom: foot },
-    exploreFade: getComputedStyle(document.querySelector('.explore-root')!, '::after').backgroundImage,
+    surface: getComputedStyle(sheet).backgroundColor,
     foot, straddling, lastControlBottom: controls.length ? Math.max(...controls.map((b) => b.bottom)) : 0,
-    halfLine: sheet.hasAttribute('data-half-line'),
+    // Half shown without the band (the attribute says Half has none; the line is drawn at Half only).
+    halfLine: sheet.hasAttribute('data-half-line') && sheet.getAttribute('data-detent') === 'half',
   };
 });
 
@@ -745,7 +782,7 @@ test.describe('E3: the phone sheet fades at its foot while content lies below, a
                 expect(s.fade.opacity, `${where}: content below the foot, the fade shows`).toBe(1);
                 expect(s.fade.position, `${where}: held at the foot`).toBe('sticky');
                 expect(s.fade.height, `${where}: Explore's 28 px`).toBe(28);
-                expect(s.fade.image, `${where}: Explore's own fade`).toBe(s.exploreFade);
+                expect(s.fade.image, `${where}: the fade ends in the sheet's own surface (${s.surface})`).toContain(`${s.surface} 85%`);
                 expect(s.straddling, `${where}: no string or fret-number row half under the fade`).toEqual([]);
                 // Scrolled to its end: the last control in view, and the fade gone.
                 await page.locator('[data-testid="instrument-dock"] .detent-content').evaluate((el) => { el.scrollTop = el.scrollHeight; });
@@ -883,5 +920,304 @@ test.describe('E3 never ends Half\'s band across a string: where it would, Half 
         });
       }
     }
+  }
+});
+
+test.describe('E2: with no bar, reduced motion lands where ordinary motion lands (the page against itself, every system)', () => {
+  // At 57cda40, with no bar, the reduced-motion landing fell short of the
+  // ordinary-motion one in 16, 3, 25 and 30 of these 59 landings at the four
+  // sizes (the second review, by 6–62 px): a margin and a padding arrive a
+  // frame late under reduced motion and nothing landed again. It now lands
+  // where ordinary motion lands. Compared within the same run, so Linux's
+  // wider text is no obstacle.
+  for (const [w, h] of [[1366, 768], [1280, 800], [1440, 900], [1536, 864]] as const) {
+    for (const instrument of ['piano', 'guitar'] as const) {
+      test(`${w}×${h}, ${instrument}: In key 1–7, every All Chords quality and Build, no bar: reduced motion = ordinary motion, ±1 px`, async ({ browser, baseURL }) => {
+        test.setTimeout(300_000);
+        const walk = async (motion: Motion) => {
+          const { context, page } = await open(browser, baseURL!, { w, h, motion, state: { instrument } });
+          const read = () => page.locator('.explore-main').evaluate((el) => el.scrollTop);
+          const seen: number[] = [];
+          for (let i = 0; i < 7; i++) {
+            await toTop(page);
+            await choose(page, `.chord-row button >> nth=${i}`);
+            await landed(page);
+            seen.push(await read());
+          }
+          await toTop(page);
+          await page.getByRole('tab', { name: 'All Chords', exact: true }).click();
+          await settled(page);
+          let shown = 0;
+          for (const { quality, category } of QUALITIES) {
+            await toTop(page);
+            if (category !== shown) {
+              await page.getByRole('radiogroup', { name: 'All Chords' }).getByRole('radio').nth(category).dispatchEvent('click');
+              shown = category;
+              await settled(page);
+            }
+            await choose(page, `[data-quality="${quality}"]`);
+            await landed(page);
+            seen.push(await read());
+          }
+          await toTop(page);
+          await page.getByRole('tab', { name: 'Build', exact: true }).click();
+          await settled(page);
+          await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(4).dispatchEvent('click');
+          await page.getByRole('group', { name: 'Chromatic strip from C' }).getByRole('button').nth(7).dispatchEvent('click');
+          await landed(page);
+          seen.push(await read());
+          await context.close();
+          return seen;
+        };
+        const [reduced, ordinary] = await Promise.all([walk('reduce'), walk('no-preference')]);
+        const names = [...Array.from({ length: 7 }, (_, i) => `In key ${i + 1}`), ...QUALITIES.map(({ quality }) => quality), 'Build C major'];
+        const differ = names.map((name, i) => ({ name, reduced: reduced[i], ordinary: ordinary[i] })).filter((d) => Math.abs(d.reduced - d.ordinary) > 1);
+        console.log(`[no bar, both motions] ${w}×${h} ${instrument}: ${names.length} landings, ${differ.length} differ${differ.length ? `: ${differ.map((d) => `${d.name} ${d.reduced} / ${d.ordinary}`).join('; ')}` : ''}`);
+        expect(reduced.length).toBe(59);
+        expect(differ, `${w}×${h} ${instrument}: every landing under reduced motion where ordinary motion puts it`).toEqual([]);
+      });
+    }
+  }
+});
+
+test.describe('E2: a learner\'s own scrolling is never undone (the bar open, a chord landed)', () => {
+  // Wheel steps and keys on the work column: the column ends where the input
+  // takes it, every frame moves it the input's way or not at all, no landing
+  // runs and the strip neither goes nor comes back.
+  type Step = { label: string; wheel?: number; key?: string; sign: 1 | -1 };
+  const STEPS: Step[] = [
+    { label: 'wheel +60', wheel: 60, sign: 1 }, { label: 'wheel +120', wheel: 120, sign: 1 }, { label: 'wheel −120', wheel: -120, sign: -1 },
+    { label: 'ArrowDown', key: 'ArrowDown', sign: 1 }, { label: 'PageDown', key: 'PageDown', sign: 1 }, { label: 'Space', key: 'Space', sign: 1 },
+    { label: 'ArrowUp', key: 'ArrowUp', sign: -1 }, { label: 'PageUp', key: 'PageUp', sign: -1 }, { label: 'Shift+Space', key: 'Shift+Space', sign: -1 },
+  ];
+  for (const [w, h] of [[1366, 768], [1280, 800]] as const) {
+    for (const { motion, label: motionLabel } of MOTIONS) {
+      test(`${w}×${h}${motionLabel}: wheel steps and keys move the column where they take it, and nothing lands`, async ({ browser, baseURL }) => {
+        test.setTimeout(120_000);
+        const { context, page } = await open(browser, baseURL!, { w, h, motion, state: { instrument: 'piano' } });
+        await openBar(page, 'en');
+        await choose(page, '.chord-row button >> nth=2');
+        await landed(page);
+        const main = page.locator('.explore-main');
+        // Keys go to the focused scroller (the column itself: no control is pressed).
+        await main.evaluate((el) => { el.tabIndex = -1; el.focus({ preventScroll: true }); });
+        const box = (await main.boundingBox())!;
+        await page.mouse.move(box.x + box.width / 2, box.y + 60);
+        const strip = () => main.evaluate((el) => `${el.hasAttribute('data-strip-scrolls')}|${getComputedStyle(el.querySelector('.strip-card')!).position}`);
+        const stripAt = await strip();
+        for (const step of STEPS) {
+          const before = await main.evaluate((el) => {
+            const w = window as unknown as LandWindow & { __trace?: number[] };
+            w.__trace = [];
+            const t0 = performance.now();
+            const tick = () => { w.__trace!.push(el.scrollTop); if (performance.now() - t0 < 2000) requestAnimationFrame(tick); };
+            requestAnimationFrame(tick);
+            return { top: el.scrollTop, max: el.scrollHeight - el.clientHeight, lands: (w.__lands ?? []).length };
+          });
+          if (step.wheel) await page.mouse.wheel(0, step.wheel);
+          else await page.keyboard.press(step.key!);
+          await page.waitForTimeout(2100);
+          const after = await main.evaluate((el) => {
+            const w = window as unknown as LandWindow & { __trace?: number[] };
+            return { top: el.scrollTop, trace: w.__trace ?? [], lands: (w.__lands ?? []).length };
+          });
+          const where = `${w}×${h}${motionLabel}, ${step.label} from ${before.top}`;
+          const against = after.trace.slice(1).map((v, i) => v - after.trace[i]).filter((d) => d * step.sign < -0.5);
+          console.log(`[own scroll] ${where}: ends at ${after.top} (max ${before.max}), ${after.trace.length} frames, ${against.length} against the input, ${after.lands - before.lands} landings`);
+          expect(after.lands - before.lands, `${where}: no landing`).toBe(0);
+          expect(against, `${where}: no frame moves the column against the input`).toEqual([]);
+          if (step.wheel) {
+            expect(Math.abs(after.top - Math.min(before.max, Math.max(0, before.top + step.wheel))), `${where}: where the wheel took it`).toBeLessThanOrEqual(1);
+          } else {
+            const room = step.sign > 0 ? before.max - before.top : before.top;
+            if (room > 1) expect((after.top - before.top) * step.sign, `${where}: moved the key's way`).toBeGreaterThan(0);
+          }
+          expect(await strip(), `${where}: the strip as it was`).toBe(stripAt);
+        }
+        await context.close();
+      });
+    }
+  }
+});
+
+test.describe('E2: Explore asks for none of the metronome before it is opened (the build\'s chunks)', () => {
+  test('a chord chosen, no metronome: 0 requests for its chunks; opened: more than 0 (the known positive)', async ({ browser, baseURL }) => {
+    const probePage = await browser.newPage();
+    const probe = await probePage.request.get(`${baseURL}/src/components/panels/chordScrollLanding.ts`);
+    const dev = probe.ok() && (probe.headers()['content-type'] ?? '').includes('javascript');
+    await probePage.close();
+    test.skip(dev, 'the build\'s chunks: on the dev server metronome.spec.ts holds it');
+    const { context, page } = await open(browser, baseURL!, { w: 1280, h: 800, state: { instrument: 'piano' } });
+    const loaded = () => page.evaluate(() => performance.getEntriesByType('resource').map((e) => new URL(e.name).pathname)
+      .filter((p) => /^\/assets\/(MetronomeHost|placement|metronome)[^/]*\.(js|css)$/i.test(p)));
+    await choose(page, '.chord-row button >> nth=2');
+    await landed(page);
+    await page.getByRole('tab', { name: 'All Chords', exact: true }).click();
+    await settled(page);
+    await choose(page, '[data-quality="minor"]');
+    await landed(page);
+    expect(await loaded(), 'Explore with chords chosen, the metronome never opened').toEqual([]);
+    await openBar(page, 'en');
+    await expect.poll(async () => (await loaded()).length, { message: 'opened: its chunks come' }).toBeGreaterThan(0);
+    console.log(`[metronome chunks] after opening: ${(await loaded()).join(', ')}`);
+    await context.close();
+  });
+});
+
+/** The phone sheet on any screen: its height, the view's, the rows its foot cuts, the fade (drawn, its height) and the 3 px line. */
+const sheetFoot = (page: Page) => page.evaluate(() => {
+  const sheet = document.querySelector<HTMLElement>('[data-testid="instrument-dock"]')!;
+  const c = sheet.querySelector<HTMLElement>('.detent-content')!;
+  const foot = c.getBoundingClientRect().top + c.clientTop + c.clientHeight;
+  let lowest = -Infinity;
+  for (const k of Array.from(c.children)) { const b = k.getBoundingClientRect(); if (b.height > 0) lowest = Math.max(lowest, b.bottom); }
+  const fade = getComputedStyle(c, '::after');
+  const line = getComputedStyle(sheet, '::after');
+  const drawn = (cs: CSSStyleDeclaration) => !['none', 'normal'].includes(cs.content) && cs.display !== 'none' && parseFloat(cs.height) > 0;
+  const cut = Array.from(c.querySelectorAll('[data-dock-row], [data-testid="position-row"]')).map((el) => ({ n: el.getAttribute('data-dock-row') ?? 'position', b: el.getBoundingClientRect() }))
+    .filter(({ b }) => b.height > 0 && b.top < foot - 0.5 && b.bottom > foot + 0.5).map(({ n }) => n);
+  return {
+    shown: sheet.getAttribute('data-detent')!, sheet: sheet.getBoundingClientRect().height, view: document.getElementById('main-content')!.getBoundingClientRect().height,
+    below: c.clientHeight > 0 ? lowest - foot : 0, cut, fadeDrawn: drawn(fade) && Number(fade.opacity) > 0, fadeHeight: parseFloat(fade.height) || 0,
+    line: drawn(line) ? parseFloat(line.height) : 0, overflowY: getComputedStyle(c).overflowY, fits: c.hasAttribute('data-fits'),
+    fadeImage: fade.backgroundImage, surface: getComputedStyle(sheet).backgroundColor,
+  };
+});
+/** Peek, Half and Full in turn, by the handle's keys. */
+async function eachStop(page: Page, at: (asked: 'peek' | 'half' | 'full') => Promise<void>) {
+  const handle = page.getByTestId('instrument-dock').getByRole('separator');
+  for (const [asked, key] of [['half', null], ['full', 'End'], ['peek', 'Home']] as const) {
+    if (key) { await handle.focus(); await handle.press(key); }
+    await settled(page);
+    await at(asked);
+  }
+}
+
+test.describe('E3: every screen at most 500 px tall shows the sheet exactly as at 57cda40, at every stop', () => {
+  // index.css's short-screen rule (max-height 500 px, SHORT_SCREEN_QUERY) is
+  // the one place that decides it: no fade (its height 0), the 3 px line, and
+  // DetentSheet reads that height for Half's band, so Half takes none. The
+  // second review found Half 28 px taller at 700×480, 800×500, 1024×500,
+  // 500×500, 450×480 and 360×500 (piano 233 → 261, guitar 220 → 248) for a
+  // fade not drawn. Measured at 57cda40 on this Mac: [sheet, view] at Peek,
+  // Half and Full, and the rows its foot cuts (compared on macOS only: the
+  // bar's text sets the head's height); everywhere: no fade, its height 0,
+  // the line wherever content goes on below or at Peek.
+  const AT_57CDA40: Record<string, Record<'peek' | 'half' | 'full', [number, number, string[]]>> = {
+    '360x500 guitar': { peek: [73, 367, []], half: [204, 236, []], full: [364, 76, ['position']] },
+    '360x500 piano': { peek: [73, 367, []], half: [233, 207, []], full: [301, 139, []] },
+    '450x480 guitar': { peek: [73, 347, []], half: [204, 216, []], full: [344, 76, ['position']] },
+    '450x480 piano': { peek: [73, 347, []], half: [233, 187, []], full: [301, 119, []] },
+    '500x500 guitar': { peek: [73, 367, []], half: [204, 236, []], full: [364, 76, ['position']] },
+    '500x500 piano': { peek: [73, 367, []], half: [233, 207, []], full: [301, 139, []] },
+    '667x375 guitar': { peek: [73, 242, []], half: [192, 123, []], full: [302, 13, []] },
+    '667x375 piano': { peek: [73, 242, []], half: [195, 120, []], full: [239, 76, []] },
+    '700x480 guitar': { peek: [73, 347, []], half: [220, 200, []], full: [344, 76, ['position']] },
+    '700x480 piano': { peek: [73, 347, []], half: [233, 187, []], full: [297, 123, []] },
+    '800x500 guitar': { peek: [73, 367, []], half: [220, 220, []], full: [364, 76, []] },
+    '800x500 piano': { peek: [73, 367, []], half: [233, 207, []], full: [297, 143, []] },
+    '844x390 guitar': { peek: [73, 257, []], half: [192, 138, []], full: [302, 28, []] },
+    '844x390 piano': { peek: [73, 257, []], half: [210, 120, []], full: [254, 76, []] },
+    '1024x500 guitar': { peek: [73, 367, []], half: [220, 220, []], full: [364, 76, []] },
+    '1024x500 piano': { peek: [73, 367, []], half: [233, 207, []], full: [297, 143, []] },
+  };
+  for (const [key, expected] of Object.entries(AT_57CDA40)) {
+    test(`${key}: Peek, Half and Full as at 57cda40, no fade, the 3 px line`, async ({ browser, baseURL }) => {
+      const [size, instrument] = key.split(' ');
+      const [w, h] = size.split('x').map(Number);
+      const { context, page } = await open(browser, baseURL!, { w, h, touch: true, state: { instrument, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+      await eachStop(page, async (asked) => {
+        const s = await sheetFoot(page);
+        const where = `${key}, ${asked}`;
+        console.log(`[short] ${where}: sheet ${s.sheet}, view ${s.view}, cut ${s.cut.join(', ') || '-'}, ${s.below.toFixed(1)} below, line ${s.line}, fade ${s.fadeDrawn} (${s.fadeHeight} px)`);
+        expect(s.shown, where).toBe(asked);
+        expect([s.fadeDrawn, s.fadeHeight], `${where}: no fade, its height 0 (what Half's band reads)`).toEqual([false, 0]);
+        expect(s.line, `${where}: the 3 px line wherever content goes on below, and at Peek`).toBe(asked === 'peek' || s.below > 1 ? 3 : 0);
+        if (process.platform === 'darwin') {
+          const [sheet, view, cut] = expected[asked];
+          expect(Math.abs(s.sheet - sheet), `${where}: the sheet ${s.sheet} as at 57cda40 (${sheet})`).toBeLessThanOrEqual(0.5);
+          expect(Math.abs(s.view - view), `${where}: the view ${s.view} as at 57cda40 (${view})`).toBeLessThanOrEqual(0.5);
+          expect(s.cut, `${where}: the rows cut as at 57cda40`).toEqual(cut);
+        }
+      });
+      await context.close();
+    });
+  }
+  // At exactly 501 px the screen is not short: a phone-width sheet there is
+  // an upright phone's. The piano's Half takes the band (40 px still below
+  // it) with the fade; the guitar's band would end across a string, so its
+  // Half is as at 57cda40 with the line, and Full, where content goes on,
+  // has the fade.
+  for (const [w, instrument] of [[360, 'piano'], [500, 'piano'], [360, 'guitar'], [639, 'guitar']] as const) {
+    test(`${w}×501, ${instrument}: not a short screen: the fade's 28 px, and the upright phones' rule`, async ({ browser, baseURL }) => {
+      const { context, page } = await open(browser, baseURL!, { w, h: 501, touch: true, state: { instrument, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+      await eachStop(page, async (asked) => {
+        if (asked === 'peek') return;
+        const s = await sheetFoot(page);
+        const where = `${w}×501 ${instrument}, ${asked}`;
+        console.log(`[501] ${where}: sheet ${s.sheet}, ${s.below.toFixed(1)} below, fade ${s.fadeDrawn} (${s.fadeHeight} px), line ${s.line}`);
+        expect(s.fadeHeight, `${where}: the fade is 28 px here`).toBe(28);
+        if (s.below <= 1) return;
+        const line = instrument === 'guitar' && asked === 'half';
+        expect([s.fadeDrawn, s.line], `${where}: ${line ? 'Half without the band: the line' : 'the fade, not the line'}`).toEqual(line ? [false, 3] : [true, 0]);
+        if (instrument === 'piano' && asked === 'half' && process.platform === 'darwin') expect(Math.abs(s.sheet - (233 + 28)), `${where}: Half with the band (57cda40: 233)`).toBeLessThanOrEqual(0.5);
+      });
+      await context.close();
+    });
+  }
+});
+
+test.describe('E3: Half shows everything where less than the band would stay hidden; the piano at the small sizes', () => {
+  // The rule: where, after the band, less than the band's own height would
+  // still be hidden, and showing everything fits in the room the view keeps,
+  // Half shows everything and draws no fade (fitDockDetents). It changes the
+  // piano at 320–430 px wide × 568 (282 → 301: 19 px were left under the fade)
+  // and × 600 (298 → 301: 3 px); nothing else from 320×568 to 430×932.
+  for (const [w, h, all] of [[320, 568, true], [340, 600, true], [360, 640, true], [360, 501, false]] as const) {
+    test(`${w}×${h}, piano: Half ${all ? 'shows everything, no fade' : 'keeps the band and the fade (more than a band\'s height still below)'}`, async ({ browser, baseURL }) => {
+      const { context, page } = await open(browser, baseURL!, { w, h, touch: true, state: { instrument: 'piano', dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+      const s = await sheetFoot(page);
+      const where = `${w}×${h} piano, Half`;
+      console.log(`[piano Half] ${where}: sheet ${s.sheet}, view ${s.view}, ${s.below.toFixed(1)} below, fade ${s.fadeDrawn}`);
+      expect(s.shown).toBe('half');
+      if (all) {
+        expect(s.below, `${where}: everything shown`).toBeLessThanOrEqual(1);
+        expect(s.fadeDrawn, `${where}: no fade`).toBe(false);
+        expect(s.view, `${where}: the view keeps its 120 px`).toBeGreaterThanOrEqual(120);
+      } else {
+        expect(s.below, `${where}: more than the band's 28 px still below`).toBeGreaterThanOrEqual(28);
+        expect(s.fadeDrawn, `${where}: the fade`).toBe(true);
+      }
+      await context.close();
+    });
+  }
+});
+
+test.describe('E3: content that fits is not scrollable (by style), and the fade ends in the sheet\'s own colour', () => {
+  for (const [w, h, instrument, detent, fits] of [[375, 667, 'piano', 'half', true], [390, 844, 'piano', 'half', true], [360, 640, 'piano', 'half', true], [390, 844, 'guitar', 'full', true], [375, 667, 'guitar', 'half', false]] as const) {
+    test(`${w}×${h}, ${instrument} at ${detent}: ${fits ? 'fits: not scrollable' : 'goes on below: scrollable'}`, async ({ browser, baseURL }) => {
+      const { context, page } = await open(browser, baseURL!, { w, h, touch: true, state: { instrument, dockDetents: { explore: detent, learn: 'peek' }, dockChosen: { explore: true } } });
+      const s = await sheetFoot(page);
+      const where = `${w}×${h} ${instrument} ${detent}`;
+      console.log(`[fits] ${where}: ${s.below.toFixed(1)} below, data-fits ${s.fits}, overflow-y ${s.overflowY}`);
+      expect(s.fits, `${where}: data-fits`).toBe(fits);
+      expect(s.overflowY, `${where}: computed overflow-y`).toBe(fits ? 'hidden' : 'auto');
+      await context.close();
+    });
+  }
+  for (const theme of ['fermata', 'fermata-night'] as const) {
+    test(`375×667 guitar, ${theme === 'fermata' ? 'by day' : 'by night'}: the fade ends in the sheet's own surface colour, at Half and Full`, async ({ browser, baseURL }) => {
+      const { context, page } = await open(browser, baseURL!, { w: 375, h: 667, touch: true, state: { instrument: 'guitar', themeMode: theme, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+      await eachStop(page, async (asked) => {
+        if (asked === 'peek') return;
+        const s = await sheetFoot(page);
+        const where = `375×667 guitar ${theme}, ${asked}`;
+        console.log(`[fade colour] ${where}: ${s.fadeImage} on ${s.surface}`);
+        expect(s.fadeDrawn, `${where}: the fade drawn (the case is real)`).toBe(true);
+        expect(s.fadeImage, `${where}: ends in the sheet's own surface`).toContain(`${s.surface} 85%`);
+        expect(s.fadeImage, `${where}: from transparent`).toMatch(/^linear-gradient\(rgba\(0, 0, 0, 0\)/);
+      });
+      await context.close();
+    });
   }
 });
