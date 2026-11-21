@@ -109,7 +109,9 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       // The fade at the foot (index.css) while CONTENT goes on below it, by
       // more than a pixel — never padding, never at Peek (QA report 2, P5:
       // the leftovers round put Explore's fade here in place of a 3 px line).
-      // Content that fits does not scroll at all: what is left is padding.
+      // Content that fits does not scroll at all: what is left is padding,
+      // and a scroll into it (a wheel, or content that shrank while scrolled:
+      // another instrument) is put back at 0 in the same task, never drawn.
       const shown = content.clientHeight > 0;
       content.parentElement?.toggleAttribute('data-more-below', shown && lowest - content.scrollTop - content.clientHeight > 1);
       const fits = shown && lowest <= content.clientHeight + 1;

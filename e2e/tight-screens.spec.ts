@@ -693,14 +693,20 @@ const sheetState = (page: Page) => page.evaluate((): SheetState => {
   };
 });
 
-/** A wheel over the sheet's content, then where its scroll is. */
+/** A wheel over the sheet's content: the furthest its scroll went at any scroll event, and where it rests (a scroll put back at once still counts). */
 async function wheelOverSheet(page: Page) {
-  const box = (await page.locator('[data-testid="instrument-dock"] .detent-content').boundingBox())!;
+  const content = page.locator('[data-testid="instrument-dock"] .detent-content');
+  await content.evaluate((el) => {
+    const w = window as unknown as { __sheetScroll: number };
+    w.__sheetScroll = el.scrollTop;
+    el.addEventListener('scroll', () => { w.__sheetScroll = Math.max(w.__sheetScroll, el.scrollTop); });
+  });
+  const box = (await content.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + Math.min(box.height - 4, 40));
   await page.mouse.wheel(0, 400);
   await page.waitForTimeout(200);
   await settled(page);
-  return page.locator('[data-testid="instrument-dock"] .detent-content').evaluate((el) => el.scrollTop);
+  return Math.max(await content.evaluate((el) => el.scrollTop), await page.evaluate(() => (window as unknown as { __sheetScroll: number }).__sheetScroll));
 }
 
 test.describe('E3: the phone sheet fades at its foot while content lies below, and never scrolls by padding', () => {

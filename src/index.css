@@ -3404,7 +3404,8 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
    the foot (sticky, the content's last item), taking no room and no taps.
    Half keeps the fade's 28 px band under its last whole row
    (`fitDockDetents`), so the fade lies over what follows, never over the
-   guitar's fret numbers. Content that fits does not scroll (`data-fits`). */
+   guitar's fret numbers. Content that fits does not scroll: DetentSheet
+   puts its scroll back at 0 (`data-fits`). */
 .detent-content::after {
   content: '';
   position: sticky;
@@ -3418,4 +3419,3 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
   background: linear-gradient(to bottom, transparent, var(--bg) 85%);
 }
 .detent-sheet[data-more-below] > .detent-content::after { opacity: 1; }
-.detent-content[data-fits] { overflow-y: hidden; }
