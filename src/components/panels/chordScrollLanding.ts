@@ -50,8 +50,13 @@ const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="me
  * from its chunk only once its bar stands over the column, when that chunk
  * is loaded: Explore loads none of the metronome before it is opened (wave
  * 3's promise, `e2e/metronome.spec.ts`; a static import put placement.ts in
- * Explore's code, this round). A landing that meets the bar first waits for
- * it; were it ever not to come, the landing goes on as without the bar.
+ * Explore's code, this round). Its three endings: already loaded (the bar
+ * came with it), the landing goes on at once; late, a landing that meets
+ * the bar waits for it, and the learner sees the detail open where it is,
+ * the column not scrolled, until it is in and the detail lands (a
+ * dynamic import of a module the bar already loaded: a task at most); and
+ * failed, `placementSettled` all the same, so the landing goes on as without
+ * the bar (once, no landing asked every frame, the code not asked again).
  */
 let placeMetronome: typeof PlaceMetronome | undefined;
 let placement: Promise<void> | undefined;
@@ -120,8 +125,8 @@ export function coveredFoot(scroller: HTMLElement): number {
 const DETAIL_PARTS = '.chord-detail-name, button, [role="radio"], .type-label, a';
 /** The work column's foot fade (index.css, Explore's cues): 28 px over its foot while items go on below. */
 const FOOT_FADE_PX = 28;
-/** Landings in a row after the first, each a frame after the last, until one changes nothing. */
-const SETTLE_LANDINGS = 4;
+/** Landings in a row after the first, each a frame after the last, until one changes nothing and leaves the column where it asked (the tail's padding can take three frames to arrive under reduced motion). */
+const SETTLE_LANDINGS = 6;
 
 /**
  * Will the work column show its foot fade, its items ending `itemsEnd` px
@@ -163,7 +168,9 @@ export const footFadeShows = (itemsEnd: number, at: number, clientHeight: number
  * font), and when the bar opens or closes (`html[data-metro-room]`; closed,
  * the strip is held again at once): so the strip goes exactly while the bar
  * is open and this layout leaves no room for both. Each landing is followed
- * a frame later by another until one changes nothing, at most five in a row.
+ * a frame later by another until one changes nothing, at most seven in a
+ * row for one cause; a choice can bring several (the detail opening, its
+ * margin a frame late, the bar moving off it), each starting the count again.
  */
 export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
@@ -173,6 +180,8 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   let frame = 0;
   let released = false;
   let stopped = false;
+  // Where the last landing asked the column to be (NaN: it asked nothing).
+  let aim = NaN;
   const held = () => (released ? null : strip);
   const contentTop = () => scroller.getBoundingClientRect().top - scroller.scrollTop;
   const measure = (el: Element): RowSpan => {
@@ -190,6 +199,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     card.style.clipPath = `inset(${Math.max(0, edge - measure(card).top)}px 0 0)`;
   };
   const land = (afresh = true): void => {
+    aim = NaN;
     delete detail.dataset.compactSource;
     // Each landing decides afresh, the strip held first: it scrolls with the
     // work only while the bar is open and this layout leaves no room for both
@@ -326,6 +336,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
       if (tailValue) scroller.style.setProperty('--chord-tail', tailValue);
       else scroller.style.removeProperty('--chord-tail');
     }
+    aim = target;
     scroller.scrollTo?.({ top: target, behavior: 'auto' });
     clip();
   };
@@ -335,13 +346,20 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   // transition), and the detail's row margin arriving late grew the card by
   // 6 px after the landing, which then left controls under the bar or the
   // fade (review of this round: 10 of 51 All Chords qualities at 1366×768).
+  // A landing that left the column short of its target counts as a change
+  // too: the tail it wrote arrives one to three frames late under reduced
+  // motion (its padding transitions, 0.01 ms, applied after the frame's
+  // landing), so the column was clamped short and stayed there, every part
+  // still in view (third pass, on the build of fba01f3: 53 of 1,224 All Chords
+  // landings at 1366×768 and 1280×800, by up to 46 px, e.g. 233 for 267); the
+  // next landings reach it once the padding is in.
   const state = () => `${Math.round(scroller.scrollTop)}|${released}|${scroller.style.getPropertyValue('--chord-tail')}|${detail.dataset.compactSource ?? ''}`;
   let settling = 0;
   const step = () => {
     frame = 0;
     const was = state();
     land();
-    if (state() !== was && ++settling < SETTLE_LANDINGS) frame = requestAnimationFrame(step);
+    if ((state() !== was || Math.abs(scroller.scrollTop - aim) > 1) && ++settling < SETTLE_LANDINGS) frame = requestAnimationFrame(step);
   };
   const again = () => {
     cancelAnimationFrame(frame);
@@ -363,7 +381,10 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   observer.observe(card);
   // The bar opened or closed (MetronomeBar marks `html[data-metro-room]`
   // while it stands over the view's foot): the learner's own act, so the
-  // detail lands again; closed, the strip is held again at once.
+  // detail lands again, at the next landing, a frame later. Closed, the strip
+  // is held again at once, here, in the observer's own callback, before that
+  // landing (the landing's fresh decision would hold it a frame later; the
+  // unit test "the bar closed, it is held again at once" tells the two apart).
   const barWatch = new MutationObserver(() => {
     if (released && !document.documentElement.hasAttribute('data-metro-room')) {
       released = false;
