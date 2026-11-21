@@ -777,3 +777,64 @@ test.describe('E3: the phone sheet fades at its foot while content lies below, a
     }
   });
 });
+
+/** A phone on its side: the sheet's foot as drawn (the fade, the 3 px line) and the rows its foot cuts. */
+const sidewaysFoot = (page: Page) => page.evaluate(() => {
+  const sheet = document.querySelector('[data-testid="instrument-dock"]')!;
+  const c = sheet.querySelector<HTMLElement>('.detent-content')!;
+  const foot = c.getBoundingClientRect().top + c.clientTop + c.clientHeight;
+  let lowest = -Infinity;
+  for (const k of Array.from(c.children)) { const b = k.getBoundingClientRect(); if (b.height > 0) lowest = Math.max(lowest, b.bottom); }
+  const drawn = (cs: CSSStyleDeclaration) => !['none', 'normal'].includes(cs.content) && cs.display !== 'none' && parseFloat(cs.height) > 0;
+  const fade = getComputedStyle(c, '::after');
+  const line = getComputedStyle(sheet, '::after');
+  const cut = Array.from(c.querySelectorAll('[data-dock-row]')).map((row) => ({ name: row.getAttribute('data-dock-row')!, box: row.getBoundingClientRect() }))
+    .filter(({ box }) => box.height > 0 && box.top < foot - 0.5 && box.bottom > foot + 0.5).map(({ name, box }) => `${name} ${box.top.toFixed(1)}–${box.bottom.toFixed(1)}`);
+  return {
+    shown: sheet.getAttribute('data-detent')!, below: c.clientHeight > 0 ? lowest - foot : 0,
+    fadeDrawn: drawn(fade) && Number(fade.opacity) > 0,
+    line: drawn(line) ? { height: parseFloat(line.height), bottom: sheet.getBoundingClientRect().bottom - parseFloat(line.bottom) } : null,
+    sheetBottom: sheet.getBoundingClientRect().bottom, cut,
+  };
+});
+
+test.describe('E3 leaves a phone on its side as at 57cda40: no fade, the 3 px line, Half as it was', () => {
+  // 844×390 and 667×375: Half already stands at the view's 120 px floor, so the fade's whole band cannot be added under
+  // its last whole row, and Full ends at the board's foot: the fade would lie over a whole string, the fret numbers or
+  // the piano's strip. Measured against 57cda40 in all 54 cases (EN / PT / ES): the sheet's height, the view's, what
+  // lies below, the cue and the rows under it equal, the screenshots identical.
+  const INSTRUMENTS = [
+    { name: 'piano', state: { instrument: 'piano' } },
+    { name: 'guitar', state: { instrument: 'guitar' } },
+    { name: 'guitar in Open G', state: { instrument: 'guitar', guitarTuningId: 'open-g' } },
+  ] as const;
+  for (const [w, h] of [[844, 390], [667, 375]] as const) {
+    for (const inst of INSTRUMENTS) {
+      for (const language of ['en', 'pt', 'es'] as const) {
+        for (const { wide, label: textLabel } of TEXTS) {
+          test(`${w}×${h}, ${inst.name}, ${language.toUpperCase()}${textLabel}: Peek, Half and Full`, async ({ browser, baseURL }) => {
+            test.setTimeout(60_000);
+            const { context, page } = await open(browser, baseURL!, { w, h, touch: true, wide, state: { ...inst.state, language, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+            const handle = page.getByTestId('instrument-dock').getByRole('separator');
+            for (const [asked, key] of [['half', null], ['full', 'End'], ['peek', 'Home']] as const) {
+              if (key) { await handle.focus(); await handle.press(key); }
+              await settled(page);
+              const s = await sidewaysFoot(page);
+              const where = `${w}×${h} ${inst.name} ${language}${textLabel}, ${asked} (shown ${s.shown})`;
+              console.log(`[sideways] ${where}: ${s.below.toFixed(1)} px below the foot, fade ${s.fadeDrawn}, line ${JSON.stringify(s.line)}, cut ${s.cut.join('; ') || '-'}`);
+              expect(s.shown, where).toBe(asked);
+              if (asked !== 'peek') expect(s.below, `${where}: content goes on below the foot (the case is real)`).toBeGreaterThan(1);
+              expect(s.fadeDrawn, `${where}: no fade on a phone on its side`).toBe(false);
+              expect(s.line, `${where}: the 3 px line, as at 57cda40`).not.toBeNull();
+              expect(s.line!.height, `${where}: 3 px`).toBe(3);
+              expect(Math.abs(s.line!.bottom - s.sheetBottom), `${where}: at the sheet's foot`).toBeLessThanOrEqual(0.5);
+              // Half as at 57cda40: it ends under the guitar's last whole string, no band added below it that cuts the next.
+              if (asked === 'half' && inst.name !== 'piano') expect(s.cut, `${where}: no string or fret-number row cut by Half's foot`).toEqual([]);
+            }
+            await context.close();
+          });
+        }
+      }
+    }
+  }
+});

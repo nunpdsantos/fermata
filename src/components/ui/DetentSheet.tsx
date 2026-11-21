@@ -108,7 +108,8 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       const natural = Math.ceil(lowest - 0.01);
       // The fade at the foot (index.css) while CONTENT goes on below it, by
       // more than a pixel — never padding, never at Peek (QA report 2, P5:
-      // the leftovers round put Explore's fade here in place of a 3 px line).
+      // the leftovers round put Explore's fade here in place of a 3 px line;
+      // on a phone on its side the attribute still draws that line: index.css).
       // Content that fits does not scroll at all: what is left is padding,
       // and a scroll into it (a wheel, or content that shrank while scrolled:
       // another instrument) is put back at 0 in the same task, never drawn.

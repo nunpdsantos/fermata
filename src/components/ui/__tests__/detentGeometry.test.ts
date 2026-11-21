@@ -153,8 +153,9 @@ describe('Half keeps the fade\'s band under its last whole row', () => {
   it('no more than the band left below the edge: Half shows it all, one stop', () => {
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 262, Infinity, FADE)).toMatchObject({ half: HEAD + 262 + 4, fullDistinct: false });
   });
-  it('never past the room the view keeps (halfMax): a band cut short, none where there is no room', () => {
-    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).half).toBe(HEAD + 256 + 4);
+  it('never past the room the view keeps (halfMax): the whole band or none (a phone on its side keeps its Half)', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 244 + FADE + 4, FADE).half).toBe(HEAD + 244 + FADE + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).half).toBe(HEAD + 244 + 4);
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 244 + 4, FADE).half).toBe(HEAD + 244 + 4);
   });
   it('nothing below the edge, or content not yet measured: no band', () => {

@@ -3419,3 +3419,15 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
   background: linear-gradient(to bottom, transparent, var(--bg) 85%);
 }
 .detent-sheet[data-more-below] > .detent-content::after { opacity: 1; }
+/* A phone on its side (max-height 500 px, the sheet's own short-screen
+   rule: SHEET_QUERY): Half already stands at the view's 120 px floor, so
+   the whole fade's band cannot be added under its last whole row (Half
+   stays as it was: fitDockDetents), and Full ends at the board's foot. The
+   fade would lie over a whole string, the fret numbers or the piano's strip
+   (measured at 844×390 and 667×375), so there the sheet keeps its signs of
+   57cda40, the 3 px line, at Peek too (the owner ruled on the upright
+   phones). */
+@media (max-height: 500px) {
+  .detent-content::after { display: none; }
+  .detent-sheet:is([data-more-below], [data-detent="peek"])::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
+}
