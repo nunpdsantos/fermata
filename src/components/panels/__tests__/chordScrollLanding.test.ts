@@ -1,5 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { barPlaceWith, chordLanding, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
+import { barPlaceWith, chordLanding, landChordDetail, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
+import { placeMetronome } from '../../metronome/placement';
+
+// The bar's own rule, watched: called through, counted.
+vi.mock('../../metronome/placement', async (importOriginal) => {
+  const real = await importOriginal<typeof import('../../metronome/placement')>();
+  return { ...real, placeMetronome: vi.fn(real.placeMetronome) };
+});
 
 const row = (top: number, height: number): RowSpan => ({ top, bottom: top + height });
 
@@ -93,7 +100,13 @@ describe('barPlaceWith: where the bar will stand once the detail is there', () =
       const key = el.getAttribute('data-testid') ?? el.className;
       el.getBoundingClientRect = () => rects[key];
     }
-    return document.querySelector<HTMLElement>('[data-testid="metronome"]')!;
+    // Its size, and its place as MetronomeBar writes it (what the landing reads: not the glide's current box).
+    const bar = document.querySelector<HTMLElement>('[data-testid="metronome"]')!;
+    Object.defineProperty(bar, 'offsetWidth', { value: 635 });
+    Object.defineProperty(bar, 'offsetHeight', { value: 46 });
+    bar.style.top = '422px';
+    bar.style.left = `${barLeft}px`;
+    return bar;
   };
   it('a detail across the work column (20–744): the bar goes to the right edge, wherever it stands now', () => {
     for (const now of [12, 633]) {
@@ -105,5 +118,92 @@ describe('barPlaceWith: where the bar will stand once the detail is there', () =
   });
   it('a detail out of the window: nothing to keep off, the left edge', () => {
     expect(barPlaceWith(setUp(633), { top: -400, bottom: -100, left: 20, right: 744 })).toEqual({ top: 422, bottom: 468, left: 12, right: 647 });
+  });
+});
+
+// The leftovers round, second pass: with no bar the landing never enters the
+// bar's branch (no forecast of the bar, the strip never let go), as at
+// 57cda40; with a bar over the foot and a detail taller than the room under
+// the held strip it lets the strip go (the known positive), and closing the
+// bar (`html[data-metro-room]` taken off) holds it again at once. jsdom has
+// no layout: every box is stubbed.
+describe('landChordDetail: the bar\'s branch only while the bar is open', () => {
+  const rect = (top: number, height: number, left = 20, width = 700) => ({ top, bottom: top + height, left, right: left + width, width, height, x: left, y: top, toJSON() {} }) as DOMRect;
+  let frames: FrameRequestCallback[] = [];
+  const flush = () => { const run = frames; frames = []; run.forEach((f) => f(0)); };
+  afterEach(() => {
+    document.body.innerHTML = '';
+    delete document.documentElement.dataset.metroRoom;
+    vi.unstubAllGlobals();
+    vi.mocked(placeMetronome).mockClear();
+  });
+  const setUp = (withBar: boolean) => {
+    vi.mocked(placeMetronome).mockClear();
+    vi.stubGlobal('innerWidth', 1280);
+    vi.stubGlobal('innerHeight', 800);
+    vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+    vi.stubGlobal('requestAnimationFrame', (f: FrameRequestCallback) => { frames.push(f); return frames.length; });
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+    frames = [];
+    document.body.innerHTML = `
+      <header class="app-topbar"></header>
+      <div class="explore-main"><div class="strip-card" style="position: sticky"></div>
+        <section class="chords-card"><div class="explore-card-head"></div><div class="chord-row"></div>
+          <div data-testid="chord-detail"><div class="chord-detail-row"><h3 class="chord-detail-name">C</h3><div class="chord-detail-actions"><button>Chord</button></div></div><button>Learn about this</button></div>
+        </section></div>
+      <section data-testid="instrument-dock"></section>
+      ${withBar ? '<div data-testid="metronome" style="top: 354px; left: 12px"></div>' : ''}`;
+    const q = <T extends Element>(s: string) => document.querySelector<T>(s)!;
+    // The column 300 px tall from y 100; the held strip to 250; a detail of 290 px from 260 (no room for it under the strip).
+    const boxes = new Map<Element, DOMRect>([
+      [q('.app-topbar'), rect(0, 56, 0, 1280)],
+      [q('.explore-main'), rect(100, 300)],
+      [q('.strip-card'), rect(102, 148)],
+      [q('.chords-card'), rect(252, 310)],
+      [q('.explore-card-head'), rect(252, 8)],
+      [q('.chord-row'), rect(256, 2)],
+      [q('[data-testid="chord-detail"]'), rect(260, 290)],
+      [q('.chord-detail-row'), rect(260, 60)],
+      [q('.chord-detail-name'), rect(262, 20, 30, 80)],
+      [q('.chord-detail-actions'), rect(290, 30)],
+      [q('.chord-detail-actions button'), rect(290, 30, 30, 90)],
+      [q('[data-testid="chord-detail"] > button'), rect(510, 30, 30, 120)],
+      [q('[data-testid="instrument-dock"]'), rect(408, 392, 0, 1280)],
+    ]);
+    for (const [el, box] of boxes) el.getBoundingClientRect = () => box;
+    const scroller = q<HTMLElement>('.explore-main');
+    Object.defineProperty(scroller, 'clientHeight', { value: 300 });
+    Object.defineProperty(scroller, 'scrollHeight', { value: 470 });
+    scroller.scrollTo = () => {};
+    if (withBar) {
+      const bar = q<HTMLElement>('[data-testid="metronome"]');
+      Object.defineProperty(bar, 'offsetWidth', { value: 635 });
+      Object.defineProperty(bar, 'offsetHeight', { value: 46 });
+      bar.getBoundingClientRect = () => rect(354, 46, 12, 635);
+      document.documentElement.dataset.metroRoom = '';
+    }
+    const setAttribute = vi.spyOn(scroller, 'setAttribute');
+    const stop = landChordDetail(q<HTMLElement>('[data-testid="chord-detail"]'), scroller, q<HTMLElement>('.strip-card'), () => 8);
+    flush();
+    return { scroller, setAttribute, stop };
+  };
+
+  it('no bar: no forecast of the bar is made and the strip is never let go', () => {
+    const { scroller, setAttribute, stop } = setUp(false);
+    expect(placeMetronome).not.toHaveBeenCalled();
+    expect(setAttribute.mock.calls.filter(([name]) => name === 'data-strip-scrolls')).toEqual([]);
+    expect(scroller.hasAttribute('data-strip-scrolls')).toBe(false);
+    stop();
+  });
+
+  it('known positive: a bar over the foot and a detail with no room under the held strip: the strip goes; the bar closed, it is held again at once', async () => {
+    const { scroller, stop } = setUp(true);
+    expect(placeMetronome).toHaveBeenCalled();
+    expect(scroller.hasAttribute('data-strip-scrolls')).toBe(true);
+    document.querySelector('[data-testid="metronome"]')!.remove();
+    delete document.documentElement.dataset.metroRoom;
+    await Promise.resolve(); // the attribute's observer
+    expect(scroller.hasAttribute('data-strip-scrolls')).toBe(false);
+    stop();
   });
 });

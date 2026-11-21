@@ -3371,13 +3371,14 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
 }
 
 /* ─── Leftovers round, builder E (tight screens), 21 November 2026 ───────
-   E2. With the metronome's bar over the work column's foot, a chord chosen
-   where the held staff strip leaves too little room for the chord's name and
-   every control of its detail (1366×768, 1280×800: In key, All Chords): the
-   strip scrolls with the work for that chord, as on Build (the owner's
-   ruling of 19 November 2026). `chordScrollLanding.ts` sets the attribute
-   only after landing with the strip held has left something under the bar,
-   under the strip or below the foot, and takes it off with the chord. */
+   E2. While the metronome's bar stands over the work column's foot and the
+   chord's detail cannot have its name and every control in view with the
+   staff strip held (1366×768, 1280×800: In key, All Chords), the strip
+   scrolls with the work, as on Build (the owner's ruling of 19 November
+   2026). `chordScrollLanding.ts` decides it afresh at every landing (the
+   chord chosen, the layout changed, the bar opened or closed), sets the
+   attribute only where no landing with the strip held keeps everything in
+   view, takes it off at once when the bar closes, and with the chord. */
 @media screen and (min-width: 1200px) {
   .explore-main[data-strip-scrolls] > .strip-card { position: static; }
 }

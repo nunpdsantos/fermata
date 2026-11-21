@@ -46,6 +46,19 @@ export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: nu
 const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="metronome"]');
 
 /**
+ * The bar's box where it is placed, not where its glide has got to: with
+ * ordinary motion it moves to a new place over 0.2 s (metronome.css
+ * transitions `top` and `left`), so in the frame after it opens it still
+ * stood at the window's top and a landing then saw no bar at all (this
+ * round). MetronomeBar writes its place as `top` / `left`.
+ */
+function barBox(bar: HTMLElement): Box {
+  const top = parseFloat(bar.style.top), left = parseFloat(bar.style.left);
+  if (!Number.isFinite(top) || !Number.isFinite(left)) return bar.getBoundingClientRect();
+  return { top, left, bottom: top + bar.offsetHeight, right: left + bar.offsetWidth };
+}
+
+/**
  * Where the bar will stand once the detail's box is `detailBox`: it keeps off
  * the chord's detail where it can, re-placed every frame by MetronomeBar with
  * the same `placeMetronome` and these inputs, so a landing is judged against
@@ -54,7 +67,7 @@ const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="me
  * its way, and it moves to the right as the detail opens).
  */
 export function barPlaceWith(bar: HTMLElement, detailBox: Box): Box {
-  const b = bar.getBoundingClientRect();
+  const b = { width: bar.offsetWidth, height: bar.offsetHeight };
   const vh = window.innerHeight;
   const topBar = document.querySelector('.app-topbar')?.getBoundingClientRect();
   const dock = document.querySelector('[data-testid="instrument-dock"]')?.getBoundingClientRect();
@@ -80,11 +93,11 @@ export function barPlaceWith(bar: HTMLElement, detailBox: Box): Box {
 export function coveredFoot(scroller: HTMLElement): number {
   const bar = metronomeBar();
   if (!bar) return 0;
-  const b = bar.getBoundingClientRect();
+  const b = barBox(bar);
   const s = scroller.getBoundingClientRect();
   const top = s.top + scroller.clientTop;
   const bottom = top + scroller.clientHeight;
-  if (b.height === 0 || b.bottom <= top || b.top >= bottom || b.right <= s.left || b.left >= s.right) return 0;
+  if (b.bottom - b.top <= 0 || b.bottom <= top || b.top >= bottom || b.right <= s.left || b.left >= s.right) return 0;
   return bottom - Math.max(b.top, top);
 }
 
@@ -92,6 +105,8 @@ export function coveredFoot(scroller: HTMLElement): number {
 const DETAIL_PARTS = '.chord-detail-name, button, [role="radio"], .type-label, a';
 /** The work column's foot fade (index.css, Explore's cues): 28 px over its foot while items go on below. */
 const FOOT_FADE_PX = 28;
+/** Landings in a row after the first, each a frame after the last, until one changes nothing. */
+const SETTLE_LANDINGS = 4;
 
 /**
  * `strip` is the staff strip held at the top of the work column (sticky), or
@@ -103,15 +118,26 @@ const FOOT_FADE_PX = 28;
  * With the metronome's bar over the column's foot, a held strip can leave
  * too little room (1366×768: 95–111 px between the strip and the bar for a
  * detail of 142–217 px; In key and All Chords, the leftovers round of 21
- * November 2026). The landing is chosen with the strip held, as before; where
- * that leaves the chord's name or a control of its detail under the bar,
- * under the strip, below the column's foot or under its foot fade, the
- * detail at the top of the view and then the chords card's end at the foot
- * are tried; only where those fail too does the strip scroll with the work
- * for this chord (`data-strip-scrolls`, index.css), in the spirit of the
- * owner's ruling for Build, and the detail land again as on Build. Where
- * both fit (1440×900, 1536×864, the piano's In key 1, 4 and 7 at 1280×800),
- * the strip stays held.
+ * November 2026). Each landing is chosen with the strip held, as before, the
+ * bar judged where it will stand once the detail is there (`barPlaceWith`),
+ * not where it stands or is gliding to; where that leaves the chord's name
+ * or a control of its detail under the bar, under the strip, below the
+ * column's foot or under its foot fade (judged on the whole pixel the
+ * column will take, a fade within a pixel of showing counted as showing),
+ * the detail at the top of the view and then the chords card's end at the
+ * foot are tried; only where those fail too does the strip scroll with the
+ * work (`data-strip-scrolls`, index.css), in the spirit of the owner's ruling
+ * for Build, and the detail land again as on Build. Where both fit
+ * (1440×900, 1536×864, the piano's In key 1, 4 and 7 at 1280×800), the
+ * strip stays held.
+ *
+ * The decision is made afresh at every landing, and a landing comes when
+ * the chord is chosen, when the column, the strip, the detail or the chords
+ * card change size (a margin arriving a frame late under reduced motion, a
+ * font), and when the bar opens or closes (`html[data-metro-room]`; closed,
+ * the strip is held again at once): so the strip goes exactly while the bar
+ * is open and this layout leaves no room for both. Each landing is followed
+ * a frame later by another until one changes nothing, at most five in a row.
  */
 export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
@@ -136,8 +162,15 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     const edge = rowClipEdge(spans, covered - contentTop());
     card.style.clipPath = `inset(${Math.max(0, edge - measure(card).top)}px 0 0)`;
   };
-  const land = (): void => {
+  const land = (afresh = true): void => {
     delete detail.dataset.compactSource;
+    // Each landing decides afresh, the strip held first: it scrolls with the
+    // work only while the bar is open and this layout leaves no room for both
+    // (not the landing that follows letting it go: `afresh` false).
+    if (afresh && released) {
+      released = false;
+      scroller.removeAttribute('data-strip-scrolls');
+    }
     const strip = held();
     const before = [...card.querySelectorAll<HTMLElement>(rowSelector)]
       .filter((el) => !detail.contains(el) && !!(el.compareDocumentPosition(detail) & Node.DOCUMENT_POSITION_FOLLOWING));
@@ -162,10 +195,17 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // fewer other controls covered (review of the second round: in
     // Portuguese at 1280×800 «Arpejo» landed 15 px under the bar).
     const covered = coveredFoot(scroller);
+    const bar = covered > 0 ? metronomeBar() : null;
+    // Where the bar will stand with the column scrolled to `top`: it keeps off
+    // the detail, re-placed every frame, so where it stands now is no guide
+    // (the same chord landed in two places, by where the bar had stood).
+    const barAt = (top: number) => {
+      const d = detail.getBoundingClientRect(), shift = scroller.scrollTop - top;
+      return barPlaceWith(bar!, { top: d.top + shift, bottom: d.bottom + shift, left: d.left, right: d.right });
+    };
     const underBar = (top: number) => {
-      const bar = metronomeBar();
-      if (!bar || covered <= 0) return 0;
-      const b = bar.getBoundingClientRect();
+      if (!bar) return 0;
+      const b = barAt(top);
       const shift = scroller.scrollTop - top;
       const under = (el: Element) => {
         const r = el.getBoundingClientRect();
@@ -191,43 +231,47 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // of its detail must be in view at the scroll chosen: below what is held
     // above, clear of the bar (where it will stand once the detail is there),
     // above the column's foot and its fade where the fade shows. Where the
-    // choice leaves something out (it reads the bar where it stands, and the
-    // bar moves as the detail opens: under load a late re-landing chose the
-    // chord's row with ▶ Chord, the rest below the foot), the detail at the
-    // top of the view is tried, then the chords card's end at the foot; where
-    // both fail too with the strip held, the strip scrolls with the work for
-    // this chord and the detail lands again.
-    if (covered > 0) {
+    // choice leaves something out (its first pass keeps the chord's row with
+    // ▶ Chord and lets the rest go below the foot), the detail at the top of
+    // the view is tried, then the chords card's end at the foot; where both
+    // fail too with the strip held, the strip scrolls with the work and the
+    // detail lands again.
+    if (bar) {
       const s = scroller.getBoundingClientRect();
       const viewTop = s.top + scroller.clientTop + clear - 8;
       const foot = s.top + scroller.clientTop + scroller.clientHeight;
-      const inView = (at: number) => {
-        const shift = scroller.scrollTop - at;
-        const d = detail.getBoundingClientRect();
-        const bar = barPlaceWith(metronomeBar()!, { top: d.top + shift, bottom: d.bottom + shift, left: d.left, right: d.right });
+      // Judged where the column will be: the scroller takes the nearest whole
+      // pixel (10.5 → 11 in Chromium), so a target is judged there as well as
+      // where it was asked, and a fade within a pixel of showing counts as
+      // showing (review of this round: 170.3 judged "no fade", the column at
+      // 170 and its card 332.3 px down, so the fade showed over the detail).
+      const inView = (at: number) => [at, Math.round(at)].every((y) => {
+        const shift = scroller.scrollTop - y;
+        const b = barAt(y);
         // Where the column's items go on below its foot, its fade lies over the last 28 px (index.css, held at the foot).
         const lowest = Math.max(...[...scroller.children].map((el) => measure(el).bottom));
-        const end = lowest - at > scroller.clientHeight + 1 ? foot - FOOT_FADE_PX : foot;
+        const end = lowest - y > scroller.clientHeight ? foot - FOOT_FADE_PX : foot;
         return [...detail.querySelectorAll(DETAIL_PARTS)].every((el) => {
           const r = el.getBoundingClientRect();
           if (r.height === 0 || r.width === 0) return true;
           const top = r.top + shift, bottom = r.bottom + shift;
-          const underBar = bottom > bar.top + 1 && top < bar.bottom - 1 && r.right > bar.left + 1 && r.left < bar.right - 1;
+          const underBar = bottom > b.top + 1 && top < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
           return top >= viewTop - 0.5 && bottom <= end + 0.5 && !underBar;
         });
-      };
+      });
       if (!inView(target)) {
         // The detail at the top of the view, or the chords card's end at the
-        // column's foot (nothing below it, so no fade): the card's head is
-        // above the view either way, so the detail names its tab.
+        // column's foot (nothing below it, so no fade), each on whole pixels
+        // to the safe side: the card's head is above the view either way, so
+        // the detail names its tab.
         const named = detail.dataset.compactSource;
         detail.dataset.compactSource = 'true';
-        const fit = [measure(detail).top - clear, measure(card).bottom - scroller.clientHeight].find((at) => at >= 0 && inView(at));
+        const fit = [Math.floor(measure(detail).top - clear), Math.ceil(measure(card).bottom - scroller.clientHeight)].find((at) => at >= 0 && inView(at));
         if (fit !== undefined) target = fit;
         else if (strip) {
           released = true;
           scroller.setAttribute('data-strip-scrolls', '');
-          land();
+          land(false);
           return;
         } else if (named) detail.dataset.compactSource = named;
         else delete detail.dataset.compactSource;
@@ -238,33 +282,70 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // The tail the landing needs, as a floor under the column's own padding
     // (`--chord-tail`, index.css: max() with it), never in place of it: the
     // metronome's room opened later still applies (review of the second
-    // round: an inline 2 px shadowed the bar's 62).
-    scroller.style.removeProperty('--chord-tail');
-    const padding = parseFloat(getComputedStyle(scroller).paddingBottom) || 0;
-    const naturalMax = scroller.scrollHeight - scroller.clientHeight;
-    const extra = Math.max(0, Math.ceil(target - naturalMax));
-    if (extra > 0) scroller.style.setProperty('--chord-tail', `${padding + extra}px`);
+    // round: an inline 2 px shadowed the bar's 62). It is the bottom padding
+    // that lets the column reach the target, worked out from the end of its
+    // items, and written only when it changes: under reduced motion a changed
+    // padding arrives a frame late, and taking the tail off and putting it
+    // back at every landing left the column clamped short of its target,
+    // landing after landing (this round: 227 and 233 for a target of 267).
+    const itemsEnd = Math.max(...[...scroller.children].map((el) => measure(el).bottom + (parseFloat(getComputedStyle(el).marginBottom) || 0)));
+    const tail = Math.ceil(target + scroller.clientHeight - itemsEnd);
+    const tailValue = tail > 2 ? `${tail}px` : '';
+    if (scroller.style.getPropertyValue('--chord-tail') !== tailValue) {
+      if (tailValue) scroller.style.setProperty('--chord-tail', tailValue);
+      else scroller.style.removeProperty('--chord-tail');
+    }
     scroller.scrollTo?.({ top: target, behavior: 'auto' });
     clip();
   };
-  land();
-  // Font loading, notation and translated content can settle after the
-  // chord effect. Re-measure actual boxes, not a cached strip height.
-  const observer = new ResizeObserver(() => {
+  // A landing is followed, a frame later, by another, until one changes
+  // nothing — a few at most: a box restyled under reduced motion shows its
+  // old size for a frame (index.css gives every property a 0.01 ms
+  // transition), and the detail's row margin arriving late grew the card by
+  // 6 px after the landing, which then left controls under the bar or the
+  // fade (review of this round: 10 of 51 All Chords qualities at 1366×768).
+  const state = () => `${Math.round(scroller.scrollTop)}|${released}|${scroller.style.getPropertyValue('--chord-tail')}|${detail.dataset.compactSource ?? ''}`;
+  let settling = 0;
+  const step = () => {
+    frame = 0;
+    const was = state();
+    land();
+    if (state() !== was && ++settling < SETTLE_LANDINGS) frame = requestAnimationFrame(step);
+  };
+  const again = () => {
     cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(land);
-  });
-  // Its border box: the column's own padding changing (the metronome's room
-  // coming or going, this landing's tail) is no reason to land again —
-  // re-landing then moved the column under the learner (review of the
-  // second round).
+    settling = 0;
+    frame = requestAnimationFrame(step);
+  };
+  land();
+  again();
+  // Font loading, notation and translated content can settle after the
+  // chord effect, and the chords card can grow round the detail. Re-measure
+  // actual boxes, not a cached strip height.
+  const observer = new ResizeObserver(again);
+  // Its border box: the column's own padding changing (this landing's tail,
+  // the bar's room as the bar moves) is no reason to land again — re-landing
+  // then moved the column under the learner (review of the second round).
   observer.observe(scroller, { box: 'border-box' });
   if (strip) observer.observe(strip);
   observer.observe(detail);
+  observer.observe(card);
+  // The bar opened or closed (MetronomeBar marks `html[data-metro-room]`
+  // while it stands over the view's foot): the learner's own act, so the
+  // detail lands again; closed, the strip is held again at once.
+  const barWatch = new MutationObserver(() => {
+    if (released && !document.documentElement.hasAttribute('data-metro-room')) {
+      released = false;
+      scroller.removeAttribute('data-strip-scrolls');
+    }
+    again();
+  });
+  barWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-metro-room'] });
   scroller.addEventListener('scroll', clip, { passive: true });
   return () => {
     cancelAnimationFrame(frame);
     observer.disconnect();
+    barWatch.disconnect();
     scroller.removeEventListener('scroll', clip);
     scroller.style.removeProperty('--chord-tail');
     scroller.style.scrollPaddingTop = savedScrollPadding;
