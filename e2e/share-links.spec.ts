@@ -587,6 +587,150 @@ test('Back to another screen of the same view while the link waits: that screen 
   await context.close();
 });
 
+// A check in progress on a laptop: Level 1 → "Rhythm and Metre" → "Note Values and Rests", one answer given.
+async function checkInProgress(page: Page) {
+  await page.locator('[role="tab"][data-tab="learn"]').click();
+  await page.getByRole('button', { name: /Foundations of Music Literacy/ }).first().click();
+  await page.locator('#learn-panel').getByRole('button', { name: /Rhythm and Metre/ }).first().click();
+  await page.locator('#learn-panel').getByRole('button', { name: /Note Values and Rests/ }).first().click();
+  await page.getByTestId('check-start').click();
+  await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
+  await page.getByTestId('check-answers').locator('button').first().click();
+  await page.getByRole('button', { name: 'Submit', exact: true }).click();
+}
+
+test('the learner moves while the link waits AND a check is in progress: held with the waiting line, no “Open” while the check is on, their choice kept, offered once the check is left', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const { context, page } = await newPage(browser, NO_WORKER);
+  await page.goto('/');
+  await checkInProgress(page);
+  // The link arrives in this tab (its code held): the check is saved, the page reloads on the link.
+  const code = await holdLinkCode(page);
+  await page.goto('/?key=G&scale=major&capo=2');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+  await expect(page.getByTestId('view-loading')).toBeVisible();
+  // The learner changes something the link sets: the capo, in Settings.
+  await page.getByTestId('app-menu').getByRole('button').first().click();
+  await page.getByRole('menuitem', { name: 'Settings' }).click();
+  await page.getByRole('dialog').getByRole('combobox', { name: /capo/i }).first().selectOption({ label: 'Capo 3' });
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('focused-check'), 'the wait ended: the check is drawn').toBeVisible({ timeout: 15_000 });
+  code.release();
+  const region = page.getByTestId('toast-region');
+  const open = region.getByRole('button', { name: 'Open' });
+  await expect(region).toContainText('This link opens G Major, a capo on fret 2. Fermatina will offer to open it when you have finished what you are doing.', { timeout: 15_000 });
+  await page.waitForTimeout(2000);
+  await expect(open, 'no “Open” while the check is on').toHaveCount(0);
+  const capo = () => page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.capoFret);
+  expect(await capo()).toBe(3);
+  await page.getByRole('button', { name: 'Exit the check' }).click();
+  await expect(open).toBeVisible({ timeout: 15_000 });
+  await expect(region).toContainText('Ready to open the link: G Major, a capo on fret 2');
+  expect(await capo(), 'nothing applied by itself').toBe(3);
+  await context.close();
+});
+
+test('Back pressed while the link is held by a check in progress: that entry’s screen is drawn, the link offered once the check is over, nothing applied by itself', async ({ browser }) => {
+  test.setTimeout(90_000);
+  const { context, page } = await newPage(browser, NO_WORKER);
+  let fail = true;
+  await page.route(LINK_CODE, (route) => (fail ? route.abort('internetdisconnected') : route.continue()));
+  await page.goto('/?key=G&scale=major');
+  const region = page.getByTestId('toast-region');
+  const tryAgain = region.getByRole('button', { name: 'Try Again' });
+  await expect(tryAgain).toBeVisible({ timeout: 15_000 });
+  // A check in progress, its screens entries of this tab (kept by the reload of Try Again).
+  await checkInProgress(page);
+  fail = false;
+  await tryAgain.click();
+  // Reloaded on the check's entry: the code arrives, the check holds the link.
+  await expect(region).toContainText('This link opens G Major. Fermatina will offer to open it when you have finished what you are doing.', { timeout: 15_000 });
+  await expect(page.getByTestId('focused-check')).toBeVisible({ timeout: 15_000 });
+  const savedKey = () => page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.selectedKey?.natural ?? 'C');
+  expect(await savedKey()).toBe('C');
+  // Back: the lesson's page; the check is put away (kept), so the work is over.
+  await page.goBack();
+  await expect(page.getByRole('heading', { level: 1, name: 'Note Values and Rests' })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('focused-check')).toHaveCount(0);
+  const open = region.getByRole('button', { name: 'Open' });
+  await expect(open).toBeVisible({ timeout: 15_000 });
+  await expect(region).toContainText('Ready to open the link: G Major');
+  expect(await savedKey(), 'nothing applied by itself').toBe('C');
+  await expect(page.locator('[role="tab"][data-tab="learn"]')).toHaveAttribute('aria-selected', 'true');
+  await open.click();
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  await context.close();
+});
+
+// The popstate listeners on window, counted as the browser holds them (type, listener, capture).
+async function countBackListeners(page: Page) {
+  await page.addInitScript(() => {
+    const add = window.addEventListener;
+    const remove = window.removeEventListener;
+    const held: { l: unknown; capture: boolean }[] = [];
+    const captureOf = (o: unknown) => (typeof o === 'boolean' ? o : !!(o as { capture?: boolean } | undefined)?.capture);
+    window.addEventListener = function (this: Window, ...a: Parameters<Window['addEventListener']>) {
+      const [type, l, o] = a;
+      if (type === 'popstate' && l && !held.some((h) => h.l === l && h.capture === captureOf(o))) held.push({ l, capture: captureOf(o) });
+      return add.apply(this, a);
+    } as Window['addEventListener'];
+    window.removeEventListener = function (this: Window, ...a: Parameters<Window['removeEventListener']>) {
+      const [type, l, o] = a;
+      const k = type === 'popstate' ? held.findIndex((h) => h.l === l && h.capture === captureOf(o)) : -1;
+      if (k >= 0) held.splice(k, 1);
+      return remove.apply(this, a);
+    } as Window['removeEventListener'];
+    (window as unknown as { __back: () => number }).__back = () => held.length;
+  });
+  return () => page.evaluate(() => (window as unknown as { __back: () => number }).__back());
+}
+const historyModule = (page: Page) => expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0), { timeout: 10_000 }).toBe(1);
+
+test('the popstate listeners on window: N with no link, N + 1 while the link waits, N again once it is applied, offered or has failed', async ({ browser }) => {
+  test.setTimeout(90_000);
+  // N: no link (the history module's own listener).
+  let n: number;
+  {
+    const { context, page } = await newPage(browser, NO_WORKER);
+    const count = await countBackListeners(page);
+    await page.goto('/');
+    await expect(page.getByTestId('key-summary')).toBeVisible({ timeout: 15_000 });
+    await historyModule(page);
+    n = await count();
+    await context.close();
+  }
+  for (const outcome of ['applied', 'offered', 'failed'] as const) {
+    const { context, page } = await newPage(browser, NO_WORKER);
+    const count = await countBackListeners(page);
+    let release!: () => void;
+    const released = new Promise<void>((r) => {
+      release = r;
+    });
+    let asked = 0;
+    await page.route(LINK_CODE, async (route) => {
+      asked++;
+      await released;
+      return outcome === 'failed' ? route.abort('internetdisconnected') : route.continue();
+    });
+    await page.goto('/?key=G&scale=major');
+    await expect.poll(() => asked, { timeout: 15_000 }).toBe(1);
+    await historyModule(page);
+    expect(await count(), `${outcome}: while the link waits`).toBe(n + 1);
+    if (outcome === 'offered') {
+      await page.locator('[role="tab"][data-tab="learn"]').click();
+      await expect(page.locator('#learn-panel h1').first()).toBeVisible({ timeout: 15_000 });
+      expect(await count(), 'offered: still listening until the link is decided').toBe(n + 1);
+    }
+    release();
+    const region = page.getByTestId('toast-region');
+    if (outcome === 'applied') await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+    if (outcome === 'offered') await expect(region).toContainText('Ready to open the link: G Major', { timeout: 15_000 });
+    if (outcome === 'failed') await expect(region).toContainText('The link could not open.', { timeout: 15_000 });
+    await expect.poll(count, { message: `${outcome}: once settled`, timeout: 5_000 }).toBe(n);
+    await context.close();
+  }
+});
+
 test('a lesson opened through Quick Search while the wait is already on Learn (the view does not change): drawn at once; the link is offered', async ({ browser }) => {
   const { context, page } = await newPage(browser, NO_WORKER, { state: { lastView: 'learn' }, version: 6 });
   const code = await holdLinkCode(page);

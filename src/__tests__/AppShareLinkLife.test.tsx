@@ -135,19 +135,41 @@ async function boot(address: string, entryView: 'explore' | 'learn' = 'explore')
   });
 }
 
-/** App's store watch (its listener reads LINK_SETS), while subscribed; and its popstate listener, while added. */
+/** App's store watch (its listener reads LINK_SETS), while subscribed. */
 const watches = new Set<() => void>();
-const backListeners = new Set<EventListenerOrEventListenerObject>();
+/**
+ * App's popstate listener (the one whose source ends the wait, `setLinkOpening`), registered
+ * on the real window through a proxy that counts its calls, and removed only as the browser
+ * removes a listener: the same type, the same function and the same capture flag. A removal
+ * with another flag leaves it registered, and the next popstate still reaches it.
+ */
 const addListener = window.addEventListener.bind(window);
 const removeListener = window.removeEventListener.bind(window);
+const captureOf = (o?: boolean | EventListenerOptions) => (typeof o === 'boolean' ? o : !!o?.capture);
+const appBackOf = new Map<EventListenerOrEventListenerObject, Map<boolean, EventListener>>();
+/** Each call of one of App's popstate listeners: which listener. */
+const appBackCalls: EventListenerOrEventListenerObject[] = [];
 vi.spyOn(window, 'addEventListener').mockImplementation((type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) => {
-  if (type === 'popstate' && String(listener).includes('setLinkOpening')) backListeners.add(listener);
-  addListener(type, listener, options);
+  if (type !== 'popstate' || !String(listener).includes('setLinkOpening')) return addListener(type, listener, options);
+  const byCapture = appBackOf.get(listener) ?? new Map<boolean, EventListener>();
+  appBackOf.set(listener, byCapture);
+  if (byCapture.has(captureOf(options))) return; // the browser ignores the same listener added twice
+  const proxy: EventListener = (e) => {
+    appBackCalls.push(listener);
+    (listener as EventListener)(e);
+  };
+  byCapture.set(captureOf(options), proxy);
+  addListener(type, proxy, options);
 });
 vi.spyOn(window, 'removeEventListener').mockImplementation((type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => {
-  if (type === 'popstate') backListeners.delete(listener);
-  removeListener(type, listener, options);
+  const proxy = type === 'popstate' ? appBackOf.get(listener)?.get(captureOf(options)) : undefined;
+  if (!proxy) return removeListener(type, listener, options);
+  appBackOf.get(listener)!.delete(captureOf(options));
+  removeListener(type, proxy, options);
 });
+/** App's popstate listeners on the window now, leaving out those of earlier tests (`known`). */
+const appBackListening = (known = new Set<EventListenerOrEventListenerObject>()) =>
+  [...appBackOf].filter(([l]) => !known.has(l)).reduce((n, [, m]) => n + m.size, 0);
 const subscribe = useAppStore.subscribe;
 vi.spyOn(useAppStore, 'subscribe').mockImplementation((listener) => {
   const off = subscribe(listener);
@@ -411,16 +433,22 @@ describe('the wait always ends, and the watch on the store with it', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
       const release = hold();
       const before = watches.size;
-      const backBefore = backListeners.size;
+      const known = new Set(appBackOf.keys());
       try {
         await boot(address);
         expect(watches.size, 'watching while the link waits').toBe(before + 1);
-        expect(backListeners.size, 'listening for Back / Forward while the link waits').toBe(backBefore + 1);
+        expect(appBackListening(known), 'listening for Back / Forward while the link waits').toBe(1);
         if (outcome === 'offered') act(() => useAppStore.getState().setView('learn'));
         await act(release);
         await waitFor(() => expect(screen.queryByTestId('view-loading')).toBeNull());
         await waitFor(() => expect(watches.size).toBe(before));
-        expect(backListeners.size).toBe(backBefore);
+        expect(appBackListening(known), 'no popstate listener of this boot’s left on the window').toBe(0);
+        // And behaviourally: a Back or Forward now reaches no listener this boot added.
+        appBackCalls.length = 0;
+        act(() => {
+          window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }));
+        });
+        expect(appBackCalls.filter((l) => !known.has(l)), 'a later popstate reaches no listener of this boot’s').toEqual([]);
       } finally {
         warn.mockRestore();
         if (undo) undo();
