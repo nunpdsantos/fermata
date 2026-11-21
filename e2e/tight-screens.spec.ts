@@ -78,8 +78,13 @@ const WORDS = {
   es: { more: 'Más', metronome: 'Metrónomo', all: 'Todos los acordes', build: 'Construir', strip: 'Franja cromática desde C' },
 } as const;
 
-/** After a landing: what of the detail is out of view, whether the strip is held, and the room a held strip leaves above the bar. */
-type Landing = { held: boolean; hidden: string[]; detail: number; roomHeld: number; name: string };
+/**
+ * After a landing: what of the detail is out of view (under the held strip, below the column's foot, under the bar, or
+ * under the column's foot fade while it shows), whether the strip is held, the room a held strip leaves above the bar,
+ * and where the fade is held: its sticky `bottom` offsets the column's bottom padding (the bar's room), so it stands at
+ * the column's real foot — at 57cda40 it stood that padding above the foot, over a chord's formula and scales.
+ */
+type Landing = { held: boolean; hidden: string[]; detail: number; roomHeld: number; name: string; fadeOffset: number };
 const landingState = (page: Page) => page.evaluate((): Landing => {
   const bar = document.querySelector('[data-testid="metronome"]')!.getBoundingClientRect();
   const main = document.querySelector<HTMLElement>('.explore-main')!;
@@ -90,6 +95,9 @@ const landingState = (page: Page) => page.evaluate((): Landing => {
   const top = held ? strip.getBoundingClientRect().bottom : viewTop;
   const foot = viewTop + main.clientHeight;
   const detail = document.querySelector<HTMLElement>('[data-testid="chord-detail"]')!;
+  const fade = getComputedStyle(main, '::after');
+  const fadeOn = document.querySelector('.explore-work')!.hasAttribute('data-main-more-below') && Number(fade.opacity) > 0;
+  const fadeTop = foot - (parseFloat(fade.height) || 0);
   const label = (el: Element) => (el.getAttribute('aria-label') || el.textContent || el.tagName).trim().slice(0, 24);
   const hidden: string[] = [];
   for (const el of Array.from(detail.querySelectorAll('.chord-detail-name, button, [role="radio"], .type-label, a'))) {
@@ -98,10 +106,12 @@ const landingState = (page: Page) => page.evaluate((): Landing => {
     if (r.top < top - 0.5) hidden.push(`${label(el)}: under the held strip`);
     else if (r.bottom > foot + 0.5) hidden.push(`${label(el)}: below the column's foot`);
     else if (r.bottom > bar.top + 1 && r.top < bar.bottom - 1 && r.right > bar.left + 1 && r.left < bar.right - 1) hidden.push(`${label(el)}: under the bar`);
+    else if (fadeOn && r.bottom > fadeTop + 0.5) hidden.push(`${label(el)}: under the column's foot fade`);
   }
   // A held strip stands at the column's top (its 2 px padding): the room it leaves above the bar, less the landing's 8 px on each side.
   const roomHeld = bar.top - (viewTop + 2 + strip.offsetHeight) - 16;
-  return { held, hidden, detail: detail.getBoundingClientRect().height, roomHeld, name: detail.querySelector('.chord-detail-name')!.textContent!.trim() };
+  const fadeOffset = parseFloat(fade.bottom) + parseFloat(getComputedStyle(main).paddingBottom);
+  return { held, hidden, detail: detail.getBoundingClientRect().height, roomHeld, name: detail.querySelector('.chord-detail-name')!.textContent!.trim(), fadeOffset };
 });
 
 test.describe('E2: with the metronome\'s bar open, a chord\'s name and every control of its detail land in view', () => {
@@ -126,6 +136,7 @@ test.describe('E2: with the metronome\'s bar open, a chord\'s name and every con
               const where = `${w}×${h} ${instrument} ${language}${textLabel}, ${what} (${r.name})`;
               console.log(`[landing] ${where}: strip ${r.held ? 'held' : 'scrolls'}, detail ${r.detail.toFixed(0)} px, room under a held strip ${r.roomHeld.toFixed(0)} px${r.hidden.length ? `, out of view: ${r.hidden.join('; ')}` : ''}`);
               expect(r.hidden, `${where}: the chord's name and every control of its detail in view`).toEqual([]);
+              expect(Math.abs(r.fadeOffset), `${where}: the column's foot fade held at its real foot, not the bar's room above it`).toBeLessThanOrEqual(0.5);
               // Let go only where a held strip could not leave the room the detail needs above the bar.
               if (!r.held && !what.startsWith('Build')) expect(r.detail, `${where}: the strip scrolls only where a held one leaves too little room`).toBeGreaterThan(r.roomHeld);
               // Where both fit, the strip stays held (Build under 900 px tall scrolls it by the owner's ruling of 19 November 2026).
@@ -137,11 +148,12 @@ test.describe('E2: with the metronome\'s bar open, a chord\'s name and every con
               await top();
               await page.locator('.chord-row button').nth(i).click();
               const r = await land(`In key ${i + 1}`);
-              // Where both fit at 1280×800, the strip stays held: the first chord of a visit (the bar, still at the left
-              // edge where nothing was in its way when the chord was chosen, moves to the right as the detail opens),
-              // and In key 7 in English, whose 186 px detail fits under the strip only when it lands at the top of
-              // the view (the landing's own first choice keeps the chord's row with ▶ Chord and leaves the rest below).
-              if (w === 1280 && language === 'en' && ((i === 0 && instrument === 'piano') || i === 6)) expect(r.held, `In key ${i + 1} at 1280×800: both fit, the strip stays held`).toBe(true);
+              // Where both fit at 1280×800, the strip stays held: on the piano, In key 1 and 7 (186 px details, the chords
+              // card's end in view under the held strip), the first chord of a visit included (the bar, still at the left
+              // edge where nothing was in its way when the chord was chosen, moves to the right as the detail opens), and
+              // In key 7, which fits only landed at the card's end (the landing's own first choice keeps the chord's row
+              // with ▶ Chord and leaves the rest below the foot).
+              if (w === 1280 && instrument === 'piano' && (i === 0 || i === 6)) expect(r.held, `In key ${i + 1} at 1280×800: both fit, the strip stays held`).toBe(true);
             }
             await top();
             await page.getByRole('tab', { name: t.all, exact: true }).click();

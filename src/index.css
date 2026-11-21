@@ -3381,3 +3381,18 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
 @media screen and (min-width: 1200px) {
   .explore-main[data-strip-scrolls] > .strip-card { position: static; }
 }
+/* The work and circle columns' foot fades (release 17, P5) are sticky, and
+   a sticky box stays inside its column's bottom padding: with the bar's room
+   (62 px at 1280×800) or the landing's tail as that padding, each fade was
+   drawn that far ABOVE its column's foot, across the column, over lines in
+   view (1280×800, a chord's formula and scales faded, "Learn about this"
+   readable below them). Each is held at its column's real foot instead:
+   behind the bar on the bar's side, over the column's last 28 px elsewhere,
+   which the landing keeps the detail's controls out of. The offsets repeat
+   the paddings set above (`.explore-main`, `.explore-aside`). */
+@media screen and (min-width: 1200px) {
+  .explore-main::after { bottom: calc(-1 * max(2px, var(--chord-tail, 0px))); }
+  html[data-metro-room] .explore-main::after { bottom: calc(-1 * max(calc(var(--metro-room) + 8px), var(--chord-tail, 0px))); }
+  .explore-aside::after { bottom: -2px; }
+  html[data-metro-room] .explore-aside::after { bottom: calc(-1 * (var(--metro-room) + 8px)); }
+}
