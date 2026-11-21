@@ -12,7 +12,14 @@ import type { Detent } from '../../../state/dock';
 
 const HEAD = 72;
 const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
+// jsdom loads no index.css: the content's fade is drawn 28 px tall there
+// (`.detent-content::after`), 0 on a short screen, and the sheet reads it.
+let fadeHeight = '28px';
+const realStyle = window.getComputedStyle.bind(window);
 beforeAll(() => {
+  vi.spyOn(window, 'getComputedStyle').mockImplementation((el: Element, pseudo?: string | null) => (
+    pseudo === '::after' && el.classList.contains('detent-content') ? ({ height: fadeHeight } as CSSStyleDeclaration) : realStyle(el, pseudo)
+  ));
   Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
     configurable: true,
     get() {
@@ -154,6 +161,16 @@ describe('DetentSheet — sized to its content', () => {
     expect(screen.getByRole('separator').getAttribute('aria-valuemax')).toBe('1');
   });
 
+  // A short screen (index.css draws no fade there, its height 0): no band,
+  // Half as before (the third pass: 700×480, 360×500 … took 28 px for none).
+  it('the fade not drawn (a short screen): Half takes no band', () => {
+    fadeHeight = '0px';
+    try {
+      render(<Harness start="half" content={523} />);
+      expect(sheetHeight()).toBe(386);
+    } finally { fadeHeight = '28px'; }
+  });
+
   // The band never takes the view's 120 px: Half there is unchanged.
   it('phone sideways (330 px of room): a keyboard taller than Full keeps Half at 210 and Full at 254', () => {
     render(<Harness start="half" content={224} available={330} />);
@@ -185,10 +202,10 @@ describe('DetentSheet — the fret numbers stay with the strings', () => {
   function Board({ frets = 'frets' }: { frets?: string }) {
     return (
       <DetentSheet detent="half" onDetent={() => {}} available={611} fullGap={76} handleLabel="Panel" detentLabels={{ peek: 'Peek', half: 'Half', full: 'Full' }} bar={null} testId="sheet">
-        <div data-top={0} data-h={296}>
+        <div data-top={0} data-h={340}>
           {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} data-dock-row="string" data-top={30 + i * 32} data-h={32} />)}
           <div data-dock-row={frets} data-top={226} data-h={18} />
-          <div className="fretboard-controls"><div data-top={252} data-h={44} /></div>
+          <div className="fretboard-controls"><div data-top={252} data-h={88} /></div>
         </div>
       </DetentSheet>
     );

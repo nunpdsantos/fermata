@@ -167,6 +167,14 @@ describe('Half keeps the fade\'s band under its last whole row', () => {
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).half).toBe(HEAD + 244 + 4);
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 244 + 4, FADE).half).toBe(HEAD + 244 + 4);
   });
+  it('less than the band left hidden after it: Half shows everything where that fits the view\'s room, else the band', () => {
+    // The edge at the numbers (244), the content 19 px past the band (the piano at 320×568): all of it.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + 19, Infinity, FADE)).toMatchObject({ half: HEAD + 244 + FADE + 19 + 4, halfLine: false });
+    // The same with room for the band only: the band, as before.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + 19, HEAD + 244 + FADE + 4, FADE).half).toBe(HEAD + 244 + FADE + 4);
+    // A band's height or more left: the band.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + FADE, Infinity, FADE).half).toBe(HEAD + 244 + FADE + 4);
+  });
   it('nothing below the edge, or content not yet measured: no band', () => {
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 244, Infinity, FADE).half).toBe(HEAD + 244 + 4);
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 0, Infinity, FADE).half).toBe(HEAD + 244 + 4);

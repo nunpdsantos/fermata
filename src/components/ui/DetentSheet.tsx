@@ -47,8 +47,6 @@ const VIEW_MIN_PX = 120;
 /** …and, room allowing, gives the content at least this (a whole keyboard
  *  on a phone held sideways, where 50 % was a sliver of the keys). */
 const HALF_CONTENT_MIN_PX = 160;
-/** The fade at the content's foot (index.css `.detent-content::after`, Explore's height): Half keeps its band under the last whole row. */
-const FADE_PX = 28;
 
 const coarsePointer = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
 const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
@@ -56,7 +54,7 @@ const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
 export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLabel, detentLabels, bar, children, testId, onShown }: DetentSheetProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   // `content`: the content's natural height (0 until measured: no cap).
-  const [geometry, setGeometry] = useState<{ rows: DockRow[]; boardBottom: number; content: number }>({ rows: [], boardBottom: 0, content: 0 });
+  const [geometry, setGeometry] = useState<{ rows: DockRow[]; boardBottom: number; content: number; fade?: number }>({ rows: [], boardBottom: 0, content: 0 });
   const headRef = useRef<HTMLDivElement>(null);
   // First render: a close estimate (tap + 28 px: grip strip + bar), corrected
   // by measurement before it matters — starting at 0 drew the sheet 1 px tall
@@ -118,7 +116,11 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       const fits = shown && lowest <= content.clientHeight + 1;
       content.toggleAttribute('data-fits', fits);
       if (fits && content.scrollTop > 0) content.scrollTop = 0;
-      const next = { rows, boardBottom, content: natural };
+      // The fade's height as index.css draws it (`.detent-content::after`:
+      // 28 px, 0 on a short screen, where it draws none): the ONE place that
+      // decides it, so Half's band and the fade cannot disagree (the third
+      // pass: at 700×480 or 360×500 Half took 28 px for a fade not drawn).
+      const next = { rows, boardBottom, content: natural, fade: parseFloat(getComputedStyle(content, '::after').height) || 0 };
       setGeometry((prev) => JSON.stringify(prev) === JSON.stringify(next) ? prev : next);
     };
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
@@ -142,7 +144,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
   const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
   const fitted = fitDockDetents(
     Math.min(preferredFull, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
-    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content, available - VIEW_MIN_PX, FADE_PX,
+    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content, available - VIEW_MIN_PX, geometry.fade,
   );
   const full = fitted.full;
   const heights: Record<Detent, number> = { peek: peekHeight, half: fitted.half, full };
@@ -210,7 +212,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       className="detent-sheet"
       data-testid={testId}
       data-detent={shown}
-      data-half-line={shown === 'half' && fitted.halfLine ? '' : undefined}
+      data-half-line={fitted.halfLine || undefined}
       style={height !== undefined ? { height } : undefined}
     >
       <div ref={headRef} className="detent-head">
