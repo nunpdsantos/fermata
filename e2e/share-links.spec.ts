@@ -10,6 +10,8 @@ import fs from 'node:fs';
  *  - a lesson link opens the lesson;
  *  - a link opened during a check does not lose the check: it waits, then
  *    offers itself with "Open";
+ *  - a link opened in a second tab, the first on Learn, draws Explore with
+ *    the link, the CPU slowed (release 17 removed the exit that held it back);
  *  - "Copy link" puts the expected address on the clipboard (laptop) or in
  *    the share sheet (phone), and when the browser refuses both, the link is
  *    shown in a selectable field;
@@ -127,6 +129,46 @@ test('a link opened during a check does not lose the check; it waits, then offer
   await open.click();
   await expectDMajorAChordGuitar(page);
   await context.close();
+});
+
+// A link opened in a SECOND tab of the same browser (shared storage), the
+// first tab on Learn: the new tab boots on Learn (the last view saved) and the
+// link switches it to Explore. Until release 17 the views sat in
+// framer-motion's AnimatePresence, mode "wait": when the link's switch landed
+// within a few milliseconds of Learn's empty panel being mounted, that panel
+// never started its exit, so Explore's panel, waiting for it, never came, and
+// the piano showed the link's key over an empty work area (on the build with
+// the CPU slowed 6×: 60 of 60 at 153caab; 0 of 60 at 57cda40, which unmounts a
+// view at once). The CPU is slowed on purpose (Chromium, DevTools Protocol) and
+// the whole walk runs three times, each in a fresh browser context: with that
+// exit put back, one walk caught it 36 times in 40 on the build, and the three
+// walks 20 times in 20. The dev server delivers the link's code module by
+// module, after that window (0 of 30 there with the exit put back): there it
+// is caught by src/__tests__/viewLeavesAtOnce.test.tsx.
+test('a link opened in a second tab, the first on Learn, draws Explore with the link (CPU slowed 6×)', async ({ browser, browserName }) => {
+  test.skip(browserName !== 'chromium', 'CPU throttling is Chromium’s (DevTools Protocol)');
+  test.setTimeout(120_000);
+  for (let walk = 1; walk <= 3; walk++) {
+    const { context, page } = await newPage(browser, LAPTOP);
+    await page.goto('/');
+    await page.locator('[role="tab"][data-tab="learn"]').click();
+    await expect(page.locator('#learn-panel h1').first()).toBeVisible({ timeout: 15_000 });
+    // The view the next tab boots on.
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.lastView)).toBe('learn');
+
+    const second = await context.newPage();
+    const cdp = await context.newCDPSession(second);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+    await second.goto('/?key=G&scale=major');
+    await expect(second.getByTestId('key-summary'), `walk ${walk}: Explore's work area, with the link's key`).toContainText('G Major', { timeout: 15_000 });
+    await expect(second.locator('[role="tab"][data-tab="explore"]')).toHaveAttribute('aria-selected', 'true');
+    // Drawn, not only present: Explore's panel is the one view panel, at full
+    // opacity (Playwright counts opacity 0 as visible).
+    await expect.poll(() => second.evaluate(() => Array.from(document.querySelectorAll('#explore-panel, #learn-panel, #drill-panel'), (p) => `${p.id} ${getComputedStyle(p).opacity}`)), { timeout: 10_000 }).toEqual(['explore-panel 1']);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+    if (walk === 1) await shot(second, 'share-second-tab-laptop-day-en');
+    await context.close();
+  }
 });
 
 test('laptop: Copy link puts the expected address on the clipboard (Explore and a lesson)', async ({ browser, baseURL }) => {

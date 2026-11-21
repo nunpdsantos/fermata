@@ -903,9 +903,11 @@ test.describe('review B-1', () => {
     await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('fermata-learn-session-v1')!).state.check.away)).toBe(true);
     const linked2 = await context.newPage();
     await linked2.goto('/?key=G&scale=major');
-    // Applied: the key it names is the one saved. (Not read off that tab's Explore, which, at 153caab
-    // too, now and then stays empty in a second tab under load: a fault outside this branch.)
-    await expect.poll(() => linked2.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.selectedKey.natural), { timeout: 15_000 }).toBe('G');
+    // Applied, and read off that tab's Explore: its work area shows the link's key. (From the second
+    // audit round this row read the saved key instead, because with the views' exit animation of
+    // release 16 a second tab's Explore now and then stayed empty; release 17 removed that exit.
+    // See share-links.spec.ts, "a link opened in a second tab".)
+    await expect(linked2.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
     await linked2.close();
     await page.getByTestId('app-menu').getByRole('button').first().click();
     await page.getByRole('menuitem', { name: 'Show me around' }).click();
