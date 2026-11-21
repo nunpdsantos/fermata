@@ -9,11 +9,16 @@
  *    every form a link takes (a fragment the link's own `#` made included).
  *  - A lesson offered names its title in the learner's language, also when
  *    that language's titles arrive after the code.
- *  - The learner is free until the link is APPLIED: going elsewhere, or
- *    choosing anything the link would set, at any moment before (the code
- *    on its way, or the titles), draws that and the link is offered.
- *  - Writes that are not the learner's (another tab's save, the app's own
- *    settings) do not turn an ordinary open into an offer.
+ *  - The learner is free until the link is APPLIED: going elsewhere (a tab,
+ *    Back or Forward to any entry, the same view's other screens included),
+ *    or choosing anything the link would set (a lesson while already on
+ *    Learn included), at any moment before (the code on its way, or the
+ *    titles), draws that and the link is offered. The tour asked for holds
+ *    the link until it has ended (services/__tests__/shareLinkTour.test.ts).
+ *  - What is not a choice of what the link sets does not turn an ordinary
+ *    open into an offer: another tab's save (the settings store follows no
+ *    other tab: a mutation that makes it follow fails that case), the app's
+ *    own writes, a note played.
  *  - Offline with nothing to serve a reload, "Try Again" leaves the page and
  *    the link as they are; with a service worker in control it reloads.
  *  - A rejection inside the link's code ends the wait and is handled; the
@@ -92,6 +97,7 @@ import { resetShareLinkOpen } from '../services/shareLinkOpen';
 import { registerWorkInProgress } from '../services/workInProgress';
 import { setCapoFret } from '../state/capo';
 import { requestDemo, clearDemoRequest, getDemoRequest } from '../state/demoRequest';
+import { useFocusNoteStore } from '../state/focusNoteStore';
 import { parseChordSymbol, chordFromParsed } from '../core/utils/chordParser';
 import type { Note } from '../core/types/music';
 
@@ -122,15 +128,26 @@ function hold(): () => Promise<void> {
   };
 }
 
-async function boot(address: string) {
-  window.history.replaceState({ fm: 1, i: 4, v: 'explore', l: 0 }, '', address);
+async function boot(address: string, entryView: 'explore' | 'learn' = 'explore') {
+  window.history.replaceState({ fm: 1, i: 4, v: entryView, l: 0 }, '', address);
   await act(async () => {
     render(<App />);
   });
 }
 
-/** App's store watch (its listener reads LINK_SETS), while subscribed. */
+/** App's store watch (its listener reads LINK_SETS), while subscribed; and its popstate listener, while added. */
 const watches = new Set<() => void>();
+const backListeners = new Set<EventListenerOrEventListenerObject>();
+const addListener = window.addEventListener.bind(window);
+const removeListener = window.removeEventListener.bind(window);
+vi.spyOn(window, 'addEventListener').mockImplementation((type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) => {
+  if (type === 'popstate' && String(listener).includes('setLinkOpening')) backListeners.add(listener);
+  addListener(type, listener, options);
+});
+vi.spyOn(window, 'removeEventListener').mockImplementation((type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => {
+  if (type === 'popstate') backListeners.delete(listener);
+  removeListener(type, listener, options);
+});
 const subscribe = useAppStore.subscribe;
 vi.spyOn(useAppStore, 'subscribe').mockImplementation((listener) => {
   const off = subscribe(listener);
@@ -235,8 +252,14 @@ describe('a lesson offered names its title in the learner’s language, also whe
 });
 
 describe('anything the learner chooses while the link waits is drawn at once and never overwritten', () => {
-  const CHOICES: [string, () => void, () => void][] = [
-    ['another view (a tab, Back)', () => useAppStore.getState().setView('learn'), () => expect(useAppStore.getState().view).toBe('learn')],
+  const OFFER = ['Ready to open the link: G Major, the C chord, on the piano', 'Open'];
+  const CHOICES: [string, () => void, () => void, (string | null)[]?][] = [
+    ['another view (a tab)', () => useAppStore.getState().setView('learn'), () => expect(useAppStore.getState().view).toBe('learn')],
+    [
+      'Back or Forward to another entry of the same view (only the address and the entry change)',
+      () => window.dispatchEvent(new PopStateEvent('popstate', { state: { fm: 1, i: 3, v: 'explore', l: 0 } })),
+      () => expect(useAppStore.getState().view).toBe('explore'),
+    ],
     ['a key (Quick Search)', () => useAppStore.getState().setKey(EFLAT), () => expect(useAppStore.getState().selectedKey).toEqual(EFLAT)],
     ['a scale (Quick Search)', () => useAppStore.getState().setScale('dorian'), () => expect(useAppStore.getState().selectedScale).toBe('dorian')],
     ['a chord (Quick Search)', () => useAppStore.getState().setSelectedChord(chordFromParsed(parseChordSymbol('Dm7')!)), () => expect(useAppStore.getState().selectedChord?.root).toEqual({ natural: 'D', accidental: '' })],
@@ -244,9 +267,15 @@ describe('anything the learner chooses while the link waits is drawn at once and
     ['a lesson (Quick Search)', () => useAppStore.getState().openLearnTarget({ levelId: 'l1', unitId: 'u2', moduleId: 'l1u2m1' }), () => expect(useAppStore.getState().pendingLearnTarget?.moduleId).toBe('l1u2m1')],
     ['the capo (Settings)', () => setCapoFret(3), () => expect(useAppStore.getState().capoFret).toBe(3)],
     ['an inversion', () => useAppStore.getState().setChordInversion(1), () => expect(useAppStore.getState().chordInversion).toBe(1)],
-    ['the tour (“⋯” → Show me around): its end puts back what it found', () => requestDemo('intro', 'menu'), () => expect(getDemoRequest()).toBe('intro')],
+    // The tour playing holds the link (its end puts back what it found): the waiting line, no "Open" yet.
+    [
+      'the tour (“⋯” → Show me around): held while it plays',
+      () => requestDemo('intro', 'menu'),
+      () => expect(getDemoRequest()).toBe('intro'),
+      ['This link opens G Major, the C chord, on the piano. Fermatina will offer to open it when you have finished what you are doing.', null],
+    ],
   ];
-  for (const [what, choose, kept] of CHOICES) {
+  for (const [what, choose, kept, offer = OFFER] of CHOICES) {
     it(what, async () => {
       const release = hold();
       await boot('/?key=G&scale=major&chord=C&inst=piano');
@@ -255,29 +284,70 @@ describe('anything the learner chooses while the link waits is drawn at once and
       expect(await screen.findByText(/_VIEW/), 'the wait ends: what was chosen is drawn').toBeTruthy();
       expect(screen.queryByTestId('view-loading')).toBeNull();
       await act(release);
-      await waitFor(() => expect(toasts()).toEqual([['Ready to open the link: G Major, the C chord, on the piano', 'Open']]));
+      await waitFor(() => expect(toasts()).toEqual([offer]));
       kept();
       expect(useAppStore.getState().selectedKey).not.toEqual(G);
     });
   }
 
-  it('writes that are not the learner’s choice of what the link sets do not make it an offer: another tab’s save, the app’s own settings', async () => {
+  it('a lesson opened while the wait is already on Learn (the view does not change)', async () => {
+    useAppStore.setState({ view: 'learn', lastView: 'learn' });
+    const release = hold();
+    await boot('/?key=G&scale=major&chord=C&inst=piano', 'learn');
+    expect(screen.getByTestId('view-loading')).toBeTruthy();
+    act(() => useAppStore.getState().openLearnTarget({ levelId: 'l1', unitId: 'u2', moduleId: 'l1u2m1' }));
+    expect(useAppStore.getState().view).toBe('learn');
+    expect(await screen.findByText('LEARN_VIEW'), 'the wait ends: the lesson is drawn').toBeTruthy();
+    await act(release);
+    await waitFor(() => expect(toasts()).toEqual([OFFER]));
+    expect(useAppStore.getState().pendingLearnTarget?.moduleId).toBe('l1u2m1');
+    expect(useAppStore.getState().selectedKey).toEqual(C);
+  });
+
+  it('another tab’s save does not reach this tab’s key, view or instrument (the settings store follows no other tab), so it makes no offer', async () => {
     const release = hold();
     await boot('/?key=G&scale=major');
-    // Another tab saves a different key, view and instrument (the settings store does not follow other tabs).
+    // What another tab does: write its save, which fires `storage` here. A store that followed
+    // other tabs would take E♭, Drill and the guitar from it, and the link would become an offer.
+    const theirs = JSON.parse(localStorage.getItem('music-theory-app') ?? '{"state":{},"version":6}') as { state: Record<string, unknown>; version: number };
+    const newValue = JSON.stringify({ ...theirs, state: { ...theirs.state, selectedKey: EFLAT, view: 'drill', lastView: 'drill', instrument: 'guitar' } });
     act(() => {
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'music-theory-app',
-        newValue: JSON.stringify({ state: { selectedKey: EFLAT, lastView: 'drill', instrument: 'guitar' }, version: 6 }),
-      }));
+      localStorage.setItem('music-theory-app', newValue);
+      window.dispatchEvent(new StorageEvent('storage', { key: 'music-theory-app', newValue, storageArea: localStorage }));
     });
-    // The app's own writes of things the link does not set.
-    act(() => useAppStore.setState({ lastView: 'learn', themeMode: 'fermata-night', dockChosen: { ...useAppStore.getState().dockChosen, explore: true }, quickSearchOpen: true }));
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 30));
+    });
+    expect(useAppStore.getState().selectedKey).toEqual(C);
+    expect(screen.getByTestId('view-loading')).toBeTruthy();
+    await act(release);
+    await waitFor(() => expect(useAppStore.getState().selectedKey).toEqual(G));
+    expect(toasts()).toEqual([]);
+  });
+
+  it('the app’s own writes of things the link does not set make no offer', async () => {
+    const release = hold();
+    await boot('/?key=G&scale=major');
+    act(() => useAppStore.setState({ lastView: 'learn', themeMode: 'fermata-night', dockChosen: { ...useAppStore.getState().dockChosen, explore: true }, quickSearchOpen: true, baseOctave: 3 }));
     expect(screen.getByTestId('view-loading')).toBeTruthy();
     await act(release);
     await waitFor(() => expect(useAppStore.getState().selectedKey).toEqual(G));
     expect(toasts()).toEqual([]);
     expect(await screen.findByText('EXPLORE_VIEW')).toBeTruthy();
+  });
+
+  it('a note played while the link waits (a piano key by mouse or keyboard, a MIDI or microphone note) makes no offer', async () => {
+    const release = hold();
+    await boot('/?key=G&scale=major');
+    act(() => {
+      useAppStore.getState().addActiveNote(60);
+      useFocusNoteStore.getState().set('pinned', { pc: 0, midi: 60, source: 'piano' });
+    });
+    expect(useAppStore.getState().activeNotes.has(60)).toBe(true);
+    expect(screen.getByTestId('view-loading')).toBeTruthy();
+    await act(release);
+    await waitFor(() => expect(useAppStore.getState().selectedKey).toEqual(G));
+    expect(toasts()).toEqual([]);
   });
 });
 
@@ -341,13 +411,16 @@ describe('the wait always ends, and the watch on the store with it', () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
       const release = hold();
       const before = watches.size;
+      const backBefore = backListeners.size;
       try {
         await boot(address);
         expect(watches.size, 'watching while the link waits').toBe(before + 1);
+        expect(backListeners.size, 'listening for Back / Forward while the link waits').toBe(backBefore + 1);
         if (outcome === 'offered') act(() => useAppStore.getState().setView('learn'));
         await act(release);
         await waitFor(() => expect(screen.queryByTestId('view-loading')).toBeNull());
         await waitFor(() => expect(watches.size).toBe(before));
+        expect(backListeners.size).toBe(backBefore);
       } finally {
         warn.mockRestore();
         if (undo) undo();

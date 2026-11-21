@@ -111,16 +111,24 @@ function App() {
       markOpenedFromShareLink();
       // Until the link is applied, offered, held or has failed: the learner
       // going elsewhere or choosing anything the link would set (by a tab,
-      // Back, Quick Search, the instrument switch, Settings' capo), or asking
-      // for the tour (below), ends the wait, and the link is then offered,
-      // never applied over it. Only this tab's own acts can change these: the
-      // settings store does not follow other tabs (state/tabSafe.ts).
-      const stop = useAppStore.subscribe((s, p) => {
-        if (LINK_SETS.some((k) => s[k] !== p[k])) {
-          moved.current = true;
-          setLinkOpening(false);
-        }
+      // Quick Search, the instrument switch, Settings' capo), Back or Forward
+      // to any entry (another screen of the same view too: only the address
+      // and the entry change), or asking for the tour (below), ends the wait,
+      // and the link is then offered, never applied over it. Only this tab's
+      // own acts can change these: the settings store does not follow other
+      // tabs (state/tabSafe.ts).
+      const end = () => {
+        moved.current = true;
+        setLinkOpening(false);
+      };
+      const unwatch = useAppStore.subscribe((s, p) => {
+        if (LINK_SETS.some((k) => s[k] !== p[k])) end();
       });
+      window.addEventListener('popstate', end);
+      const stop = () => {
+        unwatch();
+        window.removeEventListener('popstate', end);
+      };
       const asked = () => {
         stop();
         return moved.current;

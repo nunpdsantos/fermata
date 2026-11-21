@@ -18,15 +18,23 @@
  *     "Open" — nothing opens by itself. Choosing
  *     Open when work has started again waits again. The held link lives in
  *     this page only (the address bar was already cleaned): a reload drops it.
+ *     The tour playing counts here as work does (`busy`): its end puts back
+ *     what it found, which would undo a link applied under it, so a link
+ *     arriving, or "Open" tapped, while it plays waits for its end (the tour
+ *     clears its request last, after putting things back: services/tour/
+ *     session.ts `finish`).
  *  3. It never pulls the learner back: one who, while the link was not yet
- *     applied (the work area showed the loading sign), went to another view
- *     or chose anything the link would set is offered the link with "Open"
+ *     applied (the work area showed the loading sign), went elsewhere or
+ *     chose anything the link would set is offered the link with "Open"
  *     (App.tsx watches; asked at the moment of applying, after every wait).
+ *     Work in progress (or the tour) comes first: then the link is held, and
+ *     offered with "Open" once that is over, which keeps both rules.
  */
 import i18n from '../i18n/index.ts';
 import { useAppStore } from '../state/store.ts';
 import { toast, useToastStore } from '../state/toastStore.ts';
 import { hasWorkInProgress } from './workInProgress.ts';
+import { getDemoRequest } from '../state/demoRequest.ts';
 import { withGlyphs } from '../core/utils/accidentalGlyphs.ts';
 import { getModuleTitle, loadModuleIndex } from '../data/moduleIndexI18n.ts';
 import { parseShareLink, isEmptyTarget, type ShareTarget } from './shareLinkParse.ts';
@@ -37,6 +45,9 @@ import { selectChordAsWritten, inversionOfBass, exploreIsSimple } from '../utils
 
 /** How often a held link checks whether the work is over. */
 export const HELD_LINK_POLL_MS = 1500;
+
+/** Work in progress, or the tour playing: a link is held, never applied (rule 2). */
+const busy = () => hasWorkInProgress() || getDemoRequest() !== null;
 const WAIT_TOAST_MS = 8000;
 const UNREADABLE_TOAST_MS = 6000;
 
@@ -117,7 +128,7 @@ function offerWhenFree(target: ShareTarget): void {
     duration: WAIT_TOAST_MS,
   });
   poll = setInterval(() => {
-    if (hasWorkInProgress()) return;
+    if (busy()) return;
     stopPolling();
     const ready = held;
     held = null;
@@ -139,9 +150,9 @@ function offerReady(target: ShareTarget): void {
   });
 }
 
-/** "Open" on the offer: apply, unless work has started again — then wait again. */
+/** "Open" on the offer: apply, unless work has started again or the tour plays — then wait again. */
 export function openNowOrWait(target: ShareTarget): void {
-  if (hasWorkInProgress()) offerWhenFree(target);
+  if (busy()) offerWhenFree(target);
   else applyShareTarget(target);
 }
 
@@ -169,13 +180,16 @@ export async function openShareLink(raw: RawShareParams | null, asTyped?: RawSha
   // A lesson's title in the learner's language, for the toasts (English if
   // that index cannot load).
   if (target.lesson) await loadModuleIndex(i18n.language || 'en').catch(() => null);
-  if (moved?.()) {
-    offerReady(target);
-    return 'offered';
-  }
-  if (hasWorkInProgress()) {
+  // Asked once, now (it also ends App's watch). Work in progress or the tour
+  // wins over it: held, then offered with "Open" once over (rules 2 and 3).
+  const elsewhere = moved?.();
+  if (busy()) {
     offerWhenFree(target);
     return 'held';
+  }
+  if (elsewhere) {
+    offerReady(target);
+    return 'offered';
   }
   try {
     applyShareTarget(target);
