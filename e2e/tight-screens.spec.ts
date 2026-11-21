@@ -59,15 +59,11 @@ type Motion = (typeof MOTIONS)[number]['motion'];
 /** A landing and the few after it that a late size calls for; the code stops after at most five in a row. */
 const MOST_LANDINGS = 10;
 
-type Landed = { after: number };
-/** The landings since counting began, and where the column stood then. */
-type LandWindow = { __lands?: Landed[]; __landsFrom?: number };
+type Landed = { before: number; after: number };
+/** The landings since counting began: where each found the column and where it left it. */
+type LandWindow = { __lands?: Landed[] };
 /** Start counting landings afresh. */
-const countLandings = (page: Page) => page.evaluate(() => {
-  const w = window as unknown as LandWindow;
-  w.__lands = [];
-  w.__landsFrom = document.querySelector('.explore-main')!.scrollTop;
-});
+const countLandings = (page: Page) => page.evaluate(() => { (window as unknown as LandWindow).__lands = []; });
 
 async function open(browser: Browser, baseURL: string, opts: { w: number; h: number; touch?: boolean; state?: Seed; wide?: boolean; motion?: Motion }) {
   const context = await browser.newContext({
@@ -89,8 +85,9 @@ async function open(browser: Browser, baseURL: string, opts: { w: number; h: num
     const proto = Element.prototype as unknown as { scrollTo: (...a: unknown[]) => void };
     const original = proto.scrollTo;
     proto.scrollTo = function (this: Element, ...a: unknown[]) {
+      const before = this.scrollTop;
       original.apply(this, a);
-      if (this.classList.contains('explore-main')) ((window as unknown as LandWindow).__lands ??= []).push({ after: this.scrollTop });
+      if (this.classList.contains('explore-main')) ((window as unknown as LandWindow).__lands ??= []).push({ before, after: this.scrollTop });
     };
   });
   const page = await context.newPage();
@@ -210,11 +207,11 @@ const landingState = (page: Page) => page.evaluate((): Landing => {
     else if (fadeOn && r.bottom > fadeTop + 0.5 && r.top < fadeBottom - 0.5) hidden.push(`${label(el)}: under the column's foot fade`);
   }
   const roomHeld = bar ? bar.top - (viewTop + 2 + strip.offsetHeight) - 16 : Infinity;
-  // The last landing changed nothing: it left the column where the one before it (or, alone, where the count began) had.
-  const w = window as unknown as LandWindow;
-  const lands = w.__lands ?? [];
-  const before = lands.length >= 2 ? lands[lands.length - 2].after : (w.__landsFrom ?? NaN);
-  const lastNoop = lands.length === 0 || (Math.abs(lands[lands.length - 1].after - before) < 0.5 && Math.abs(lands[lands.length - 1].after - main.scrollTop) < 0.5);
+  // The last landing changed nothing: it found the column where it left it, and the column is still there. (Not "where the
+  // landing before it left it": the browser's scroll anchoring keeps the detail in place when the card grows above it.)
+  const lands = (window as unknown as LandWindow).__lands ?? [];
+  const last = lands[lands.length - 1];
+  const lastNoop = !last || (Math.abs(last.after - last.before) < 0.5 && Math.abs(last.after - main.scrollTop) < 0.5);
   return {
     held, attr: main.hasAttribute('data-strip-scrolls'), hidden, detail: detail.getBoundingClientRect().height, roomHeld,
     name: detail.querySelector('.chord-detail-name')!.textContent!.trim(), fadeOffset: fadeBottom - foot, lands: lands.length, lastNoop,
