@@ -12,6 +12,9 @@ import fs from 'node:fs';
  *    offers itself with "Open";
  *  - a link opened in a second tab, the first on Learn, draws Explore with
  *    the link, the CPU slowed (release 17 removed the exit that held it back);
+ *  - while the link's own code is on its way, the loading sign and no view;
+ *    another view chosen meanwhile draws and the link is offered; code that
+ *    cannot be fetched says so, and Try Again opens the link;
  *  - "Copy link" puts the expected address on the clipboard (laptop) or in
  *    the share sheet (phone), and when the browser refuses both, the link is
  *    shown in a selectable field;
@@ -169,6 +172,122 @@ test('a link opened in a second tab, the first on Learn, draws Explore with the 
     if (walk === 1) await shot(second, 'share-second-tab-laptop-day-en');
     await context.close();
   }
+});
+
+// ── The link's own code on its way, or failing (leftovers round, S2 / S3) ──
+// The code that opens a link (services/shareLinkOpen.ts) is its own chunk on
+// the build and its own module on the dev server: a route holds it back until
+// the test lets it go, or aborts it as a dropped connection does.
+const LINK_CODE = /\/(assets\/shareLinkOpen-[^/]*\.js|src\/services\/shareLinkOpen\.ts)(\?.*)?$/;
+// No service worker: once one controls the page it serves the code from its
+// precache, where no route can hold or abort it (a learner then gets it).
+const NO_WORKER = { ...LAPTOP, serviceWorkers: 'block' as const };
+
+async function holdLinkCode(page: Page) {
+  let release!: () => void;
+  const released = new Promise<void>((r) => {
+    release = r;
+  });
+  let asked = 0;
+  await page.route(LINK_CODE, async (route) => {
+    asked++;
+    await released;
+    await route.continue();
+  });
+  return { release, asked: () => asked };
+}
+
+const dockTop = (page: Page) => page.locator('[data-testid="instrument-dock"]').evaluate((d) => d.getBoundingClientRect().top);
+
+test('while the link’s own code is on its way the work area shows the loading sign, no view under it; then the link, no other key first', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER);
+  // Every text the key summary ever shows in this page.
+  await page.addInitScript(() => {
+    const seen: string[] = [];
+    (window as unknown as { __keys: string[] }).__keys = seen;
+    new MutationObserver(() => {
+      const k = document.querySelector('[data-testid="key-summary"]')?.textContent;
+      if (k && seen[seen.length - 1] !== k) seen.push(k);
+    }).observe(document, { subtree: true, childList: true, characterData: true });
+  });
+  const code = await holdLinkCode(page);
+  await page.goto('/?key=G&scale=major');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+  // Held: the loading sign a view shows while its own code loads, and no view mounted under it.
+  const loading = page.locator('#explore-panel').getByTestId('view-loading');
+  await expect(loading).toBeVisible();
+  await expect(page.getByTestId('key-summary')).toHaveCount(0);
+  expect(new URL(page.url()).search).toBe('');
+  await shot(page, 'share-link-code-held-laptop-day-en');
+  const held = await dockTop(page);
+
+  code.release();
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  await expect(loading).toHaveCount(0);
+  expect(await page.evaluate(() => (window as unknown as { __keys: string[] }).__keys)).toEqual(['G Major · 1♯ · relative E minor']);
+  // The instrument holds still from the loading sign to the link's view (two-sided).
+  expect(Math.abs((await dockTop(page)) - held)).toBeLessThanOrEqual(1);
+  await context.close();
+});
+
+test('going to another view while the link’s own code is on its way: that view draws, and the link is offered with “Open”, never applied over it', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER);
+  const code = await holdLinkCode(page);
+  await page.goto('/?key=G&scale=major');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+
+  await page.locator('[role="tab"][data-tab="learn"]').click();
+  await expect(page.locator('#learn-panel h1').first()).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('view-loading')).toHaveCount(0);
+
+  code.release();
+  const open = page.getByTestId('toast-region').getByRole('button', { name: 'Open' });
+  await expect(open).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('toast-region')).toContainText('Ready to open the link: G Major');
+  await expect(page.locator('[role="tab"][data-tab="learn"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#learn-panel h1').first()).toBeVisible();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.selectedKey?.natural ?? 'C'), 'not applied over Learn').toBe('C');
+
+  await open.click();
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  await context.close();
+});
+
+test('a link whose own code cannot be fetched: the app opens as usual and says so; Try Again opens it, a failure again says so again', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER);
+  let fail = true;
+  let asked = 0;
+  await page.route(LINK_CODE, (route) => {
+    asked++;
+    return fail ? route.abort('internetdisconnected') : route.continue();
+  });
+  const region = page.getByTestId('toast-region');
+  const tryAgain = region.getByRole('button', { name: 'Try Again' });
+
+  await page.goto('/?key=G&scale=major');
+  await expect(page.getByTestId('key-summary')).toContainText('C Major', { timeout: 15_000 });
+  await expect(region).toContainText('The link could not open.');
+  await expect(page.getByTestId('view-loading')).toHaveCount(0);
+  expect(new URL(page.url()).search).toBe('');
+  expect(asked).toBe(1);
+  await shot(page, 'share-link-code-failed-laptop-day-en');
+
+  // Try Again: the page reloads on the link's address; it fails again and says so again.
+  await tryAgain.click();
+  await expect.poll(() => asked, { timeout: 15_000 }).toBe(2);
+  await expect(tryAgain).toBeVisible({ timeout: 15_000 });
+  await expect(region).toContainText('The link could not open.');
+  await expect(page.getByTestId('key-summary')).toContainText('C Major');
+  expect(new URL(page.url()).search).toBe('');
+
+  // The connection is back: Try Again opens the link as a first visit does.
+  fail = false;
+  await tryAgain.click();
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  expect(asked).toBe(3);
+  await expect(region).not.toContainText('The link could not open.');
+  expect(new URL(page.url()).search).toBe('');
+  await context.close();
 });
 
 test('laptop: Copy link puts the expected address on the clipboard (Explore and a lesson)', async ({ browser, baseURL }) => {

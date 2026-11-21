@@ -7,7 +7,8 @@ import { Button } from './ui/Button.tsx';
 
 export type ViewLoader = () => Promise<{ default: ComponentType }>;
 
-function ViewLoadingFallback({ sizeClassName }: { sizeClassName?: string }) {
+/** A view's loading sign; App.tsx also shows it while a shared link's own code is on its way. */
+export function ViewLoadingFallback({ sizeClassName }: { sizeClassName?: string }) {
   return (
     <div className={`flex-1 flex items-center justify-center ${sizeClassName ?? ''}`} data-testid="view-loading">
       <div className="w-5 h-5 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--border)', borderTopColor: 'var(--text-muted)' }} />

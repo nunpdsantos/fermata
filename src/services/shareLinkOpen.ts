@@ -18,6 +18,9 @@
  *     "Open" — nothing opens by itself. Choosing
  *     Open when work has started again waits again. The held link lives in
  *     this page only (the address bar was already cleaned): a reload drops it.
+ *  3. It never pulls the learner back: one who went to another view while
+ *     this code was on its way (the work area showed the loading sign) is
+ *     offered the link with "Open" (services/shareLinkBoot.ts).
  */
 import i18n from '../i18n/index.ts';
 import { useAppStore } from '../state/store.ts';
@@ -120,14 +123,19 @@ function offerWhenFree(target: ShareTarget): void {
     if (!ready) return;
     if (waitToastId) useToastStore.getState().removeToast(waitToastId);
     waitToastId = null;
-    useToastStore.getState().addToast({
-      type: 'info',
-      message: t('share.ready', { target: describeShareTarget(ready) }),
-      // Stays until the learner opens it or dismisses it.
-      duration: 0,
-      action: { label: t('share.open'), onSelect: () => openNowOrWait(ready) },
-    });
+    offerReady(ready);
   }, HELD_LINK_POLL_MS);
+}
+
+/** "Ready to open the link: …" with "Open": nothing opens by itself. */
+function offerReady(target: ShareTarget): void {
+  useToastStore.getState().addToast({
+    type: 'info',
+    message: t('share.ready', { target: describeShareTarget(target) }),
+    // Stays until the learner opens it or dismisses it.
+    duration: 0,
+    action: { label: t('share.open'), onSelect: () => openNowOrWait(target) },
+  });
 }
 
 /** "Open" on the offer: apply, unless work has started again — then wait again. */
@@ -136,14 +144,16 @@ export function openNowOrWait(target: ShareTarget): void {
   else applyShareTarget(target);
 }
 
-export type OpenResult = 'applied' | 'held' | 'unreadable';
+export type OpenResult = 'applied' | 'held' | 'offered' | 'unreadable';
 
 /**
  * Open the link the page was started with (App.tsx, at boot, after the boot
  * view is set). `asTyped` = the address read without the fragment recovery
- * (see parseShareLink). Never throws.
+ * (see parseShareLink). `offer`: the learner went to another view while this
+ * code was on its way (services/shareLinkBoot.ts), so the link is offered
+ * with "Open" and never applied over where they went. Never throws.
  */
-export async function openShareLink(raw: RawShareParams | null, asTyped?: RawShareParams | null): Promise<OpenResult> {
+export async function openShareLink(raw: RawShareParams | null, asTyped?: RawShareParams | null, offer = false): Promise<OpenResult> {
   let target: ShareTarget = {};
   try {
     target = parseShareLink(raw, asTyped);
@@ -157,6 +167,10 @@ export async function openShareLink(raw: RawShareParams | null, asTyped?: RawSha
   // A lesson's title in the learner's language, for the toasts (English if
   // that index cannot load).
   if (target.lesson) await loadModuleIndex(i18n.language || 'en').catch(() => null);
+  if (offer) {
+    offerReady(target);
+    return 'offered';
+  }
   if (hasWorkInProgress()) {
     offerWhenFree(target);
     return 'held';

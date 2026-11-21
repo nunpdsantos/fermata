@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LazyMotion, MotionConfig, domAnimation, m } from 'framer-motion';
 import { AppShell } from './components/layout/AppShell.tsx';
-import { ViewSlot, type ViewLoader } from './components/ViewSlot.tsx';
+import { ViewSlot, ViewLoadingFallback, type ViewLoader } from './components/ViewSlot.tsx';
 import { QuickSearchHost } from './components/navigation/QuickSearchHost.tsx';
 import { useTheme } from './hooks/useTheme.ts';
 import { useLanguage } from './hooks/useLanguage.ts';
@@ -11,6 +11,7 @@ import { pickBootView } from './state/bootView.ts';
 import { readShareParams, cleanedAddress, markOpenedFromShareLink } from './state/shareParams.ts';
 import { LANG_PARAM } from './i18n/language.ts';
 import { ShareLinkHost } from './components/share/ShareLinkHost.tsx';
+import { openLinkCode } from './services/shareLinkBoot.ts';
 import type { ViewMode } from './state/storeTypes.ts';
 import { StartHost } from './components/start/StartHost.tsx';
 import { useStartScreenOwed, useStartScreenShown } from './state/startGate.ts';
@@ -59,8 +60,13 @@ function App() {
   //    a fresh boot it is the slice default 'explore' until this resolves it.
   //  - a shared link (?key= &scale= &chord= &inst= &lesson=, state/shareParams.ts)
   //    is opened by its own lazy chunk (it needs the chord parser); the view
-  //    waits for it, so the learner never sees the old key flash first. Its
-  //    parameters leave the address bar at once, like ?view=.
+  //    waits for it, so the learner never sees the old key flash first and no
+  //    view mounts (writing its state or history) before the link applies;
+  //    meanwhile the work area shows a view's loading sign. Going to another
+  //    view meanwhile ends the wait: that view draws and the link is offered
+  //    ("Open"), never applied over it. A failed download says so, with
+  //    "Try Again" (services/shareLinkBoot.ts). Its parameters leave the
+  //    address bar at once, like ?view=.
   const [linkOpening, setLinkOpening] = useState(
     () => readShareParams(window.location.search, window.location.hash) !== null,
   );
@@ -88,10 +94,22 @@ function App() {
 
     if (link !== null) {
       markOpenedFromShareLink();
-      import('./services/shareLinkOpen.ts')
-        .then((m) => m.openShareLink(link, readShareParams(search)))
-        .catch((e) => console.warn('[share link] could not open', e))
-        .finally(() => setLinkOpening(false));
+      let moved = false;
+      const stop = useAppStore.subscribe((s, p) => {
+        if (s.view !== p.view) {
+          moved = true;
+          setLinkOpening(false);
+        }
+      });
+      const offer = () => {
+        stop();
+        return moved;
+      };
+      void openLinkCode(link, readShareParams(search), offer, pathname + search + hash)
+        .finally(() => {
+          stop();
+          setLinkOpening(false);
+        });
     }
   }, []); // run-once on mount
 
@@ -125,7 +143,7 @@ function App() {
           role="tabpanel"
           aria-labelledby={`tab-${view}`}
         >
-          {!linkOpening && <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />}
+          {linkOpening ? <ViewLoadingFallback /> : <ViewSlot viewKey={view} loaders={VIEW_LOADERS} />}
         </m.div>
       </AppShell>
       )}
