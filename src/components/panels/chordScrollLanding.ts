@@ -1,4 +1,4 @@
-import { placeMetronome, type Box } from '../metronome/placement';
+import type { Box, placeMetronome as PlaceMetronome } from '../metronome/placement';
 
 export interface RowSpan { top: number; bottom: number }
 
@@ -46,6 +46,21 @@ export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: nu
 const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="metronome"]');
 
 /**
+ * The metronome's own placement (MetronomeBar's `placeMetronome`), taken
+ * from its chunk only once its bar stands over the column, when that chunk
+ * is loaded: Explore loads none of the metronome before it is opened (wave
+ * 3's promise, `e2e/metronome.spec.ts`; a static import put placement.ts in
+ * Explore's code, this round). A landing that meets the bar first waits for
+ * it; were it ever not to come, the landing goes on as without the bar.
+ */
+let placeMetronome: typeof PlaceMetronome | undefined;
+let placement: Promise<void> | undefined;
+let placementSettled = false;
+export const loadBarPlacement = () => (placement ??= import('../metronome/placement')
+  .then((m) => { placeMetronome = m.placeMetronome; }, () => {})
+  .finally(() => { placementSettled = true; }));
+
+/**
  * The bar's box where it is placed, not where its glide has got to: with
  * ordinary motion it moves to a new place over 0.2 s (metronome.css
  * transitions `top` and `left`), so in the frame after it opens it still
@@ -72,7 +87,7 @@ export function barPlaceWith(bar: HTMLElement, detailBox: Box): Box {
   const topBar = document.querySelector('.app-topbar')?.getBoundingClientRect();
   const dock = document.querySelector('[data-testid="instrument-dock"]')?.getBoundingClientRect();
   const hint = document.querySelector('[data-testid="start-hint"]')?.getBoundingClientRect();
-  const place = placeMetronome({
+  const place = placeMetronome!({
     viewport: { width: window.innerWidth, height: vh },
     topBarBottom: topBar?.bottom ?? 0,
     topClear: hint && hint.height > 0 ? hint.bottom : undefined,
@@ -157,6 +172,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   let spans: RowSpan[] = [];
   let frame = 0;
   let released = false;
+  let stopped = false;
   const held = () => (released ? null : strip);
   const contentTop = () => scroller.getBoundingClientRect().top - scroller.scrollTop;
   const measure = (el: Element): RowSpan => {
@@ -206,7 +222,11 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // fewer other controls covered (review of the second round: in
     // Portuguese at 1280×800 «Arpejo» landed 15 px under the bar).
     const covered = coveredFoot(scroller);
-    const bar = covered > 0 ? metronomeBar() : null;
+    if (covered > 0 && !placementSettled) {
+      void loadBarPlacement().then(() => { if (!stopped) again(); });
+      return;
+    }
+    const bar = covered > 0 && placeMetronome ? metronomeBar() : null;
     // Where the bar will stand with the column scrolled to `top`: it keeps off
     // the detail, re-placed every frame, so where it stands now is no guide
     // (the same chord landed in two places, by where the bar had stood).
@@ -354,6 +374,7 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   barWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-metro-room'] });
   scroller.addEventListener('scroll', clip, { passive: true });
   return () => {
+    stopped = true;
     cancelAnimationFrame(frame);
     observer.disconnect();
     barWatch.disconnect();

@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { barPlaceWith, chordLanding, footFadeShows, landChordDetail, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { barPlaceWith, chordLanding, footFadeShows, landChordDetail, loadBarPlacement, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
 import { placeMetronome } from '../../metronome/placement';
 
 // The bar's own rule, watched: called through, counted.
@@ -85,6 +86,7 @@ it('Build, the strip scrolling: the usual landing when the root row cannot fit w
 // first chord of a visit meets the bar at the left edge, where nothing was
 // yet in its way. 1280×800: the bar 635 × 46 above a dock at 476.
 describe('barPlaceWith: where the bar will stand once the detail is there', () => {
+  beforeAll(() => loadBarPlacement());
   const box = (top: number, left: number, width: number, height: number) => ({ top, left, right: left + width, bottom: top + height, width, height, x: left, y: top, toJSON() {} }) as DOMRect;
   afterEach(() => { document.body.innerHTML = ''; vi.unstubAllGlobals(); });
   const setUp = (barLeft: number) => {
@@ -187,6 +189,12 @@ describe('landChordDetail: the bar\'s branch only while the bar is open', () => 
     flush();
     return { scroller, setAttribute, stop };
   };
+
+  it('the metronome\'s placement is never imported up front: Explore loads none of the metronome before it is opened', () => {
+    const source = readFileSync(`${process.cwd()}/src/components/panels/chordScrollLanding.ts`, 'utf8');
+    expect(source).not.toMatch(/^import (?!type )[^;]*metronome/m);
+    expect(source).toMatch(/import\('\.\.\/metronome\/placement'\)/);
+  });
 
   it('no bar: no forecast of the bar is made and the strip is never let go', () => {
     const { scroller, setAttribute, stop } = setUp(false);
