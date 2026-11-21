@@ -333,6 +333,129 @@ test.describe('review of b94d761', () => {
   }
 });
 
+// ─── Leftovers of 21 November 2026: Quick Search's keys ──────────────────────
+// Q1: the dialog's code is fetched the first time search opens, and until it
+// arrived nothing listened: an Escape or a second Ctrl+K there was lost and
+// the dialog opened anyway. Here the code is HELD BACK on purpose (a route on
+// its chunk, released by the test), so the keys always come before it.
+// Q2: closing with Ctrl / Cmd+K gave focus back to nothing (Escape gave it
+// back) and left the dialog remembering where focus had been.
+test.describe('leftovers: Quick Search from the moment it is asked for', () => {
+  const CHUNK = /\/QuickSearch(\.tsx|-[\w-]+\.js)(\?.*)?$/;
+  const picker = (page: Page) => page.locator('#explore-panel [data-testid="key-picker"]');
+
+  /** The store, where the dev server serves its module (the build has no such address: null). */
+  async function storeOpen(page: Page): Promise<boolean | null> {
+    return page.evaluate(async () => {
+      const r = await fetch('/src/state/store.ts');
+      if (!(r.headers.get('content-type') ?? '').includes('javascript')) return null;
+      const { useAppStore } = await import('/src/state/store.ts' as string);
+      return useAppStore.getState().quickSearchOpen as boolean;
+    });
+  }
+
+  /** Two frames: what a key set in motion has been drawn. */
+  const frames = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+
+  for (const [name, keys, opens] of [
+    ['Escape', ['Escape'], false],
+    ['a second Ctrl+K', ['Control+k'], false],
+    ['a second Ctrl+K, then a third', ['Control+k', 'Control+k'], true],
+  ] as const) {
+    test(`Q1: the code held back, Ctrl+K then ${name}: ${opens ? 'it opens with the code' : 'when the code arrives, no dialog appears and focus has not moved'}`, async ({ browser }) => {
+      const { context, page } = await seededBrowser(browser, LAPTOP, { language: 'en', lastView: 'explore', themeMode: 'fermata' });
+      let release!: () => void;
+      const held = new Promise<void>((r) => { release = r; });
+      let asked!: (url: string) => void;
+      const chunkUrl = new Promise<string>((r) => { asked = r; });
+      await context.route(CHUNK, async (route) => {
+        asked(route.request().url());
+        await held;
+        await route.continue();
+      });
+      await page.goto('/');
+      await expect(picker(page)).toBeVisible({ timeout: 15_000 });
+      await picker(page).focus();
+      const dev = (await storeOpen(page)) !== null;
+
+      await page.keyboard.press('Control+k');
+      const url = await chunkUrl; // asked for, and held
+      await frames(page);
+      if (dev) expect(await storeOpen(page), 'after Ctrl+K: asked for').toBe(true);
+      await expect(dialogOf(page), 'its code held back: nothing drawn yet').toHaveCount(0);
+      for (const [i, key] of keys.entries()) {
+        await page.keyboard.press(key);
+        await frames(page);
+        // Looked at after EACH key: two toggles would cancel out.
+        if (dev) expect(await storeOpen(page), `after ${key} (key ${i + 2})`).toBe(i % 2 === 1);
+      }
+      await expect(dialogOf(page)).toHaveCount(0);
+      await expect(picker(page), 'nothing has moved focus').toBeFocused();
+
+      // The code arrives: released, fetched and run (the page imports the same address, so the
+      // import resolves once it has been evaluated), then drawn.
+      release();
+      await page.evaluate((u) => import(u).then(() => undefined), url);
+      await frames(page);
+      await page.waitForTimeout(300); // past the dialog's 50 ms focus timer
+      if (opens) {
+        await expect(dialogOf(page)).toBeVisible();
+        await expect(dialogOf(page).locator('input')).toBeFocused();
+        await page.keyboard.press('Escape');
+        await expect(dialogOf(page)).toHaveCount(0);
+        await expect(picker(page), 'Escape gives focus back').toBeFocused();
+      } else {
+        await expect(dialogOf(page), 'no dialog appeared').toHaveCount(0);
+        if (dev) expect(await storeOpen(page)).toBe(false);
+        await expect(picker(page), 'focus has not moved').toBeFocused();
+        // The code is there now and its keys work: one Ctrl+K opens, one closes.
+        await page.keyboard.press('Control+k');
+        await expect(dialogOf(page).locator('input')).toBeFocused();
+        await page.keyboard.press('Control+k');
+        await expect(dialogOf(page)).toHaveCount(0);
+        await expect(picker(page)).toBeFocused();
+      }
+      await context.close();
+    });
+  }
+
+  test('Q2: every way of closing gives focus back to where it was when search opened, and the dialog remembers no element after', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    const menu = page.locator('[data-testid="app-menu"] button').first();
+    const dev = (await storeOpen(page)) !== null;
+    const ways: [string, () => Promise<unknown>][] = [
+      ['Escape', () => page.keyboard.press('Escape')],
+      ['Ctrl+K', () => page.keyboard.press('Control+k')],
+      ['Cmd+K', () => page.keyboard.press('Meta+k')],
+      ['a click on the backdrop', () => page.mouse.click(40, 860)],
+      ['the browser\'s Back', () => page.goBack()],
+    ];
+    for (const [how, close] of ways) {
+      await picker(page).focus();
+      await page.keyboard.press('Control+k');
+      await expect(dialogOf(page).locator('input'), `${how}: open, the input focused`).toBeFocused();
+      await close();
+      await expect(dialogOf(page), `${how}: closed`).toHaveCount(0);
+      await expect(picker(page), `${how}: focus is back on the key picker`).toBeFocused();
+      if (dev) {
+        // Nothing remembered: focus elsewhere, then search opens and an Escape comes in the same task,
+        // before the dialog's effects have run. A dialog still holding the key picker sends focus there.
+        await menu.focus();
+        await page.evaluate(async () => {
+          const { useAppStore } = await import('/src/state/store.ts' as string);
+          useAppStore.setState({ quickSearchOpen: true });
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        });
+        await frames(page);
+        await page.waitForTimeout(100);
+        expect(await storeOpen(page)).toBe(false);
+        await expect(menu, `${how}: focus stays where the learner put it`).toBeFocused();
+      }
+    }
+    await context.close();
+  });
+});
+
 // ─── Screenshots: the list in EN / PT / ES, day and night ────────────────────
 test.describe('screenshots', () => {
   test.skip(!SHOTS, 'SEARCH_SHOTS=<dir> writes the screenshots');

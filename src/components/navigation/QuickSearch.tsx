@@ -120,10 +120,16 @@ export function QuickSearch() {
     else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
   }, [selectedIdx]);
 
+  // Focus goes back where it was when search opened, a frame later. The
+  // element is taken at the close, so the dialog remembers none after it
+  // (leftovers Q2); opened again before that frame, it is kept for the next
+  // close instead, and focus stays in the dialog.
   const restoreFocus = useCallback(() => {
+    const back = previousFocusRef.current;
+    previousFocusRef.current = null;
     requestAnimationFrame(() => {
-      previousFocusRef.current?.focus();
-      previousFocusRef.current = null;
+      if (useAppStore.getState().quickSearchOpen) previousFocusRef.current = back;
+      else back?.focus();
     });
   }, []);
 
@@ -144,7 +150,8 @@ export function QuickSearch() {
   // and mounted the first time search opens, already open, and an ordinary
   // effect runs a moment after the dialog is on screen, so an Escape in that
   // moment found nobody listening (the same test, retried on GitHub again
-  // with the first cure in, run 44709333098).
+  // with the first cure in, run 44709333098). Until this code is drawn, the
+  // host (QuickSearchHost) listens instead, and lets go in the same step.
   useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const open = useAppStore.getState().quickSearchOpen;
@@ -152,8 +159,12 @@ export function QuickSearch() {
       // already took both; this one did not, so search then opened once and never again).
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setQuickSearchOpen(!open);
-        setQuery('');
+        // Closing by the key is closing as Escape does: focus goes back (leftovers Q2).
+        if (open) closeDialog();
+        else {
+          setQuickSearchOpen(true);
+          setQuery('');
+        }
       }
       if (e.key === 'Escape' && open) {
         closeDialog();
@@ -167,12 +178,18 @@ export function QuickSearch() {
   // taken back if the dialog closes first: a result chosen before the 50 ms
   // were up left this timer to focus the closing dialog's input, and focus
   // then fell to <body> instead of where the result sent it (Explore's key
-  // picker; seen once on GitHub, 20 November 2026).
+  // picker; seen once on GitHub, 20 November 2026). Whatever closed it, the
+  // element is forgotten with the close: an Escape in the step the dialog was
+  // drawn closes it before this effect has run, and it then took an element
+  // that nothing would ever give focus back to or clear.
   useEffect(() => {
     if (!quickSearchOpen) return;
     previousFocusRef.current = document.activeElement as HTMLElement;
     const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      previousFocusRef.current = null;
+    };
   }, [quickSearchOpen]);
 
   const executeResult = useCallback(

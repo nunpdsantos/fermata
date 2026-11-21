@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { Component, lazy, Suspense, useCallback, useLayoutEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { useAppStore } from '../../state/store.ts';
 
 type SearchLoader = () => Promise<{ default: ComponentType }>;
@@ -24,10 +24,27 @@ class SearchBoundary extends Component<{ children: ReactNode; onFail: () => void
 }
 
 /**
- * Always mounted (App). Until search has been opened once, this owns the
- * Cmd/Ctrl+K shortcut; after that the loaded QuickSearch owns all its keys
- * (toggle, Escape) exactly as before, and stays mounted so its close
- * animation and focus restore keep working.
+ * Drawn in the same step as the dialog's code, after it: the dialog has just
+ * attached its own listener (its layout effect runs first), so the host lets
+ * go here, and takes the keys back if that code goes (an error).
+ */
+function KeysTaken({ host }: { host: (on: boolean) => void }) {
+  useLayoutEffect(() => {
+    host(false);
+    return () => host(true);
+  }, [host]);
+  return null;
+}
+
+/**
+ * Always mounted (App). Until the dialog's code is drawn, this owns Quick
+ * Search's keys: Cmd/Ctrl+K opens, and closes what it asked for; Escape
+ * closes it. Between a first Cmd/Ctrl+K (or the search button) and the code
+ * arriving, nothing else listens: an Escape or a second Cmd/Ctrl+K there was
+ * lost and the dialog opened anyway (leftovers Q1). Then the loaded
+ * QuickSearch owns all its keys, and stays mounted so its close animation and
+ * focus restore keep working. One listener at every moment: two that both
+ * toggle cancel out.
  *
  * If the download fails (offline before it was cached, a flaky connection),
  * search closes and the host takes the shortcut back; the NEXT open builds a
@@ -40,19 +57,33 @@ export function QuickSearchHost({ load = loadQuickSearch }: { load?: SearchLoade
   const [mounted, setMounted] = useState(open);
   const [attempt, setAttempt] = useState(0);
   const [Search, setSearch] = useState(() => lazy(load));
+  // The host's listener on (true) or off (false); nothing once the host is gone.
+  const keys = useRef<(on: boolean) => void>(null);
+  const host = useCallback((on: boolean) => keys.current?.(on), []);
   if (open && !mounted) setMounted(true); // derive-during-render: mount on first open
 
-  useEffect(() => {
-    if (mounted) return;
+  useLayoutEffect(() => {
+    let on = false;
     const onKeyDown = (e: KeyboardEvent) => {
+      const { quickSearchOpen, setQuickSearchOpen } = useAppStore.getState();
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        useAppStore.getState().setQuickSearchOpen(true);
-      }
+        setQuickSearchOpen(!quickSearchOpen);
+      } else if (e.key === 'Escape' && quickSearchOpen) setQuickSearchOpen(false);
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [mounted]);
+    const listen = (want: boolean) => {
+      if (want === on) return;
+      on = want;
+      if (on) window.addEventListener('keydown', onKeyDown);
+      else window.removeEventListener('keydown', onKeyDown);
+    };
+    keys.current = listen;
+    listen(true);
+    return () => {
+      keys.current = null;
+      listen(false);
+    };
+  }, []);
 
   const onFail = () => {
     useAppStore.getState().setQuickSearchOpen(false);
@@ -66,6 +97,7 @@ export function QuickSearchHost({ load = loadQuickSearch }: { load?: SearchLoade
     <SearchBoundary key={attempt} onFail={onFail}>
       <Suspense fallback={null}>
         <Search />
+        <KeysTaken host={host} />
       </Suspense>
     </SearchBoundary>
   );

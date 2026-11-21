@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { StrictMode, useLayoutEffect } from 'react';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
+import { QuickSearchHost } from '../QuickSearchHost';
 import { getResults } from '../quickSearchResults';
 import { useAppStore } from '../../../state/store';
 
@@ -360,5 +361,309 @@ describe('QuickSearch: closed in its first instant', () => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
     });
     expect(useAppStore.getState().quickSearchOpen).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// From the moment search is asked for (leftovers of 21 November 2026). Q1: the
+// dialog's code is fetched the first time search opens, and until it arrived
+// nothing listened, so an Escape or a second Cmd / Ctrl+K pressed meanwhile was
+// lost and the dialog opened anyway. Q2: closing with Cmd / Ctrl+K gave focus
+// back to nothing and left the dialog remembering where focus had been.
+// ───────────────────────────────────────────────────────────────────────────
+describe('QuickSearch: from the moment it is asked for, one listener, and focus given back', () => {
+  const isOpen = () => useAppStore.getState().quickSearchOpen;
+  const press = (init: KeyboardEventInit) => act(() => {
+    window.dispatchEvent(new KeyboardEvent('keydown', init));
+  });
+  const realWait = (ms: number) => act(async () => { await new Promise((r) => setTimeout(r, ms)); });
+
+  /** The dialog's code, held back until released: a slow first download, on purpose. */
+  function heldCode(component: React.ComponentType = QuickSearch) {
+    let arrive!: () => void;
+    const arrived = new Promise<void>((r) => { arrive = r; });
+    const load = vi.fn(() => arrived.then(() => ({ default: component })));
+    const release = () => act(async () => {
+      arrive();
+      await arrived;
+      await new Promise((r) => setTimeout(r, 20));
+    });
+    return { load, release };
+  }
+
+  /**
+   * The window's keydown listeners, read from spies on add / remove. `net` is add − remove calls, as the
+   * tests above count; `live` replays them in order as the DOM keeps them (the same function added
+   * twice is one), so it also says WHICH listener is there.
+   */
+  function keydownWatch() {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    const calls = () => [
+      ...add.mock.calls.map((c, i) => ({ on: true, type: c[0], fn: c[1], at: add.mock.invocationCallOrder[i] })),
+      ...remove.mock.calls.map((c, i) => ({ on: false, type: c[0], fn: c[1], at: remove.mock.invocationCallOrder[i] })),
+    ].filter((c) => c.type === 'keydown').sort((x, y) => x.at - y.at);
+    return {
+      net: () => calls().reduce((n, c) => n + (c.on ? 1 : -1), 0),
+      live: () => {
+        const on = new Set<unknown>();
+        for (const c of calls()) {
+          if (c.on) on.add(c.fn);
+          else on.delete(c.fn);
+        }
+        return [...on];
+      },
+      restore: () => {
+        add.mockRestore();
+        remove.mockRestore();
+      },
+    };
+  }
+
+  let a: HTMLButtonElement;
+  let b: HTMLButtonElement;
+  beforeEach(() => {
+    useAppStore.setState({ quickSearchOpen: false });
+    a = document.createElement('button');
+    b = document.createElement('button');
+    document.body.append(a, b);
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+    a.remove();
+    b.remove();
+  });
+
+  // ── Q1: before the code has arrived ──────────────────────────────────────
+
+  it.each([
+    ['Cmd+K', () => press({ key: 'k', metaKey: true })],
+    ['the search button (the store)', () => act(() => useAppStore.getState().setQuickSearchOpen(true))],
+  ])('asked for by %s, then Escape before the code has arrived: closed; when the code arrives, no dialog, and focus has not moved', async (_how, ask) => {
+    a.focus();
+    const { load, release } = heldCode();
+    const keys = keydownWatch();
+    render(<QuickSearchHost load={load} />);
+    const host = keys.live()[0];
+    await ask();
+    expect(isOpen(), 'asked for').toBe(true);
+    expect(load, 'its code is on its way').toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('combobox'), 'and not here yet').toBeNull();
+    await press({ key: 'Escape' });
+    expect(isOpen(), 'Escape, before the code: closed').toBe(false);
+    await release();
+    expect(keys.live(), 'the code arrived and was drawn: its listener replaced the host\'s').toHaveLength(1);
+    expect(keys.live()[0]).not.toBe(host);
+    await realWait(80); // past the dialog's 50 ms focus timer and a frame
+    expect(isOpen(), 'still closed').toBe(false);
+    expect(screen.queryByRole('combobox'), 'no dialog appeared').toBeNull();
+    expect(document.activeElement, 'focus never moved').toBe(a);
+  });
+
+  it('a second Cmd / Ctrl+K before the code has arrived closes it, a third opens it again; the code then shows it, and Escape gives focus back', async () => {
+    a.focus();
+    const { load, release } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    await press({ key: 'k', metaKey: true });
+    expect(isOpen(), 'first Cmd+K').toBe(true);
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen(), 'second, Ctrl+K: closed').toBe(false);
+    await press({ key: 'K', ctrlKey: true });
+    expect(isOpen(), 'third, a capital K: open').toBe(true);
+    for (const key of ['k', 'K']) {
+      await press({ key });
+      expect(isOpen(), `a plain ${key} is typing`).toBe(true);
+    }
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    await realWait(80);
+    expect(document.activeElement, 'the input, 50 ms after the dialog appeared').toBe(screen.getByRole('combobox'));
+    await press({ key: 'Escape' });
+    expect(isOpen()).toBe(false);
+    await realWait(40);
+    expect(document.activeElement, 'back where it was when search was asked for').toBe(a);
+  });
+
+  it('Escape while closed, before the code was ever asked for, does nothing at all (not even a store write); neither does a plain k', async () => {
+    a.focus();
+    const { load } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    const writes = vi.fn();
+    const stop = useAppStore.subscribe(writes);
+    try {
+      for (const init of [{ key: 'Escape' }, { key: 'k' }, { key: 'K', shiftKey: true }]) {
+        await press(init);
+        expect(isOpen(), `after ${init.key}`).toBe(false);
+        expect(writes, `the store, after ${init.key}`).not.toHaveBeenCalled();
+      }
+    } finally {
+      stop();
+    }
+    expect(load, 'nothing was fetched').not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(a);
+  });
+
+  // ── Exactly one listener, at every moment ────────────────────────────────
+
+  it.each([false, true])('strict mode %s: one keydown listener before the code, while it is held, once it is drawn (the dialog\'s, not the host\'s), none after an unmount; each key acts once', async (strict) => {
+    const keys = keydownWatch();
+    const { load, release } = heldCode();
+    const tree = <QuickSearchHost load={load} />;
+    const { unmount } = render(strict ? <StrictMode>{tree}</StrictMode> : tree);
+    expect([keys.net(), keys.live().length], 'before search is asked for').toEqual([1, 1]);
+    const host = keys.live()[0];
+    await press({ key: 'k', metaKey: true });
+    expect(isOpen()).toBe(true);
+    expect([keys.net(), keys.live()], 'asked for, its code held back: the host\'s, still').toEqual([1, [host]]);
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    expect(keys.net(), 'its code drawn').toBe(1);
+    expect(keys.live()).toHaveLength(1);
+    expect(keys.live()[0], 'and it is the dialog\'s').not.toBe(host);
+    await press({ key: 'k', metaKey: true });
+    expect(isOpen(), 'Cmd+K closes').toBe(false);
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen(), 'Ctrl+K opens').toBe(true);
+    await press({ key: 'Escape' });
+    expect(isOpen(), 'Escape closes').toBe(false);
+    await press({ key: 'Escape' });
+    expect(isOpen(), 'and a second Escape opens nothing').toBe(false);
+    expect([keys.net(), keys.live().length], 'still one').toEqual([1, 1]);
+    unmount();
+    expect([keys.net(), keys.live().length], 'after an unmount, none').toEqual([0, 0]);
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen()).toBe(false);
+    keys.restore();
+  });
+
+  it('the host listens from the step it is drawn and lets go in the step it goes: a key pressed by a sibling\'s layout effect in those steps is heard, then not', async () => {
+    // A key in the very step: pressed by a sibling's layout effect, which React runs in that step, after
+    // the host's own (when drawn) and after the host's subtree has gone (when removed).
+    function CmdKInThisStep() {
+      useLayoutEffect(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+        return () => {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+        };
+      }, []);
+      return null;
+    }
+    const keys = keydownWatch();
+    const { load, release } = heldCode();
+    const { rerender } = render(<><QuickSearchHost load={load} /><CmdKInThisStep /></>);
+    expect(isOpen(), 'heard in the step the host was drawn').toBe(true);
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    await press({ key: 'Escape' });
+    expect(isOpen()).toBe(false);
+    rerender(<></>);
+    expect(isOpen(), 'not heard in the step the host went, by anyone').toBe(false);
+    expect([keys.net(), keys.live().length], 'none left').toEqual([0, 0]);
+    keys.restore();
+  });
+
+  it('if the dialog\'s code goes (an error once it was drawn), the host takes the keys back: one listener, the host\'s, and Cmd+K opens again', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    function Fragile() {
+      if (useAppStore((s) => s.selectedChord !== null)) throw new Error('planted');
+      return <QuickSearch />;
+    }
+    const keys = keydownWatch();
+    const { load, release } = heldCode(Fragile);
+    render(<QuickSearchHost load={load} />);
+    const host = keys.live()[0];
+    await press({ key: 'k', metaKey: true });
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    expect(keys.live()[0]).not.toBe(host);
+    await act(async () => {
+      useAppStore.setState({ selectedChord: { root: { natural: 'C', accidental: '' }, quality: 'major' } as never });
+      await new Promise((r) => setTimeout(r, 20));
+    });
+    expect(screen.queryByRole('combobox'), 'the dialog went with its error').toBeNull();
+    expect(isOpen(), 'search closed').toBe(false);
+    expect([keys.net(), keys.live()], 'the host listens again').toEqual([1, [host]]);
+    useAppStore.setState({ selectedChord: null });
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen(), 'Ctrl+K opens it again').toBe(true);
+    keys.restore();
+  });
+
+  // ── Q2: every way of closing gives focus back, and nothing is remembered ──
+
+  it.each([
+    ['Escape', () => press({ key: 'Escape' })],
+    ['Cmd+K', () => press({ key: 'k', metaKey: true })],
+    ['Ctrl+K', () => press({ key: 'K', ctrlKey: true })],
+    ['a click on the backdrop', () => act(() => { fireEvent.click(document.querySelector('.fixed.inset-0')!); })],
+  ])('closed by %s: focus goes back to where it was when search opened, and the dialog remembers no element after', (_how, close) => {
+    vi.useFakeTimers();
+    a.focus();
+    render(<QuickSearch />);
+    press({ key: 'k', metaKey: true });
+    expect(isOpen()).toBe(true);
+    act(() => { vi.advanceTimersByTime(60); });
+    expect(document.activeElement, 'the input').toBe(screen.getByRole('combobox'));
+    close();
+    expect(isOpen(), 'closed').toBe(false);
+    act(() => { vi.advanceTimersByTime(20); }); // a frame
+    expect(document.activeElement, 'focus is back').toBe(a);
+    // Nothing remembered: focus elsewhere, then search opens and an Escape comes before its effects have run
+    // (as in the step it is drawn). A dialog still holding `a` would send focus there.
+    b.focus();
+    act(() => {
+      useAppStore.setState({ quickSearchOpen: true });
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    expect(isOpen()).toBe(false);
+    act(() => { vi.advanceTimersByTime(100); });
+    expect(document.activeElement, 'focus stays where the learner put it').toBe(b);
+  });
+
+  it('an Escape in the step the dialog is first drawn leaves nothing remembered either', () => {
+    vi.useFakeTimers();
+    function EscapeAsItIsDrawn() {
+      useLayoutEffect(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      }, []);
+      return null;
+    }
+    a.focus();
+    useAppStore.setState({ quickSearchOpen: true });
+    render(<><QuickSearch /><EscapeAsItIsDrawn /></>);
+    expect(isOpen()).toBe(false);
+    act(() => { vi.advanceTimersByTime(100); });
+    expect(document.activeElement, 'focus never left').toBe(a);
+    b.focus();
+    act(() => {
+      useAppStore.setState({ quickSearchOpen: true });
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    act(() => { vi.advanceTimersByTime(100); });
+    expect(document.activeElement, 'not sent back to where it was at that first step').toBe(b);
+  });
+
+  it('closed and opened again before the next frame: focus stays in the dialog, and its next close gives focus back to where search first opened', () => {
+    vi.useFakeTimers();
+    a.focus();
+    render(<QuickSearch />);
+    press({ key: 'k', metaKey: true });
+    act(() => { vi.advanceTimersByTime(60); });
+    const input = screen.getByRole('combobox');
+    expect(document.activeElement).toBe(input);
+    press({ key: 'k', metaKey: true });
+    expect(isOpen(), 'closed').toBe(false);
+    press({ key: 'k', metaKey: true });
+    expect(isOpen(), 'open again, inside the same frame').toBe(true);
+    act(() => { vi.advanceTimersByTime(20); });
+    expect(document.activeElement, 'the frame did not pull focus out of the open dialog').not.toBe(a);
+    act(() => { vi.advanceTimersByTime(60); });
+    expect(document.activeElement, 'the input').toBe(screen.getByRole('combobox'));
+    press({ key: 'Escape' });
+    expect(isOpen()).toBe(false);
+    act(() => { vi.advanceTimersByTime(20); });
+    expect(document.activeElement, 'back where search first opened').toBe(a);
   });
 });
