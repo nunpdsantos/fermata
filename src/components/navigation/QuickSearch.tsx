@@ -76,7 +76,12 @@ export function QuickSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  // Where focus goes back to when search closes: taken when it opens, kept
+  // while a close's frame is still to come (search opened again inside it),
+  // given back and forgotten in that frame.
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  // Frames asked for by restoreFocus and not yet come.
+  const restores = useRef(0);
   // The row the arrow keys moved to: the selection change it makes scrolls it
   // into view. Cleared once used, on an arrow press that moved nothing (the
   // last row), and when a mouse points at a row — a mouse never scrolls the
@@ -120,10 +125,22 @@ export function QuickSearch() {
     else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
   }, [selectedIdx]);
 
+  // Focus goes back where it was when search opened, a frame later (leftovers
+  // Q2). The frame looks at search as it is then: opened again meanwhile (any
+  // run of keys inside one frame), it moves nothing and the element stays for
+  // the close to come; closed, it gives focus back and forgets the element. So
+  // a run of opens and closes ends where search first opened, and an open
+  // inside the run never takes the closing dialog's own input as the place to
+  // go back to (review item 3: close, open, close in one frame ended on <body>).
+  const restoring = useCallback(() => restores.current > 0, []);
   const restoreFocus = useCallback(() => {
+    restores.current++;
     requestAnimationFrame(() => {
-      previousFocusRef.current?.focus();
+      restores.current--;
+      if (useAppStore.getState().quickSearchOpen) return;
+      const back = previousFocusRef.current;
       previousFocusRef.current = null;
+      back?.focus();
     });
   }, []);
 
@@ -144,7 +161,8 @@ export function QuickSearch() {
   // and mounted the first time search opens, already open, and an ordinary
   // effect runs a moment after the dialog is on screen, so an Escape in that
   // moment found nobody listening (the same test, retried on GitHub again
-  // with the first cure in, run 44709333098).
+  // with the first cure in, run 44709333098). Until this code is drawn, the
+  // host (QuickSearchHost) listens instead, and lets go in the same step.
   useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const open = useAppStore.getState().quickSearchOpen;
@@ -152,8 +170,14 @@ export function QuickSearch() {
       // already took both; this one did not, so search then opened once and never again).
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setQuickSearchOpen(!open);
-        setQuery('');
+        // A held key repeats: it acts once.
+        if (e.repeat) return;
+        // Closing by the key is closing as Escape does: focus goes back (leftovers Q2).
+        if (open) closeDialog();
+        else {
+          setQuickSearchOpen(true);
+          setQuery('');
+        }
       }
       if (e.key === 'Escape' && open) {
         closeDialog();
@@ -167,13 +191,22 @@ export function QuickSearch() {
   // taken back if the dialog closes first: a result chosen before the 50 ms
   // were up left this timer to focus the closing dialog's input, and focus
   // then fell to <body> instead of where the result sent it (Explore's key
-  // picker; seen once on GitHub, 20 November 2026).
+  // picker; seen once on GitHub, 20 November 2026). The place to go back to
+  // is kept if a close's frame is still to come (opened again inside it).
+  // Closed by none of its own ways (no frame to come: the store set from
+  // elsewhere, or the dialog unmounted), focus goes back at once and nothing
+  // is remembered.
   useEffect(() => {
     if (!quickSearchOpen) return;
-    previousFocusRef.current = document.activeElement as HTMLElement;
+    previousFocusRef.current ??= document.activeElement as HTMLElement;
     const timer = window.setTimeout(() => inputRef.current?.focus(), 50);
-    return () => window.clearTimeout(timer);
-  }, [quickSearchOpen]);
+    return () => {
+      window.clearTimeout(timer);
+      if (restoring()) return;
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
+    };
+  }, [quickSearchOpen, restoring]);
 
   const executeResult = useCallback(
     (idx: number) => {
