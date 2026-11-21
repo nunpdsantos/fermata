@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { barPlaceWith, chordLanding, landChordDetail, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
+import { barPlaceWith, chordLanding, footFadeShows, landChordDetail, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
 import { placeMetronome } from '../../metronome/placement';
 
 // The bar's own rule, watched: called through, counted.
@@ -205,5 +205,23 @@ describe('landChordDetail: the bar\'s branch only while the bar is open', () => 
     await Promise.resolve(); // the attribute's observer
     expect(scroller.hasAttribute('data-strip-scrolls')).toBe(false);
     stop();
+  });
+});
+
+// The rounding edge (review of this round): the column shows its fade once
+// its items go on more than a pixel below its foot, and the scroller takes
+// the nearest whole pixel, so the landing counts the fade from the foot.
+describe('footFadeShows: a fade within a pixel of showing counts as showing', () => {
+  it('the review\'s Minor 13th: 331.99 px below the top of a 331 px column, asked at 170.3, shows (at 170 the card ended 332.3 px down)', () => {
+    expect(footFadeShows(170.3 + 331.99, 170.3, 331)).toBe(true);
+    expect(footFadeShows(170.3 + 331.99, 170, 331)).toBe(true);
+  });
+  it('items ending at the foot or above: no fade', () => {
+    expect(footFadeShows(501, 170, 331)).toBe(false);
+    expect(footFadeShows(480, 170, 331)).toBe(false);
+  });
+  it('anything past the foot counts, a pixel or less included', () => {
+    expect(footFadeShows(501.2, 170, 331)).toBe(true);
+    expect(footFadeShows(502.5, 170, 331)).toBe(true);
   });
 });

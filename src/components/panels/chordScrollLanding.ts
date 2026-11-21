@@ -109,6 +109,17 @@ const FOOT_FADE_PX = 28;
 const SETTLE_LANDINGS = 4;
 
 /**
+ * Will the work column show its foot fade, its items ending `itemsEnd` px
+ * below its top (content coordinates), scrolled to `at`? The column shows it
+ * once items go on more than a pixel below its foot (`scrollCues.ts`); the
+ * landing counts it from the foot itself, so a target is never judged within
+ * a pixel of the wrong side — the scroller takes the nearest whole pixel
+ * (review of this round: 170.3 judged "no fade", the column at 170 and its
+ * card 332.3 px down, so the fade showed over the detail).
+ */
+export const footFadeShows = (itemsEnd: number, at: number, clientHeight: number) => itemsEnd - at > clientHeight;
+
+/**
  * `strip` is the staff strip held at the top of the work column (sticky), or
  * null where it scrolls with the work — the Build tab on a laptop shorter
  * than 900 px (the owner's ruling, 19 November 2026): the same whole-row
@@ -122,8 +133,8 @@ const SETTLE_LANDINGS = 4;
  * bar judged where it will stand once the detail is there (`barPlaceWith`),
  * not where it stands or is gliding to; where that leaves the chord's name
  * or a control of its detail under the bar, under the strip, below the
- * column's foot or under its foot fade (judged on the whole pixel the
- * column will take, a fade within a pixel of showing counted as showing),
+ * column's foot or under its foot fade (a fade within a pixel of showing
+ * counted as showing: `footFadeShows`),
  * the detail at the top of the view and then the chords card's end at the
  * foot are tried; only where those fail too does the strip scroll with the
  * work (`data-strip-scrolls`, index.css), in the spirit of the owner's ruling
@@ -240,17 +251,12 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
       const s = scroller.getBoundingClientRect();
       const viewTop = s.top + scroller.clientTop + clear - 8;
       const foot = s.top + scroller.clientTop + scroller.clientHeight;
-      // Judged where the column will be: the scroller takes the nearest whole
-      // pixel (10.5 → 11 in Chromium), so a target is judged there as well as
-      // where it was asked, and a fade within a pixel of showing counts as
-      // showing (review of this round: 170.3 judged "no fade", the column at
-      // 170 and its card 332.3 px down, so the fade showed over the detail).
-      const inView = (at: number) => [at, Math.round(at)].every((y) => {
-        const shift = scroller.scrollTop - y;
-        const b = barAt(y);
+      const inView = (at: number) => {
+        const shift = scroller.scrollTop - at;
+        const b = barAt(at);
         // Where the column's items go on below its foot, its fade lies over the last 28 px (index.css, held at the foot).
         const lowest = Math.max(...[...scroller.children].map((el) => measure(el).bottom));
-        const end = lowest - y > scroller.clientHeight ? foot - FOOT_FADE_PX : foot;
+        const end = footFadeShows(lowest, at, scroller.clientHeight) ? foot - FOOT_FADE_PX : foot;
         return [...detail.querySelectorAll(DETAIL_PARTS)].every((el) => {
           const r = el.getBoundingClientRect();
           if (r.height === 0 || r.width === 0) return true;
@@ -258,15 +264,14 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
           const underBar = bottom > b.top + 1 && top < b.bottom - 1 && r.right > b.left + 1 && r.left < b.right - 1;
           return top >= viewTop - 0.5 && bottom <= end + 0.5 && !underBar;
         });
-      });
+      };
       if (!inView(target)) {
         // The detail at the top of the view, or the chords card's end at the
-        // column's foot (nothing below it, so no fade), each on whole pixels
-        // to the safe side: the card's head is above the view either way, so
-        // the detail names its tab.
+        // column's foot (nothing below it, so no fade): the card's head is
+        // above the view either way, so the detail names its tab.
         const named = detail.dataset.compactSource;
         detail.dataset.compactSource = 'true';
-        const fit = [Math.floor(measure(detail).top - clear), Math.ceil(measure(card).bottom - scroller.clientHeight)].find((at) => at >= 0 && inView(at));
+        const fit = [measure(detail).top - clear, measure(card).bottom - scroller.clientHeight].find((at) => at >= 0 && inView(at));
         if (fit !== undefined) target = fit;
         else if (strip) {
           released = true;

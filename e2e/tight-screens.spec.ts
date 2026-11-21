@@ -408,7 +408,7 @@ test.describe('E2: a chord chosen first, then the bar opened: the detail lands a
 
 test.describe('E2: the strip goes exactly while the bar is open and the detail cannot fit with it held (one page, step by step)', () => {
   for (const { motion, label: motionLabel } of MOTIONS) {
-    test(`1280×800, piano, EN${motionLabel}: bar open → In key 3 → bar closed → opened → In key 1 → deselected → another tab and back`, async ({ browser, baseURL }) => {
+    test(`1280×800, piano, EN${motionLabel}: bar open → In key 3 → bar closed → opened → the window wider and back → In key 1 → In key 3 again → deselected → another tab and back`, async ({ browser, baseURL }) => {
       test.setTimeout(120_000);
       const { context, page } = await open(browser, baseURL!, { w: 1280, h: 800, motion });
       const strip = () => page.locator('.explore-main > .strip-card').evaluate((el) => getComputedStyle(el).position);
@@ -432,6 +432,7 @@ test.describe('E2: the strip goes exactly while the bar is open and the detail c
       let r = await landingState(page);
       checkLanding(r, `1. bar open, In key 3${motionLabel}`);
       expect([r.attr, await strip()], '1. In key 3 cannot fit with the strip held: it scrolls with the work').toEqual([true, 'static']);
+      const firstAt = await scroll();
 
       await closeBar(page);
       expect([await attr(), await strip()], '2. the bar closed: the strip held again at once').toEqual([false, 'sticky']);
@@ -439,11 +440,26 @@ test.describe('E2: the strip goes exactly while the bar is open and the detail c
       expect(await noBarInView(), '2. landed as with no bar').toEqual([]);
       const closedAt = await scroll();
 
+      await countLandings(page);
       await openBar(page, 'en');
       await landed(page);
       r = await landingState(page);
       checkLanding(r, `3. the bar opened again${motionLabel}`);
       expect([r.attr, await strip()], '3. opened again: In key 3 cannot fit held, the strip goes again').toEqual([true, 'static']);
+
+      // The decision is made afresh at every landing: the window made wider (1440×900, where both fit) holds the strip; back, it goes again.
+      await countLandings(page);
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await landed(page);
+      r = await landingState(page);
+      checkLanding(r, `3a. the window widened to 1440×900, the bar open${motionLabel}`);
+      expect([r.attr, await strip()], '3a. at 1440×900 both fit: the strip held again').toEqual([false, 'sticky']);
+      await countLandings(page);
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await landed(page);
+      r = await landingState(page);
+      checkLanding(r, `3b. back to 1280×800${motionLabel}`);
+      expect([r.attr, await strip()], '3b. back at 1280×800: the strip goes again').toEqual([true, 'static']);
 
       await toTop(page);
       await choose(page, '.chord-row button >> nth=0');
@@ -451,6 +467,17 @@ test.describe('E2: the strip goes exactly while the bar is open and the detail c
       r = await landingState(page);
       checkLanding(r, `4. In key 1${motionLabel}`);
       expect([r.attr, await strip()], '4. In key 1 fits with the strip held: held').toEqual([false, 'sticky']);
+
+      // A chord lands where it lands, wherever the bar stood: In key 3 first came with the bar at the left edge (nothing in its way), now after In key 1.
+      await toTop(page);
+      await choose(page, '.chord-row button >> nth=2');
+      await landed(page);
+      r = await landingState(page);
+      checkLanding(r, `4a. In key 3 again${motionLabel}`);
+      expect(Math.abs((await scroll()) - firstAt), `4a. In key 3 lands at ${await scroll()}, as when it was the first chord of the visit (${firstAt})`).toBeLessThanOrEqual(1);
+      await toTop(page);
+      await choose(page, '.chord-row button >> nth=0');
+      await landed(page);
 
       await page.locator('.chord-row button').nth(0).dispatchEvent('click');
       await settled(page);
