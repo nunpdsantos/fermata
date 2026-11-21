@@ -135,8 +135,8 @@ export const footFadeShows = (itemsEnd: number, at: number, clientHeight: number
  * or a control of its detail under the bar, under the strip, below the
  * column's foot or under its foot fade (a fade within a pixel of showing
  * counted as showing: `footFadeShows`),
- * the detail at the top of the view and then the chords card's end at the
- * foot are tried; only where those fail too does the strip scroll with the
+ * the detail at the top of the view, the chords card's end at the foot and
+ * the detail's last control just above the fade are tried; only where those fail too does the strip scroll with the
  * work (`data-strip-scrolls`, index.css), in the spirit of the owner's ruling
  * for Build, and the detail land again as on Build. Where both fit
  * (1440×900, 1536×864, the piano's In key 1, 4 and 7 at 1280×800), the
@@ -243,10 +243,10 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // above, clear of the bar (where it will stand once the detail is there),
     // above the column's foot and its fade where the fade shows. Where the
     // choice leaves something out (its first pass keeps the chord's row with
-    // ▶ Chord and lets the rest go below the foot), the detail at the top of
-    // the view is tried, then the chords card's end at the foot; where both
-    // fail too with the strip held, the strip scrolls with the work and the
-    // detail lands again.
+    // ▶ Chord and lets the rest go below the foot), three more are tried (the
+    // detail at the top, the card's end at the foot, the last control just
+    // above the fade); where all fail with the strip held, the strip scrolls
+    // with the work and the detail lands again.
     if (bar) {
       const s = scroller.getBoundingClientRect();
       const viewTop = s.top + scroller.clientTop + clear - 8;
@@ -266,12 +266,18 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
         });
       };
       if (!inView(target)) {
-        // The detail at the top of the view, or the chords card's end at the
-        // column's foot (nothing below it, so no fade): the card's head is
-        // above the view either way, so the detail names its tab.
+        // The detail at the top of the view; the chords card's end at the
+        // column's foot (nothing below it, so no fade); or, where chord cards
+        // follow the detail (All Chords opens it under the tapped row), its
+        // last control just above the fade — the detail's own padding left
+        // out (this round: at 1280×800 in Spanish, text 8 % wider, "Aprende
+        // sobre esto" 6 px into the fade from the top candidate). The card's
+        // head is above the view in each, so the detail names its tab.
         const named = detail.dataset.compactSource;
         detail.dataset.compactSource = 'true';
-        const fit = [measure(detail).top - clear, measure(card).bottom - scroller.clientHeight].find((at) => at >= 0 && inView(at));
+        const lastPart = Math.max(...[...detail.querySelectorAll(DETAIL_PARTS)].map((el) => measure(el).bottom));
+        const fit = [measure(detail).top - clear, measure(card).bottom - scroller.clientHeight, lastPart - (scroller.clientHeight - FOOT_FADE_PX) + 1]
+          .find((at) => at >= 0 && inView(at));
         if (fit !== undefined) target = fit;
         else if (strip) {
           released = true;

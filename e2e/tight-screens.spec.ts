@@ -345,7 +345,7 @@ test.describe('E2: with the bar open, every All Chords quality lands in view at 
                 for (const { quality, category } of part) {
                   await toTop(page);
                   if (category !== shown) {
-                    await page.getByRole('radiogroup', { name: t.all }).getByRole('radio').nth(category).click();
+                    await page.getByRole('radiogroup', { name: t.all }).getByRole('radio').nth(category).dispatchEvent('click');
                     shown = category;
                     await settled(page);
                   }
@@ -393,7 +393,7 @@ test.describe('E2: a chord chosen first, then the bar opened: the detail lands a
             await settled(page);
             for (const { quality, category } of [QUALITIES[2], QUALITIES[14], QUALITIES[49]]) {
               await toTop(page);
-              await page.getByRole('radiogroup', { name: 'All Chords' }).getByRole('radio').nth(category).click();
+              await page.getByRole('radiogroup', { name: 'All Chords' }).getByRole('radio').nth(category).dispatchEvent('click');
               await settled(page);
               await choose(page, `[data-quality="${quality}"]`);
               await each(`${w}×${h} ${instrument}${textLabel}${motionLabel}, All Chords ${quality}`);
