@@ -75,17 +75,24 @@ describe('release 18 (2026-11-22): the leftovers round', () => {
     expect([note.release, note.date, note.critical]).toEqual([18, '2026-11-22', false]);
     expect(previous.release).toBe(17);
     for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
-    // The toast's own button, the search and the metronome, each as the app says it in that language.
+    // The toast's own button, the metronome and the instrument panel, each as the app says it in that language;
+    // "shortcuts", not "keys" (the app's keys are the piano's), and the search by its noun in Portuguese and
+    // Spanish, as release 16's note has it (the language review of 21 November 2026).
     const { default: en } = await import('../../i18n/locales/en.json');
     const { default: pt } = await import('../../i18n/locales/pt.json');
     const { default: es } = await import('../../i18n/locales/es.json');
     expect(note.notes.en).toContain(`“${en.common.tryAgain}”`);
     expect(note.notes.pt).toContain(`«${pt.common.tryAgain}»`);
     expect(note.notes.es).toContain(`«${es.common.tryAgain}»`);
-    expect(note.notes.en).toContain(en.nav.search);
-    expect(note.notes.es).toContain(es.nav.search);
-    for (const [lang, words] of [['en', en], ['pt', pt], ['es', es]] as const) expect(note.notes[lang].toLowerCase(), lang).toContain(words.metronomeToolEntry.menuItem.toLowerCase());
-    expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([158, 160, 159]);
+    expect(note.notes.en).toContain(`${en.nav.search} shortcuts`);
+    expect(note.notes.pt).toContain('atalhos da pesquisa');
+    expect(note.notes.es).toContain('atajos de la búsqueda');
+    for (const [lang, words] of [['en', en], ['pt', pt], ['es', es]] as const) {
+      expect(note.notes[lang].toLowerCase(), lang).toContain(words.metronomeToolEntry.menuItem.toLowerCase());
+      expect(note.notes[lang].toLowerCase(), lang).toContain(words.dock.handle.toLowerCase());
+      expect(note.notes[lang], lang).not.toMatch(/\b(keys|teclas|sheet|folha|hoja)\b/i);
+    }
+    expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([157, 160, 160]);
   });
 });
 

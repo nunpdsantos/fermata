@@ -6,9 +6,9 @@
       "date": "2026-11-22",
       "critical": false,
       "notes": {
-        "en": "A shared link now shows it is loading and offers “Try Again” if it fails. Also fixed: Search's keys, chords under the metronome, the phone's instrument sheet.",
-        "pt": "Uma ligação partilhada mostra que está a carregar e dá «Tentar novamente» se falhar. E ainda: teclas da Pesquisa, acordes sob o metrónomo, a folha no telemóvel.",
-        "es": "Un enlace compartido muestra que está cargando y ofrece «Intentar de nuevo» si falla. Además: teclas de Buscar, acordes bajo el metrónomo, la hoja en el móvil."
+        "en": "A shared link now shows it is loading and offers “Try Again” if it fails. Also fixed: Search shortcuts, chords hidden by the metronome, the instrument panel.",
+        "pt": "A ligação partilhada mostra que está a carregar e dá «Tentar novamente» se falhar. E ainda: atalhos da pesquisa, acordes sob o metrónomo, painel do instrumento.",
+        "es": "Un enlace compartido muestra la carga y ofrece «Intentar de nuevo» si falla. Además: atajos de la búsqueda, acordes bajo el metrónomo, el panel del instrumento."
       }
     },
     {
