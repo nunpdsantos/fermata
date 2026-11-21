@@ -12,9 +12,16 @@ import fs from 'node:fs';
  *    offers itself with "Open";
  *  - a link opened in a second tab, the first on Learn, draws Explore with
  *    the link, the CPU slowed (release 17 removed the exit that held it back);
- *  - while the link's own code is on its way, the loading sign and no view;
- *    another view chosen meanwhile draws and the link is offered; code that
- *    cannot be fetched says so, and Try Again opens the link;
+ *  - while the link's own code is on its way, the loading sign and no view,
+ *    no history written; another view chosen meanwhile draws and the link is
+ *    offered; code that cannot be fetched says so, and Try Again opens the
+ *    link (this entry's state kept);
+ *  - the learner is free until the link is APPLIED (review S-1): Try Again
+ *    reloads exactly the address opened, in every form; a lesson offered is
+ *    named in PT / ES also when the titles come late; leaving during the
+ *    titles, a key from Quick Search, the instrument switch and the tour all
+ *    end the wait and the link is offered; another tab, ?lang= and ?start=
+ *    do not; offline, Try Again keeps the page and the link;
  *  - "Copy link" puts the expected address on the clipboard (laptop) or in
  *    the share sheet (phone), and when the browser refuses both, the link is
  *    shown in a selectable field;
@@ -220,10 +227,20 @@ test('while the link’s own code is on its way the work area shows the loading 
   expect(new URL(page.url()).search).toBe('');
   await shot(page, 'share-link-code-held-laptop-day-en');
   const held = await dockTop(page);
+  // The history module arrives during the wait and writes its one entry; after that nothing is
+  // written until the link applies, and no view is mounted (the panel holds the loading sign only).
+  await expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0), { timeout: 10_000 }).toBe(1);
+  const entry = () => page.evaluate(() => ({ length: history.length, state: JSON.stringify(history.state) }));
+  const before = await entry();
+  await page.waitForTimeout(600);
+  expect(await entry()).toEqual(before);
+  await expect(page.locator('#explore-panel > *')).toHaveCount(1);
+  await expect(page.locator('#explore-panel h1, #explore-panel h2')).toHaveCount(0);
 
   code.release();
   await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
   await expect(loading).toHaveCount(0);
+  expect((await entry()).length, 'the link applied without a new entry').toBe(before.length);
   expect(await page.evaluate(() => (window as unknown as { __keys: string[] }).__keys)).toEqual(['G Major · 1♯ · relative E minor']);
   // The instrument holds still from the loading sign to the link's view (two-sided).
   expect(Math.abs((await dockTop(page)) - held)).toBeLessThanOrEqual(1);
@@ -272,13 +289,24 @@ test('a link whose own code cannot be fetched: the app opens as usual and says s
   expect(asked).toBe(1);
   await shot(page, 'share-link-code-failed-laptop-day-en');
 
-  // Try Again: the page reloads on the link's address; it fails again and says so again.
+  // Two screens on (Learn, then Explore: two entries of this tab), then Try Again: the page
+  // reloads on the link's address with this entry's state kept (the same entry, no new one).
+  await page.locator('[role="tab"][data-tab="learn"]').click();
+  await expect(page.locator('#learn-panel h1').first()).toBeVisible({ timeout: 15_000 });
+  await page.locator('[role="tab"][data-tab="explore"]').click();
+  await expect(page.getByTestId('key-summary')).toContainText('C Major', { timeout: 15_000 });
+  const entry = () => page.evaluate(() => ({ length: history.length, i: (history.state as { i?: number } | null)?.i }));
+  const before = await entry();
+  expect(before.i).toBe(2);
+
+  // It fails again and says so again.
   await tryAgain.click();
   await expect.poll(() => asked, { timeout: 15_000 }).toBe(2);
   await expect(tryAgain).toBeVisible({ timeout: 15_000 });
   await expect(region).toContainText('The link could not open.');
   await expect(page.getByTestId('key-summary')).toContainText('C Major');
   expect(new URL(page.url()).search).toBe('');
+  await expect.poll(entry, { timeout: 10_000 }).toEqual(before);
 
   // The connection is back: Try Again opens the link as a first visit does.
   fail = false;
@@ -288,6 +316,258 @@ test('a link whose own code cannot be fetched: the app opens as usual and says s
   await expect(region).not.toContainText('The link could not open.');
   expect(new URL(page.url()).search).toBe('');
   await context.close();
+});
+
+// Every address a document of this page was loaded with, kept across reloads (sessionStorage).
+async function recordBoots(page: Page) {
+  await page.addInitScript(() => {
+    const boots = JSON.parse(sessionStorage.getItem('__boots') ?? '[]') as string[];
+    boots.push(location.href);
+    sessionStorage.setItem('__boots', JSON.stringify(boots));
+  });
+  return () => page.evaluate(() => JSON.parse(sessionStorage.getItem('__boots') ?? '[]') as string[]);
+}
+
+test('Try Again reloads EXACTLY the address the page was opened with, in every form a link takes', async ({ browser, baseURL }) => {
+  test.setTimeout(120_000);
+  const FORMS = [
+    '/?key=G&scale=major',
+    '/?key=F#&inst=guitar', // a link's own # makes a fragment: ?key=F with #&inst=guitar
+    '/?chord=F#m7',
+    '/?prog=F#m7,B7',
+    '/?lang=pt&key=D&scale=major',
+    '/?view=drill&key=D',
+    '/?utm_source=chat&key=D&chord=A',
+    '/?lang=pt&view=drill&utm_source=chat&key=D#intro',
+  ];
+  for (const form of FORMS) {
+    const { context, page } = await newPage(browser, NO_WORKER);
+    const boots = await recordBoots(page);
+    await page.route(LINK_CODE, (route) => route.abort('internetdisconnected'));
+    await page.goto(form);
+    const tryAgain = page.getByTestId('toast-region').getByRole('button', { name: /^(Try Again|Tentar novamente)$/ });
+    await expect(tryAgain, form).toBeVisible({ timeout: 15_000 });
+    expect(await boots(), form).toEqual([`${baseURL}${form}`]);
+    await tryAgain.click();
+    await expect.poll(async () => (await boots()).length, { message: form, timeout: 15_000 }).toBe(2);
+    expect((await boots())[1], `${form}: the reloaded document`).toBe(`${baseURL}${form}`);
+    await context.close();
+  }
+});
+
+// The lesson titles in Portuguese and Spanish are their own chunk (module on the dev server).
+const TITLES = (lang: 'pt' | 'es') => new RegExp(`/(assets/i18n-moduleTitles\\.${lang}-[^/]*\\.js|src/data/moduleTitles\\.${lang}\\.ts)(\\?.*)?$`);
+
+async function holdTitles(page: Page, lang: 'pt' | 'es') {
+  let release!: () => void;
+  const released = new Promise<void>((r) => {
+    release = r;
+  });
+  let asked = 0;
+  await page.route(TITLES(lang), async (route) => {
+    asked++;
+    await released;
+    await route.continue();
+  });
+  return { release, asked: () => asked };
+}
+
+const LESSON_OFFER = {
+  pt: ['Já podes abrir a ligação: a lição «Tonalidades relativas e homónimas»', 'Abrir'],
+  es: ['Ya puedes abrir el enlace: la lección «Tonalidades relativas y homónimas»', 'Abrir'],
+} as const;
+
+test('a lesson offered names its title in the learner’s language (PT, ES), also when that language’s titles arrive after the code', async ({ browser }) => {
+  test.setTimeout(90_000);
+  for (const lang of ['pt', 'es'] as const) {
+    const { context, page } = await newPage(browser, NO_WORKER, { state: { language: lang }, version: 6 });
+    const code = await holdLinkCode(page);
+    const titles = await holdTitles(page, lang);
+    await page.goto('/?lesson=l2u5m3');
+    await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+    // The learner goes to Drill while the link's code is on its way.
+    await page.locator('[role="tab"][data-tab="drill"]').click();
+    await expect(page.locator('#drill-panel h1, #drill-panel h2').first()).toBeVisible({ timeout: 15_000 });
+    code.release();
+    await expect.poll(titles.asked, { message: `${lang}: the link's code asks for the titles`, timeout: 15_000 }).toBe(1);
+    await page.waitForTimeout(500);
+    const region = page.getByTestId('toast-region');
+    await expect(region.getByRole('button', { name: LESSON_OFFER[lang][1] }), `${lang}: no offer before the titles (it would be in English)`).toHaveCount(0);
+    titles.release();
+    await expect(region).toContainText(LESSON_OFFER[lang][0], { timeout: 15_000 });
+    await expect(page.locator('[role="tab"][data-tab="drill"]')).toHaveAttribute('aria-selected', 'true');
+    await context.close();
+  }
+});
+
+test('the learner is free until the link is applied: leaving after its code has arrived, while the lesson titles are on their way, draws that place at once and offers the link', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER, { state: { language: 'pt' }, version: 6 });
+  const titles = await holdTitles(page, 'pt');
+  await page.goto('/?lesson=l2u5m3');
+  await expect.poll(titles.asked, { timeout: 15_000 }).toBe(1);
+  await expect(page.getByTestId('view-loading')).toBeVisible();
+  await page.locator('[role="tab"][data-tab="drill"]').click();
+  await expect(page.locator('#drill-panel h1, #drill-panel h2').first()).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('view-loading')).toHaveCount(0);
+  titles.release();
+  await expect(page.getByTestId('toast-region')).toContainText(LESSON_OFFER.pt[0], { timeout: 15_000 });
+  await expect(page.locator('[role="tab"][data-tab="drill"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#learn-panel')).toHaveCount(0);
+  await context.close();
+});
+
+test('a key chosen through Quick Search while the link waits, in the same view: drawn at once, never overwritten; the link is offered', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER);
+  const code = await holdLinkCode(page);
+  await page.goto('/?key=G&scale=major');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+  await page.keyboard.press('Control+k');
+  const input = page.getByRole('dialog').locator('input');
+  await input.fill('Eb minor');
+  await expect(page.getByRole('dialog').getByRole('option').first()).toContainText('E♭ Natural Minor');
+  await input.press('Enter');
+  await expect(page.getByTestId('key-summary')).toContainText('E♭ Natural Minor', { timeout: 15_000 });
+  await expect(page.getByTestId('view-loading')).toHaveCount(0);
+
+  code.release();
+  const region = page.getByTestId('toast-region');
+  await expect(region).toContainText('Ready to open the link: G Major', { timeout: 15_000 });
+  await expect(page.getByTestId('key-summary')).toContainText('E♭ Natural Minor');
+  await region.getByRole('button', { name: 'Open' }).click();
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  await context.close();
+});
+
+test('the instrument switched while the link waits: drawn at once, never overwritten; the link is offered', async ({ browser }) => {
+  const { context, page } = await newPage(browser, NO_WORKER);
+  const code = await holdLinkCode(page);
+  await page.goto('/?key=G&scale=major&inst=piano');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+  await page.getByRole('radio', { name: 'Guitar' }).first().click();
+  await expect(page.getByTestId('key-summary')).toContainText('C Major', { timeout: 15_000 });
+  await expect(page.locator('[role="grid"]').first()).toBeVisible();
+  code.release();
+  await expect(page.getByTestId('toast-region')).toContainText('Ready to open the link: G Major, on the piano', { timeout: 15_000 });
+  await expect(page.getByRole('radio', { name: 'Guitar' }).first()).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('key-summary')).toContainText('C Major');
+  await context.close();
+});
+
+test('the tour asked for while the link waits: the view is drawn for it, the link is offered, and the tour’s end does not lose it', async ({ browser }) => {
+  test.setTimeout(60_000);
+  const { context, page } = await newPage(browser, NO_WORKER);
+  const code = await holdLinkCode(page);
+  // D major: the tour shows G major itself, so the link's key must differ.
+  await page.goto('/?key=D&scale=major');
+  await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+  await page.getByTestId('app-menu').getByRole('button').first().click();
+  await page.getByRole('menuitem', { name: 'Show me around' }).click();
+  await expect(page.getByTestId('tour-bar')).toBeVisible({ timeout: 15_000 });
+  // Asked for, the tour ended the wait at once: by the time its bar is up, the view is drawn
+  // (its first step setting a key would end it too, but only later, with the tour over the sign).
+  expect(await page.getByTestId('view-loading').count(), 'the view is drawn as the tour starts').toBe(0);
+  // The tour's own first step (a key of its own); an Escape before it has run is the tour's own
+  // known limit (it then keeps that key), not this row's subject.
+  await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+  code.release();
+  const region = page.getByTestId('toast-region');
+  await expect(region).toContainText('Ready to open the link: D Major', { timeout: 15_000 });
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('tour-bar')).toHaveCount(0, { timeout: 15_000 });
+  await expect(page.getByTestId('key-summary'), 'the tour put back what it found').toContainText('C Major', { timeout: 15_000 });
+  await region.getByRole('button', { name: 'Open' }).click();
+  await expect(page.getByTestId('key-summary')).toContainText('D Major', { timeout: 15_000 });
+  await context.close();
+});
+
+test('what is not the learner’s act here does not turn an open into an offer: another tab’s choices, ?lang= and ?start= on a first visit', async ({ browser, baseURL }) => {
+  test.setTimeout(90_000);
+  // Another tab of the same browser changes the key, the instrument and the view while this one waits.
+  {
+    const { context, page: other } = await newPage(browser, NO_WORKER);
+    await other.goto('/');
+    await expect(other.getByTestId('key-summary')).toContainText('C Major', { timeout: 15_000 });
+    const page = await context.newPage();
+    const code = await holdLinkCode(page);
+    await page.goto('/?key=G&scale=major');
+    await expect.poll(code.asked, { timeout: 15_000 }).toBe(1);
+    await other.getByRole('combobox', { name: 'Root' }).selectOption({ label: 'E♭' });
+    await other.getByRole('radio', { name: 'Guitar' }).first().click();
+    await other.locator('[role="tab"][data-tab="learn"]').click();
+    await expect.poll(() => other.evaluate(() => JSON.parse(localStorage.getItem('music-theory-app')!).state.lastView)).toBe('learn');
+    // Here, the learner touches something the link does not set: the piano's octave.
+    await page.getByRole('radio', { name: 'C3' }).click();
+    await expect(page.getByRole('radio', { name: 'C3' })).toHaveAttribute('aria-checked', 'true');
+    await expect(page.getByTestId('view-loading')).toBeVisible();
+    code.release();
+    await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+    await expect(page.getByTestId('toast-region')).not.toContainText('Ready to open the link');
+    await context.close();
+  }
+  // A first visit (nothing saved) by a link with ?lang=pt, then with ?start=theory: applied, never offered.
+  for (const [address, key] of [['/?lang=pt&key=G&scale=major', 'G maior'], ['/?start=theory&key=G&scale=major', 'G Major']] as const) {
+    const context = await browser.newContext({ ...NO_WORKER, reducedMotion: 'reduce', storageState: { cookies: [], origins: [] } });
+    const page = await context.newPage();
+    const code = await holdLinkCode(page);
+    await page.goto(`${baseURL}${address}`);
+    await expect.poll(code.asked, { message: address, timeout: 15_000 }).toBe(1);
+    await expect(page.getByTestId('view-loading')).toBeVisible();
+    code.release();
+    await expect(page.getByTestId('key-summary'), address).toContainText(key, { timeout: 15_000 });
+    await expect(page.getByTestId('toast-region')).not.toContainText(/Ready to open|Já podes abrir/);
+    await context.close();
+  }
+});
+
+test('offline, Try Again never turns the page into the browser’s error page: with no worker the page and the link are kept; with a worker in control the reload comes from its cache', async ({ browser, baseURL }) => {
+  test.setTimeout(90_000);
+  {
+    const { context, page } = await newPage(browser, NO_WORKER);
+    const boots = await recordBoots(page);
+    await page.route(LINK_CODE, (route) => route.abort('internetdisconnected'));
+    await page.goto('/?key=F#&inst=guitar');
+    const region = page.getByTestId('toast-region');
+    const tryAgain = region.getByRole('button', { name: 'Try Again' });
+    await expect(tryAgain).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId('key-summary')).toContainText('C Major', { timeout: 15_000 }); // Explore's own code is here
+    await context.setOffline(true);
+    await tryAgain.click();
+    // The tapped toast leaves as its replacement comes: one, then.
+    await expect(tryAgain, 'the toast comes back').toHaveCount(1);
+    await expect(tryAgain).toBeVisible();
+    await expect(region).toContainText('The link could not open.');
+    await page.waitForTimeout(1500);
+    expect(page.url()).toBe(`${baseURL}/`);
+    await expect(page.getByTestId('key-summary')).toContainText('C Major');
+    expect(await boots(), 'no reload').toHaveLength(1);
+    // Back online: the same Try Again opens the link it kept.
+    await context.setOffline(false);
+    await page.unroute(LINK_CODE);
+    await tryAgain.click();
+    await expect(page.getByTestId('key-summary')).toContainText('F♯ Major', { timeout: 15_000 });
+    await expect(page.getByRole('radio', { name: 'Guitar' }).first()).toHaveAttribute('aria-checked', 'true');
+    expect((await boots())[1]).toBe(`${baseURL}/?key=F#&inst=guitar`);
+    await context.close();
+  }
+  {
+    const { context, page } = await newPage(browser, LAPTOP);
+    const manifest = await page.request.get('/manifest.webmanifest');
+    if ((manifest.headers()['content-type'] ?? '').includes('json')) {
+      // The page is not controlled yet on a first visit: its request for the code goes out, and fails.
+      await page.route(LINK_CODE, (route) => route.abort('internetdisconnected'));
+      await page.goto('/?key=G&scale=major');
+      const tryAgain = page.getByTestId('toast-region').getByRole('button', { name: 'Try Again' });
+      await expect(tryAgain).toBeVisible({ timeout: 15_000 });
+      await page.waitForFunction(() => !!navigator.serviceWorker.controller, undefined, { timeout: 30_000 });
+      await context.setOffline(true);
+      await tryAgain.click();
+      await expect(page.getByTestId('key-summary')).toContainText('G Major', { timeout: 15_000 });
+      expect(page.url()).toBe(`${baseURL}/`);
+    } else {
+      test.info().annotations.push({ type: 'note', description: 'No service worker on the dev server: the half with a worker in control runs on the build' });
+    }
+    await context.close();
+  }
 });
 
 test('laptop: Copy link puts the expected address on the clipboard (Explore and a lesson)', async ({ browser, baseURL }) => {

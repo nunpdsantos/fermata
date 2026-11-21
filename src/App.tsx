@@ -15,6 +15,7 @@ import { openLinkCode } from './services/shareLinkBoot.ts';
 import type { ViewMode } from './state/storeTypes.ts';
 import { StartHost } from './components/start/StartHost.tsx';
 import { useStartScreenOwed, useStartScreenShown } from './state/startGate.ts';
+import { useDemoRequest } from './state/demoRequest.ts';
 import { useExternalNotes } from './services/externalNotesHost.ts';
 import { restoreMidiKeyboard } from './services/midi/midiStatus.ts';
 
@@ -25,6 +26,9 @@ const VIEW_LOADERS: Record<ViewMode, ViewLoader> = {
   learn: () => import('./views/LearnView.tsx').then((m) => ({ default: m.LearnView })),
   drill: () => import('./views/DrillView.tsx').then((m) => ({ default: m.DrillView })),
 };
+
+/** What a shared link may set (services/shareLinkOpen.ts applyShareTarget). */
+const LINK_SETS = ['view', 'selectedKey', 'selectedScale', 'selectedChord', 'chordInversion', 'instrument', 'pendingLearnTarget', 'capoFret'] as const;
 
 function App() {
   const view = useAppStore((s) => s.view);
@@ -62,15 +66,26 @@ function App() {
   //    is opened by its own lazy chunk (it needs the chord parser); the view
   //    waits for it, so the learner never sees the old key flash first and no
   //    view mounts (writing its state or history) before the link applies;
-  //    meanwhile the work area shows a view's loading sign. Going to another
-  //    view meanwhile ends the wait: that view draws and the link is offered
-  //    ("Open"), never applied over it. A failed download says so, with
-  //    "Try Again" (services/shareLinkBoot.ts). Its parameters leave the
-  //    address bar at once, like ?view=.
+  //    meanwhile the work area shows a view's loading sign. Going elsewhere or
+  //    choosing anything the link would set meanwhile ends the wait: that is
+  //    drawn and the link is offered ("Open"), never applied over it. A failed
+  //    download says so, with "Try Again" (services/shareLinkBoot.ts). Its
+  //    parameters leave the address bar at once, like ?view=.
   const [linkOpening, setLinkOpening] = useState(
     () => readShareParams(window.location.search, window.location.hash) !== null,
   );
   const bootResolved = useRef(false);
+  // The learner has gone elsewhere since a shared link began to open (below).
+  const moved = useRef(false);
+  // The tour asked for while the link waits: it needs the view drawn, and its
+  // end puts back what it found, so the link is offered, never applied under it.
+  const tour = useDemoRequest();
+  useEffect(() => {
+    if (tour) {
+      moved.current = true;
+      setLinkOpening(false);
+    }
+  }, [tour]);
   useLayoutEffect(() => {
     if (bootResolved.current) return; // guard StrictMode's double-invoke
     bootResolved.current = true;
@@ -94,18 +109,23 @@ function App() {
 
     if (link !== null) {
       markOpenedFromShareLink();
-      let moved = false;
+      // Until the link is applied, offered, held or has failed: the learner
+      // going elsewhere or choosing anything the link would set (by a tab,
+      // Back, Quick Search, the instrument switch, Settings' capo), or asking
+      // for the tour (below), ends the wait, and the link is then offered,
+      // never applied over it. Only this tab's own acts can change these: the
+      // settings store does not follow other tabs (state/tabSafe.ts).
       const stop = useAppStore.subscribe((s, p) => {
-        if (s.view !== p.view) {
-          moved = true;
+        if (LINK_SETS.some((k) => s[k] !== p[k])) {
+          moved.current = true;
           setLinkOpening(false);
         }
       });
-      const offer = () => {
+      const asked = () => {
         stop();
-        return moved;
+        return moved.current;
       };
-      void openLinkCode(link, readShareParams(search), offer, pathname + search + hash)
+      void openLinkCode(link, readShareParams(search), asked, pathname + search + hash)
         .finally(() => {
           stop();
           setLinkOpening(false);

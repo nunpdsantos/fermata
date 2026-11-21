@@ -18,9 +18,10 @@
  *     "Open" — nothing opens by itself. Choosing
  *     Open when work has started again waits again. The held link lives in
  *     this page only (the address bar was already cleaned): a reload drops it.
- *  3. It never pulls the learner back: one who went to another view while
- *     this code was on its way (the work area showed the loading sign) is
- *     offered the link with "Open" (services/shareLinkBoot.ts).
+ *  3. It never pulls the learner back: one who, while the link was not yet
+ *     applied (the work area showed the loading sign), went to another view
+ *     or chose anything the link would set is offered the link with "Open"
+ *     (App.tsx watches; asked at the moment of applying, after every wait).
  */
 import i18n from '../i18n/index.ts';
 import { useAppStore } from '../state/store.ts';
@@ -149,11 +150,12 @@ export type OpenResult = 'applied' | 'held' | 'offered' | 'unreadable';
 /**
  * Open the link the page was started with (App.tsx, at boot, after the boot
  * view is set). `asTyped` = the address read without the fragment recovery
- * (see parseShareLink). `offer`: the learner went to another view while this
- * code was on its way (services/shareLinkBoot.ts), so the link is offered
- * with "Open" and never applied over where they went. Never throws.
+ * (see parseShareLink). `moved()`, asked once, at the moment of deciding
+ * (after the lesson titles below have loaded): has the learner gone elsewhere
+ * or chosen something the link would set since it began? Then the link is
+ * offered with "Open", never applied over that. Never throws.
  */
-export async function openShareLink(raw: RawShareParams | null, asTyped?: RawShareParams | null, offer = false): Promise<OpenResult> {
+export async function openShareLink(raw: RawShareParams | null, asTyped?: RawShareParams | null, moved?: () => boolean): Promise<OpenResult> {
   let target: ShareTarget = {};
   try {
     target = parseShareLink(raw, asTyped);
@@ -167,7 +169,7 @@ export async function openShareLink(raw: RawShareParams | null, asTyped?: RawSha
   // A lesson's title in the learner's language, for the toasts (English if
   // that index cannot load).
   if (target.lesson) await loadModuleIndex(i18n.language || 'en').catch(() => null);
-  if (offer) {
+  if (moved?.()) {
     offerReady(target);
     return 'offered';
   }
