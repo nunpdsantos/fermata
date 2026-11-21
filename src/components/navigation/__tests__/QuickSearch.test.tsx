@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { StrictMode, useLayoutEffect } from 'react';
+import { StrictMode, Suspense, use, useLayoutEffect } from 'react';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { QuickSearch } from '../QuickSearch';
 import { QuickSearchHost } from '../QuickSearchHost';
 import { getResults } from '../quickSearchResults';
 import { useAppStore } from '../../../state/store';
+import { armForTests, resetAppHistoryForTests, type HistoryEntry } from '../../../state/appHistory';
 
 afterEach(cleanup);
 
@@ -295,7 +296,9 @@ describe('QuickSearch: closed in its first instant', () => {
       useAppStore.setState({ quickSearchOpen: false });
       render(<QuickSearch />);
       a.focus();
-      // Opened and closed by Cmd+K: that way of closing leaves the dialog remembering where focus was.
+      // Opened and closed by Cmd+K: since 21 November 2026 that closes as Escape does (focus goes back a
+      // frame later, and the dialog then forgets the element); until then it left the dialog remembering
+      // where focus was. The frame has not come yet when Escape is pressed below.
       act(() => {
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
       });
@@ -382,13 +385,21 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
   function heldCode(component: React.ComponentType = QuickSearch) {
     let arrive!: () => void;
     const arrived = new Promise<void>((r) => { arrive = r; });
-    const load = vi.fn(() => arrived.then(() => ({ default: component })));
+    // A new promise for every call, as the app's import() gives; the first is kept, for a test's own
+    // component to wait on the very promise React waits on. (With one promise for every call, this file
+    // never finished: its worker ran at full CPU from the strict-mode rows on; why was not traced.)
+    let code: Promise<{ default: React.ComponentType }> | null = null;
+    const load = vi.fn(() => {
+      const p = arrived.then(() => ({ default: component }));
+      code ??= p;
+      return p;
+    });
     const release = () => act(async () => {
       arrive();
       await arrived;
       await new Promise((r) => setTimeout(r, 20));
     });
-    return { load, release };
+    return { load, release, arrive, code: () => code! };
   }
 
   /**
@@ -645,7 +656,9 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
     expect(document.activeElement, 'not sent back to where it was at that first step').toBe(b);
   });
 
-  it('closed and opened again before the next frame: focus stays in the dialog, and its next close gives focus back to where search first opened', () => {
+  it('closed and opened again before the next frame: that frame moves no focus, the input takes it when its timer runs, and the next close gives focus back to where search first opened', () => {
+    // This file's AnimatePresence removes a closed dialog at once, so the closing input leaves the page and
+    // focus falls to <body> until the reopened dialog's timer (QuickSearch.focus.test.tsx draws the exit).
     vi.useFakeTimers();
     a.focus();
     render(<QuickSearch />);
@@ -655,15 +668,267 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
     expect(document.activeElement).toBe(input);
     press({ key: 'k', metaKey: true });
     expect(isOpen(), 'closed').toBe(false);
+    expect(document.activeElement, 'its input gone with it').toBe(document.body);
     press({ key: 'k', metaKey: true });
     expect(isOpen(), 'open again, inside the same frame').toBe(true);
     act(() => { vi.advanceTimersByTime(20); });
-    expect(document.activeElement, 'the frame did not pull focus out of the open dialog').not.toBe(a);
-    act(() => { vi.advanceTimersByTime(60); });
-    expect(document.activeElement, 'the input').toBe(screen.getByRole('combobox'));
+    expect(document.activeElement, 'the frame of the close moved nothing: not back to a while search is open').toBe(document.body);
+    act(() => { vi.advanceTimersByTime(40); });
+    expect(document.activeElement, 'the input, once its 50 ms are up').toBe(screen.getByRole('combobox'));
     press({ key: 'Escape' });
     expect(isOpen()).toBe(false);
     act(() => { vi.advanceTimersByTime(20); });
     expect(document.activeElement, 'back where search first opened').toBe(a);
+  });
+
+  // ── The hand-over inside one step (review of 21 November 2026, items 1 and 2) ──
+
+  /** One key, sent now; what it wrote to the store, and the window's keydown listeners when it came. */
+  function sendNow(keys: ReturnType<typeof keydownWatch>, init: KeyboardEventInit) {
+    const writes: boolean[] = [];
+    const stop = useAppStore.subscribe((st) => writes.push(st.quickSearchOpen));
+    const live = keys.live();
+    window.dispatchEvent(new KeyboardEvent('keydown', { ...init, cancelable: true }));
+    stop();
+    return { live, writes, combobox: document.querySelector('[role="combobox"]') !== null };
+  }
+
+  it('in the step the dialog\'s code is drawn, a key pressed after it (a later sibling\'s layout effect, drawn in that same step) finds one listener, the dialog\'s: a second Ctrl+K closes, one store write', async () => {
+    const keys = keydownWatch();
+    const { load, release, code } = heldCode();
+    const seen: ReturnType<typeof sendNow>[] = [];
+    function PressAsDrawn({ wait }: { wait: Promise<unknown> }) {
+      use(wait); // the same promise as the dialog's code: drawn in the same step as it
+      useLayoutEffect(() => {
+        seen.push(sendNow(keys, { key: 'k', ctrlKey: true }));
+      }, []);
+      return null;
+    }
+    const { rerender } = render(<QuickSearchHost load={load} />);
+    const host = keys.live()[0];
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen(), 'asked for').toBe(true);
+    rerender(<><QuickSearchHost load={load} /><Suspense fallback={null}><PressAsDrawn wait={code()} /></Suspense></>);
+    await release();
+    expect(seen).toHaveLength(1);
+    expect(seen[0].combobox, 'pressed in the step the dialog was drawn').toBe(true);
+    expect({ listeners: seen[0].live.length, writes: seen[0].writes }, 'one listener then, one store write: closed').toEqual({ listeners: 1, writes: [false] });
+    expect(seen[0].live[0], 'the dialog\'s').not.toBe(host);
+    expect(isOpen()).toBe(false);
+    keys.restore();
+  });
+
+  it('right after the step the code is drawn (a microtask, before React\'s passive effects; real timers, no act), a second Ctrl+K finds one listener and closes: one store write', { timeout: 10_000 }, async () => {
+    const keys = keydownWatch();
+    const { load, arrive } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    const host = keys.live()[0];
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen()).toBe(true);
+    const env = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const was = env.IS_REACT_ACT_ENVIRONMENT;
+    env.IS_REACT_ACT_ENVIRONMENT = false; // React's own scheduler, as in the browser
+    let seen: ReturnType<typeof sendNow> | null = null;
+    const watch = new MutationObserver(() => {
+      if (seen || !document.querySelector('[role="combobox"]')) return;
+      watch.disconnect();
+      seen = sendNow(keys, { key: 'k', ctrlKey: true });
+    });
+    watch.observe(document.body, { childList: true, subtree: true });
+    try {
+      arrive();
+      const t0 = performance.now();
+      while (!seen && performance.now() - t0 < 3000) await new Promise((r) => setTimeout(r, 10));
+    } finally {
+      watch.disconnect();
+      env.IS_REACT_ACT_ENVIRONMENT = was;
+    }
+    await realWait(50);
+    const got = seen as ReturnType<typeof sendNow> | null;
+    expect(got, 'the dialog was drawn').not.toBeNull();
+    expect({ listeners: got!.live.length, writes: got!.writes }, 'one listener then, one store write: closed').toEqual({ listeners: 1, writes: [false] });
+    expect(got!.live[0], 'the dialog\'s').not.toBe(host);
+    expect(isOpen()).toBe(false);
+    keys.restore();
+  });
+
+  it('in the step an errored dialog is taken away, a key pressed then (a later sibling\'s layout effect) finds one listener, the host\'s: Ctrl+K opens, one store write', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    function Fragile() {
+      if (useAppStore((st) => st.selectedChord !== null)) throw new Error('planted');
+      return <QuickSearch />;
+    }
+    const seen: ReturnType<typeof sendNow>[] = [];
+    const keys = keydownWatch();
+    function PressAsItGoes() {
+      const crash = useAppStore((st) => st.selectedChord !== null);
+      useLayoutEffect(() => {
+        if (crash) seen.push(sendNow(keys, { key: 'k', ctrlKey: true }));
+      }, [crash]);
+      return null;
+    }
+    const first = heldCode(Fragile);
+    // After the error the host downloads again: that code never arrives.
+    const load = vi.fn((): Promise<{ default: React.ComponentType }> => (first.load.mock.calls.length ? new Promise(() => {}) : first.load()));
+    render(<><QuickSearchHost load={load} /><PressAsItGoes /></>);
+    const host = keys.live()[0];
+    await press({ key: 'k', ctrlKey: true });
+    await first.release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    await press({ key: 'Escape' });
+    expect(isOpen()).toBe(false);
+    await act(async () => {
+      useAppStore.setState({ selectedChord: { root: { natural: 'C', accidental: '' }, quality: 'major' } as never });
+      await new Promise((r) => setTimeout(r, 20));
+    });
+    expect(seen).toHaveLength(1);
+    expect(seen[0].combobox, 'pressed in the step the dialog went').toBe(false);
+    expect({ listeners: seen[0].live.length, writes: seen[0].writes }, 'one listener then, one store write: opened').toEqual({ listeners: 1, writes: [true] });
+    expect(seen[0].live, 'the host\'s').toEqual([host]);
+    useAppStore.setState({ selectedChord: null });
+    keys.restore();
+  });
+
+  it('Cmd / Ctrl+K, either case, is the app\'s in every phase (its default prevented): the host\'s before the code and while it is on its way, the dialog\'s after; Escape and a plain k are not', async () => {
+    const { load, release } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    const send = (init: KeyboardEventInit) => {
+      const e = new KeyboardEvent('keydown', { ...init, cancelable: true });
+      act(() => { window.dispatchEvent(e); });
+      return e.defaultPrevented;
+    };
+    const SHORTCUTS = [{ key: 'k', ctrlKey: true }, { key: 'K', ctrlKey: true }, { key: 'k', metaKey: true }, { key: 'K', metaKey: true }];
+    expect(send({ key: 'Escape' }), 'before: Escape').toBe(false);
+    expect(send({ key: 'k' }), 'before: a plain k').toBe(false);
+    expect(send(SHORTCUTS[0]), 'before the code was asked for: the host\'s').toBe(true);
+    expect(isOpen()).toBe(true);
+    let open = true;
+    for (const init of [...SHORTCUTS, ...SHORTCUTS]) {
+      expect(send(init), `on its way: ${JSON.stringify(init)}`).toBe(true);
+      open = !open;
+      expect(isOpen(), `on its way, after ${JSON.stringify(init)}`).toBe(open);
+    }
+    expect(send({ key: 'k' }), 'on its way: a plain k').toBe(false);
+    expect(send({ key: 'Escape' }), 'on its way: Escape').toBe(false);
+    expect(isOpen()).toBe(false);
+    expect(send(SHORTCUTS[0])).toBe(true);
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    open = true;
+    for (const init of [...SHORTCUTS, ...SHORTCUTS]) {
+      expect(send(init), `drawn: ${JSON.stringify(init)}`).toBe(true);
+      open = !open;
+      expect(isOpen(), `drawn, after ${JSON.stringify(init)}`).toBe(open);
+    }
+    expect(send({ key: 'k' }), 'drawn: a plain k').toBe(false);
+    expect(send({ key: 'Escape' }), 'drawn: Escape').toBe(false);
+  });
+
+  it('after the dialog\'s code is drawn, Escape while search is closed does nothing either: not even a store write', async () => {
+    const { load, release } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    await press({ key: 'k', ctrlKey: true });
+    await release();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen()).toBe(false);
+    const writes = vi.fn();
+    const stop = useAppStore.subscribe(writes);
+    try {
+      for (const init of [{ key: 'Escape' }, { key: 'Escape' }, { key: 'k' }]) {
+        await press(init);
+        expect(isOpen(), `after ${init.key}`).toBe(false);
+        expect(writes, `the store, after ${init.key}`).not.toHaveBeenCalled();
+      }
+    } finally {
+      stop();
+    }
+  });
+
+  it.each(['on its way', 'drawn'] as const)('a held Cmd / Ctrl+K (the key repeating) acts once, %s: each repeat is still the app\'s, and changes nothing', async (phase) => {
+    const { load, release } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    await press({ key: 'k', ctrlKey: true });
+    if (phase === 'drawn') await release();
+    expect(isOpen()).toBe(true);
+    expect(screen.queryByRole('combobox') !== null, 'the dialog\'s code drawn').toBe(phase === 'drawn');
+    for (let i = 1; i <= 3; i++) {
+      const e = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, repeat: true, cancelable: true });
+      act(() => { window.dispatchEvent(e); });
+      expect(isOpen(), `after repeat ${i}`).toBe(true);
+      expect(e.defaultPrevented, `repeat ${i} is the app's`).toBe(true);
+    }
+    await press({ key: 'k', ctrlKey: true });
+    expect(isOpen(), 'a new press closes').toBe(false);
+  });
+
+  // ── Back while the code is on its way (review item 5) ──────────────────────
+
+  describe('the browser\'s Back', () => {
+    const pop = (state: HistoryEntry) => act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate', { state }));
+    });
+    beforeEach(() => {
+      useAppStore.setState({ view: 'explore' });
+      window.history.replaceState(null, '', '/');
+      resetAppHistoryForTests();
+      vi.spyOn(window.history, 'pushState');
+      vi.spyOn(window.history, 'go').mockImplementation(() => undefined);
+    });
+    /** The entries pushed, by the number of layers each covers. */
+    const entries = () => (window.history.pushState as unknown as ReturnType<typeof vi.fn>).mock.calls.map((c) => (c[0] as HistoryEntry).l);
+    /** Asked for: the host's layer comes with the history model's chunk (here at once, but a promise later). */
+    const ask = async () => {
+      await press({ key: 'k', ctrlKey: true });
+      await realWait(20);
+    };
+
+    it('while the code is on its way, search is a layer (the host\'s): Back cancels it, the screen stays, no dialog when the code arrives, focus not moved, and Forward brings nothing back', async () => {
+      a.focus();
+      armForTests();
+      const { load, release } = heldCode();
+      render(<QuickSearchHost load={load} />);
+      await ask();
+      expect(isOpen()).toBe(true);
+      expect(entries(), 'one entry for the open, covering one layer').toEqual([1]);
+      const frames = vi.spyOn(window, 'requestAnimationFrame');
+      await pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+      expect(isOpen(), 'Back cancelled it').toBe(false);
+      expect(useAppStore.getState().view, 'the screen stays').toBe('explore');
+      expect(frames, 'no focus to give back (none was taken)').not.toHaveBeenCalled();
+      await release();
+      await realWait(80);
+      expect(screen.queryByRole('combobox'), 'no dialog when the code arrives').toBeNull();
+      expect(document.activeElement, 'focus never moved').toBe(a);
+      await pop({ fm: 1, i: 1, v: 'explore', l: 1 });
+      expect(isOpen(), 'Forward brings nothing back').toBe(false);
+      expect(entries(), 'no entry written since').toEqual([1]);
+    });
+
+    it('asked for, then drawn while open: the dialog takes the layer over in that step and the open keeps its one entry; Back then closes the dialog and gives focus back', async () => {
+      a.focus();
+      armForTests();
+      const { load, release } = heldCode();
+      render(<QuickSearchHost load={load} />);
+      await ask();
+      expect(entries()).toEqual([1]);
+      await release();
+      expect(screen.getByRole('combobox')).toBeTruthy();
+      expect(entries(), 'still one entry: the dialog reused it').toEqual([1]);
+      await realWait(80);
+      expect(document.activeElement).toBe(screen.getByRole('combobox'));
+      await pop({ fm: 1, i: 0, v: 'explore', l: 0 });
+      expect(isOpen(), 'Back closed the dialog').toBe(false);
+      await realWait(40);
+      expect(document.activeElement, 'focus given back, as the dialog\'s Escape does').toBe(a);
+      // Opened again (the code here now): the same entry again, no new one.
+      armForTests();
+      await press({ key: 'k', ctrlKey: true });
+      expect(entries(), 'an open after a Back writes its one entry').toEqual([1, 1]);
+      await press({ key: 'Escape' });
+      await press({ key: 'k', ctrlKey: true });
+      expect(entries(), 'one closed by Escape left its entry, which the next open reuses').toEqual([1, 1]);
+    });
   });
 });
