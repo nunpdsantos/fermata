@@ -49,13 +49,18 @@ export function fitDockDetents(half: number, full: number, available: number, he
     // The rows above it all shown, the row itself not: take it in.
     if (lastAbove <= edge + 0.5 && head + row.bottom + halfBottomGap <= halfMax) edge = row.bottom;
   }
-  // The whole band or none: cut short by the view's room (a phone on its
-  // side, Half already at the view's floor) the fade would still lie over
-  // the last whole row, and ending across a string (320×568, 360×640) it
-  // would cut that string's dots, which are drawn over the fade. Half then
-  // stays as it was, with its 3 px line (`halfLine`, index.css).
-  const withBand = Math.min(content, edge + fade);
-  const cutsString = rows.some((row) => row.dots && Math.min(row.top, row.dots.top) < withBand - 0.5 && Math.max(row.bottom, row.dots.bottom) > withBand + 0.5);
+  // The whole band or none: cut short by the view's room the fade would
+  // still lie over the last whole row, and ending across a string (320×568,
+  // 360×640) it would cut that string's dots, which are drawn over the fade
+  // (and inside their string's row: measured, never outside it). Half then
+  // stays as it was, with its 3 px line (`halfLine`, index.css). Where less
+  // than the band's own height would still be hidden after it and showing
+  // everything fits in the view's room, Half shows everything and no fade
+  // (the piano at 320–430 × 568 and × 600: 19 and 3 px were left under the
+  // fade). `fade` is 0 where index.css draws none (a short screen).
+  let withBand = Math.min(content, edge + fade);
+  if (content - withBand < fade && head + content + halfBottomGap <= halfMax) withBand = content;
+  const cutsString = rows.some((row) => row.dots && row.top < withBand - 0.5 && row.bottom > withBand + 0.5);
   const banded = fade > 0 && content > 0 && content - edge > 0.5 && head + withBand + halfBottomGap <= halfMax && !cutsString;
   const halfLine = fade > 0 && !banded && content - edge > 0.5;
   if (banded) edge = withBand;
