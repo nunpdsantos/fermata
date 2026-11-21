@@ -1,5 +1,5 @@
-import { expect, it } from 'vitest';
-import { chordLanding, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { barPlaceWith, chordLanding, rowClipEdge, wholeRows, type RowSpan } from '../chordScrollLanding';
 
 const row = (top: number, height: number): RowSpan => ({ top, bottom: top + height });
 
@@ -69,4 +69,41 @@ it('Build, the strip scrolling: the head as well when it fits (1536×864)', () =
 it('Build, the strip scrolling: the usual landing when the root row cannot fit with ▶ Chord (the longest readout)', () => {
   const tall = { rows: [head, root], through: root.top + 330 };
   expect(chordLanding(buildRows, builtDetail, 537, 331, 19, tall)).toBe(chordLanding(buildRows, builtDetail, 537, 331, 19));
+});
+
+// The leftovers round (21 November 2026, E2): whether a held strip leaves the
+// chord's detail in view is judged against the place the metronome's bar
+// takes once the detail is there (MetronomeBar re-places it every frame with
+// `placeMetronome`, keeping off the detail), not the place it has before: the
+// first chord of a visit meets the bar at the left edge, where nothing was
+// yet in its way. 1280×800: the bar 635 × 46 above a dock at 476.
+describe('barPlaceWith: where the bar will stand once the detail is there', () => {
+  const box = (top: number, left: number, width: number, height: number) => ({ top, left, right: left + width, bottom: top + height, width, height, x: left, y: top, toJSON() {} }) as DOMRect;
+  afterEach(() => { document.body.innerHTML = ''; vi.unstubAllGlobals(); });
+  const setUp = (barLeft: number) => {
+    vi.stubGlobal('innerWidth', 1280);
+    vi.stubGlobal('innerHeight', 800);
+    document.body.innerHTML = '<header class="app-topbar"></header><div data-testid="metronome"></div><section data-testid="instrument-dock"></section>';
+    const rects: Record<string, DOMRect> = {
+      'app-topbar': box(0, 0, 1280, 56),
+      metronome: box(422, barLeft, 635, 46),
+      'instrument-dock': box(476, 0, 1280, 324),
+    };
+    for (const el of Array.from(document.body.children)) {
+      const key = el.getAttribute('data-testid') ?? el.className;
+      el.getBoundingClientRect = () => rects[key];
+    }
+    return document.querySelector<HTMLElement>('[data-testid="metronome"]')!;
+  };
+  it('a detail across the work column (20–744): the bar goes to the right edge, wherever it stands now', () => {
+    for (const now of [12, 633]) {
+      expect(barPlaceWith(setUp(now), { top: 300, bottom: 486, left: 20, right: 744 })).toEqual({ top: 422, bottom: 468, left: 633, right: 1268 });
+    }
+  });
+  it('a detail clear of the left edge\'s place: the bar stays at the left edge', () => {
+    expect(barPlaceWith(setUp(633), { top: 100, bottom: 400, left: 20, right: 744 })).toEqual({ top: 422, bottom: 468, left: 12, right: 647 });
+  });
+  it('a detail out of the window: nothing to keep off, the left edge', () => {
+    expect(barPlaceWith(setUp(633), { top: -400, bottom: -100, left: 20, right: 744 })).toEqual({ top: 422, bottom: 468, left: 12, right: 647 });
+  });
 });

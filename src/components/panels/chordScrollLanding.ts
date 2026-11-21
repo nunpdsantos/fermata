@@ -1,3 +1,5 @@
+import { placeMetronome, type Box } from '../metronome/placement';
+
 export interface RowSpan { top: number; bottom: number }
 
 /** A clipping edge belongs in a GAP, never on a partly occluded control.
@@ -44,6 +46,31 @@ export function chordLanding(rows: RowSpan[], detail: RowSpan, actionsBottom: nu
 const metronomeBar = () => document.querySelector<HTMLElement>('[data-testid="metronome"]');
 
 /**
+ * Where the bar will stand once the detail's box is `detailBox`: it keeps off
+ * the chord's detail where it can, re-placed every frame by MetronomeBar with
+ * the same `placeMetronome` and these inputs, so a landing is judged against
+ * the place the bar takes, not the one it has before the detail arrives (the
+ * first chord of a visit meets it at the left edge, where nothing was yet in
+ * its way, and it moves to the right as the detail opens).
+ */
+export function barPlaceWith(bar: HTMLElement, detailBox: Box): Box {
+  const b = bar.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const topBar = document.querySelector('.app-topbar')?.getBoundingClientRect();
+  const dock = document.querySelector('[data-testid="instrument-dock"]')?.getBoundingClientRect();
+  const hint = document.querySelector('[data-testid="start-hint"]')?.getBoundingClientRect();
+  const place = placeMetronome({
+    viewport: { width: window.innerWidth, height: vh },
+    topBarBottom: topBar?.bottom ?? 0,
+    topClear: hint && hint.height > 0 ? hint.bottom : undefined,
+    floor: dock && dock.height > 0 && dock.top < vh ? dock.top : vh,
+    fullWidth: b.width, fullHeight: b.height, compactWidth: b.width, compactHeight: b.height,
+    soft: detailBox.bottom > 0 && detailBox.top < vh ? [detailBox] : [],
+  });
+  return { top: place.top, bottom: place.top + b.height, left: place.left, right: place.left + b.width };
+}
+
+/**
  * How much of the scroller's visible foot the metronome's bar covers (0
  * without it, or where it stands clear of the scroller: in the top bar's
  * empty stretch, beside the column). The bar is a fixed overlay above the
@@ -61,12 +88,25 @@ export function coveredFoot(scroller: HTMLElement): number {
   return bottom - Math.max(b.top, top);
 }
 
+/** The chord's name and every control of its detail: what must be in view after a landing with the metronome's bar open. */
+const DETAIL_PARTS = '.chord-detail-name, button, [role="radio"], .type-label, a';
+
 /**
  * `strip` is the staff strip held at the top of the work column (sticky), or
  * null where it scrolls with the work — the Build tab on a laptop shorter
  * than 900 px (the owner's ruling, 19 November 2026): the same whole-row
  * landing then, with nothing to clear but `roomAbove()`, and the row the
  * work column's top edge would cut in half clipped away.
+ *
+ * With the metronome's bar over the column's foot, a held strip can leave
+ * too little room (1366×768: 95–111 px between the strip and the bar for a
+ * detail of 142–217 px; In key and All Chords, the leftovers round of 21
+ * November 2026). The landing is chosen with the strip held, as before; only
+ * where that leaves the chord's name or a control of its detail under the
+ * bar, under the strip or below the column's foot does the strip scroll with
+ * the work for this chord (`data-strip-scrolls`, index.css), in the spirit
+ * of the owner's ruling for Build, and the detail land again as on Build.
+ * Where both fit (1440×900, 1536×864), the strip stays held.
  */
 export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, strip: HTMLElement | null, roomAbove: () => number) {
   const card = detail.closest<HTMLElement>('.chords-card')!;
@@ -74,6 +114,8 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
   const rowSelector = '.explore-card-head, .chord-row, [data-chord-scroll-row], button, label, h2, .type-label';
   let spans: RowSpan[] = [];
   let frame = 0;
+  let released = false;
+  const held = () => (released ? null : strip);
   const contentTop = () => scroller.getBoundingClientRect().top - scroller.scrollTop;
   const measure = (el: Element): RowSpan => {
     const r = el.getBoundingClientRect(), origin = contentTop();
@@ -84,12 +126,14 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     // also clears the small card shadow; don't clamp this to action height.
     // With the strip scrolling, the work column's own top edge is what cuts
     // a row: the tabs half shown above the builder's root row are hidden too.
-    const covered = strip ? strip.getBoundingClientRect().bottom : scroller.getBoundingClientRect().top + scroller.clientTop;
+    const top = held();
+    const covered = top ? top.getBoundingClientRect().bottom : scroller.getBoundingClientRect().top + scroller.clientTop;
     const edge = rowClipEdge(spans, covered - contentTop());
     card.style.clipPath = `inset(${Math.max(0, edge - measure(card).top)}px 0 0)`;
   };
-  const land = () => {
+  const land = (): void => {
     delete detail.dataset.compactSource;
+    const strip = held();
     const before = [...card.querySelectorAll<HTMLElement>(rowSelector)]
       .filter((el) => !detail.contains(el) && !!(el.compareDocumentPosition(detail) & Node.DOCUMENT_POSITION_FOLLOWING));
     const candidates = before.filter((el) => el.matches('.explore-card-head, .chord-row, [data-chord-scroll-row]'));
@@ -138,6 +182,31 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
       detail.dataset.compactSource = 'true';
       target = choose(); // the source label may change the first row's height
     }
+    // With the bar over the foot and the strip held: is the chord's name and
+    // every control of its detail in view at that scroll — below the strip,
+    // clear of the bar, above the column's foot? If not, the strip scrolls
+    // with the work for this chord, and the detail lands again without it.
+    if (strip && covered > 0) {
+      const s = scroller.getBoundingClientRect();
+      const viewTop = s.top + scroller.clientTop + clear - 8;
+      const foot = s.top + scroller.clientTop + scroller.clientHeight;
+      const shift = scroller.scrollTop - target;
+      const d = detail.getBoundingClientRect();
+      const bar = barPlaceWith(metronomeBar()!, { top: d.top + shift, bottom: d.bottom + shift, left: d.left, right: d.right });
+      const inView = [...detail.querySelectorAll(DETAIL_PARTS)].every((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.height === 0 || r.width === 0) return true;
+        const top = r.top + shift, bottom = r.bottom + shift;
+        const underBar = bottom > bar.top + 1 && top < bar.bottom - 1 && r.right > bar.left + 1 && r.left < bar.right - 1;
+        return top >= viewTop - 0.5 && bottom <= foot + 0.5 && !underBar;
+      });
+      if (!inView) {
+        released = true;
+        scroller.setAttribute('data-strip-scrolls', '');
+        land();
+        return;
+      }
+    }
     const detailTop = measure(detail).top;
     spans = wholeRows([...before.map(measure), { top: detailTop, bottom: detailTop }]);
     // The tail the landing needs, as a floor under the column's own padding
@@ -175,5 +244,6 @@ export function landChordDetail(detail: HTMLElement, scroller: HTMLElement, stri
     scroller.style.scrollPaddingTop = savedScrollPadding;
     card.style.clipPath = '';
     delete detail.dataset.compactSource;
+    if (released) scroller.removeAttribute('data-strip-scrolls');
   };
 }
