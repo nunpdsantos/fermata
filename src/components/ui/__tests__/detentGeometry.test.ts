@@ -147,8 +147,17 @@ describe('Half keeps the fade\'s band under its last whole row', () => {
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524).half).toBe(HEAD + 244 + 4);
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 244 + FADE + 4, halfBottomGap: 4 });
   });
-  it('an edge among the strings: the band shows the top of the next string', () => {
-    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE).half).toBe(HEAD + 126 + FADE + 4);
+  it('an edge among the strings: no band across a string with dots (they are drawn over the fade); Half as before, with its line', () => {
+    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 126 + 4, halfLine: true });
+    // A string with no dot on it: the band may show its top under the fade.
+    const bare = strings.map(({ top, bottom }) => ({ top, bottom }));
+    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...bare, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 126 + FADE, halfLine: false });
+  });
+  it('the band taken: the fade says "more", no line; refused or cut short: the line', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE).halfLine).toBe(false);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).halfLine).toBe(true);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 262, Infinity, FADE).halfLine).toBe(false);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 244, Infinity, FADE).halfLine).toBe(false);
   });
   it('no more than the band left below the edge: Half shows it all, one stop', () => {
     expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 262, Infinity, FADE)).toMatchObject({ half: HEAD + 262 + 4, fullDistinct: false });

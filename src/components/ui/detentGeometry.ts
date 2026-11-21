@@ -22,8 +22,9 @@ export interface DockRow {
  * the top of what follows shows under the fade, and the fade never lies over
  * the last whole row Half chose (the fret numbers); where no more than that
  * is left, Half shows it all (the leftovers round, 21 November 2026). Only
- * where the whole band fits within `halfMax`: a phone on its side keeps its
- * Half. */
+ * where the whole band fits within `halfMax` and its foot cuts no string:
+ * otherwise (a phone on its side; 320×568, 360×640) Half is as it was and
+ * `halfLine` says to keep its 3 px line. */
 export function fitDockDetents(half: number, full: number, available: number, head: number, rows: readonly DockRow[], boardBottom: number, content = 0, halfMax = Infinity, fade = 0) {
   const need = content > 0 ? head + content : Infinity;
   // Everything fits at Half: no row is cut, so no clearance under the dots
@@ -49,13 +50,18 @@ export function fitDockDetents(half: number, full: number, available: number, he
     if (lastAbove <= edge + 0.5 && head + row.bottom + halfBottomGap <= halfMax) edge = row.bottom;
   }
   // The whole band or none: cut short by the view's room (a phone on its
-  // side, Half already at the view's floor), the fade would still lie over
-  // the last whole row, so Half stays as it was there.
+  // side, Half already at the view's floor) the fade would still lie over
+  // the last whole row, and ending across a string (320×568, 360×640) it
+  // would cut that string's dots, which are drawn over the fade. Half then
+  // stays as it was, with its 3 px line (`halfLine`, index.css).
   const withBand = Math.min(content, edge + fade);
-  if (fade > 0 && content > 0 && content - edge > 0.5 && head + withBand + halfBottomGap <= halfMax) edge = withBand;
+  const cutsString = rows.some((row) => row.dots && Math.min(row.top, row.dots.top) < withBand - 0.5 && Math.max(row.bottom, row.dots.bottom) > withBand + 0.5);
+  const banded = fade > 0 && content > 0 && content - edge > 0.5 && head + withBand + halfBottomGap <= halfMax && !cutsString;
+  const halfLine = fade > 0 && !banded && content - edge > 0.5;
+  if (banded) edge = withBand;
   const fittedHalf = Math.max(head, head + edge + halfBottomGap);
   const fittedFull = Math.max(fittedHalf, Math.min(available, Math.max(full, head + boardBottom), need));
   // Under a pixel apart is the same height: no separate Full stop.
   const fullDistinct = fittedFull - fittedHalf >= 1;
-  return { half: fittedHalf, halfBottomGap, full: fullDistinct ? fittedFull : fittedHalf, fullDistinct };
+  return { half: fittedHalf, halfBottomGap, full: fullDistinct ? fittedFull : fittedHalf, fullDistinct, halfLine };
 }

@@ -665,7 +665,7 @@ test.describe('E2: with no bar, the nine landings are those of 57cda40 (this Mac
 type SheetState = {
   shown: string; clientH: number; scrollH: number; scrollTop: number; below: number;
   fade: { opacity: number; position: string; height: number; image: string; bottom: number };
-  exploreFade: string; foot: number; straddling: string[]; lastControlBottom: number;
+  exploreFade: string; foot: number; straddling: string[]; lastControlBottom: number; halfLine: boolean;
 };
 const sheetState = (page: Page) => page.evaluate((): SheetState => {
   const sheet = document.querySelector('[data-testid="instrument-dock"]')!;
@@ -684,9 +684,10 @@ const sheetState = (page: Page) => page.evaluate((): SheetState => {
   return {
     shown: sheet.getAttribute('data-detent')!, clientH: c.clientHeight, scrollH: c.scrollHeight, scrollTop: c.scrollTop,
     below: c.clientHeight > 0 ? lowest - foot : 0,
-    fade: { opacity: after.content === 'none' ? 0 : Number(after.opacity), position: after.position, height: fadeHeight, image: after.backgroundImage, bottom: foot },
+    fade: { opacity: after.content === 'none' || after.display === 'none' ? 0 : Number(after.opacity), position: after.position, height: fadeHeight, image: after.backgroundImage, bottom: foot },
     exploreFade: getComputedStyle(document.querySelector('.explore-root')!, '::after').backgroundImage,
     foot, straddling, lastControlBottom: controls.length ? Math.max(...controls.map((b) => b.bottom)) : 0,
+    halfLine: sheet.hasAttribute('data-half-line'),
   };
 });
 
@@ -735,7 +736,12 @@ test.describe('E3: the phone sheet fades at its foot while content lies below, a
               // The guitar's controls lie below Half at these phones (they do not fit: the sheet must not pretend they do);
               // the piano's keyboard fits at Half.
               if (asked === 'half') expect(s.below > 1, `${where}: content below Half's foot`).toBe(inst.name !== 'piano');
-              if (s.below > 1) {
+              // At 360×640 the guitar's band would end across a string (its dots are drawn over the fade): Half as at
+              // 57cda40, with its line (the next describe); everywhere else here the band is taken.
+              expect(s.halfLine, `${where}: Half without the band only where it would cut a string`).toBe(asked === 'half' && w === 360 && inst.name !== 'piano');
+              if (s.halfLine) {
+                expect(s.fade.opacity, `${where}: no fade where Half has no band`).toBe(0);
+              } else if (s.below > 1) {
                 expect(s.fade.opacity, `${where}: content below the foot, the fade shows`).toBe(1);
                 expect(s.fade.position, `${where}: held at the foot`).toBe('sticky');
                 expect(s.fade.height, `${where}: Explore's 28 px`).toBe(28);
@@ -834,6 +840,47 @@ test.describe('E3 leaves a phone on its side as at 57cda40: no fade, the 3 px li
             await context.close();
           });
         }
+      }
+    }
+  }
+});
+
+test.describe('E3 never ends Half\'s band across a string: where it would, Half is as at 57cda40, with its 3 px line', () => {
+  // The guitar's dots are drawn over the fade: a band ending across a string cut them flat at the foot (320×568,
+  // 360×640; design-system's PR A rows). The band ends across the Position row at 375×667 (the owner's picture) and
+  // across nothing at 390×844.
+  for (const [w, h, line] of [[320, 568, true], [360, 640, true], [375, 667, false], [390, 844, false]] as const) {
+    for (const tuning of ['standard', 'open-g'] as const) {
+      for (const language of ['en', 'pt', 'es'] as const) {
+        test(`${w}×${h}, guitar ${tuning}, ${language.toUpperCase()}: Half ${line ? 'as at 57cda40, with its line' : 'with the band and the fade'}`, async ({ browser, baseURL }) => {
+          const { context, page } = await open(browser, baseURL!, { w, h, touch: true, state: { instrument: 'guitar', guitarTuningId: tuning, language, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+          await settled(page);
+          const where = `${w}×${h} guitar ${tuning} ${language}, Half`;
+          const s = await sheetState(page);
+          const f = await sidewaysFoot(page);
+          const dots = await page.evaluate(() => {
+            const sheet = document.querySelector('[data-testid="instrument-dock"]')!;
+            const c = sheet.querySelector<HTMLElement>('.detent-content')!;
+            const foot = c.getBoundingClientRect().top + c.clientTop + c.clientHeight;
+            return Array.from(sheet.querySelectorAll('[data-dot]')).map((d) => d.getBoundingClientRect())
+              .filter((b) => b.top < foot - 0.5 && b.bottom > foot + 0.5).map((b) => `${b.top.toFixed(1)}–${b.bottom.toFixed(1)}`);
+          });
+          console.log(`[band] ${where}: line ${s.halfLine}, fade ${s.fade.opacity}, cut ${f.cut.join('; ') || '-'}, dots cut ${dots.join('; ') || '-'}`);
+          expect(s.shown, where).toBe('half');
+          expect(s.below, `${where}: content goes on below (the case is real)`).toBeGreaterThan(1);
+          expect(dots, `${where}: no dot cut by Half's foot`).toEqual([]);
+          expect(s.halfLine, `${where}: the band refused exactly where it would cut a string`).toBe(line);
+          if (line) {
+            expect(f.fadeDrawn, `${where}: no fade`).toBe(false);
+            expect(f.line?.height, `${where}: the 3 px line, as at 57cda40`).toBe(3);
+            expect(f.cut, `${where}: no row cut by Half's foot (as at 57cda40)`).toEqual([]);
+          } else {
+            expect(f.fadeDrawn, `${where}: the fade`).toBe(true);
+            expect(f.line, `${where}: no line`).toBeNull();
+            expect(f.cut.filter((c) => c.startsWith('string')), `${where}: no string cut by Half's foot`).toEqual([]);
+          }
+          await context.close();
+        });
       }
     }
   }

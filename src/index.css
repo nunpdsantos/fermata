@@ -3419,6 +3419,12 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
   background: linear-gradient(to bottom, transparent, var(--bg) 85%);
 }
 .detent-sheet[data-more-below] > .detent-content::after { opacity: 1; }
+/* Where Half could not take the fade's whole band (DetentSheet's
+   data-half-line: on its side, or the band would end across a string, whose
+   dots are drawn over the fade and were cut flat at 320×568 and 360×640),
+   Half is as it was at 57cda40, and so is its sign: the 3 px line. */
+.detent-sheet[data-half-line] > .detent-content::after { display: none; }
+.detent-sheet[data-half-line][data-more-below]::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
 /* A phone on its side (max-height 500 px, the sheet's own short-screen
    rule: SHEET_QUERY): Half already stands at the view's 120 px floor, so
    the whole fade's band cannot be added under its last whole row (Half

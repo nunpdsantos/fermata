@@ -210,6 +210,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       className="detent-sheet"
       data-testid={testId}
       data-detent={shown}
+      data-half-line={shown === 'half' && fitted.halfLine ? '' : undefined}
       style={height !== undefined ? { height } : undefined}
     >
       <div ref={headRef} className="detent-head">
