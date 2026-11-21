@@ -386,8 +386,13 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
     let arrive!: () => void;
     const arrived = new Promise<void>((r) => { arrive = r; });
     // A new promise for every call, as the app's import() gives; the first is kept, for a test's own
-    // component to wait on the very promise React waits on. (With one promise for every call, this file
-    // never finished: its worker ran at full CPU from the strict-mode rows on; why was not traced.)
+    // component to wait on the very promise React waits on. One promise for every call hung this file
+    // (its worker at full CPU) in the test where the dialog's code goes and is fetched again: React 19's
+    // lazy() marks the promise it waited on `status: "fulfilled"`; the host's fresh lazy() then got that
+    // same promise, its own record of it still pending until a microtask; React, seeing the promise
+    // fulfilled, draws again at once without yielding, the fresh lazy() throws it again, and so on. React's
+    // handling of one settled promise shared by two lazy()s, not the host: the app's loader makes a new
+    // promise every time (traced 21 November 2026: the second load was the last thing that ran).
     let code: Promise<{ default: React.ComponentType }> | null = null;
     const load = vi.fn(() => {
       const p = arrived.then(() => ({ default: component }));
@@ -494,6 +499,20 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
     expect(isOpen()).toBe(false);
     await realWait(40);
     expect(document.activeElement, 'back where it was when search was asked for').toBe(a);
+  });
+
+  it('the place focus goes back to is read when the dialog is drawn, not when search was asked for: focus moved while the code is on its way is where the close returns', async () => {
+    a.focus();
+    const { load, release } = heldCode();
+    render(<QuickSearchHost load={load} />);
+    await press({ key: 'k', ctrlKey: true });
+    b.focus(); // the learner moves on while the code downloads
+    await release();
+    await realWait(80);
+    expect(document.activeElement).toBe(screen.getByRole('combobox'));
+    await press({ key: 'Escape' });
+    await realWait(40);
+    expect(document.activeElement, 'where focus was when the dialog was drawn').toBe(b);
   });
 
   it('Escape while closed, before the code was ever asked for, does nothing at all (not even a store write); neither does a plain k', async () => {
@@ -708,7 +727,12 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
     const host = keys.live()[0];
     await press({ key: 'k', ctrlKey: true });
     expect(isOpen(), 'asked for').toBe(true);
-    rerender(<><QuickSearchHost load={load} /><Suspense fallback={null}><PressAsDrawn wait={code()} /></Suspense></>);
+    // Inside an awaited act: a component suspending (`use`) in a plain one was retried only if something
+    // else drew the page again (an earlier test's state decided it: the history hook already fetched, the
+    // test then never saw the step).
+    await act(async () => {
+      rerender(<><QuickSearchHost load={load} /><Suspense fallback={null}><PressAsDrawn wait={code()} /></Suspense></>);
+    });
     await release();
     expect(seen).toHaveLength(1);
     expect(seen[0].combobox, 'pressed in the step the dialog was drawn').toBe(true);
@@ -930,5 +954,109 @@ describe('QuickSearch: from the moment it is asked for, one listener, and focus 
       await press({ key: 'k', ctrlKey: true });
       expect(entries(), 'one closed by Escape left its entry, which the next open reuses').toEqual([1, 1]);
     });
+  });
+
+  // ── Cancelled while the code is on its way: the history afterwards (second review, finding 1) ──
+
+  describe('cancelled while the code is on its way, by Escape, a second Ctrl+K or Back', () => {
+    /**
+     * This tab's history as the browser keeps it: a stack the model's writes push and rewrite, moved by
+     * Back and Forward (each a popstate) and by every `history.go` the model asks for, run as the
+     * browser runs it (jsdom's own history does not move on a popstate).
+     */
+    function browserHistory() {
+      const stack: HistoryEntry[] = [{ fm: 1, i: 0, v: 'explore', l: 0 }];
+      let pos = 0;
+      const asked: number[] = [];
+      vi.spyOn(window.history, 'pushState').mockImplementation((st) => {
+        stack.splice(pos + 1);
+        stack.push(st as HistoryEntry);
+        pos = stack.length - 1;
+      });
+      vi.spyOn(window.history, 'replaceState').mockImplementation((st) => { stack[pos] = st as HistoryEntry; });
+      vi.spyOn(window.history, 'go').mockImplementation((d = 0) => { asked.push(d); });
+      const traverse = async (d: number) => {
+        const trail: string[] = [];
+        const steps = [d];
+        while (steps.length) {
+          const by = steps.shift()!;
+          if (pos + by < 0 || pos + by >= stack.length) {
+            trail.push(`nothing ${by < 0 ? 'before' : 'after'}`);
+            break;
+          }
+          pos += by;
+          trail.push(`${trail.length ? `go(${by}) ` : ''}pop ${stack[pos].i}`);
+          await act(async () => { window.dispatchEvent(new PopStateEvent('popstate', { state: stack[pos] })); });
+          steps.push(...asked.splice(0));
+        }
+        return trail.join(', ');
+      };
+      return { back: () => traverse(-1), forward: () => traverse(1), at: () => ({ i: stack[pos].i, l: stack[pos].l, entries: stack.length }) };
+    }
+
+    /**
+     * On Learn (one entry after Explore's), search asked for and cancelled; then the next Back; then
+     * search asked for again (after a tap, as the search button is) and closed by Back. `code`: held back
+     * all along, or (the reference) drawn and closed before any of it.
+     */
+    async function run(cancel: 'Escape' | 'Ctrl+K' | 'Back', code: 'held' | 'loaded') {
+      useAppStore.setState({ view: 'explore', quickSearchOpen: false });
+      resetAppHistoryForTests();
+      const h = browserHistory();
+      const held = heldCode();
+      const view = render(<QuickSearchHost load={held.load} />);
+      if (code === 'loaded') {
+        await press({ key: 'k', ctrlKey: true });
+        await held.release();
+        await press({ key: 'Escape' });
+        await realWait(40);
+      }
+      armForTests(); // a tap on the Learn tab
+      act(() => useAppStore.getState().setView('learn'));
+      const log: string[] = [];
+      const note = (what: string) => log.push(`${what}: ${JSON.stringify({ ...h.at(), view: useAppStore.getState().view, open: isOpen() })}`);
+      note('on Learn');
+      await press({ key: 'k', ctrlKey: true });
+      await realWait(20);
+      note('asked');
+      if (cancel === 'Back') log.push(`cancelled by Back: ${await h.back()}`);
+      else await press(cancel === 'Escape' ? { key: 'Escape' } : { key: 'k', ctrlKey: true });
+      await realWait(20);
+      note(`cancelled by ${cancel}`);
+      log.push(`next Back: ${await h.back()}`);
+      await realWait(20);
+      note('after the next Back');
+      armForTests(); // a tap on the search button
+      await press({ key: 'k', ctrlKey: true });
+      await realWait(20);
+      note('asked again');
+      log.push(`Back: ${await h.back()}`);
+      await realWait(20);
+      note('closed by Back');
+      return { log, h, held, view };
+    }
+
+    for (const cancel of ['Escape', 'Ctrl+K', 'Back'] as const) {
+      it(`by ${cancel}: the history model holds no layer for search, and the next Back, asking again and Back again do exactly what they do with the code loaded; when the code arrives at last, nothing changes`, async () => {
+        const reference = await run(cancel, 'loaded');
+        // The reference, as the loaded dialog has always done it: one press back to the screen before.
+        expect(reference.log.find((l) => l.startsWith('after the next Back')), 'the reference: one Back to Explore').toContain('"view":"explore"');
+        expect(reference.log.find((l) => l.startsWith('asked again')), 'asked again: an entry of its own, covering a layer').toContain('"l":1');
+        reference.view.unmount();
+        vi.restoreAllMocks();
+        const held = await run(cancel, 'held');
+        expect(screen.queryByRole('combobox'), 'the code still held back').toBeNull();
+        expect(held.log).toEqual(reference.log);
+        // The code arrives, closed: nothing changes.
+        const before = held.h.at();
+        await held.held.release();
+        await realWait(80);
+        expect(screen.queryByRole('combobox'), 'no dialog').toBeNull();
+        expect(isOpen()).toBe(false);
+        expect(held.h.at(), 'no entry written').toEqual(before);
+        expect(useAppStore.getState().view).toBe('explore');
+        expect(await held.h.back(), 'and Back still finds nothing to close').toBe('nothing before');
+      });
+    }
   });
 });

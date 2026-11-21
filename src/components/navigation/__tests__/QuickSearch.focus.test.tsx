@@ -122,6 +122,30 @@ describe('QuickSearch: focus after any run of opens and closes, however fast', (
     expect(document.activeElement, 'the next open goes back to where it began').toBe(b);
   });
 
+  it('close and open inside one frame, then a close from outside: focus goes back at once to where that open began; the next open, from another element, closed by Escape, goes back to that element', () => {
+    a.focus();
+    render(<QuickSearch />);
+    press('K');
+    later(60);
+    expect(document.activeElement).toBe(screen.getByRole('combobox'));
+    press('K');
+    expect(isOpen(), 'closed').toBe(false);
+    press('K');
+    expect(isOpen(), 'open again inside the same frame').toBe(true);
+    later(60); // that close's frame, and the open's 50 ms
+    expect(document.activeElement).toBe(screen.getByRole('combobox'));
+    act(() => useAppStore.getState().setQuickSearchOpen(false));
+    expect(document.activeElement, 'closed from outside: back at once').toBe(a);
+    later(EXIT_MS + 60);
+    expect(document.activeElement, 'and nothing moves it after').toBe(a);
+    b.focus();
+    press('K');
+    later(60);
+    press('E');
+    later(EXIT_MS + 60);
+    expect(document.activeElement, 'the next open went back to where IT began').toBe(b);
+  });
+
   for (const n of [2, 3, 4, 5]) {
     it(`every run of ${n} keys, from closed and from open, all inside one frame or a frame after each: focus ends where search first opened (closed) or in the input (open), and nothing of its own is remembered`, { timeout: 20_000 }, () => {
       for (const start of ['closed', 'open'] as const) {
@@ -164,6 +188,22 @@ describe('QuickSearch: focus after any run of opens and closes, however fast', (
             press('E');
             later(EXIT_MS + 60);
             expect(document.activeElement, `${label}: the next open goes back to where it began`).toBe(b);
+            // Its bookkeeping, once the run's frames have come: a close the dialog did not make (the store set
+            // elsewhere) gives focus back at once to where that open began and forgets it, and the next open
+            // from another element goes back to THAT element. A count of frames to come left too high (taken
+            // down only when the frame finds search closed, say) leaves focus in the closing input instead.
+            a.focus();
+            press('K');
+            later(60);
+            act(() => useAppStore.getState().setQuickSearchOpen(false));
+            expect(document.activeElement, `${label}: then closed from outside: back where that open began, at once`).toBe(a);
+            later(EXIT_MS + 60);
+            b.focus();
+            press('K');
+            later(60);
+            press('E');
+            later(EXIT_MS + 60);
+            expect(document.activeElement, `${label}: and the next open, from b, goes back to b`).toBe(b);
             view.unmount();
             vi.clearAllTimers();
           }
