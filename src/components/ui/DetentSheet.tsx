@@ -47,6 +47,8 @@ const VIEW_MIN_PX = 120;
 /** …and, room allowing, gives the content at least this (a whole keyboard
  *  on a phone held sideways, where 50 % was a sliver of the keys). */
 const HALF_CONTENT_MIN_PX = 160;
+/** The fade at the content's foot (index.css `.detent-content::after`, Explore's height): Half keeps its band under the last whole row. */
+const FADE_PX = 28;
 
 const coarsePointer = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
 const estimatePeek = () => (coarsePointer() ? 44 : 36) + 28;
@@ -85,7 +87,6 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
     const content = contentRef.current;
     if (!content) return;
     const measure = () => {
-      content.parentElement?.toggleAttribute('data-more-below', content.scrollTop + content.clientHeight < content.scrollHeight - 1);
       const origin = content.getBoundingClientRect().top - content.scrollTop;
       const rows = Array.from(content.querySelectorAll<HTMLElement>('[data-dock-row], .fretboard-controls > *')).map((el) => {
         const r = el.getBoundingClientRect();
@@ -103,7 +104,17 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
       // children (laid out at their natural height even at Peek, where the
       // scroller is 0 px tall), rounded up so it never needs to scroll.
       const bottoms = Array.from(content.children).map((el) => el.getBoundingClientRect()).filter((r) => r.height > 0).map((r) => r.bottom - origin);
-      const natural = bottoms.length ? Math.ceil(Math.max(...bottoms) - 0.01) : 0;
+      const lowest = bottoms.length ? Math.max(...bottoms) : 0;
+      const natural = Math.ceil(lowest - 0.01);
+      // The fade at the foot (index.css) while CONTENT goes on below it, by
+      // more than a pixel — never padding, never at Peek (QA report 2, P5:
+      // the leftovers round put Explore's fade here in place of a 3 px line).
+      // Content that fits does not scroll at all: what is left is padding.
+      const shown = content.clientHeight > 0;
+      content.parentElement?.toggleAttribute('data-more-below', shown && lowest - content.scrollTop - content.clientHeight > 1);
+      const fits = shown && lowest <= content.clientHeight + 1;
+      content.toggleAttribute('data-fits', fits);
+      if (fits && content.scrollTop > 0) content.scrollTop = 0;
       const next = { rows, boardBottom, content: natural };
       setGeometry((prev) => JSON.stringify(prev) === JSON.stringify(next) ? prev : next);
     };
@@ -128,7 +139,7 @@ export function DetentSheet({ detent, onDetent, available, fullGap = 0, handleLa
   const halfFloor = Math.min(peekHeight + HALF_CONTENT_MIN_PX, available - VIEW_MIN_PX);
   const fitted = fitDockDetents(
     Math.min(preferredFull, Math.max(peekHeight, Math.round(available * HALF_SHARE), halfFloor)),
-    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content, available - VIEW_MIN_PX,
+    preferredFull, available, peekHeight, geometry.rows, geometry.boardBottom, geometry.content, available - VIEW_MIN_PX, FADE_PX,
   );
   const full = fitted.full;
   const heights: Record<Detent, number> = { peek: peekHeight, half: fitted.half, full };

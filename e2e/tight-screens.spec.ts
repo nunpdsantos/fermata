@@ -39,6 +39,16 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
  * 142–217 px (In key and All Chords; Build already fitted), the work column's
  * fade stood the bar's room above the foot, over the detail, and a chord
  * chosen before the bar opened was never landed again.
+ *
+ * E3. The phone sheet (375×667, 390×844, 360×640) at Peek, Half and Full,
+ * piano, guitar and guitar in Open G: where its content goes on below the
+ * foot, Explore's own fade shows there (at 57cda40 the only sign was a 3 px
+ * line), and at Half it lies under the last whole row, never over the fret
+ * numbers; scrolled to the end, the last control is in view and the fade
+ * goes. Where everything fits, no fade, and the sheet does not scroll; nor
+ * does it by padding alone. (The owner's ruling, 21 November 2026, on the
+ * before / after pictures: "i like all the changed ones better" — the
+ * guitar's Half 28 px taller included.)
  */
 
 type Seed = Record<string, unknown>;
@@ -59,9 +69,10 @@ const countLandings = (page: Page) => page.evaluate(() => {
   w.__landsFrom = document.querySelector('.explore-main')!.scrollTop;
 });
 
-async function open(browser: Browser, baseURL: string, opts: { w: number; h: number; state?: Seed; wide?: boolean; motion?: Motion }) {
+async function open(browser: Browser, baseURL: string, opts: { w: number; h: number; touch?: boolean; state?: Seed; wide?: boolean; motion?: Motion }) {
   const context = await browser.newContext({
-    viewport: { width: opts.w, height: opts.h }, reducedMotion: opts.motion ?? 'reduce', serviceWorkers: 'block',
+    viewport: { width: opts.w, height: opts.h }, isMobile: !!opts.touch, hasTouch: !!opts.touch,
+    reducedMotion: opts.motion ?? 'reduce', serviceWorkers: 'block',
   });
   await context.addInitScript(({ blob, origin }) => {
     if (location.origin !== origin || sessionStorage.getItem('__seeded')) return;
@@ -651,4 +662,115 @@ test.describe('E2: with no bar, the nine landings are those of 57cda40 (this Mac
       await context.close();
     });
   }
+});
+
+/** The phone sheet: its content against its visible foot, and the fade. */
+type SheetState = {
+  shown: string; clientH: number; scrollH: number; scrollTop: number; below: number;
+  fade: { opacity: number; position: string; height: number; image: string; bottom: number };
+  exploreFade: string; foot: number; straddling: string[]; lastControlBottom: number;
+};
+const sheetState = (page: Page) => page.evaluate((): SheetState => {
+  const sheet = document.querySelector('[data-testid="instrument-dock"]')!;
+  const c = sheet.querySelector<HTMLElement>('.detent-content')!;
+  const r = c.getBoundingClientRect();
+  const foot = r.top + c.clientTop + c.clientHeight;
+  let lowest = -Infinity;
+  for (const k of Array.from(c.children)) { const b = k.getBoundingClientRect(); if (b.height > 0) lowest = Math.max(lowest, b.bottom); }
+  const after = getComputedStyle(c, '::after');
+  const fadeHeight = parseFloat(after.height) || 0;
+  // The fade's box: held at the visible foot (sticky): its top is the foot less its height.
+  const fadeTop = foot - fadeHeight;
+  const rows = Array.from(c.querySelectorAll('[data-dock-row]')).map((row) => ({ name: row.getAttribute('data-dock-row')!, box: row.getBoundingClientRect() }));
+  const straddling = rows.filter(({ box }) => box.height > 0 && box.top < fadeTop - 0.5 && box.bottom > fadeTop + 0.5).map(({ name, box }) => `${name} ${box.top.toFixed(1)}–${box.bottom.toFixed(1)}`);
+  const controls = Array.from(c.querySelectorAll('button, select, [role="radio"]')).map((el) => el.getBoundingClientRect()).filter((b) => b.height > 0);
+  return {
+    shown: sheet.getAttribute('data-detent')!, clientH: c.clientHeight, scrollH: c.scrollHeight, scrollTop: c.scrollTop,
+    below: c.clientHeight > 0 ? lowest - foot : 0,
+    fade: { opacity: after.content === 'none' ? 0 : Number(after.opacity), position: after.position, height: fadeHeight, image: after.backgroundImage, bottom: foot },
+    exploreFade: getComputedStyle(document.querySelector('.explore-root')!, '::after').backgroundImage,
+    foot, straddling, lastControlBottom: controls.length ? Math.max(...controls.map((b) => b.bottom)) : 0,
+  };
+});
+
+/** A wheel over the sheet's content, then where its scroll is. */
+async function wheelOverSheet(page: Page) {
+  const box = (await page.locator('[data-testid="instrument-dock"] .detent-content').boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + Math.min(box.height - 4, 40));
+  await page.mouse.wheel(0, 400);
+  await page.waitForTimeout(200);
+  await settled(page);
+  return page.locator('[data-testid="instrument-dock"] .detent-content').evaluate((el) => el.scrollTop);
+}
+
+test.describe('E3: the phone sheet fades at its foot while content lies below, and never scrolls by padding', () => {
+  const INSTRUMENTS = [
+    { name: 'piano', state: { instrument: 'piano' } },
+    { name: 'guitar', state: { instrument: 'guitar' } },
+    { name: 'guitar in Open G', state: { instrument: 'guitar', guitarTuningId: 'open-g' } },
+  ] as const;
+  for (const [w, h] of [[375, 667], [390, 844], [360, 640]] as const) {
+    for (const inst of INSTRUMENTS) {
+      for (const language of ['en', 'pt', 'es'] as const) {
+        for (const { wide, label: textLabel } of TEXTS) {
+          test(`${w}×${h}, ${inst.name}, ${language.toUpperCase()}${textLabel}: Peek, Half and Full`, async ({ browser, baseURL }) => {
+            test.setTimeout(60_000);
+            const { context, page } = await open(browser, baseURL!, { w, h, touch: true, wide, state: { ...inst.state, language, dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+            const sheet = page.getByTestId('instrument-dock');
+            const handle = sheet.getByRole('separator');
+            for (const [asked, key] of [['half', null], ['full', 'End'], ['peek', 'Home']] as const) {
+              if (key) { await handle.focus(); await handle.press(key); }
+              await settled(page);
+              const s = await sheetState(page);
+              const where = `${w}×${h} ${inst.name} ${language}${textLabel}, ${asked} (shown ${s.shown})`;
+              console.log(`[sheet] ${where}: content ${s.clientH}/${s.scrollH}, ${s.below.toFixed(1)} px below the foot, fade ${s.fade.opacity}`);
+              if (asked === 'peek') {
+                expect(s.shown, where).toBe('peek');
+                expect(s.fade.opacity, `${where}: no fade at Peek (the content is folded away, not cut)`).toBe(0);
+                continue;
+              }
+              // The guitar's controls lie below Half at these phones (they do not fit: the sheet must not pretend they do);
+              // the piano's keyboard fits at Half.
+              if (asked === 'half') expect(s.below > 1, `${where}: content below Half's foot`).toBe(inst.name !== 'piano');
+              if (s.below > 1) {
+                expect(s.fade.opacity, `${where}: content below the foot, the fade shows`).toBe(1);
+                expect(s.fade.position, `${where}: held at the foot`).toBe('sticky');
+                expect(s.fade.height, `${where}: Explore's 28 px`).toBe(28);
+                expect(s.fade.image, `${where}: Explore's own fade`).toBe(s.exploreFade);
+                expect(s.straddling, `${where}: no string or fret-number row half under the fade`).toEqual([]);
+                // Scrolled to its end: the last control in view, and the fade gone.
+                await page.locator('[data-testid="instrument-dock"] .detent-content').evaluate((el) => { el.scrollTop = el.scrollHeight; });
+                await settled(page);
+                const end = await sheetState(page);
+                expect(end.below, `${where}: scrolled to the end, nothing below`).toBeLessThanOrEqual(1);
+                expect(end.lastControlBottom, `${where}: scrolled to the end, the last control in view`).toBeLessThanOrEqual(end.foot + 0.5);
+                expect(end.fade.opacity, `${where}: scrolled to the end, no fade`).toBe(0);
+                await page.locator('[data-testid="instrument-dock"] .detent-content').evaluate((el) => { el.scrollTop = 0; });
+              } else {
+                expect(s.fade.opacity, `${where}: nothing below, no fade`).toBe(0);
+                expect(await wheelOverSheet(page), `${where}: nothing below, the sheet does not scroll`).toBe(0);
+              }
+            }
+            await context.close();
+          });
+        }
+      }
+    }
+  }
+
+  test('padding alone is never "more": a sheet whose only overflow is its padding does not scroll and shows no fade', async ({ browser, baseURL }) => {
+    for (const { wide, label } of TEXTS) {
+      const { context, page } = await open(browser, baseURL!, { w: 375, h: 667, touch: true, wide, state: { instrument: 'piano', dockDetents: { explore: 'half', learn: 'peek' }, dockChosen: { explore: true } } });
+      // Padding at the content's foot, nothing more: the keyboard fits at Half.
+      await page.addStyleTag({ content: '[data-testid="instrument-dock"] .detent-content { padding-bottom: 40px !important; }' });
+      await settled(page);
+      const s = await sheetState(page);
+      expect(s.scrollH - s.clientH, `375×667 piano${label}: the padding overflows the content box (the case is real)`).toBeGreaterThanOrEqual(39);
+      expect(s.below, `375×667 piano${label}: no content below the foot`).toBeLessThanOrEqual(1);
+      expect(s.fade.opacity, `375×667 piano${label}: padding is not "more": no fade`).toBe(0);
+      expect(await page.getByTestId('instrument-dock').evaluate((el) => el.hasAttribute('data-more-below')), `375×667 piano${label}: no "more below" mark (the 3 px line's, at 57cda40)`).toBe(false);
+      expect(await wheelOverSheet(page), `375×667 piano${label}: the sheet does not scroll by its padding`).toBe(0);
+      await context.close();
+    }
+  });
 });

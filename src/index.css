@@ -1036,7 +1036,8 @@ body {
     /* No upward shadow: it darkened the text just above the sheet (chord
        labels measured 4.0–4.2:1 in the review). The border separates it. */
   }
-  .detent-sheet[data-more-below]::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
+  /* More below the sheet's foot: Explore's fade (the leftovers round, builder
+     E; until then a 3 px line), at the end of the block below. */
   .detent-head {
     position: relative;
     flex: none;
@@ -3397,3 +3398,24 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
   .explore-aside::after { bottom: -2px; }
   html[data-metro-room] .explore-aside::after { bottom: calc(-1 * (var(--metro-room) + 8px)); }
 }
+/* E3. The phone sheet (DetentSheet): while its CONTENT goes on below the
+   visible foot (`data-more-below`, measured on the content's boxes, never
+   its padding, never at Peek), Explore's fade, in the page colour, held at
+   the foot (sticky, the content's last item), taking no room and no taps.
+   Half keeps the fade's 28 px band under its last whole row
+   (`fitDockDetents`), so the fade lies over what follows, never over the
+   guitar's fret numbers. Content that fits does not scroll (`data-fits`). */
+.detent-content::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 28px;
+  margin-top: -28px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+}
+.detent-sheet[data-more-below] > .detent-content::after { opacity: 1; }
+.detent-content[data-fits] { overflow-y: hidden; }
