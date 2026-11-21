@@ -48,7 +48,9 @@ describe('release 16 (2026-11-19): the audit fixes', () => {
 describe('release 17 (2026-11-20): the second audit round', () => {
   it('follows release 16: not critical, one line per language within 160 characters, the app\'s own words for what it names', async () => {
     const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
-    const [note, previous] = releases;
+    const at = releases.findIndex((r) => r.release === 17);
+    expect(at).toBeGreaterThanOrEqual(0);
+    const [note, previous] = releases.slice(at);
     expect([note.release, note.date, note.critical]).toEqual([17, '2026-11-20', false]);
     expect(previous.release).toBe(16);
     for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
@@ -63,6 +65,34 @@ describe('release 17 (2026-11-20): the second audit round', () => {
     expect(note.notes.pt).toContain(`«${pt.lesson.nextLesson}»`);
     expect(note.notes.es).toContain(`«${es.lesson.nextLesson}»`);
     expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([149, 160, 157]);
+  });
+});
+
+describe('release 18 (2026-11-22): the leftovers round', () => {
+  it('follows release 17: not critical, one line per language within 160 characters, the app\'s own words for what it names', async () => {
+    const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
+    const [note, previous] = releases;
+    expect([note.release, note.date, note.critical]).toEqual([18, '2026-11-22', false]);
+    expect(previous.release).toBe(17);
+    for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
+    // The toast's own button, the metronome and the instrument panel, each as the app says it in that language;
+    // "shortcuts", not "keys" (the app's keys are the piano's), and the search by its noun in Portuguese and
+    // Spanish, as release 16's note has it (the language review of 21 November 2026).
+    const { default: en } = await import('../../i18n/locales/en.json');
+    const { default: pt } = await import('../../i18n/locales/pt.json');
+    const { default: es } = await import('../../i18n/locales/es.json');
+    expect(note.notes.en).toContain(`“${en.common.tryAgain}”`);
+    expect(note.notes.pt).toContain(`«${pt.common.tryAgain}»`);
+    expect(note.notes.es).toContain(`«${es.common.tryAgain}»`);
+    expect(note.notes.en).toContain(`${en.nav.search} shortcuts`);
+    expect(note.notes.pt).toContain('atalhos da pesquisa');
+    expect(note.notes.es).toContain('atajos de la búsqueda');
+    for (const [lang, words] of [['en', en], ['pt', pt], ['es', es]] as const) {
+      expect(note.notes[lang].toLowerCase(), lang).toContain(words.metronomeToolEntry.menuItem.toLowerCase());
+      expect(note.notes[lang].toLowerCase(), lang).toContain(words.dock.handle.toLowerCase());
+      expect(note.notes[lang], lang).not.toMatch(/\b(keys|teclas|sheet|folha|hoja)\b/i);
+    }
+    expect([note.notes.en.length, note.notes.pt.length, note.notes.es.length]).toEqual([157, 160, 160]);
   });
 });
 
