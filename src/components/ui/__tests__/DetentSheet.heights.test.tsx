@@ -125,11 +125,13 @@ describe('DetentSheet — sized to its content', () => {
     expect(shown).toHaveBeenLastCalledWith('half');
   });
 
-  it('content taller than Half: Half unchanged, Full ends where the content ends', () => {
+  // The leftovers round (21 November 2026): where the content goes on below
+  // Half, Half takes the 28 px band of the fade that says so (386 + 28).
+  it('content taller than Half: Half takes the fade\'s band, Full ends where the content ends', () => {
     const spy = vi.fn();
     const shown = vi.fn();
     render(<Harness start="half" content={523} spy={spy} shown={shown} />);
-    expect(sheetHeight()).toBe(386);
+    expect(sheetHeight()).toBe(386 + 28);
     const handle = screen.getByRole('separator');
     expect(handle.getAttribute('aria-valuemax')).toBe('2');
     fireEvent.keyDown(handle, { key: 'End' });
@@ -139,13 +141,20 @@ describe('DetentSheet — sized to its content', () => {
     expect(shown).toHaveBeenLastCalledWith('full');
   });
 
-  it('content taller than Full: Half and Full as before', () => {
+  it('content taller than Full: Full as before, Half with the fade\'s band', () => {
     render(<Harness start="full" content={900} />);
     expect(sheetHeight()).toBe(696);
     fireEvent.keyDown(screen.getByRole('separator'), { key: 'ArrowDown' });
-    expect(sheetHeight()).toBe(386);
+    expect(sheetHeight()).toBe(386 + 28);
   });
 
+  it('content just taller than Half (no more than the band left): Half shows it all, one stop', () => {
+    render(<Harness start="half" content={386 - HEAD + 20} />);
+    expect(sheetHeight()).toBe(386 + 20);
+    expect(screen.getByRole('separator').getAttribute('aria-valuemax')).toBe('1');
+  });
+
+  // The band never takes the view's 120 px: Half there is unchanged.
   it('phone sideways (330 px of room): a keyboard taller than Full keeps Half at 210 and Full at 254', () => {
     render(<Harness start="half" content={224} available={330} />);
     expect(sheetHeight()).toBe(210);
@@ -186,14 +195,72 @@ describe('DetentSheet — the fret numbers stay with the strings', () => {
   }
   const sheetHeight = () => parseFloat(screen.getByTestId('sheet').style.height);
 
-  it('Half that would stop above the fret numbers takes them in (72 + 244), as long as the view keeps its room', () => {
+  // Since the leftovers round, the controls below still show their top under
+  // the fade's 28 px band: Half's whole rows end where they did, the band follows.
+  it('Half that would stop above the fret numbers takes them in (72 + 244), as long as the view keeps its room, then the fade\'s band', () => {
     // 611 px of room: Half aims at 306, inside the numbers' row (226–244 under the head).
     render(<Board />);
-    expect(sheetHeight()).toBe(HEAD + 244);
+    expect(sheetHeight()).toBe(HEAD + 244 + 28);
   });
 
-  it('known positive: the same rows without the frets marker stop above them (72 + 226)', () => {
+  it('known positive: the same rows without the frets marker stop above them (72 + 226), then the band', () => {
     render(<Board frets="other" />);
-    expect(sheetHeight()).toBe(HEAD + 226);
+    expect(sheetHeight()).toBe(HEAD + 226 + 28);
+  });
+});
+
+/**
+ * The leftovers round (21 November 2026, E3): the sheet's "more below" mark
+ * (the fade, index.css) reads the CONTENT's boxes against the visible foot,
+ * as Explore's cues do: more than a pixel of content, never the content
+ * box's own padding, never at Peek; content that fits is marked so it does
+ * not scroll at all (`data-fits`). jsdom has no layout: the content's
+ * children's boxes come from `data-h`, its own visible height from `ch`.
+ */
+describe('DetentSheet — the fade\'s mark reads content, not padding', () => {
+  const rect = Object.getOwnPropertyDescriptor(Element.prototype, 'getBoundingClientRect')!;
+  const client = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight')!;
+  let ch = 0;
+  beforeAll(() => {
+    Object.defineProperty(Element.prototype, 'getBoundingClientRect', {
+      configurable: true,
+      value(this: Element) {
+        const h = Number(this.getAttribute('data-h') ?? 0);
+        return { top: 0, bottom: h, left: 0, right: 100, width: h ? 100 : 0, height: h, x: 0, y: 0, toJSON() {} } as DOMRect;
+      },
+    });
+    Object.defineProperty(Element.prototype, 'clientHeight', {
+      configurable: true,
+      get(this: Element) { return this.classList.contains('detent-content') ? ch : 0; },
+    });
+  });
+  afterAll(() => {
+    Object.defineProperty(Element.prototype, 'getBoundingClientRect', rect);
+    Object.defineProperty(Element.prototype, 'clientHeight', client);
+  });
+
+  const marks = (content: number, visible: number, detent: Detent = 'half') => {
+    ch = visible;
+    render(
+      <DetentSheet detent={detent} onDetent={() => {}} available={772} fullGap={76} handleLabel="Panel" detentLabels={{ peek: 'Peek', half: 'Half', full: 'Full' }} bar={null} testId="sheet">
+        <div data-h={content}><button type="button">Key</button></div>
+      </DetentSheet>,
+    );
+    const sheet = screen.getByTestId('sheet');
+    const out = { more: sheet.hasAttribute('data-more-below'), fits: sheet.querySelector('.detent-content')!.hasAttribute('data-fits') };
+    cleanup();
+    return out;
+  };
+
+  it('content more than a pixel below the visible foot: marked "more", not "fits"', () => {
+    expect(marks(523, 342)).toEqual({ more: true, fits: false });
+    expect(marks(344, 342)).toEqual({ more: true, fits: false });
+  });
+  it('a pixel or less (rounding): neither "more" nor scrolling', () => {
+    expect(marks(343, 342)).toEqual({ more: false, fits: true });
+    expect(marks(228, 342)).toEqual({ more: false, fits: true });
+  });
+  it('at Peek (nothing shown): no mark at all', () => {
+    expect(marks(523, 0, 'peek')).toEqual({ more: false, fits: false });
   });
 });
