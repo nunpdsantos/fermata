@@ -1230,6 +1230,7 @@
     "ready": "Ya puedes abrir el enlace: {{target}}",
     "open": "Abrir",
     "unreadable": "No se ha podido leer este enlace, así que Fermatina se ha abierto como siempre.",
+    "loadError": "No se ha podido abrir el enlace.",
     "target": {
       "chord": "el acorde {{chord}}",
       "piano": "en el piano",

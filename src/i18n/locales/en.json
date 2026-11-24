@@ -1230,6 +1230,7 @@
     "ready": "Ready to open the link: {{target}}",
     "open": "Open",
     "unreadable": "This link could not be read, so Fermatina opened as usual.",
+    "loadError": "The link could not open.",
     "target": {
       "chord": "the {{chord}} chord",
       "piano": "on the piano",

@@ -1036,7 +1036,8 @@ body {
     /* No upward shadow: it darkened the text just above the sheet (chord
        labels measured 4.0–4.2:1 in the review). The border separates it. */
   }
-  .detent-sheet[data-more-below]::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
+  /* More below the sheet's foot: Explore's fade (the leftovers round, builder
+     E; until then a 3 px line), at the end of the block below. */
   .detent-head {
     position: relative;
     flex: none;
@@ -3368,4 +3369,74 @@ html[data-metro-room] :is(.explore-root, .explore-work) { scroll-padding-bottom:
   .explore-main { padding-bottom: max(2px, var(--chord-tail, 0px)); }
   html[data-metro-room] .explore-main { padding-bottom: max(calc(var(--metro-room) + 8px), var(--chord-tail, 0px)); }
   html[data-metro-room] .explore-aside { padding-bottom: calc(var(--metro-room) + 8px); }
+}
+
+/* ─── Leftovers round, builder E (tight screens), 21 November 2026 ───────
+   E2. While the metronome's bar stands over the work column's foot and the
+   chord's detail cannot have its name and every control in view with the
+   staff strip held (1366×768, 1280×800: In key, All Chords), the strip
+   scrolls with the work, as on Build (the owner's ruling of 19 November
+   2026). `chordScrollLanding.ts` decides it afresh at every landing (the
+   chord chosen, the layout changed, the bar opened or closed), sets the
+   attribute only where no landing with the strip held keeps everything in
+   view, takes it off at once when the bar closes, and with the chord. */
+@media screen and (min-width: 1200px) {
+  .explore-main[data-strip-scrolls] > .strip-card { position: static; }
+}
+/* The work and circle columns' foot fades (release 17, P5) are sticky, and
+   a sticky box stays inside its column's bottom padding: with the bar's room
+   (62 px at 1280×800) or the landing's tail as that padding, each fade was
+   drawn that far ABOVE its column's foot, across the column, over lines in
+   view (1280×800, a chord's formula and scales faded, "Learn about this"
+   readable below them). Each is held at its column's real foot instead:
+   behind the bar on the bar's side, over the column's last 28 px elsewhere,
+   which the landing keeps the detail's controls out of. The offsets repeat
+   the paddings set above (`.explore-main`, `.explore-aside`). */
+@media screen and (min-width: 1200px) {
+  .explore-main::after { bottom: calc(-1 * max(2px, var(--chord-tail, 0px))); }
+  html[data-metro-room] .explore-main::after { bottom: calc(-1 * max(calc(var(--metro-room) + 8px), var(--chord-tail, 0px))); }
+  .explore-aside::after { bottom: -2px; }
+  html[data-metro-room] .explore-aside::after { bottom: calc(-1 * (var(--metro-room) + 8px)); }
+}
+/* E3. The phone sheet (DetentSheet): while its CONTENT goes on below the
+   visible foot (`data-more-below`, measured on the content's boxes, never
+   its padding, never at Peek), Explore's fade, in the page colour, held at
+   the foot (sticky, the content's last item), taking no room and no taps.
+   Half keeps the fade's 28 px band under its last whole row
+   (`fitDockDetents`), so the fade lies over what follows, never over the
+   guitar's fret numbers. Content that fits does not scroll: not
+   scrollable while it fits (`data-fits`), and a scroll left from when it
+   did not (content that shrank) put back at 0 by DetentSheet. The fade ends
+   in the sheet's own surface (`--bg-raised`), the colour it lies on. */
+.detent-content::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 28px;
+  margin-top: -28px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  background: linear-gradient(to bottom, transparent, var(--bg-raised) 85%);
+}
+.detent-sheet[data-more-below] > .detent-content::after { opacity: 1; }
+.detent-content[data-fits] { overflow-y: hidden; }
+/* Where Half could not take the fade's whole band (DetentSheet's
+   data-half-line: on its side, or the band would end across a string, whose
+   dots are drawn over the fade and were cut flat at 320×568 and 360×640),
+   Half is as it was at 57cda40, and so is its sign: the 3 px line. */
+.detent-sheet[data-detent="half"][data-half-line] > .detent-content::after { display: none; }
+.detent-sheet[data-detent="half"][data-half-line][data-more-below]::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
+/* A short screen (max-height 500 px: SHORT_SCREEN_QUERY, the sheet's own
+   short-screen rule in SHEET_QUERY): the sheet is exactly as at 57cda40 at
+   every stop, no fade and its 3 px line, at Peek too (the owner ruled on the
+   upright phones). On its side (844×390, 667×375) the fade would lie over a
+   whole string, the fret numbers or the piano's strip; on the others (700×480,
+   500×500, 360×500 …) Half grew 28 px for it. This rule is the ONE place
+   that decides it: the fade's height here, 0, is what DetentSheet reads for
+   Half's band, so Half takes none. */
+@media (max-height: 500px) {
+  .detent-content::after { display: none; height: 0; }
+  .detent-sheet:is([data-more-below], [data-detent="peek"])::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--border); pointer-events: none; }
 }

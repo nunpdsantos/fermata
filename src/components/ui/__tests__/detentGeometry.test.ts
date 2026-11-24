@@ -130,3 +130,56 @@ describe('the fret numbers stay with the strings', () => {
     expect(fitDockDetents(HEAD + 250, 600, 611, HEAD, [...strings, frets, controls], 300).half).toBe(HEAD + 250);
   });
 });
+
+// The leftovers round (21 November 2026, E3): the phone sheet's "more below"
+// is Explore's 28 px fade, drawn over the content's foot. Half keeps that
+// band under its last whole row wherever the content goes on, so the fade
+// lies over what follows and never over the fret numbers.
+describe('Half keeps the fade\'s band under its last whole row', () => {
+  const strings = Array.from({ length: 6 }, (_, i) => ({
+    top: 30 + i * 32, bottom: 62 + i * 32, dots: { top: 32 + i * 32, bottom: 60 + i * 32 },
+  }));
+  const frets = { top: 226, bottom: 244, withAbove: true };
+  const controls = { top: 252, bottom: 296 };
+  const HEAD = 72;
+  const FADE = 28;
+  it('content below Half\'s edge: the numbers as before, then the band (and the dots\' 4 px outside it)', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524).half).toBe(HEAD + 244 + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 244 + FADE + 4, halfBottomGap: 4 });
+  });
+  it('an edge among the strings: no band across a string with dots (they are drawn over the fade); Half as before, with its line', () => {
+    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 126 + 4, halfLine: true });
+    // A string with no dot on it: the band may show its top under the fade.
+    const bare = strings.map(({ top, bottom }) => ({ top, bottom }));
+    expect(fitDockDetents(HEAD + 150, 600, 611, HEAD, [...bare, frets, controls], 300, 524, Infinity, FADE)).toMatchObject({ half: HEAD + 126 + FADE, halfLine: false });
+  });
+  it('the band taken: the fade says "more", no line; refused or cut short: the line', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, Infinity, FADE).halfLine).toBe(false);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).halfLine).toBe(true);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 262, Infinity, FADE).halfLine).toBe(false);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 244, Infinity, FADE).halfLine).toBe(false);
+  });
+  it('no more than the band left below the edge: Half shows it all, one stop', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 262, Infinity, FADE)).toMatchObject({ half: HEAD + 262 + 4, fullDistinct: false });
+  });
+  it('never past the room the view keeps (halfMax): the whole band or none (a phone on its side keeps its Half)', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 244 + FADE + 4, FADE).half).toBe(HEAD + 244 + FADE + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 260, FADE).half).toBe(HEAD + 244 + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 524, HEAD + 244 + 4, FADE).half).toBe(HEAD + 244 + 4);
+  });
+  it('less than the band left hidden after it: Half shows everything where that fits the view\'s room, else the band', () => {
+    // The edge at the numbers (244), the content 19 px past the band (the piano at 320×568): all of it.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + 19, Infinity, FADE)).toMatchObject({ half: HEAD + 244 + FADE + 19 + 4, halfLine: false });
+    // The same with room for the band only: the band, as before.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + 19, HEAD + 244 + FADE + 4, FADE).half).toBe(HEAD + 244 + FADE + 4);
+    // A band's height or more left: the band.
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 244 + FADE + FADE, Infinity, FADE).half).toBe(HEAD + 244 + FADE + 4);
+  });
+  it('nothing below the edge, or content not yet measured: no band', () => {
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets], 300, 244, Infinity, FADE).half).toBe(HEAD + 244 + 4);
+    expect(fitDockDetents(HEAD + 236, 600, 611, HEAD, [...strings, frets, controls], 300, 0, Infinity, FADE).half).toBe(HEAD + 244 + 4);
+  });
+  it('content that fits at Half: unchanged (no band, no gap)', () => {
+    expect(fitDockDetents(392, 708, 784, HEAD, [], 0, 228, Infinity, FADE)).toMatchObject({ half: HEAD + 228, fullDistinct: false });
+  });
+});

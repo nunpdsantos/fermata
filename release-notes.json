@@ -2,6 +2,16 @@
   "$comment": "Release notes for the update prompt (W9b). Newest first. Adding an entry = a new release: increment `release` by 1, one line per language (EN / PT-PT / ES, max 160 characters, no line breaks). `critical: true` marks an emergency: every app on an older release applies it at the next safe moment, even after the learner chose Later. The build reads this file (vite.config.ts) and publishes dist/version.json; a deploy without a new entry shows no What's-new line. CLAUDE.md, PWA section.",
   "releases": [
     {
+      "release": 18,
+      "date": "2026-11-24",
+      "critical": false,
+      "notes": {
+        "en": "A shared link now shows it is loading and offers “Try Again” if it fails. Also fixed: Search shortcuts, chords hidden by the metronome, the instrument panel.",
+        "pt": "A ligação partilhada mostra que está a carregar e dá «Tentar novamente» se falhar. E ainda: atalhos da pesquisa, acordes sob o metrónomo, painel do instrumento.",
+        "es": "Un enlace compartido muestra la carga y ofrece «Intentar de nuevo» si falla. Además: atajos de la búsqueda, acordes bajo el metrónomo, el panel del instrumento."
+      }
+    },
+    {
       "release": 17,
       "date": "2026-11-20",
       "critical": false,

@@ -333,6 +333,388 @@ test.describe('review of b94d761', () => {
   }
 });
 
+// ─── Leftovers of 21 November 2026: Quick Search's keys ──────────────────────
+// Q1: the dialog's code is fetched the first time search opens, and until it
+// arrived nothing listened: an Escape or a second Ctrl+K there was lost and
+// the dialog opened anyway. Here the code is HELD BACK on purpose (a route on
+// its chunk, released by the test), so the keys always come before it.
+// Q2: closing with Ctrl / Cmd+K gave focus back to nothing (Escape gave it
+// back) and left the dialog remembering where focus had been.
+// The fix pass after the cold review: whose default a Ctrl+K is, runs of keys
+// inside one frame, and the browser's Back before the code arrives; the third
+// pass: the history after a cancel while the code is on its way, and the
+// dialog's count of frames to come.
+// Focus goes back to where it was when the dialog was DRAWN (its effect reads
+// it then), not when search was asked for: focus moved while the code is on
+// its way is where a close returns.
+//
+// What these rows see of search's state after each key: on the dev server,
+// the store itself (its module); on both servers, the piano, which plays a
+// letter of the computer keyboard (and takes its default) only while search
+// is closed (components/instruments/Piano.tsx returns early while it is open).
+// The unit tests (QuickSearch.test.tsx) hold the state after every key too.
+test.describe('leftovers: Quick Search from the moment it is asked for', () => {
+  const CHUNK = /\/QuickSearch(\.tsx|-[\w-]+\.js)(\?.*)?$/;
+  const picker = (page: Page) => page.locator('#explore-panel [data-testid="key-picker"]');
+  const menuButton = (page: Page) => page.locator('[data-testid="app-menu"] button').first();
+
+  /** The store, where the dev server serves its module (the build has no such address: null). */
+  async function storeOpen(page: Page): Promise<boolean | null> {
+    return page.evaluate(async () => {
+      const r = await fetch('/src/state/store.ts');
+      if (!(r.headers.get('content-type') ?? '').includes('javascript')) return null;
+      const { useAppStore } = await import('/src/state/store.ts' as string);
+      return useAppStore.getState().quickSearchOpen as boolean;
+    });
+  }
+
+  /** Two frames: what a key set in motion has been drawn. */
+  const frames = (page: Page) => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+
+  /** Every keydown the page gets, with whether its default was prevented, read once its dispatch is over. */
+  async function recordKeys(page: Page) {
+    await page.evaluate(() => {
+      const seen: [string, boolean][] = [];
+      (window as unknown as { __keys: typeof seen }).__keys = seen;
+      window.addEventListener('keydown', (e) => {
+        if (['Control', 'Meta', 'Shift', 'Alt'].includes(e.key)) return; // a modifier pressed on its own
+        setTimeout(() => seen.push([`${e.ctrlKey ? 'Ctrl+' : ''}${e.metaKey ? 'Meta+' : ''}${e.key}`, e.defaultPrevented]));
+      }, true);
+    });
+  }
+  const keysSeen = (page: Page) => page.evaluate(() => (window as unknown as { __keys: [string, boolean][] }).__keys.slice());
+  /** The default of the last key the page got, once it has been recorded. */
+  async function lastPrevented(page: Page, count: number): Promise<boolean> {
+    await expect.poll(async () => (await keysSeen(page)).length).toBe(count);
+    return (await keysSeen(page))[count - 1][1];
+  }
+
+  /** Search closed, as the piano sees it: an "a" plays C and takes its default only while search is closed. */
+  async function closedForThePiano(page: Page): Promise<boolean> {
+    const n = (await keysSeen(page)).length;
+    await page.keyboard.press('a');
+    return lastPrevented(page, n + 1);
+  }
+
+  /** A page with the dialog's code held back until `release`. */
+  async function held(browser: Browser) {
+    const { context, page } = await seededBrowser(browser, LAPTOP, { language: 'en', lastView: 'explore', themeMode: 'fermata' });
+    let release!: () => void;
+    const gate = new Promise<void>((r) => { release = r; });
+    let asked!: (url: string) => void;
+    const chunkUrl = new Promise<string>((r) => { asked = r; });
+    await context.route(CHUNK, async (route) => {
+      asked(route.request().url());
+      await gate;
+      await route.continue();
+    });
+    await page.goto('/');
+    await expect(picker(page)).toBeVisible({ timeout: 15_000 });
+    // The history model is its own chunk, fetched once the first screen is up: it has written its entry.
+    await expect.poll(() => page.evaluate(() => (history.state as { fm?: number } | null)?.fm ?? 0), { timeout: 10_000 }).toBe(1);
+    await page.waitForTimeout(400);
+    await recordKeys(page);
+    /** The code arrives: released, fetched and run (the page imports the same address, so this resolves once it has been evaluated), then drawn. */
+    const arrive = async () => {
+      release();
+      await page.evaluate((u) => import(u).then(() => undefined), await chunkUrl);
+      await frames(page);
+      await page.waitForTimeout(300); // past the dialog's 50 ms focus timer
+    };
+    return { context, page, chunkUrl, arrive };
+  }
+
+  for (const [name, keys, opens] of [
+    ['Escape', ['Escape'], false],
+    ['a second Ctrl+K', ['Control+k'], false],
+    ['a second Ctrl+K, then a third', ['Control+k', 'Control+k'], true],
+  ] as const) {
+    test(`Q1: the code held back, Ctrl+K then ${name}: the state after each key (the piano on both servers, the store too on the dev server); ${opens ? 'it opens with the code' : 'when the code arrives, no dialog appears and focus has not moved'}`, async ({ browser }) => {
+      const { context, page, chunkUrl, arrive } = await held(browser);
+      // Focus on a button: an "a" typed into the key picker (a select) would choose a key while search is open.
+      await menuButton(page).focus();
+      const dev = (await storeOpen(page)) !== null;
+      expect(await closedForThePiano(page), 'before any key: closed (the probe sees it)').toBe(true);
+
+      await page.keyboard.press('Control+k');
+      await chunkUrl; // asked for, and held
+      await frames(page);
+      expect(await closedForThePiano(page), 'after Ctrl+K: asked for').toBe(false);
+      if (dev) expect(await storeOpen(page), 'after Ctrl+K: asked for (store)').toBe(true);
+      await expect(dialogOf(page), 'its code held back: nothing drawn yet').toHaveCount(0);
+      for (const [i, key] of keys.entries()) {
+        await page.keyboard.press(key);
+        await frames(page);
+        // Looked at after EACH key: two toggles would cancel out.
+        const open = i % 2 === 1;
+        expect(await closedForThePiano(page), `after ${key} (key ${i + 2})`).toBe(!open);
+        if (dev) expect(await storeOpen(page), `after ${key} (key ${i + 2}, store)`).toBe(open);
+      }
+      await expect(dialogOf(page)).toHaveCount(0);
+      await expect(menuButton(page), 'nothing has moved focus').toBeFocused();
+
+      await arrive();
+      if (opens) {
+        await expect(dialogOf(page)).toBeVisible();
+        await expect(dialogOf(page).locator('input')).toBeFocused();
+        await page.keyboard.press('Escape');
+        await expect(dialogOf(page)).toHaveCount(0);
+        await expect(menuButton(page), 'Escape gives focus back').toBeFocused();
+      } else {
+        await expect(dialogOf(page), 'no dialog appeared').toHaveCount(0);
+        expect(await closedForThePiano(page), 'still closed').toBe(true);
+        await expect(menuButton(page), 'focus has not moved').toBeFocused();
+        // The code is there now and its keys work: one Ctrl+K opens, one closes.
+        await page.keyboard.press('Control+k');
+        await expect(dialogOf(page).locator('input')).toBeFocused();
+        await page.keyboard.press('Control+k');
+        await expect(dialogOf(page)).toHaveCount(0);
+        await expect(menuButton(page)).toBeFocused();
+      }
+      await context.close();
+    });
+  }
+
+  test('Ctrl+K is the app\'s, not the browser\'s: its default is prevented for the page\'s first press (the host\'s listener) and for later ones (the dialog\'s), in either case; Escape\'s is not', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    await recordKeys(page);
+    await page.keyboard.press('Control+k');
+    expect(await lastPrevented(page, 1), 'the first press of the page: the host\'s').toBe(true);
+    await expect(dialogOf(page).locator('input')).toBeFocused();
+    await page.keyboard.press('Control+k');
+    expect(await lastPrevented(page, 2), 'a later press, closing: the dialog\'s').toBe(true);
+    await expect(dialogOf(page)).toHaveCount(0);
+    await page.keyboard.press('Control+Shift+K');
+    expect(await lastPrevented(page, 3), 'a capital K, opening: the dialog\'s').toBe(true);
+    await expect(dialogOf(page).locator('input')).toBeFocused();
+    await page.keyboard.press('Escape');
+    expect(await lastPrevented(page, 4), 'Escape is not taken from the page').toBe(false);
+    await expect(dialogOf(page)).toHaveCount(0);
+    expect((await keysSeen(page)).map(([k]) => k)).toEqual(['Ctrl+k', 'Ctrl+k', 'Ctrl+K', 'Escape']);
+    await context.close();
+  });
+
+  // The outcome of each way of closing: focus ends where search opened, and the next open from elsewhere
+  // goes back there. Which part of the dialog gave it back is not held here: the Escape leg needs the
+  // dialog's own frame, but for Ctrl / Cmd+K, the backdrop and Back, the dialog's clean-up, which gives
+  // focus back at once when no frame of its own is to come, would do the same if their own give-back went.
+  test('Q2: every way of closing ends with focus where search opened, and the next open from elsewhere goes back there', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    const ways: [string, () => Promise<unknown>][] = [
+      ['Escape', () => page.keyboard.press('Escape')],
+      ['Ctrl+K', () => page.keyboard.press('Control+k')],
+      ['Cmd+K', () => page.keyboard.press('Meta+k')],
+      ['a click on the backdrop', () => page.mouse.click(40, 860)],
+      ['the browser\'s Back', () => page.goBack()],
+    ];
+    for (const [how, close] of ways) {
+      await picker(page).focus();
+      await page.keyboard.press('Control+k');
+      await expect(dialogOf(page).locator('input'), `${how}: open, the input focused`).toBeFocused();
+      await close();
+      await expect(dialogOf(page), `${how}: closed`).toHaveCount(0);
+      await expect(picker(page), `${how}: focus is back on the key picker`).toBeFocused();
+      // Nothing remembered: opened from elsewhere and closed, focus goes back THERE. A dialog still
+      // holding the key picker (its frame giving focus back without forgetting it) sends focus to it.
+      await menuButton(page).focus();
+      await page.keyboard.press('Control+k');
+      await expect(dialogOf(page).locator('input'), `${how}: opened from the menu button`).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(dialogOf(page)).toHaveCount(0);
+      await expect(menuButton(page), `${how}: the next close goes back to where that open began`).toBeFocused();
+    }
+    await context.close();
+  });
+
+  // Runs of keys faster than a frame (review item 3: close, open, close in one frame ended on <body>).
+  // Both variants draw each key's change before the next key: real presses (each its own task), and keys
+  // sent inside one task with a microtask between them. So both hold the fault of an open that takes the
+  // closing input as the place to go back to (`??=` made `=`), and a frame that moves focus while search is
+  // open again. Keys sent back to back inside one task were a third variant until the second review: React
+  // draws only their end state, so it could not hold the first of those faults, and it is gone.
+  const RUNS: { keys: ('Control+k' | 'Escape')[]; opens: boolean }[] = [
+    { keys: ['Control+k', 'Control+k', 'Control+k'], opens: false },
+    { keys: ['Control+k', 'Control+k', 'Control+k', 'Control+k'], opens: true },
+    { keys: ['Escape', 'Control+k', 'Escape'], opens: false },
+    { keys: ['Escape', 'Control+k', 'Control+k', 'Control+k'], opens: true },
+  ];
+  for (const how of ['real key presses', 'inside one task, a microtask between keys'] as const) {
+    test(`Q2: from open, runs of three and four keys (${how}) end with focus where search opened, or in the open dialog's input`, async ({ browser }) => {
+      const { context, page } = await open(browser, LAPTOP, 'en');
+      for (const run of RUNS) {
+        const label = `${how}: ${run.keys.join(' ')}`;
+        await picker(page).focus();
+        await page.keyboard.press('Control+k');
+        await expect(dialogOf(page).locator('input'), `${label}: open, the input focused`).toBeFocused();
+        if (how === 'real key presses') {
+          for (const k of run.keys) await page.keyboard.press(k);
+        } else {
+          await page.evaluate(async (keys) => {
+            for (const k of keys) {
+              const init = k === 'Escape' ? { key: 'Escape' } : { key: 'k', ctrlKey: true };
+              (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent('keydown', { ...init, bubbles: true, cancelable: true }));
+              // React schedules a key's change in a microtask: awaiting one lets it run, still inside this task.
+              await Promise.resolve();
+            }
+          }, run.keys);
+        }
+        await frames(page);
+        await page.waitForTimeout(400); // the frame, the 50 ms timer, the exit
+        if (run.opens) {
+          await expect(dialogOf(page).locator('input'), `${label}: ends open, the input`).toBeFocused();
+          await page.keyboard.press('Escape');
+          await expect(dialogOf(page)).toHaveCount(0);
+        } else {
+          await expect(dialogOf(page), `${label}: ends closed`).toHaveCount(0);
+        }
+        await expect(picker(page), `${label}: closed at last, focus where search opened`).toBeFocused();
+      }
+      await context.close();
+    });
+  }
+
+  // A Back row clicks first. The history model writes an entry only after an input that counts as a user
+  // activation (`activates` in state/appHistory.ts, which leaves out a key pressed with Ctrl or Meta: the
+  // browser's own shortcuts). So on a fresh page where Cmd / Ctrl+K is the very first input there is no
+  // entry for search, and Back leaves the app, with the code held back or loaded alike (seen on both
+  // servers, 21 November 2026). That is the history model's, and was not changed in this round.
+  test('the browser\'s Back while the code is held back cancels search: the screen stays, no dialog when the code arrives, focus not moved, Forward brings nothing back; one entry for the open, none added since', async ({ browser }) => {
+    const { context, page, chunkUrl, arrive } = await held(browser);
+    const learnTab = page.locator('[role="tab"][data-tab="learn"]');
+    const exploreTab = page.locator('[role="tab"][data-tab="explore"]');
+    const at = () => page.evaluate(() => ({ i: (history.state as { i: number }).i, l: (history.state as { l: number }).l, length: history.length }));
+    await learnTab.click();
+    await expect(learnTab).toHaveAttribute('aria-selected', 'true');
+    await expect(learnTab).toBeFocused();
+    const before = await at();
+    await page.keyboard.press('Control+k');
+    await chunkUrl;
+    await frames(page);
+    expect(await at(), 'asked for: one entry, covering one layer').toEqual({ i: before.i + 1, l: 1, length: before.length + 1 });
+    await page.goBack();
+    await frames(page);
+    await expect(learnTab, 'Back cancelled search: still Learn').toHaveAttribute('aria-selected', 'true');
+    expect(await at(), 'on the entry it was asked from (the one for search still ahead)').toEqual({ ...before, length: before.length + 1 });
+    await arrive();
+    await expect(dialogOf(page), 'no dialog when the code arrives').toHaveCount(0);
+    await expect(learnTab, 'focus has not moved').toBeFocused();
+    await page.goForward();
+    await frames(page);
+    await page.waitForTimeout(200);
+    await expect(dialogOf(page), 'Forward brings nothing back').toHaveCount(0);
+    await expect(learnTab).toHaveAttribute('aria-selected', 'true');
+    expect((await at()).length, 'no entry added by any of it').toBe(before.length + 1);
+    // Back to the entry search was asked from, then once more: the screen before it.
+    await page.goBack();
+    await expect.poll(async () => (await at()).i).toBe(before.i);
+    await page.goBack();
+    await expect(exploreTab, 'the screen before').toHaveAttribute('aria-selected', 'true');
+    await expect(dialogOf(page)).toHaveCount(0);
+    await context.close();
+  });
+
+  // Cancelled while its code is on its way, search leaves no layer in the history model: the next Back,
+  // asking again and Back again do what they do when the code was loaded and search closed the same way
+  // (the reference, run first in the same row: one Back from Learn lands on Explore). The code then
+  // arrives, closed, and changes nothing. (Second review, finding 1: a layer left open swallowed Backs.)
+  for (const cancel of ['Escape', 'a second Ctrl+K', 'Back'] as const) {
+    test(`cancelled by ${cancel} while the code is held back: the history afterwards is the loaded dialog's`, async ({ browser }) => {
+      const search = (page: Page) => page.getByRole('button', { name: 'Quick search, Command+K' });
+      const where = (page: Page) => page.evaluate(() => {
+        const st = history.state as { i: number; l: number } | null;
+        const view = document.querySelector('[role="tab"][aria-selected="true"]')?.getAttribute('data-tab');
+        return st ? `i=${st.i} l=${st.l} entries=${history.length} ${view}` : `left the app (${location.href})`;
+      });
+      const settle = async (page: Page, ms = 500) => { await frames(page); await page.waitForTimeout(ms); };
+      const runIt = async (code: 'held' | 'loaded') => {
+        const { context, page, chunkUrl, arrive } = await held(browser);
+        const log: string[] = [];
+        if (code === 'loaded') {
+          // The reference: the code fetched and drawn first (Ctrl+K is no user activation: no entry), closed.
+          await page.keyboard.press('Control+k');
+          await arrive();
+          await expect(dialogOf(page).locator('input')).toBeFocused();
+          await page.keyboard.press('Escape');
+          await expect(dialogOf(page)).toHaveCount(0);
+        }
+        await page.locator('[role="tab"][data-tab="learn"]').click();
+        await expect(page.locator('#learn-panel h1, #learn-panel h2').first()).toBeVisible({ timeout: 15_000 });
+        await page.waitForTimeout(1500); // Learn notes its place on its entry
+        log.push(`on Learn: ${await where(page)}`);
+        await page.keyboard.press('Control+k');
+        if (code === 'held') await chunkUrl;
+        else await expect(dialogOf(page).locator('input')).toBeFocused();
+        await settle(page);
+        log.push(`asked: ${await where(page)}`);
+        if (cancel === 'Back') await page.goBack();
+        else await page.keyboard.press(cancel === 'Escape' ? 'Escape' : 'Control+k');
+        await settle(page);
+        log.push(`cancelled: ${await where(page)}`);
+        await page.goBack();
+        await settle(page, 800);
+        log.push(`next Back: ${await where(page)}`);
+        await search(page).click(); // asked again, by a tap
+        if (code === 'loaded') await expect(dialogOf(page).locator('input')).toBeFocused();
+        await settle(page);
+        log.push(`asked again: ${await where(page)}`);
+        await page.goBack();
+        await settle(page, 800);
+        log.push(`closed by Back: ${await where(page)}`);
+        if (code === 'held') {
+          await expect(dialogOf(page), 'the code still held back').toHaveCount(0);
+          const before = await where(page);
+          await arrive();
+          await expect(dialogOf(page), 'it arrives, closed: no dialog').toHaveCount(0);
+          expect(await where(page), 'and nothing written').toBe(before);
+        }
+        await context.close();
+        return log;
+      };
+      const reference = await runIt('loaded');
+      expect(reference[3], 'the reference: one Back from Learn lands on Explore').toMatch(/ explore$/);
+      expect(reference[4], 'the reference: asked again, an entry of its own covering a layer').toMatch(/ l=1 /);
+      expect(await runIt('held')).toEqual(reference);
+    });
+  }
+
+  // The dialog's count of frames to come, after a close and an open inside one frame (second review,
+  // finding 2): a close the dialog did not make gives focus back at once to where that open began and
+  // forgets it, and the next open from elsewhere goes back THERE. The store is closed from outside through
+  // its module, which only the dev server serves: on the build this row is skipped (the unit tests in
+  // QuickSearch.focus.test.tsx hold the same after every run of 2 to 5 keys).
+  test('a close and an open inside one frame, then search closed from outside: focus back at once where that open began; the next open, from the key picker, closed by Escape, goes back to the key picker', async ({ browser }) => {
+    const { context, page } = await open(browser, LAPTOP, 'en');
+    test.skip((await storeOpen(page)) === null, 'the store is reached through its module, which only the dev server serves');
+    await menuButton(page).focus();
+    await page.keyboard.press('Control+k');
+    await expect(dialogOf(page).locator('input')).toBeFocused();
+    await page.evaluate(async () => {
+      for (let n = 0; n < 2; n++) {
+        (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true, cancelable: true }));
+        await Promise.resolve(); // drawn before the next, inside one task: no frame between
+      }
+    });
+    await frames(page);
+    await page.waitForTimeout(300);
+    expect(await storeOpen(page), 'closed and opened again').toBe(true);
+    await expect(dialogOf(page).locator('input')).toBeFocused();
+    await page.evaluate(async () => {
+      const { useAppStore } = await import('/src/state/store.ts' as string);
+      useAppStore.getState().setQuickSearchOpen(false);
+    });
+    await expect(menuButton(page), 'closed from outside: back at once where that open began').toBeFocused({ timeout: 150 });
+    await page.waitForTimeout(400);
+    await expect(menuButton(page), 'and it stays there').toBeFocused();
+    await picker(page).focus();
+    await page.keyboard.press('Control+k');
+    await expect(dialogOf(page).locator('input')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialogOf(page)).toHaveCount(0);
+    await expect(picker(page), 'the next open went back to where IT began').toBeFocused();
+    await context.close();
+  });
+});
+
 // ─── Screenshots: the list in EN / PT / ES, day and night ────────────────────
 test.describe('screenshots', () => {
   test.skip(!SHOTS, 'SEARCH_SHOTS=<dir> writes the screenshots');
