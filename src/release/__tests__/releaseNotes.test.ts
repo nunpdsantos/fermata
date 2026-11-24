@@ -68,11 +68,11 @@ describe('release 17 (2026-11-20): the second audit round', () => {
   });
 });
 
-describe('release 18 (2026-11-22): the leftovers round', () => {
+describe('release 18 (2026-11-24): the leftovers round', () => {
   it('follows release 17: not critical, one line per language within 160 characters, the app\'s own words for what it names', async () => {
     const releases = parseReleaseNotes(JSON.parse(releaseNotesSource));
     const [note, previous] = releases;
-    expect([note.release, note.date, note.critical]).toEqual([18, '2026-11-22', false]);
+    expect([note.release, note.date, note.critical]).toEqual([18, '2026-11-24', false]);
     expect(previous.release).toBe(17);
     for (const lang of ['en', 'pt', 'es'] as const) expect(note.notes[lang].length, lang).toBeLessThanOrEqual(MAX_NOTE_LENGTH);
     // The toast's own button, the metronome and the instrument panel, each as the app says it in that language;

@@ -3,7 +3,7 @@
   "releases": [
     {
       "release": 18,
-      "date": "2026-11-22",
+      "date": "2026-11-24",
       "critical": false,
       "notes": {
         "en": "A shared link now shows it is loading and offers “Try Again” if it fails. Also fixed: Search shortcuts, chords hidden by the metronome, the instrument panel.",
